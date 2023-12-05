@@ -18,7 +18,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 	<h1 class = "text-capitalize text-start m-0"><?= $model->Name ?></h1>
 	<div class = "d-flex gap-1 align-items-center">
         <?php
-        $statusModel = Status::findOne(['id' => $model->Status]);
+        $statusModel = Status::findOne(['ID' => $model->Status]);
         $iconClass = getStatusIconClass($model->Status); // Implement your own logic to get the icon class based on status
 
         echo Html::tag('i', '', [
@@ -27,7 +27,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
         ?>
 		<p class = "fw-light mb-0 align-items-end">
             <?= Html::tag('span',
-                ($statusModel = Status::findOne(['id' => $model->Status])) ? $statusModel->description : '', [
+                ($statusModel = Status::findOne(['ID' => $model->Status])) ? $statusModel->description : '', [
                     'class' => 'rounded-3 fw-semibold m-0', 'id' => 'status-badge',
                 ]) ?>
 		</p>

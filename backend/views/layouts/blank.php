@@ -12,20 +12,29 @@ AppAsset::register($this);
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>" class="h-100">
 <head>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <meta charset="<?= Yii::$app->charset ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
 </head>
-<body class="d-flex flex-column h-100">
+<body>
 <?php $this->beginBody() ?>
 
-<main role="main">
-    <div class="container">
-        <?= $content ?>
-    </div>
-</main>
+
+<div class = "page-wrapper" id = "main-wrapper" data-layout = "vertical" data-navbarbg = "skin6"
+     data-sidebartype = "full"
+     data-sidebar-position = "fixed" data-header-position = "fixed">
+	<div class = "">
+		<main role = "main" class = "flex-shrink-0">
+			<div class = "container">
+                <?= $content ?>
+			</div>
+		</main>
+	</div>
+</div>
+
 
 <?php $this->endBody() ?>
 </body>

@@ -38,9 +38,20 @@
                     'options' => ['class' => 'sidebar-item'],
                 ],
                 [
+                    'label' => '<i class="ti ti-dots nav-small-cap-icon fs-4"></i><span class="hide-menu">Admin</span>',
+                    'options' => ['class' => 'nav-small-cap'],
+                    'template' => '{label}', // Use a custom template to display the label without the link
+                ],
+                [
                     'template' => '<a href="{url}" class="sidebar-link">{label}</a>',
                     'label' => '<i class="ti ti-user"></i><span class="hide-menu">Person In Charge</span>',
                     'url' => ['/poc/index'],
+                    'options' => ['class' => 'sidebar-item'],
+                ],
+                [
+                    'template' => '<a href="{url}" class="sidebar-link">{label}</a>',
+                    'label' => '<i class="ti ti-status-change"></i><span class="hide-menu">Status</span>',
+                    'url' => ['/status/index'],
                     'options' => ['class' => 'sidebar-item'],
                 ],
                 // Add more sidebar items as needed

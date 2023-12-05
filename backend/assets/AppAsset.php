@@ -9,13 +9,13 @@ use yii\web\AssetBundle;
  */
 class AppAsset extends AssetBundle
 {
-    public $basePath = '@webroot';
-    public $baseUrl = '@web';
     public $css = [
         'css/site.css',
-        'css/styles.scss',
+        'css/styles.css', // Compiled from styles.scss
         'css/icons/tabler-icons/tabler-icons.css'
     ];
+
+// Adjust the JS file paths
     public $js = [
         'js/app.min.js',
         'js/dashboard.js',
@@ -23,6 +23,7 @@ class AppAsset extends AssetBundle
         'js/form_validation.js',
         'js/filter.js',
         'js/notes.js',
+
     ];
     public $depends = [
         'yii\web\YiiAsset',

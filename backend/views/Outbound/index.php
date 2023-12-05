@@ -63,7 +63,7 @@ require Yii::getAlias('@common') . '/Helpers/helper.php';
                     'label' => 'Status',
                     'format' => 'raw',
                     'value' => function ($model) {
-                        $statusModel = Status::findOne(['id' => $model->Status]);
+                        $statusModel = Status::findOne(['ID' => $model->Status]);
                         $statusMeaning = $statusModel ? $statusModel->description : '';
 
                         $class = '';
