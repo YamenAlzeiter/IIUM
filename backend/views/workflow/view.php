@@ -213,7 +213,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                                     'reject', 'ID' => $model->ID, 'token' => $model->token
                                 ], 'class' => 'form'
                             ]) ?>
-                            <?= Html::hiddenInput('status', 22, ['id' => 'status-input-reject']); ?>
+                            <?= Html::hiddenInput('status', 32, ['id' => 'status-input-reject']); ?>
 
 							<div class = "conditional-form-elements-reject" style = "display: none;">
 								<div class = "form-group">

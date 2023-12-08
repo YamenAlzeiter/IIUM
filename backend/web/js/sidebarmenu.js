@@ -1,19 +1,20 @@
 $(function () {
     "use strict";
     var url = window.location + "";
-    var path = url.replace(
-        window.location.protocol + "//" + window.location.host + "/",
-        ""
-    );
-    var controller = path.split("/")[0]; // Get the controller part of the URL
-    console.log(controller);
+    console.log(url)
+    // var path = url.replace(
+    //     window.location.protocol + "//" + window.location.host + "/",
+    //     ""
+    // );
+    // var controller = path.split("/")[0]; // Get the controller part of the URL
+
 
     // Check if the controller is not empty before selecting and activating
-    if (controller !== "") {
+    if (url !== "") {
         var element = $("ul#sidebarnav a").filter(function () {
             var href = this.href;
             // Check if the URL or controller matches
-            return href === url || href.indexOf(controller) !== -1;
+            return href === url ;
         });
 
         element.parentsUntil(".sidebar-nav").each(function (index) {

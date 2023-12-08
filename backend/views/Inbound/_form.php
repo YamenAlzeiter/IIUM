@@ -82,7 +82,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'English_other_test_name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'English_certificate')->textInput() ?>
+
 
     <?= $form->field($model, 'Propose_type_of_programme')->textInput(['maxlength' => true]) ?>
 
@@ -124,24 +124,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'Approval_date')->textInput() ?>
 
-    <?= $form->field($model, 'Recommendation_letter')->textInput() ?>
-
-    <?= $form->field($model, 'Student_declaration_name')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'Student_declaration_date')->textInput() ?>
-
-    <?= $form->field($model, 'Student_declaration_agreement')->textInput() ?>
-
-    <?= $form->field($model, 'Passport')->textInput() ?>
-
-    <?= $form->field($model, 'Latest_passport_photo')->textInput() ?>
-
-    <?= $form->field($model, 'Latest_certified_academic_transcript')->textInput() ?>
-
-    <?= $form->field($model, 'Confirmation_letter')->textInput() ?>
-
-    <?= $form->field($model, 'Sponsorship_letter')->textInput() ?>
-
     <?= $form->field($model, 'Status')->textInput() ?>
 
     <?= $form->field($model, 'Kulliyyah')->textInput() ?>
@@ -154,11 +136,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'Token')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'updated_at')->textInput() ?>
 
-    <?= $form->field($model, 'created_at')->textInput() ?>
-
-    <?= $form->field($model, 'offer_letter')->textInput() ?>
 
     <?= $form->field($model, 'reference_number')->textInput(['maxlength' => true]) ?>
 

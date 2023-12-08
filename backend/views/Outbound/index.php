@@ -9,7 +9,7 @@ use common\models\Outbound; // Import your model class here
 
 /** @var yii\web\View $this */
 /** @var yii\data\ActiveDataProvider $dataProvider */
-
+$this->title = 'Outbound';
 require Yii::getAlias('@common') . '/Helpers/helper.php';
 
 ?>
@@ -69,9 +69,9 @@ require Yii::getAlias('@common') . '/Helpers/helper.php';
                         $class = '';
 
                         if (in_array($model->Status, [2, 12, 22, 32, 42])) {
-                            $class = 'badge bg-success-subtle text-success fw-semibold fs-3';
-                        } elseif ($model->Status == 61) {
                             $class = 'badge bg-danger-subtle text-danger fw-semibold fs-3';
+                        } elseif ($model->Status == 61) {
+                            $class = 'badge bg-success-subtle text-success fw-semibold fs-3';
                         } else {
                             $class = 'badge bg-warning-subtle text-warning fw-semibold fs-3';
                         }

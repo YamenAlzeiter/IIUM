@@ -60,17 +60,52 @@
                     'options' => ['class' => 'sidebar-item'],
                     'items' => [
                         [
-                            'class' => 'sidebar-item',
-                            'template' => '<a class="sidebar-link" href="{url}">{icon}<span class="hide-menu">{label}</span></a>',
-                            'icon' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div>',
-                            'label' => 'Telmplate1',
-                            'url' => '../main/widgets-cards.html',
+                            'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
+                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu">Email to Higher</span>',
+                            'url' => '/email-tamplate/view?id=1',
+                            'options' => ['class' => 'sidebar-item'],
+                        ],
+                        [
+                            'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
+                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu">Email to Higher (Redirect)</span>',
+                            'url' => '/email-tamplate/view?id=2',
+                            'options' => ['class' => 'sidebar-item'],
+                        ],
+                        [
+                            'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
+                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu">Application not Complete</span>',
+                            'url' => '/email-tamplate/view?id=3',
+                            'options' => ['class' => 'sidebar-item'],
+                        ],
+                        [
+                            'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
+                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu">Application Rejected</span>',
+                            'url' => '/email-tamplate/view?id=4',
+                            'options' => ['class' => 'sidebar-item'],
+                        ],
+                        [
+                            'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
+                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu">Upload Before Leave</span>',
+                            'url' => '/email-tamplate/view?id=5',
+                            'options' => ['class' => 'sidebar-item'],
+                        ],
+                        [
+                            'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
+                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu">Accept</span>',
+                            'url' => '/email-tamplate/view?id=6',
+                            'options' => ['class' => 'sidebar-item'],
+                        ],
+                        [
+                            'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
+                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu">Upload Files Before Comeback</span>',
+                            'url' => '/email-tamplate/view?id=7 ',
+                            'options' => ['class' => 'sidebar-item'],
                         ],
                     ],
                 ],
-                
+
             ],
-            'submenuTemplate' => "\n<ul class='collapse first-level'>\n{items}\n</ul>\n",
+            'submenuTemplate' => "<ul class='collapse first-level' aria-expanded = 'false'>{items}</ul>",
         ]);
         ?>
 

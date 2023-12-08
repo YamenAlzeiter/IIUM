@@ -3,15 +3,7 @@
 use yii\bootstrap5\Html;
 use dosamigos\ckeditor\CKEditor;
 
-$this->title = 'Sales Overview';
-
-
-
-echo CKEditor::widget([
-    'name' => 'editor',
-    'preset' => 'full', // You can use 'basic', 'standard', or 'full'
-]);
-
+$this->title = 'Dashboard';
 ?>
 <!-- Start Basic Bar Chart -->
 

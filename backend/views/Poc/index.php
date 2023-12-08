@@ -13,7 +13,7 @@ use yii\widgets\ActiveForm;
 /** @var yii\data\ActiveDataProvider $dataProvider */
 /** @var common\models\Poc $model */
 /** @var int|null $updateModelId */
-
+$this->title = 'Person In Charge';
 ?>
 <div class="table-responsive">
 <?= GridView::widget([
