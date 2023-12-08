@@ -23,6 +23,7 @@ class AppAsset extends AssetBundle
         'js/form_validation.js',
         'js/filter.js',
         'js/notes.js',
+        'js/insertRecipientName.js',
 
     ];
     public $depends = [

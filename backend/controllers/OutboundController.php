@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use backend\views\outbound\outboundSearch;
 use common\models\Courses;
+use common\models\EmailTemplate;
 use common\models\Iiumcourse;
 use common\models\Kcdio;
 use common\models\Outbound;
@@ -241,7 +242,9 @@ class OutboundController extends Controller
 
             $model->Status = $status;
             if ($model->save()) {
-                $this->sendEmailWithLink($model, $selectedPersonInChargeName, $email, $token, $path, $subject, $reason);
+
+                $this->sendEmailWithLink($model, $selectedPersonInChargeName, $email, $token, 10, $subject, $reason,$path);
+
 
 //                $model->save();
                 return $this->redirect(["index"]);
@@ -249,13 +252,24 @@ class OutboundController extends Controller
         }
     }
 
-    public function sendEmailWithLink($model, $name, $email, $token, $path, $subject, $reason)
+    public function sendEmailWithLink($model, $name, $email, $token, $templateId, $subject, $reason, $path)
     {
-
         $recipientEmail = $email;
         $recipientName = $name;
         $viewLink = '';
-//1 for accept and 2 for reject
+
+        $emailTemplate = EmailTemplate::findOne($templateId);
+        if (!$emailTemplate) {
+            // Handle the case where the template is not found
+            return;
+        }
+
+        // Replace placeholders in the template content
+        $body = $emailTemplate->body;
+        $body = str_replace('{recipientName}', $recipientName, $body);
+        // Add more replacements as needed
+
+        //1 for accept and 2 for reject
         if ($model->Status === 1 || $model->Status === 2) {
             $viewLink = Yii::$app->urlManager->createAbsoluteUrl([
                 'hodworkflow/view', 'ID' => $model->ID, 'token' => $token
@@ -272,9 +286,13 @@ class OutboundController extends Controller
         Yii::$app->mailer->compose([
             'html' => $path
         ], [
-            'subject' => $subject, 'recipientName' => $recipientName, 'viewLink' => $viewLink, 'reason' => $reason
-        ])->setFrom(["noreply@example.com" => "My Application"])->setTo($recipientEmail)->setSubject($subject)->send();
+            'subject' => $subject, 'recipientName' => $recipientName, 'viewLink' => $viewLink, 'reason' => $reason, 'body' => $body
+        ])->setFrom(["noreply@example.com" => "My Application"])
+            ->setTo($recipientEmail)
+            ->setSubject($subject)
+            ->send();
     }
+
 
     public function actionReject($ID)
     {

@@ -13,6 +13,10 @@ return [
     'bootstrap' => ['log'],
     'modules' => [],
     'components' => [
+        'ckEditor' => [
+            'class' => 'dosamigos\ckeditor\CKEditor',
+            'preset' => 'full', // You can customize the preset as needed
+        ],
         'request' => [
             'cookieValidationKey' => $uniqueKey,
             'csrfParam' => '_csrf-backend',
@@ -26,6 +30,7 @@ return [
             // this is the name of the session cookie used for login on the backend
             'name' => 'advanced-backend',
         ],
+
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [

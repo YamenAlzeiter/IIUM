@@ -49,13 +49,28 @@
                     'options' => ['class' => 'sidebar-item'],
                 ],
                 [
-                    'template' => '<a href="{url}" class="sidebar-link">{label}</a>',
+                    'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
                     'label' => '<i class="ti ti-status-change"></i><span class="hide-menu">Status</span>',
                     'url' => ['/status/index'],
                     'options' => ['class' => 'sidebar-item'],
                 ],
-                // Add more sidebar items as needed
+                [
+                    'template' => '<a href="javascript:void(0)" class="sidebar-link has-arrow"  aria-expanded="false">{label}</a>',
+                    'label' => '<i class="ti ti-mail-forward"></i><span class="hide-menu">Email Template</span>',
+                    'options' => ['class' => 'sidebar-item'],
+                    'items' => [
+                        [
+                            'class' => 'sidebar-item',
+                            'template' => '<a class="sidebar-link" href="{url}">{icon}<span class="hide-menu">{label}</span></a>',
+                            'icon' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div>',
+                            'label' => 'Telmplate1',
+                            'url' => '../main/widgets-cards.html',
+                        ],
+                    ],
+                ],
+                
             ],
+            'submenuTemplate' => "\n<ul class='collapse first-level'>\n{items}\n</ul>\n",
         ]);
         ?>
 
