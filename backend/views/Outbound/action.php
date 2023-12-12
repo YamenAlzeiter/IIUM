@@ -133,8 +133,8 @@ $this->registerJsFile('https://code.jquery.com/jquery-3.6.0.min.js');
 			</div>
         <?php endif;?>
 
-        <?php if($model -> Status === 3 || $model -> Status === 52 ):?>
-			<div id = "not-complete-io" style = "display: none;" class = "mt-4 alert alert-warning ">
+        <?php if($model -> Status === 3):?>
+			<div id = "not-complete-io" class = "mt-4 alert alert-warning ">
 				<h5 class = "m-0 text-capitalize alert">application is not completed, waiting for student to response</h5>
 			</div>
         <?php endif;?>

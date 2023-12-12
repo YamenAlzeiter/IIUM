@@ -1,4 +1,4 @@
-	<?php
+<?php
 use common\models\Poc;
 use common\models\Status;
 use Psy\Util\Json;
@@ -12,12 +12,15 @@ use yii\web\YiiAsset;
 
 require Yii::getAlias('@common').'/Helpers/helper.php';
 
-    $creationYearLastTwoDigits = date('y', strtotime($model->created_at));
+$creationYearLastTwoDigits = date('y', strtotime($model->created_at));
 
-    $fileName = $creationYearLastTwoDigits . '_' . $model->ID;
+$fileName = $creationYearLastTwoDigits . '_' . $model->ID;
 ?>
 <div class = "mb-3">
+	<div class = "d-flex gap-1 align-items-center">
+    <?= Html::a('<i class="ti ti-arrow-left fs-8"></i>', Yii::$app->request->referrer) ?>
 	<h1 class = "text-capitalize text-start m-0"><?= $model->Name ?></h1>
+	</div>
 	<div class = "d-flex gap-1 align-items-center">
         <?php
         $statusModel = Status::findOne(['ID' => $model->Status]);
@@ -103,8 +106,8 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 					</div>
 				</div>
 			</div>
-			<div class="col-lg-6">
-				<div class = "card shadow-none border bg-light-pink">
+			<div class="col-lg-6 d-flex flex-column">
+				<div class = "card shadow-none border bg-light-pink flex-fill">
 					<div class = "card-body">
 						<div class = "d-flex align-items-center header-info gap-1 mb-3">
 							<i class = "ti ti-map-pins text-dark"></i>
@@ -160,62 +163,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 		</div>
 		<div class="row">
 			<div class="col">
-				<div class="card shadow-none border bg-light-gray">
-					<div class="card-body">
-						<div class="row">
-							<div class = "d-flex align-items-center header-info gap-1 mb-3">
-								<i class = "ti ti-file text-dark"></i>
-								<strong>
-									<h4 class = "fw-semibold m-0">Files</h4>
-								</strong>
-							</div>
 
-							<P><strong>Passport: </strong>
-                                <?= ($model->Passport) ? Html::a('Passport'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Passport,
-                                        PATHINFO_EXTENSION), [
-                                    'download', 'id' => $model->ID,
-                                    'file' => 'Passport'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Passport,
-                                            PATHINFO_EXTENSION)
-                                ]) : ''; ?>
-							</P>
-							<P><strong>Latest passport photo: </strong>
-                                <?= ($model->Latest_passport_photo) ? Html::a('Latest_passport_photo'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Latest_passport_photo,
-                                        PATHINFO_EXTENSION), [
-                                    'download', 'id' => $model->ID,
-                                    'file' => 'Latest_passport_photo'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Latest_passport_photo,
-                                            PATHINFO_EXTENSION)
-                                ]) : ''; ?>
-							</P>
-							<P><strong>Latest certified academic transcript: </strong>
-                                <?= ($model->Latest_certified_academic_transcript) ? Html::a('Latest_certified_academic_transcript'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Latest_certified_academic_transcript,
-                                        PATHINFO_EXTENSION), [
-                                    'download', 'id' => $model->ID,
-                                    'file' => 'Latest_certified_academic_transcript'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Latest_certified_academic_transcript,
-                                            PATHINFO_EXTENSION)
-                                ]) : ''; ?>
-							</P>
-							<P><strong>Confirmation letter: </strong>
-                                <?= ($model->Confirmation_letter) ? Html::a('Confirmation_letter'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Confirmation_letter,
-                                        PATHINFO_EXTENSION), [
-                                    'download', 'id' => $model->ID,
-                                    'file' => 'Confirmation_letter'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Confirmation_letter,
-                                            PATHINFO_EXTENSION)
-                                ]) : ''; ?>
-							</P>
-							<P><strong>Sponsorship letter: </strong>
-                                <?= ($model->Sponsorship_letter) ? Html::a('Sponsorship_letter'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Sponsorship_letter,
-                                        PATHINFO_EXTENSION), [
-                                    'download', 'id' => $model->ID,
-                                    'file' => 'Sponsorship_letter'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Sponsorship_letter,
-                                            PATHINFO_EXTENSION)
-                                ]) : ''; ?>
-							</P>
-                            <p class="fw-semibold"><?= ($model->offer_letter) ? Html::a('Offer Letter', [
-                                    'download', 'id' => $model->ID,
-                                    'file' => $fileName.'_offerLetter'.'.pdf']) : ''; ?></p>
-						</div>
-					</div>
-				</div>
 			</div>
 		</div>
 	</div>
@@ -276,112 +224,61 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 				</P>
 			</div>
 		</div>
-		<div class="card shadow-none border bg-light-primary">
+		<div class="card shadow-none border bg-light-gray">
 			<div class="card-body">
-				<div class = "mb-3">
-					<h4 class = "fw-semibold m-0">Person in charge</h4>
+				<div class="row">
+					<div class = "d-flex align-items-center header-info gap-1 mb-3">
+						<i class = "ti ti-file text-dark"></i>
+						<strong>
+							<h4 class = "fw-semibold m-0">Files</h4>
+						</strong>
+					</div>
+
+					<P><strong>Passport: </strong>
+                        <?= ($model->Passport) ? Html::a('Passport'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Passport,
+                                PATHINFO_EXTENSION), [
+                            'download', 'id' => $model->ID,
+                            'file' => 'Passport'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Passport,
+                                    PATHINFO_EXTENSION)
+                        ]) : ''; ?>
+					</P>
+					<P><strong>Latest passport photo: </strong>
+                        <?= ($model->Latest_passport_photo) ? Html::a('Latest_passport_photo'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Latest_passport_photo,
+                                PATHINFO_EXTENSION), [
+                            'download', 'id' => $model->ID,
+                            'file' => 'Latest_passport_photo'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Latest_passport_photo,
+                                    PATHINFO_EXTENSION)
+                        ]) : ''; ?>
+					</P>
+					<P><strong>Latest certified academic transcript: </strong>
+                        <?= ($model->Latest_certified_academic_transcript) ? Html::a('Latest_certified_academic_transcript'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Latest_certified_academic_transcript,
+                                PATHINFO_EXTENSION), [
+                            'download', 'id' => $model->ID,
+                            'file' => 'Latest_certified_academic_transcript'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Latest_certified_academic_transcript,
+                                    PATHINFO_EXTENSION)
+                        ]) : ''; ?>
+					</P>
+					<P><strong>Confirmation letter: </strong>
+                        <?= ($model->Confirmation_letter) ? Html::a('Confirmation_letter'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Confirmation_letter,
+                                PATHINFO_EXTENSION), [
+                            'download', 'id' => $model->ID,
+                            'file' => 'Confirmation_letter'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Confirmation_letter,
+                                    PATHINFO_EXTENSION)
+                        ]) : ''; ?>
+					</P>
+					<P><strong>Sponsorship letter: </strong>
+                        <?= ($model->Sponsorship_letter) ? Html::a('Sponsorship_letter'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Sponsorship_letter,
+                                PATHINFO_EXTENSION), [
+                            'download', 'id' => $model->ID,
+                            'file' => 'Sponsorship_letter'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Sponsorship_letter,
+                                    PATHINFO_EXTENSION)
+                        ]) : ''; ?>
+					</P>
+					<p class="fw-semibold"><?= ($model->offer_letter) ? Html::a('Offer Letter', [
+                            'download', 'id' => $model->ID,
+                            'file' => $fileName.'_offerLetter'.'.pdf']) : ''; ?></p>
 				</div>
-                <?php if ($modelPoc1): ?>
-					<p class="mb-2 fw-light mb-1"><strong>name: </strong> <?= $modelPoc1->name ?></p>
-					<p class="mb-2 fw-light mb-1"><strong>kulliyyah: </strong> <?= $modelPoc1->kulliah ?></p>
-					<p class="mb-2 fw-light mb-1"><strong>Email: </strong> <a href="mailto:<?= $modelPoc1->email ?>"><?= $modelPoc1->email ?></a></p>
-                    <?php if ($model->note_msd_cps):?>
-						<div class = "mt-3 mb-2">
-							<h5 class = "fw-semibold m-0">Reason of Rejection</h5>
-						</div>
-						<p class = "mb-2 fw-light mb-1"><strong><?= $model->note_msd_cps ?></strong></p>
-                    <?php endif;?>
-                <?php else: ?>
-					<p>Person in charge not set yet.</p>
-                <?php endif; ?>
-			</div>
-		</div>
-		<div class="card shadow-none border bg-light-info">
-			<div class="card-body">
-				<div class = "mb-3">
-					<h4 class = "fw-semibold m-0">Dean</h4>
-				</div>
-                <?php if ($modelPoc2): ?>
-					<p class="mb-2 fw-light mb-1"><strong>name: </strong> <?= $modelPoc2->name ?></p>
-					<p class="mb-2 fw-light mb-1"><strong>kulliyyah: </strong> <?= $modelPoc2->kulliah ?></p>
-					<p class="mb-2 fw-light mb-1"><strong>Email: </strong> <a href="mailto:<?= $modelPoc2->email ?>"><?= $modelPoc2->email ?></a></p>
-                    <?php if ($model->note_kulliyyah):?>
-						<div class = "mt-3 mb-2">
-							<h5 class = "fw-semibold m-0">Reason of Rejection</h5>
-						</div>
-						<p class = "mb-2 fw-light mb-1"><strong><?= $model->note_kulliyyah ?></strong></p>
-                    <?php endif;?>
-                <?php else: ?>
-					<p>Dean not set yet.</p>
-                <?php endif; ?>
 			</div>
 		</div>
 	</div>
-</div>
-<div class="card shadow-none border ">
-	<div class="card-body">
-		<div class = "d-flex align-items-center header-info gap-1 mb-3">
-			<i class = "ti ti-books text-dark"></i>
-            <?php if ($model->Academic_lvl_edu !== 'PG') : ?>
-				<strong>
-					<h4 class = "fw-semibold m-0">Course Information</h4>
-				</strong>
-            <?php else: ?>
-				<strong>
-					<h4 class = "fw-semibold m-0">Research Information</h4>
-				</strong>
-            <?php endif; ?>
-		</div>
-        <?php if ($model->Academic_lvl_edu !== 'PG') : ?>
-			<div class = "row">
-				<div class = "col border-end">
-					<h4 class = "font-monospace text-center mb-4">Courses offered by the Host University</h4>
-					<table class = "table table-hover table-light">
-						<!-- Table headers -->
-						<thead>
-						<tr>
-							<th style = "width: 30%" class = "text-center font-monospace">Course Code</th>
-							<th style = "width: 40%" class = "text-center font-monospace">Course Name</th>
-							<th style = "width: 30%" class = "text-center font-monospace">Credit Hours</th>
-						</tr>
-						</thead>
-						<tbody>
-                        <?php foreach ($courses as $course) : ?>
-							<tr>
-								<td class = "text-center py-2 px-1"><?= $course->course_code ?></td>
-								<td class = "text-center py-2 px-1"><?= $course->course_name ?></td>
-								<td class = "text-center py-2 px-1"><?= $course->credit_hours ?></td>
-							</tr>
-                        <?php endforeach; ?>
-						</tbody>
-					</table>
-				</div>
-			</div>
-			<div>
-			</div>
-        <?php else: ?>
-			<div>
-				<p class = "mb-2 fw-light mb-1 text-dark"><strong>Academic Research:</strong> <?= $model->Research ?></p>
-			</div>
-        <?php endif; ?>
-	</div>
-</div>
-<div class = "d-flex flex-row justify-content-center mt-5 gap-2 ">
-    <?= Html::
-    a('<button type="button" class="btn btn-outline-dark">
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
-                                      <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
-                                  </svg>back</button>', Yii::$app->request->referrer) ?>
-    <?= Html::a('Action', ['action', 'ID' => $model->ID], ['class' => 'btn btn-secondary']) ?>
-    <?php if (Yii::$app->user->can('superAdmin')): ?>
-        <?= Html::a('Delete', ['delete', 'ID' => $model->ID], [
-            'class' => 'btn btn-danger', 'data' => [
-                'confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',
-            ],
-        ]) ?>
-        <?= Html::button('Update', [
-            'class' => 'btn btn-primary',
-            'onclick' => 'location.href='.Json::encode(Url::to(['update', 'ID' => $model->ID])),
-        ]) ?>
-    <?php endif; ?>
 </div>

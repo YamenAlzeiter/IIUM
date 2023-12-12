@@ -24,6 +24,17 @@ $(function () {
         updateModelId = null;
         $("#add-notes").data("update-model-id", updateModelId); // Update data attribute
     });
+    $("#action").on("click", function (event) {
+        // Set the form for creating a new record
+        $("#foraction").modal("show");
+        $("#btn-n-save").hide();
+        $("#btn-n-add").show();
+        $("#action-header").html('<i class="ti ti-file text-dark me-2 text-white"></i>Take an Action');
+        $("#action-button").html('<i class = "ti ti-plus"></i> Submit');
+        // Reset the updateModelId
+        updateModelId = null;
+        $("#add-notes").data("update-model-id", updateModelId); // Update data attribute
+    });
 
     $(".update-button").on("click", function (event) {
         // Set the form for updating an existing record

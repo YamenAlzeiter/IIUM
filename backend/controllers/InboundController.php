@@ -2,9 +2,13 @@
 
 namespace backend\controllers;
 
+use common\models\Courses;
+use common\models\EmailTemplate;
+use common\models\Iiumcourse;
 use common\models\Inbound;
 use backend\views\Inbound\inboundSearch;
 use common\models\Kcdio;
+use common\models\Outbound;
 use common\models\Poc;
 use common\models\Status;
 use Yii;
@@ -69,8 +73,25 @@ class InboundController extends Controller
      */
     public function actionView($ID)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($ID),
+        // Assuming you pass the student ID to the action
+        $student = Inbound::findOne($ID); // Retrieve the student based on the ID
+
+        if (!$student) {
+            throw new NotFoundHttpException('The requested student does not exist.');
+        }
+
+        $personInChargeId = $student->Kulliyyah;
+        $modelPoc1 = Poc::findOne(['id' => $personInChargeId]);
+
+        $deanId = $student->msd_cps;
+        $modelPoc2 = Poc::findOne(['id' => $deanId]);
+
+        $courses = Courses::find()->where(['student_id' => $student->ID])->all();
+        $iiumcourses = Iiumcourse::find()->where(['student_id' => $student->ID])->all();
+
+        return $this->render("view", [
+            "model" => $student, "modelPoc1" => $modelPoc1, "modelPoc2" => $modelPoc2, "courses" => $courses,
+            'iiumcourses' => $iiumcourses,
         ]);
     }
 
@@ -203,35 +224,33 @@ class InboundController extends Controller
                 }
             }
             if ($model->Status === 10) {
-                $status = 1;
-            } elseif ($model->Status === 11) {
-                $status = 21;
-            } elseif ($model->Status === 31) {
-                $status = 41;
-            } elseif ($model->Status === 51) {
-                $status = 61;
+                $status = 5;
+            } elseif ($model->Status === 15) {
+                $status = 25;
+            } elseif ($model->Status === 35) {
+                $status = 45;
+            } elseif ($model->Status === 55) {
+                $status = 65;
             }
 
-            if ($status === 1) {
+            if ($status === 5) {
                 $token = Yii::$app->security->generateRandomString(32);
                 $model->setAttribute('Kulliyyah', $selectedPersonId);
-                $path = '@backend/views/email/emailForwardToDepartment.php';
-                $subject = 'take a look';
-            } else {
-                if ($status === 21) {
-                    $token = Yii::$app->security->generateRandomString(32);
-                    $model->setAttribute('msd_cps', $selectedPersonId);
-                    $path = '@backend/views/email/emailForwardToDepartment.php';
-                    $subject = 'take a look';
-                } else {
-                    if ($status === 41 || $status === 61) {
-                        $subject = 'Congratulations';
-                        $path = '@backend/views/email/emailApprove.php';
-                        $selectedPersonInChargeName = $model->Name;
-                        $email = $model->Email_address;
-                        $token = null;
-                    }
-                }
+                $template = 1;
+            } elseif ($status === 25) {
+                $token = Yii::$app->security->generateRandomString(32);
+                $model->setAttribute('msd_cps', $selectedPersonId);
+                $template = 1;
+            } elseif ($status === 45) {
+                $token = null;
+                $selectedPersonInChargeName = $model->Name;
+                $template = 5;
+                $email = $model->Email;
+            } elseif ($status === 65) {
+                $token = null;
+                $selectedPersonInChargeName = $model->Name;
+                $template = 6;
+                $email = $model->Email;
             }
 
             $model->Token = $token;
@@ -239,39 +258,53 @@ class InboundController extends Controller
 
             $model->Status = $status;
             if ($model->save()) {
-                $this->sendEmailWithLink($model, $selectedPersonInChargeName, $email, $token, $path, $subject, $reason);
-
-//                $model->save();
+                $this->sendEmailWithLink($model, $selectedPersonInChargeName, $email, $token, $template, $reason);
                 return $this->redirect(["index"]);
             }
         }
     }
 
-    public function sendEmailWithLink($model, $name, $email, $token, $path, $subject, $reason)
+    public function sendEmailWithLink($model, $name, $email, $token, $templateId, $reason)
     {
 
         $recipientEmail = $email;
         $recipientName = $name;
         $viewLink = '';
-//1 for accept and 2 for reject
-        if ($model->Status === 1 || $model->Status === 2) {
+
+
+        $emailTemplate = EmailTemplate::findOne($templateId);
+        if (!$emailTemplate) {
+            // Handle the case where the template is not found
+            return;
+        }
+
+        // Replace placeholders in the template content
+        $body = $emailTemplate->body;
+
+
+        if ($model->Status === 5 || $model->Status === 6) {
             $viewLink = Yii::$app->urlManager->createAbsoluteUrl([
                 'kulliyyahworkflow/view', 'ID' => $model->ID, 'token' => $token
             ]);
             //21for accept and 2 for reject
-        } elseif ($model->Status === 21 || $model->Status === 22) {
+        } elseif ($model->Status === 25 || $model->Status === 26) {
             $viewLink = Yii::$app->urlManager->createAbsoluteUrl([
                 'higherworkflow/view', 'ID' => $model->ID, 'token' => $token
             ]);
-        } elseif ($model->Status === 41) {
+        } elseif ($model->Status === 45) {
             $viewLink = null;
         }
 
+        $body = str_replace('{recipientName}', $recipientName, $body);
+        $body = str_replace('{link}', $viewLink, $body);
+        $body = str_replace('{reason}', $reason, $body);
+
         Yii::$app->mailer->compose([
-            'html' => $path
+            'html' => '@backend/views/email/emailTemplate.php'
         ], [
-            'subject' => $subject, 'recipientName' => $recipientName, 'viewLink' => $viewLink, 'reason' => $reason
-        ])->setFrom(["noreply@example.com" => "My Application"])->setTo($recipientEmail)->setSubject($subject)->send();
+            'subject' => $emailTemplate->subject, 'recipientName' => $recipientName, 'viewLink' => $viewLink,
+            'reason' => $reason, 'body' => $body
+        ])->setFrom(["noreply@example.com" => "My Application"])->setTo($recipientEmail)->setSubject($emailTemplate->subject)->send();
     }
 
     /**
@@ -281,33 +314,45 @@ class InboundController extends Controller
     {
         $model = $this->findModel($ID);
         $name = $model->Name;
-        $email = $model->Email_address;
-        $path = '@backend/views/email/emailReject.php';
+        $email = $model->Email;
+
+        $templateId = 4;
+
         if ($this->request->isPost) {
             $status = intval($this->request->post("status"));
             $reason = $this->request->post("reason");
 
             $model->Status = $status;
             if ($model->save()) {
-                $this->sendEmailToApplicant($model, $name, $email, $reason, $path);
+                $this->sendEmailToApplicant($name, $email, $reason, $templateId);
                 return $this->redirect(["index"]);
             }
         }
     }
 
-    public function sendEmailToApplicant($model, $name, $email, $reason, $path)
+    public function sendEmailToApplicant($name, $email, $reason, $templateId)
     {
         $recipientEmail = $email;
         $recipientName = $name;
 
-        $subject = 'Rejection message';
+        $emailTemplate = EmailTemplate::findOne($templateId);
+        if (!$emailTemplate) {
+            // Handle the case where the template is not found
+            return;
+        }
+
+        // Replace placeholders in the template content
+        $body = $emailTemplate->body;
+
+        $body = str_replace('{recipientName}', $recipientName, $body);
+        $body = str_replace('{reason}', $reason, $body);
 
 
         Yii::$app->mailer->compose([
-            'html' => $path
+            'html' => '@backend/views/email/emailTemplate.php'
         ], [
-            'subject' => $subject, 'recipientName' => $recipientName, 'reason' => $reason
-        ])->setFrom(["noreply@example.com" => "My Application"])->setTo($recipientEmail)->setSubject($subject)->send();
+            'subject' => $emailTemplate->subject, 'recipientName' => $recipientName, 'reason' => $reason, 'body' => $body
+        ])->setFrom(["noreply@example.com" => "My Application"])->setTo($recipientEmail)->setSubject($emailTemplate->subject)->send();
 
     }
 
@@ -317,17 +362,19 @@ class InboundController extends Controller
         $name = $model->Name;
         $email = $model->Email;
         if ($model->Status === 10) {
-            $status = 3;
+            $status = 7;
         } elseif ($model->Status === 51) {
             $status = 41;
         }
         $path = '@backend/views/email/emailReject.php';
+        $templateId = 3;
+
         if ($this->request->isPost) {
             $reason = $this->request->post("reason");
 
             $model->Status = $status;
             if ($model->save()) {
-                $this->sendEmailToApplicant($model, $name, $email, $reason, $path);
+                $this->sendEmailToApplicant($name, $email, $reason, $templateId);
                 return $this->redirect(["index"]);
             }
         }
@@ -345,21 +392,22 @@ class InboundController extends Controller
         $model->Token = $token;
         $kulliyyah = $model->getAttribute('Kulliyyah');
         $msd_cps = $model->getAttribute('msd_cps');
+
         if ($this->request->isPost) {
             $reason = $this->request->post("reason");
-            if ($model->Status === 12) {
+            if ($model->Status === 16) {
                 $modelPoc = Poc::findOne(['id' => $kulliyyah]);
-                $model->Status = 1;
+                $model->Status = 5;
             } else {
-                if ($model->Status === 32) {
+                if ($model->Status === 36) {
                     $modelPoc = Poc::findOne(['id' => $msd_cps]);
-                    $model->Status = 21;
+                    $model->Status = 25;
                 }
             }
 
-            $path = '@backend/views/email/emailReconseder.php';
-            $subject = 'Reconsideration';
-            $this->sendEmailWithLink($model, $modelPoc->name, $modelPoc->email, $token, $path, $subject, $reason);
+            $templateId = 2;
+
+            $this->sendEmailWithLink($model, $modelPoc->name, $modelPoc->email, $token, $templateId, $reason);
         }
 
 
@@ -370,15 +418,15 @@ class InboundController extends Controller
 
     public function actionDownload($id, $file)
     {
-        $filePath = 'C:\xampp\htdocs\playground1\frontend\uploads/'.$file;
-        Yii::info("File Path: ".$filePath, "fileDownload");
+        $model = $this->findModel($id);
+
+        // Set the file path based on your file storage location
+        $filePath = 'C:\xampp\htdocs\IIUM_Inbound_Oubbound\frontend\uploads/'.$file;
 
         if (file_exists($filePath)) {
             Yii::$app->response->sendFile($filePath);
         } else {
-            Yii::$app->session->setFlash('error', 'The file does not exist.');
-
-            return $this->redirect(['view', 'ID' => $id]);
+            throw new NotFoundHttpException('The file does not exist.');
         }
     }
 }

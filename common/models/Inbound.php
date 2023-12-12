@@ -89,6 +89,8 @@ class Inbound extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
+
+
     public static function tableName()
     {
         return 'inbound';
@@ -103,7 +105,7 @@ class Inbound extends \yii\db\ActiveRecord
             [['Date_of_Birth', 'Passport_Expiration', 'Propose_duration_start', 'Propose_duration_end', 'Approval_date', 'Student_declaration_date', 'updated_at', 'created_at'], 'safe'],
             [['Academic_current_semester', 'Academic_current_year', 'Academic_current_result', 'Mou_or_Moa', 'English_native', 'Propose_type_of_mobility', 'Propose_transfer_credit_hours', 'Financial_accommodation_on_campus', 'Financial_funding_sponsor_amount', 'Student_declaration_agreement', 'Status', 'Kulliyyah', 'msd_cps'], 'default', 'value' => null],
             [['Academic_current_semester', 'Academic_current_year', 'Academic_current_result', 'Mou_or_Moa', 'English_native', 'Propose_type_of_mobility', 'Propose_transfer_credit_hours', 'Financial_accommodation_on_campus', 'Financial_funding_sponsor_amount', 'Student_declaration_agreement', 'Status', 'Kulliyyah', 'msd_cps'], 'integer'],
-            [['English_certificate', 'Recommendation_letter', 'Passport', 'Latest_passport_photo', 'Latest_certified_academic_transcript', 'Confirmation_letter', 'Sponsorship_letter', 'offer_letter'], 'file', 'extensions' => 'pdf, doc, docx'],
+            [['English_certificate', 'Recommendation_letter', 'Passport', 'Latest_passport_photo', 'Latest_certified_academic_transcript', 'Confirmation_letter', 'Sponsorship_letter', 'offer_letter'], 'file', 'extensions' => 'pdf'],
             [['Name', 'Permanent_Address', 'Emergency_relationship'], 'string', 'max' => 255],
             [['Gender'], 'string', 'max' => 1],
             [['Relation_ship', 'Postcode', 'Emergency_postCode'], 'string', 'max' => 10],

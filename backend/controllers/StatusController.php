@@ -51,11 +51,11 @@ class StatusController extends Controller
     {
         $model = new Status();
         $dataProvider = new ActiveDataProvider([
-            'query' => Status::find(),
+            'query' => Status::find()->orderBy(['ID' => SORT_ASC]),
         ]);
 
         $dataProvider->pagination = [
-            'pageSize' => 8,
+            'pageSize' => 12,
         ];
         if ($this->request->isPost && $model->load($this->request->post())) {
 
