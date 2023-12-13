@@ -66,7 +66,7 @@ class AdminLoginForm extends Model
     /**
      * Finds user by [[username]]
      *
-     * @return User|null
+     * @return Admin
      */
     protected function getUser()
     {

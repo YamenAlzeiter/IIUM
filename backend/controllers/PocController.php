@@ -6,6 +6,7 @@ use common\models\Kcdio;
 use common\models\Poc;
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -22,17 +23,17 @@ class PocController extends Controller
     public function behaviors()
     {
 
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
+        return [
+            'access' => [
+                'class' => AccessControl::class, 'rules' => [
+                    [
+                        'actions' => [
+                            'index', 'view', 'update', 'delete', 'create','get-record'
+                        ], 'allow' => true, 'roles' => ['@'],
                     ],
                 ],
-            ]
-        );
+            ], 'verbs' => ['class' => VerbFilter::class, 'actions' => ['delete' => ['POST']],],
+        ];
     }
 
     /**

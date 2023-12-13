@@ -32,7 +32,6 @@ class SiteController extends Controller
                         'actions' => ['signup', 'reset-password', 'request-password-reset', 'error', 'login', 'error'],
                         // Include 'request-password-reset'
                         'allow' => true,
-                        'roles' => ['?'], // Allow access for unauthenticated users
                     ],
 //                    [
 //                        'actions' => ['login', 'error'],
@@ -62,6 +61,7 @@ class SiteController extends Controller
         return [
             'error' => [
                 'class' => \yii\web\ErrorAction::class,
+                'layout' => 'blank'
             ],
         ];
     }

@@ -17,6 +17,7 @@ use yii\web\Response;
  */
 class StatusController extends Controller
 {
+
     /**
      * @inheritDoc
      */
@@ -27,9 +28,12 @@ class StatusController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index', 'view', 'update', 'delete','get-record'],
+                        'actions' => ['index', 'view', 'update', 'delete', 'get-record'],
                         'allow' => true,
                         'roles' => ['superAdmin'],
+                        'denyCallback' => function ($rule, $action) {
+                            throw new NotFoundHttpException('You are not allowed to perform asdffffadsffadsfdsfds action.');
+                        },
                     ],
                 ],
             ],
@@ -41,6 +45,8 @@ class StatusController extends Controller
             ],
         ];
     }
+
+
 
     /**
      * Lists all Ststus models.

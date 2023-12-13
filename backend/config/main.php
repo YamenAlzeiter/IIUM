@@ -21,6 +21,15 @@ return [
             'cookieValidationKey' => $uniqueKey,
             'csrfParam' => '_csrf-backend',
         ],
+        'as access' => [
+            'class' => 'yii\filters\AccessControl',
+            'rules' => [
+                [
+                    'allow' => true,
+                    'roles' => ['@'], // allow authenticated users
+                ],
+            ],
+        ],
         'user' => [
             'identityClass' => 'common\models\Admin',
             'enableAutoLogin' => true,
