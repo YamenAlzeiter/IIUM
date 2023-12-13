@@ -24,7 +24,6 @@
                     'template' => '<a href="{url}" class="sidebar-link">{label}</a>',
                     'label' => '<i class="ti ti-layout-dashboard"></i><span class="hide-menu">Dashboard</span>',
                     'url' => ['/site/index'],
-                    'visible' => Yii::$app->user->can('superAdmin'),
                     'options' => ['class' => 'sidebar-item'],
                 ], [
                     'template' => '<a href="{url}" class="sidebar-link">{label}</a>',
@@ -51,12 +50,14 @@
                 [
                     'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
                     'label' => '<i class="ti ti-status-change"></i><span class="hide-menu">Status</span>',
+                    'visible' => Yii::$app->user->can('superAdmin'),
                     'url' => ['/status/index'],
                     'options' => ['class' => 'sidebar-item'],
                 ],
                 [
                     'template' => '<a href="javascript:void(0)" class="sidebar-link has-arrow"  aria-expanded="false">{label}</a>',
                     'label' => '<i class="ti ti-mail-forward"></i><span class="hide-menu">Email Template</span>',
+                    'visible' => Yii::$app->user->can('superAdmin'),
                     'options' => ['class' => 'sidebar-item'],
                     'items' => [
                         [
@@ -102,6 +103,13 @@
                             'options' => ['class' => 'sidebar-item'],
                         ],
                     ],
+                ],
+                [
+                    'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
+                    'label' => '<i class="ti ti-user-plus"></i><span class="hide-menu">Create New Staff</span>',
+                    'visible' => Yii::$app->user->can('superAdmin'),
+                    'url' => ['/user/index'],
+                    'options' => ['class' => 'sidebar-item'],
                 ],
 
             ],

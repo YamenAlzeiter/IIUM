@@ -1,5 +1,6 @@
 <?php
 
+use yii\bootstrap5\ActiveForm;
 use yii\grid\GridView;
 use yii\helpers\Html;
 
@@ -19,28 +20,25 @@ use yii\helpers\Html;
 
             [
                 'label' => 'Actions',
-                'contentOptions' => ['class' => 'col-2'], // Set the width for this column
-                'headerOptions' => ['class' => 'text-primary'],
+                'contentOptions' => ['class' => 'action-column color-primary'],
+                'headerOptions' => ['class' => 'text-dark'],
                 'format' => 'raw',
                 'value' => function ($model) {
-                    $userId = $model->id;
-                    $isUserOne = ($userId === 1);
-
-                    $viewButton = Html::a('View', ['view', 'id' => $model->id], ['class' => 'btn btn-info']);
-
-                    if ($isUserOne) {
-                        return $viewButton;
-                    }
-
-                    $deleteButton = Html::a('Delete', ['delete', 'id' => $model->id], [
-                        'class' => 'btn btn-danger',
+                    $updateButton = Html::a('<i class="ti ti-eye fs-5"></i>', 'javascript:void(0)', [
+                        'class' => 'text-info edit update-button mx-2',
+                        'data-id' => $model->id,
+                        'data-toggle' => 'modal',
+                        'data-target' => '#formpoc',
+                    ]);
+                    $deleteButton = Html::a('<i class="ti ti-trash fs-5"></i>', ['delete', 'id' => $model->id], [
+                        'class' => 'text-danger edit mx-2',
                         'data' => [
                             'confirm' => 'Are you sure you want to delete this item?',
                             'method' => 'post',
                         ],
                     ]);
 
-                    return $viewButton . ' ' . $deleteButton;
+                    return $updateButton . ' ' . $deleteButton;
                 },
             ],
         ],
@@ -50,3 +48,50 @@ use yii\helpers\Html;
 	</p>
 
 </div>
+
+<div class="mt-3 px-4 d-flex flex-row gap-2">
+	<a href="javascript:void(0)" class="btn btn-outline-dark d-flex align-items-center px-3" id="add-notes">
+		<i class="ti ti-file me-0 me-md-1 fs-4"></i>
+		<span class="d-none d-md-block font-weight-medium fs-3">Create New Record</span>
+	</a>
+</div>
+<!-- Modal Add notes -->
+<div class="modal fade" id="formpoc" tabindex="-1" role="dialog" aria-labelledby="formpoc" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content border-0">
+			<div class="modal-header bg-dark">
+				<h6 id="formpoc-header" class="text-white mb-0"></h6>
+
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+				        aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="form-box">
+					<div class="form-content">
+                        <?php $form = ActiveForm::begin(['options' => ['id' => 'myForm']]); ?>
+
+						<div class="mb-3">
+                            <?= $form->field($model, 'username')->textInput(['maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'Username'])->label(false) ?>
+						</div>
+
+						<div class="row align-items-center">
+							<div class="col-md-4 mb-3">
+                                <?= $form->field($model, 'matric_number')->textInput(['maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'Matric Number'])->label(false) ?>
+							</div>
+							<div class="col-md-4 mb-3">
+                                <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'email'])->label(false) ?>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<div class="form-group">
+                    <?= Html::submitButton('',['class' => 'btn btn-outline-dark px-4 py-2', 'name' => 'save-button', 'id'=>'formpoc-button'])?>
+				</div>
+			</div>
+            <?php ActiveForm::end(); ?>
+		</div>
+	</div>
+</div>
+

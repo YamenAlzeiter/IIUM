@@ -5,12 +5,16 @@ namespace backend\controllers;
 use backend\models\SignupForm;
 use backend\models\UserAdmin;
 use common\models\Admin;
+use common\models\Kcdio;
+use common\models\Poc;
+use common\models\User;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * UserController implements the CRUD actions for UserAdmin model.
@@ -27,7 +31,7 @@ class UserController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index', 'view', 'create', 'update', 'delete'],
+                        'actions' => ['index', 'view', 'create', 'update', 'delete','get-record'],
                         'allow' => true,
                         'roles' => ['superAdmin'],
                     ],
@@ -49,22 +53,21 @@ class UserController extends Controller
      */
     public function actionIndex()
     {
+        $model = new UserAdmin();
         $dataProvider = new ActiveDataProvider([
             'query' => UserAdmin::find(),
-            /*
-            'pagination' => [
-                'pageSize' => 50
-            ],
-            'sort' => [
-                'defaultOrder' => [
-                    'id' => SORT_DESC,
-                ]
-            ],
-            */
         ]);
+
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            if ($model->save()) {
+                // Redirect to the view page after successful creation
+                return $this->redirect(['index']);
+            }
+        }
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
+            'model' => $model,
         ]);
     }
 
@@ -76,34 +79,53 @@ class UserController extends Controller
      */
     public function actionView($id)
     {
+        $model = UserAdmin::findOne($id);
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
         ]);
     }
-
     /**
      * Creates a new UserAdmin model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
+//    public function actionCreate()
+//    {
+//        $model = new SignupForm(); // Create a form model for user registration
+//        $user = new Admin();
+//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+//            // Handle successful creation
+//
+//            $password = 'admin'; // Set the initial password
+//
+//
+//            $user->username = $model->username;
+//            $user->email = $model->email;
+//            $user->matric_number = $model->matric_number;
+//
+//            $user->setPassword($password); // Set the password for the Admin model
+//            $user->generateAuthKey(); // Generate an authentication key
+//
+//            return $this->redirect(['index']);
+//        }
+//
+//
+//        return $this->render('create', [
+//            'model' => $model,
+//        ]);
+//    }
+
     public function actionCreate()
     {
-        $model = new SignupForm(); // Create a form model for user registration
-        $user = new Admin();
+        $model = new UserAdmin();
+
         if ($model->load(Yii::$app->request->post())) {
-            $password = 'admin'; // Set the initial password
-
-
-            $user->username = $model->username;
-            $user->email = $model->email;
-            $user->matric_number = $model->matric_number;
-
-            $user->setPassword($password); // Set the password for the Admin model
-            $user->generateAuthKey(); // Generate an authentication key
-
-            if ($user->save()) {
-                Yii::$app->session->setFlash('success', 'Admin user created successfully.');
-                return $this->redirect(["view", "id" => $user->id]);
+            // Handle successful creation
+            $model->status = 10;
+            $model->password_hash = Yii::$app->security->generatePasswordHash('admin');
+            if($model->save()){
+                return $this->redirect(['index']);
             }
         }
 
@@ -111,6 +133,7 @@ class UserController extends Controller
             'model' => $model,
         ]);
     }
+
 
 
 
@@ -124,15 +147,29 @@ class UserController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model = UserAdmin::findOne($id);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            // Handle successful update
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [
             'model' => $model,
         ]);
+    }
+
+    public function actionGetRecord($id)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $model = UserAdmin::findOne($id);
+
+        return [
+            'username' => $model->username,
+            'matric_number' => $model->matric_number,
+            'email' => $model->email,
+        ];
     }
 
     /**
