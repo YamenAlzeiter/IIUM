@@ -2,10 +2,15 @@
 
 namespace backend\controllers;
 
-use common\models\LoginForm;
+use backend\models\PasswordResetRequestForm;
+use backend\models\ResetPasswordForm;
+use backend\models\SignupForm;
+use common\models\AdminLoginForm;
 use Yii;
-use yii\filters\VerbFilter;
+use yii\base\InvalidArgumentException;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\Response;
 
@@ -24,15 +29,15 @@ class SiteController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['signup', 'reset-password', 'request-password-reset', 'error', 'login'],
+                        'actions' => ['signup', 'reset-password', 'request-password-reset', 'error', 'login', 'error'],
                         // Include 'request-password-reset'
                         'allow' => true,
                         'roles' => ['?'], // Allow access for unauthenticated users
                     ],
-                    [
-                        'actions' => [ 'error'],
-                        'allow' => true,
-                    ],
+//                    [
+//                        'actions' => ['login', 'error'],
+//                        'allow' => true,
+//                    ],
                     [
                         'actions' => ['logout', 'index'],
                         'allow' => true,
@@ -49,7 +54,6 @@ class SiteController extends Controller
         ];
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -58,7 +62,6 @@ class SiteController extends Controller
         return [
             'error' => [
                 'class' => \yii\web\ErrorAction::class,
-                'layout' => 'blank'
             ],
         ];
     }
@@ -73,6 +76,7 @@ class SiteController extends Controller
         return $this->render('index');
     }
 
+
     /**
      * Login action.
      *
@@ -86,9 +90,9 @@ class SiteController extends Controller
 
         $this->layout = 'blank';
 
-        $model = new LoginForm();
+        $model = new AdminLoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            return $this->goHome();
         }
 
         $model->password = '';
@@ -110,6 +114,54 @@ class SiteController extends Controller
         return $this->goHome();
     }
 
+    public function actionRequestPasswordReset()
+    {
+        $this->layout = 'blank';
+        $model = new PasswordResetRequestForm();
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            if ($model->sendEmail()) {
+                Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
+
+                return $this->redirect(['site/login']);
+            }
+
+            Yii::$app->session->setFlash('error',
+                'Sorry, we are unable to reset password for the provided email address.');
+        }
+
+        return $this->render('requestPasswordResetToken', [
+            'model' => $model,
+        ]);
+    }
+
+    public function actionResetPassword($token)
+    {
+        try {
+            $model = new ResetPasswordForm($token);
+        } catch (InvalidArgumentException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
+            Yii::$app->session->setFlash('success', 'New password saved.');
+
+            return $this->goHome();
+        }
+
+        return $this->render('resetPassword', [
+            'model' => $model,
+        ]);
+    }
+
+    public function actionSignup()
+    {
+        $model = new SignupForm();
+        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
+            return $this->goHome();
+        }
+
+        return $this->render('signup', [
+            'model' => $model,
+        ]);
+    }
 }
-
-

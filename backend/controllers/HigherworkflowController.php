@@ -119,4 +119,23 @@ class HigherworkflowController extends \yii\web\Controller
             }
         }
     }
+    public function actionViewFile($ID, $fileName, $token)
+    {
+        $model = $this->findModel($ID);
+
+        // Check if the provided token is valid
+        if (!$this->isValidToken($ID, $token)) {
+            throw new ForbiddenHttpException('You are not authorized to access this file.');
+        }
+
+        $filePath = 'C:/xampp/htdocs/IIUM_Inbound_Oubbound/frontend/uploads/' . $fileName;
+
+        if (file_exists($filePath)) {
+            Yii::$app->response->sendFile($filePath)->send();
+        } else {
+            throw new NotFoundHttpException('The requested file does not exist.');
+        }
+    }
+
+
 }

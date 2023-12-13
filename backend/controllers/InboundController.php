@@ -245,12 +245,12 @@ class InboundController extends Controller
                 $token = null;
                 $selectedPersonInChargeName = $model->Name;
                 $template = 5;
-                $email = $model->Email;
+                $email = $model->Email_address;
             } elseif ($status === 65) {
                 $token = null;
                 $selectedPersonInChargeName = $model->Name;
                 $template = 6;
-                $email = $model->Email;
+                $email = $model->Email_address;
             }
 
             $model->Token = $token;
