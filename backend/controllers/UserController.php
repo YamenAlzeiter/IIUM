@@ -54,6 +54,7 @@ class UserController extends Controller
     public function actionIndex()
     {
         $model = new UserAdmin();
+        $user = new Admin();
         $dataProvider = new ActiveDataProvider([
             'query' => UserAdmin::find(),
         ]);
@@ -64,6 +65,23 @@ class UserController extends Controller
                 return $this->redirect(['index']);
             }
         }
+        if ($model->load(Yii::$app->request->post())) {
+            // Handle successful creation
+
+            $password = 'admin'; // Set the initial password
+
+
+            $user->username = $model->username;
+            $user->email = $model->email;
+            $user->matric_number = $model->matric_number;
+
+            $user->setPassword($password); // Set the password for the Admin model
+            $user->generateAuthKey(); // Generate an authentication key
+            if ($user->save()) {
+                return $this->redirect(['index']);
+            }
+        }
+
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
@@ -116,23 +134,7 @@ class UserController extends Controller
 //        ]);
 //    }
 
-    public function actionCreate()
-    {
-        $model = new UserAdmin();
 
-        if ($model->load(Yii::$app->request->post())) {
-            // Handle successful creation
-            $model->status = 10;
-            $model->password_hash = Yii::$app->security->generatePasswordHash('admin');
-            if($model->save()){
-                return $this->redirect(['index']);
-            }
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
-    }
 
 
 

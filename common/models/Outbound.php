@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 
+
 /**
  * This is the model class for table "outbound".
  *
@@ -227,4 +228,29 @@ class Outbound extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Iiumcourse::class, ['student_id' => 'ID']);
     }
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+
+        if (!$insert && isset($changedAttributes['Status'])) {
+            // Log the status change
+            $this->createStatusLog($changedAttributes['Status'], $this->Status);
+        }
+    }
+
+    /**
+     * Create a log entry for status change.
+     *
+     * @param int $oldStatus
+     * @param int $newStatus
+     */
+    protected function createStatusLog($oldStatus, $newStatus)
+    {
+        $log = new Log();
+        $log->outbound_id = $this->ID;
+        $log->old_status = $oldStatus;
+        $log->new_status = $newStatus;
+        $log->save();
+    }
 }
+

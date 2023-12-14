@@ -205,4 +205,28 @@ class Inbound extends \yii\db\ActiveRecord
             'reference_number' => 'Reference Number',
         ];
     }
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+
+        if (!$insert && isset($changedAttributes['Status'])) {
+            // Log the status change
+            $this->createStatusLog($changedAttributes['Status'], $this->Status);
+        }
+    }
+
+    /**
+     * Create a log entry for status change.
+     *
+     * @param int $oldStatus
+     * @param int $newStatus
+     */
+    protected function createStatusLog($oldStatus, $newStatus)
+    {
+        $log = new Inlog();
+        $log->outbound_id = $this->ID;
+        $log->old_status = $oldStatus;
+        $log->new_status = $newStatus;
+        $log->save();
+    }
 }

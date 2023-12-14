@@ -28,6 +28,7 @@ class m231126_042322_create_iiumcourses_table extends Migration
             'ID', // Target column
             'CASCADE' // Optional: Define the ON DELETE behavior (e.g., CASCADE, SET NULL)
         );
+
     }
 
     /**

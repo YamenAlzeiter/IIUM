@@ -43,6 +43,92 @@ function getStatusMeaning($status)
             return 'Unknown Status';
     }
 }
+function getStatusFrom($status)
+{
+    //to do change into table
+    switch ($status) {
+//        base application status
+        case 10:
+        case 51:
+        case 55:
+            return 'Student';
+
+//        initial status (IO)
+        case 1:
+        case 2:
+        case 3:
+        case 5:
+        case 6:
+        case 7:
+        case 21:
+        case 25:
+        case 41:
+        case 45:
+        case 61:
+        case 65:
+            return 'International Office';
+
+//         after HOD status
+        case 11:
+        case 12:
+            return 'HOD';
+
+        case 15:
+        case 16:
+            return 'Kulliyyah';
+//         after dean status
+        case 31:
+        case 32:
+            return 'Dean';
+
+        case 35:
+        case 36:
+            return 'AMAD/CPS';
+        default:
+
+            return 'Unknown Status';
+    }
+}
+
+
+function getStatusTo($status)
+{
+    //to do change into table
+    switch ($status) {
+//        base application status
+        case 10:
+        case 11:
+        case 12:
+        case 15:
+        case 16:
+        case 31:
+        case 32:
+        case 35:
+        case 36:
+        case 51:
+        case 55:
+            return 'International Office';
+
+
+
+        case 1: return 'HOD';
+        case 5: return 'Kulliyyah';
+
+        case 21: return 'Dean';
+        case 25: return 'AMAD/CPS';
+
+        case 2:
+        case 3:
+        case 6:
+        case 7:
+        case 41:
+        case 61:
+            return 'Student';
+
+        default:
+            return 'Unknown Status';
+    }
+}
 
 function getAnswer($choice){
 if ($choice !== null){

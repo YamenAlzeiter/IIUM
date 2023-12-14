@@ -5,15 +5,23 @@ $(function () {
         window.location.protocol + "//" + window.location.host + "/",
         ""
     );
-    var controller = path.split("/")[0]; // Get the controller part of the URL
-    console.log(controller);
-
+    var controller = path.split("/"); // Get the controller part of the URL
+    if (controller[0] !== "email-tamplate") {
+        // Remove the last element if it's "index"
+        controller.pop();
+    }else if(controller[0] === "email-tamplate"){
+        controller[1] = controller[1].split("?")[1];
+    }
+    console.log(controller)
     // Check if the controller is not empty before selecting and activating
-    if (controller !== "") {
+    if (controller.length > 0) {
         var element = $("ul#sidebarnav a").filter(function () {
             var href = this.href;
-            // Check if the URL or controller matches
-            return href === url || href.indexOf(controller) !== -1;
+            // Check if each element in the controller is included in the href
+            var isMatch = controller.every(function (item) {
+                return href.includes(item);
+            });
+            return href === url || isMatch;
         });
 
         element.parentsUntil(".sidebar-nav").each(function (index) {
@@ -48,7 +56,5 @@ $(function () {
         }
     });
 
-    $("#sidebarnav >li >a.has-arrow").on("click", function (e) {
-        e.preventDefault();
-    });
+
 });

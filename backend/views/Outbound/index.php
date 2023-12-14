@@ -84,7 +84,10 @@ require Yii::getAlias('@common') . '/Helpers/helper.php';
                     'label' => 'Actions',
                     'format' => 'raw',
                     'value' => function ($model) {
-                        return '<div class="">' . Html::a('View', ['view', 'ID' => $model->ID], ['class' => 'btn btn-info']) . ' ' . Html::a('Action', ['action', 'ID' => $model->ID], ['class' => 'btn btn-dark']) . '</div>';
+                        return '<div class="">'
+	                        .Html::a('View', ['view', 'ID' => $model->ID], ['class' => 'btn btn-info']).' '
+	                        .Html::a('Action', ['action', 'ID' => $model->ID], ['class' => 'btn btn-dark']).' '
+	                        .Html::a('Log', ['log', 'ID' => $model->ID], ['class' => 'btn btn-warning']).'</div>';
                     },
                     'contentOptions' => ['class' => 'col-1'],
                 ],

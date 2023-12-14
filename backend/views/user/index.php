@@ -6,6 +6,7 @@ use yii\helpers\Html;
 
 /** @var yii\web\View $this */
 /** @var yii\data\ActiveDataProvider $dataProvider */
+/** @var backend\models\UserAdmin $model */
 
 
 ?>
@@ -25,7 +26,7 @@ use yii\helpers\Html;
                 'format' => 'raw',
                 'value' => function ($model) {
                     $updateButton = Html::a('<i class="ti ti-eye fs-5"></i>', 'javascript:void(0)', [
-                        'class' => 'text-info edit update-button mx-2',
+                        'class' => 'text-info edit updateuser-button mx-2',
                         'data-id' => $model->id,
                         'data-toggle' => 'modal',
                         'data-target' => '#formpoc',
@@ -43,9 +44,7 @@ use yii\helpers\Html;
             ],
         ],
     ]); ?>
-	<p>
-        <?= Html::a('Create New Admin', ['create'], ['class' => 'btn btn-outline-dark mt-3 px-4']) ?>
-	</p>
+
 
 </div>
 

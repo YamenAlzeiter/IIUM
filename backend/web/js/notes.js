@@ -100,6 +100,36 @@ $(function () {
         $("#add-notes").data("update-model-id", updateModelId); // Update data attribute
     });
 
+    $(".updateuser-button").on("click", function (event) {
+        // Set the form for updating an existing record
+        var recordId = $(this).data("id");
+        $("#formpoc").modal("show");
+        $("#formpoc form").attr("action", "/user/update?id=" + recordId); // Adjust the action URL
+        $("#btn-n-save").show();
+        $("#btn-n-add").hide();
+        $("#formpoc-header").html('<i class="ti ti-eye text-dark me-2 text-white"></i>Update Record');
+        $("#formpoc-button").html('<i class = "ti ti-pencil"></i> Update');
+        // Retrieve and populate existing record data
+        $.ajax({
+            url: "/user/get-record", // Add a new action to retrieve record data
+            method: "GET",
+            data: { id: recordId },
+            success: function (data) {
+                // Assuming data is in JSON format
+                $("#useradmin-username").val(data.username);
+                $("#useradmin-matric_number").val(data.matric_number);
+                $("#useradmin-email").val(data.email);
+            },
+            error: function () {
+                // Handle error if needed
+            }
+        });
+
+        // Set the updateModelId
+        updateModelId = recordId;
+        $("#add-notes").data("update-model-id", updateModelId); // Update data attribute
+    });
+
     $("#btn-n-add").attr("disabled", false); // Enable the button
 });
 

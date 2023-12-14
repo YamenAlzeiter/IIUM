@@ -7,6 +7,7 @@ use common\models\Courses;
 use common\models\EmailTemplate;
 use common\models\Iiumcourse;
 use common\models\Kcdio;
+use common\models\Log;
 use common\models\Outbound;
 use common\models\Poc;
 use common\models\Status;
@@ -14,6 +15,7 @@ use Throwable;
 use Yii;
 use yii\base\Exception;
 
+use yii\data\ActiveDataProvider;
 use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -37,7 +39,7 @@ class OutboundController extends Controller
                     [
                         'actions' => [
                             'index', 'view', 'update', 'delete', 'action', 'create', 'search', 'accept', 'reject',
-                            'load-people', 'dean-approval', 'resend', 'download', 'complete'
+                            'load-people', 'dean-approval', 'resend', 'download', 'complete','log'
                         ], 'allow' => true, 'roles' => ['@'],
                     ],
                 ],
@@ -59,6 +61,23 @@ class OutboundController extends Controller
 
         return $this->render("index",
             ['searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'status' => $statusModel]);
+    }
+
+    public function actionLog($ID)
+    {
+        $logsDataProvider = new ActiveDataProvider([
+            'query' => Log::find()->where(['outbound_id' => $ID]),
+            'pagination' => [
+                'pageSize' => 20, // Adjust the page size as needed
+            ],
+            'sort' => [
+                'defaultOrder' => ['created_at' => SORT_DESC], // Display logs by creation time in descending order
+            ],
+        ]);
+
+        return $this->render('log', [
+            'logsDataProvider' => $logsDataProvider,
+        ]);
     }
 
     public function actionView($ID)

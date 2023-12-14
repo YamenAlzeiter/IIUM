@@ -7,12 +7,15 @@ use common\models\EmailTemplate;
 use common\models\Iiumcourse;
 use common\models\Inbound;
 use backend\views\Inbound\inboundSearch;
+use common\models\Inlog;
 use common\models\Kcdio;
+use common\models\Log;
 use common\models\Outbound;
 use common\models\Poc;
 use common\models\Status;
 use Yii;
 use yii\base\Exception;
+use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -35,7 +38,7 @@ class InboundController extends Controller
                     [
                         'actions' => [
                             'index', 'view', 'update', 'delete', 'action', 'create', 'search', 'accept', 'reject',
-                            'load-people', 'dean-approval', 'resend', 'download', 'complete'
+                            'load-people', 'dean-approval', 'resend', 'download', 'complete', 'log'
                         ], 'allow' => true, 'roles' => ['@'],
                     ],
                 ],
@@ -63,6 +66,23 @@ class InboundController extends Controller
         return $this->render("index",
             ['searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'status' => $statusModel]);
     }
+    public function actionLog($ID)
+    {
+        $logsDataProvider = new ActiveDataProvider([
+            'query' => Inlog::find()->where(['outbound_id' => $ID]),
+            'pagination' => [
+                'pageSize' => 20, // Adjust the page size as needed
+            ],
+            'sort' => [
+                'defaultOrder' => ['created_at' => SORT_DESC], // Display logs by creation time in descending order
+            ],
+        ]);
+
+        return $this->render('log', [
+            'logsDataProvider' => $logsDataProvider,
+        ]);
+    }
+
 
 
     /**
