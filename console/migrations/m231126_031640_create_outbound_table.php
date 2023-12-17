@@ -57,7 +57,7 @@ class m231126_031640_create_outbound_table extends Migration
             'Academic_kulliyyah_others' => $this ->  string(512),
             'Academic_current_semester' =>$this -> integer(1),
             'Academic_current_year' => $this -> integer(1),
-            'Academic_name_of_programme ' => $this ->  string(512),
+            'Academic_name_of_programme' => $this ->  string(512),
             'Academic_cgpa' => $this -> float(4),
             'Research' => $this -> string(512),
 

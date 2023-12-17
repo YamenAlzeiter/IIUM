@@ -12,7 +12,7 @@ class m231204_025430_create_host_email_column extends Migration
      */
     public function safeUp()
     {
-        $this->addColumn('{{%outbound}}', 'Connect_host_email', $this->string(512));
+        $this->addColumn('{{%outbound}}', 'token', $this->string(512));
     }
 
     /**
