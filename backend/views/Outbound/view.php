@@ -20,17 +20,14 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
         <?php
         $statusModel = Status::findOne(['ID' => $model->Status]);
         $iconClass = getStatusIconClass($model->Status); // Implement your own logic to get the icon class based on status
-
-        echo Html::tag('i', '', [
-            'class' => 'ti ti-circle '.$iconClass,
+        $statusClass = getStatusClass($model->Status);
+        echo Html::tag('span', '', [
+            'class' => ''.$iconClass,
+        ]);
+        echo Html::tag('p',($statusModel = Status::findOne(['ID' => $model->Status])) ? $statusModel->description : '', [
+            'class' => ' fw-semibold m-0 '.$statusClass, 'id' => 'status-badge',
         ]);
         ?>
-		<p class = "fw-light mb-0 align-items-end">
-            <?= Html::tag('span',
-                ($statusModel = Status::findOne(['ID' => $model->Status])) ? $statusModel->description : '', [
-                    'class' => 'rounded-3 fw-semibold m-0', 'id' => 'status-badge',
-                ]) ?>
-		</p>
 	</div>
 </div>
 <div class = "row">

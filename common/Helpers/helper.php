@@ -1,4 +1,8 @@
 <?php
+
+use common\models\Poc;
+use common\models\Kcdio;
+
 function getStatusMeaning($status)
 {
     //to do change into table
@@ -170,10 +174,31 @@ function getStatusBadgeClass($status)
 }
 function getStatusIconClass($status){
     if ($status == 2 || $status == 12 || $status == 22 || $status == 32 || $status == 42) {
-        return 'text-danger';
+        return 'round-8 text-bg-danger rounded-circle d-inline-block ';
     } elseif ($status == 61) {
-        return 'text-success';
+        return 'round-8 text-bg-success rounded-circle d-inline-block';
     } else {
-        return 'text-warning';
+        return 'round-8 text-bg-warning rounded-circle d-inline-block';
+    }
+}
+
+function getStatusClass($status){
+    if ($status == 2 || $status == 12 || $status == 22 || $status == 32 || $status == 42) {
+        return 'text-danger fw-semibold fs-3';
+    } elseif ($status == 61) {
+        return 'text-success fw-semibold fs-3';
+    } else {
+        return 'text-warning fw-semibold fs-3';
+    }
+}
+function getCount($modelName)
+{
+    switch ($modelName) {
+        case 'Kcdio':
+            return Kcdio::find()->count();
+        case 'Pos':
+            return Poc::find()->count() * 10; // Modify the count logic here as needed
+        default:
+            return 0; // Or handle other cases accordingly
     }
 }

@@ -70,13 +70,16 @@ require Yii::getAlias('@common') . '/Helpers/helper.php';
 
                         if (in_array($model->Status, [2, 12, 22, 32, 42])) {
                             $class = 'badge bg-danger-subtle text-danger fw-semibold fs-3';
+                            $classSpan = 'round-8 text-bg-danger rounded-circle d-inline-block me-1';
                         } elseif ($model->Status == 61) {
                             $class = 'badge bg-success-subtle text-success fw-semibold fs-3';
+                            $classSpan = 'round-8 text-bg-success rounded-circle d-inline-block me-1';
                         } else {
                             $class = 'badge bg-warning-subtle text-warning fw-semibold fs-3';
+                            $classSpan = 'round-8 text-bg-warning rounded-circle d-inline-block me-1';
                         }
 
-                        return '<div class="' . $class . '">' . $statusMeaning . '</div>';
+                        return '<div class="' . $class . '"><span class="' . $classSpan . '"></span>' . $statusMeaning . '</div>';
                     },
                     'contentOptions' => ['class' => 'col-1'],
                 ],
