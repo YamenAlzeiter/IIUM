@@ -27,7 +27,7 @@ $this->title = 'Status';
                 'headerOptions' => ['class' => 'text-dark'],
                 'format' => 'raw',
                 'value' => function ($model) {
-                    $updateButton = Html::a('<i class="ti ti-pencil-minus fs-5"></i>', 'javascript:void(0)', [
+                    $updateButton = Html::a('<i class="ti ti-pencil-minus fs-7"></i>', 'javascript:void(0)', [
                         'class' => 'text-info edit updateStatus-button',
                         'data-id' => $model->ID,
                         'data-toggle' => 'modal',

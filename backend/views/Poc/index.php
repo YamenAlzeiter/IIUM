@@ -32,14 +32,14 @@ $this->title = 'Person In Charge';
             'headerOptions' => ['class' => 'text-dark'],
             'format' => 'raw',
             'value' => function ($model) {
-                $updateButton = Html::a('<i class="ti ti-pencil-minus fs-5"></i>', 'javascript:void(0)', [
+                $updateButton = Html::a('<i class="ti ti-pencil-minus fs-7"></i>', 'javascript:void(0)', [
                     'class' => 'text-dark-emphasis edit update-button mx-1',
                     'data-id' => $model->id,
                     'data-toggle' => 'modal',
                     'title' => 'View', // Tooltip for the 'View' action
                     'data-target' => '#formpoc',
                 ]);
-                $deleteButton = Html::a('<i class="ti ti-trash fs-5"></i>', ['delete', 'id' => $model->id], [
+                $deleteButton = Html::a('<i class="ti ti-trash fs-7"></i>', ['delete', 'id' => $model->id], [
                     'class' => 'text-danger edit mx-1',
                     'data-toggle' => 'tooltip',
                     'title' => 'Delete', // Tooltip for the 'View' action

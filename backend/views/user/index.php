@@ -25,14 +25,14 @@ use yii\helpers\Html;
                 'headerOptions' => ['class' => 'text-dark'],
                 'format' => 'raw',
                 'value' => function ($model) {
-                    $updateButton = Html::a('<i class="ti ti-pencil-minus fs-5"></i>', 'javascript:void(0)', [
+                    $updateButton = Html::a('<i class="ti ti-pencil-minus fs-7"></i>', 'javascript:void(0)', [
                         'class' => 'text-info edit updateuser-button mx-1',
                         'data-id' => $model->id,
                         'data-toggle' => 'modal',
                         'data-target' => '#formpoc',
                         'title' => 'View/ Update', // Tooltip for the 'View' action
                     ]);
-                    $deleteButton = Html::a('<i class="ti ti-trash fs-5"></i>', ['delete', 'id' => $model->id], [
+                    $deleteButton = Html::a('<i class="ti ti-trash fs-7"></i>', ['delete', 'id' => $model->id], [
                         'class' => 'text-danger edit mx-1',
                         'data-toggle' => 'tooltip',
                         'title' => 'Delete', // Tooltip for the 'View' action
