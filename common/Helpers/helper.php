@@ -1,5 +1,7 @@
 <?php
 
+use common\models\Inbound;
+use common\models\Outbound;
 use common\models\Poc;
 use common\models\Kcdio;
 
@@ -191,13 +193,26 @@ function getStatusClass($status){
         return 'text-warning fw-semibold fs-3';
     }
 }
-function getCount($modelName)
+function getCount($countType)
 {
-    switch ($modelName) {
-        case 'Kcdio':
-            return Kcdio::find()->count();
-        case 'Pos':
-            return Poc::find()->count() * 10; // Modify the count logic here as needed
+    switch ($countType) {
+        case 'Total':
+            return Outbound::find()->where(['not', ['Status' => null]])->count();
+
+        case 'Accepted':
+            return Outbound::find()->where(['Status' => [61, 62]])->count();
+        case 'Rejected':
+            return Outbound::find()->where(['Status' => [2, 12, 22, 32, 42, 52, 6, 16, 26, 36, 46, 56]])->count();
+        case 'Process':
+            return Outbound::find()->where(['Status' => [1, 10, 11, 21, 31, 41, 51, 5, 15, 25, 35, 45, 55, 65]])->count();
+        case 'TotalI':
+            return Inbound::find()->where(['not', ['Status' => null]])->count();
+        case 'AcceptedI':
+            return Inbound::find()->where(['Status' => [61, 65]])->count();
+        case 'RejectedI':
+            return Inbound::find()->where(['Status' => [6, 16, 26, 36, 46, 56]])->count();
+        case 'ProcessI':
+            return Inbound::find()->where(['Status' => [10, 5, 15, 25, 35, 45, 55, 65]])->count();
         default:
             return 0; // Or handle other cases accordingly
     }

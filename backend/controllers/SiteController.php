@@ -8,6 +8,7 @@ use backend\models\SignupForm;
 use common\models\AdminLoginForm;
 use Yii;
 use yii\base\InvalidArgumentException;
+use yii\db\Expression;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\BadRequestHttpException;
@@ -73,8 +74,71 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $months = $this->getMonthNames();
+        $counts = $this->getMonthlyCounts();
+
+        $maleCount = $this->getGenderCount('M');
+        $femaleCount = $this->getGenderCount('F');
+
+        return $this->render('index', [
+            'months' => json_encode($months),
+            'counts' => json_encode($counts),
+            'maleCount' => $maleCount,
+            'femaleCount' => $femaleCount,
+        ]);
     }
+
+// Function to get month names
+    private function getMonthNames()
+    {
+        $months = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $months[] = date("M", mktime(0, 0, 0, $i, 1));
+        }
+        return $months;
+    }
+
+// Function to get counts for each month
+    private function getMonthlyCounts()
+    {
+        $data = (new \yii\db\Query())
+            ->select([
+                new Expression('EXTRACT(MONTH FROM created_at) AS month'),
+                new Expression('COUNT(*) AS count')
+            ])
+            ->from('outbound')
+            ->where(['not', ['Status' => null]])
+            ->groupBy([new Expression('EXTRACT(MONTH FROM created_at)')])
+            ->all();
+
+        $counts = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $found = false;
+            foreach ($data as $entry) {
+                if ((int)$entry['month'] === $i) {
+                    $counts[] = (int)$entry['count'];
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) {
+                $counts[] = 0;
+            }
+        }
+        return $counts;
+    }
+
+// Function to get gender count
+    private function getGenderCount($gender)
+    {
+        return (new \yii\db\Query())
+            ->from('outbound')
+            ->where(['Gender' => $gender])
+            ->count();
+    }
+
+
+
 
 
     /**

@@ -1,11 +1,12 @@
 
 <?php
 
+use common\models\Status;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var backend\views\Outbound\outboundSearch $searchModel */
-
+$statusModel =  Status::find()->all();
 ?>
 
 
@@ -20,9 +21,10 @@ use yii\widgets\ActiveForm;
     <?= $form->field($searchModel, 'Gender')->dropDownList(['M' => 'Male', 'F' => 'Female'],
         ['prompt' => 'All']) ?>
 
-    <?= $form->field($searchModel, 'Status')->dropDownList([
-        'Active' => 'Active', 'Pending' => 'Pending', 'Completed' => 'Completed', 'Cancel' => 'Cancel'
-    ], ['prompt' => 'All']) ?>
+    <?= $form->field($searchModel, 'Status')->dropDownList(
+        \yii\helpers\ArrayHelper::map($statusModel, 'ID', 'description'),
+        ['prompt' => 'Select Status', 'class' => 'form-select mb-2']
+    ) ?>
 
     <?= Html::submitButton('Enter', ['class' => 'collapsed fs-4 fw-semibold shadow-none btn btn-danger align-self-end']) ?>
 </div>

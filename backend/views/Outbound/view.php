@@ -14,6 +14,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 
 
 ?>
+
 <div class = "mb-3">
 	<h1 class = "text-capitalize text-start m-0"><?= $model->Name ?></h1>
 	<div class = "d-flex gap-1 align-items-center">

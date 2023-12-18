@@ -25,6 +25,7 @@ class AppAsset extends AssetBundle
         'js/notes.js',
         'js/insertRecipientName.js',
         'js/counter.js',
+        'js/charts.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

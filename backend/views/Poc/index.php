@@ -18,9 +18,11 @@ $this->title = 'Person In Charge';
 <div class="table-responsive">
 <?= GridView::widget([
     'tableOptions' => ['class' => 'table search-table align-middle text-nowrap'], 'summary' => '', // Remove the summary text
+
     'dataProvider' => $dataProvider,
     'columns' => [
         ['class' => 'yii\grid\SerialColumn', 'headerOptions' => ['class' => 'text-dark']],
+
         'KCDIO',
         'name',
         'email:email',
@@ -30,14 +32,17 @@ $this->title = 'Person In Charge';
             'headerOptions' => ['class' => 'text-dark'],
             'format' => 'raw',
             'value' => function ($model) {
-                $updateButton = Html::a('<i class="ti ti-eye fs-5"></i>', 'javascript:void(0)', [
-                    'class' => 'text-info edit update-button mx-2',
+                $updateButton = Html::a('<i class="ti ti-pencil-minus fs-5"></i>', 'javascript:void(0)', [
+                    'class' => 'text-dark-emphasis edit update-button mx-1',
                     'data-id' => $model->id,
                     'data-toggle' => 'modal',
+                    'title' => 'View', // Tooltip for the 'View' action
                     'data-target' => '#formpoc',
                 ]);
                 $deleteButton = Html::a('<i class="ti ti-trash fs-5"></i>', ['delete', 'id' => $model->id], [
-                    'class' => 'text-danger edit mx-2',
+                    'class' => 'text-danger edit mx-1',
+                    'data-toggle' => 'tooltip',
+                    'title' => 'Delete', // Tooltip for the 'View' action
                     'data' => [
                         'confirm' => 'Are you sure you want to delete this item?',
                         'method' => 'post',

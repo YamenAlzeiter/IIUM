@@ -27,11 +27,12 @@ $this->title = 'Status';
                 'headerOptions' => ['class' => 'text-dark'],
                 'format' => 'raw',
                 'value' => function ($model) {
-                    $updateButton = Html::a('<i class="ti ti-eye fs-5"></i>', 'javascript:void(0)', [
-                        'class' => 'text-info edit updateStatus-button mx-2',
+                    $updateButton = Html::a('<i class="ti ti-pencil-minus fs-5"></i>', 'javascript:void(0)', [
+                        'class' => 'text-info edit updateStatus-button',
                         'data-id' => $model->ID,
                         'data-toggle' => 'modal',
                         'data-target' => '#formpoc',
+                        'title' => 'View and Update', // Tooltip for the 'View' action
                     ]);
 
 
@@ -68,12 +69,10 @@ $this->title = 'Status';
                         <?= $form->field($model, 'description')->textInput(['maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'description'])->label(false) ?>
 
 						<div class="text-center mt-2">
-                            <?= Html::submitButton('Submit', ['class' => 'btn btn-outline-primary']) ?>
+                            <?= Html::submitButton('<i class="ti ti-pencil"></i> Update', ['class' => 'btn btn-outline-primary']) ?>
 						</div>
 
                         <?php ActiveForm::end(); ?>
-
-
 					</div>
 				</div>
 			</div>
