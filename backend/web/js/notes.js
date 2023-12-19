@@ -1,7 +1,39 @@
 $(function () {
     var updateModelId = null;
+    var $formpoc = $('#formpoc');
+    var $addNotes = $("#add-notes");
+    var $btnNAdd = $("#btn-n-add");
+    var $btnNSave = $("#btn-n-save");
+    var $form = $formpoc.find('form');
 
-    var $btns = $(".note-link").click(function () {
+    function resetFormAndModal() {
+        updateModelId = null;
+        $form[0].reset();
+        $btnNSave.hide();
+        $btnNAdd.show();
+        console.log('im here')
+        $form.attr("");
+    }
+
+    function showModal(headerText, buttonText) {
+        $formpoc.modal("show");
+        $("#formpoc-header").html(headerText);
+        $("#formpoc-button").html(buttonText);
+    }
+
+    function populateFormWithData(url, id, dataSelectors) {
+        $.ajax({
+            url: url, method: "GET", data: {id: id}, success: function (data) {
+                for (var key in dataSelectors) {
+                    $(dataSelectors[key]).val(data[key]);
+                }
+            }, error: function () {
+                // Handle error if needed
+            }
+        });
+    }
+
+    $(".note-link").click(function () {
         var category = this.id;
 
         if (category === "all-category" || category === "important") {
@@ -9,129 +41,73 @@ $(function () {
             $("#note-full-container > div").not($el).hide();
         }
 
-        $btns.removeClass("active");
+        $(".note-link").removeClass("active");
         $(this).addClass("active");
     });
 
-    $("#add-notes").on("click", function (event) {
-        // Set the form for creating a new record
-        $("#formpoc").modal("show");
-        $("#btn-n-save").hide();
-        $("#btn-n-add").show();
-        $("#formpoc-header").html('<i class="ti ti-file text-dark me-2 text-white"></i>Create New Record');
-        $("#formpoc-button").html('<i class = "ti ti-plus"></i> Add');
-        // Reset the updateModelId
-        updateModelId = null;
-        $("#add-notes").data("update-model-id", updateModelId); // Update data attribute
+    $('#formpoc').on('hidden.bs.modal', function () {
+        resetFormAndModal();
     });
-    $("#action").on("click", function (event) {
-        // Set the form for creating a new record
+
+    $addNotes.on("click", function () {
+
+        updateModelId = null;
+        $addNotes.data("update-model-id", updateModelId);
+        resetFormAndModal();
+        showModal('<i class="ti ti-file text-dark me-2 text-white"></i>Create New Record', '<i class = "ti ti-plus"></i> Add');
+    });
+
+    $("#action").on("click", function () {
         $("#foraction").modal("show");
-        $("#btn-n-save").hide();
-        $("#btn-n-add").show();
-        $("#action-header").html('<i class="ti ti-file text-dark me-2 text-white"></i>Take an Action');
-        $("#action-button").html('<i class = "ti ti-plus"></i> Submit');
-        // Reset the updateModelId
-        updateModelId = null;
-        $("#add-notes").data("update-model-id", updateModelId); // Update data attribute
+        resetFormAndModal();
+        showModal('<i class="ti ti-file text-dark me-2 text-white"></i>Take an Action', '<i class = "ti ti-plus"></i> Submit');
     });
 
-    $(".update-button").on("click", function (event) {
-        // Set the form for updating an existing record
+    $(".update-button, .updateStatus-button, .updateuser-button").on("click", function () {
         var recordId = $(this).data("id");
-        $("#formpoc").modal("show");
-        $("#formpoc form").attr("action", "/poc/update?id=" + recordId); // Adjust the action URL
-        $("#btn-n-save").show();
-        $("#btn-n-add").hide();
+        $formpoc.modal("show");
+        $btnNSave.show();
+        $btnNAdd.hide();
         $("#formpoc-header").html('<i class="ti ti-eye text-dark me-2 text-white"></i>Update Record');
         $("#formpoc-button").html('<i class = "ti ti-pencil"></i> Update');
-        // Retrieve and populate existing record data
-        $.ajax({
-            url: "/poc/get-record", // Add a new action to retrieve record data
-            method: "GET",
-            data: { id: recordId },
-            success: function (data) {
-                // Assuming data is in JSON format
-                $("#poc-name").val(data.name);
-                $("#poc-email").val(data.email);
-                $("#poc-email_cc").val(data.email_cc);
-                $("#poc-phone_number").val(data.phone_number);
-                $("#validationKCDIO").val(data.KCDIO);
-                $("#poc-kulliah").val(data.kulliah);
-            },
-            error: function () {
-                // Handle error if needed
+
+        if ($(this).hasClass("update-button")) {
+
+            populateFormWithData("/poc/get-record", recordId, {
+                name: "#poc-name",
+                email: "#poc-email",
+                email_cc: "#poc-email_cc",
+                phone_number: "#poc-phone_number",
+                KCDIO: "#validationKCDIO",
+                kulliah: "#poc-kulliah"
+            });
+        } else if ($(this).hasClass("updateStatus-button")) {
+
+            populateFormWithData("/status/get-record", recordId, {
+                description: "#status-description"
+            });
+        } else if ($(this).hasClass("updateuser-button")) {
+
+            populateFormWithData("/user/get-record", recordId, {
+                username: "#useradmin-username",
+                matric_number: "#useradmin-matric_number",
+                email: "#useradmin-email"
+            });
+        }
+
+        $("#formpoc-button").on("click", function () {
+            if ($(this).hasClass("update-button")) {
+                $form.attr("action", "/poc/update?id=" + recordId);
+            } else if ($(this).hasClass("updateStatus-button")) {
+                $form.attr("action", "/status/update?id=" + recordId);
+            } else if ($(this).hasClass("updateuser-button")) {
+                $form.attr("action", "/user/update?id=" + recordId);
             }
         });
 
-        // Set the updateModelId
         updateModelId = recordId;
-        $("#add-notes").data("update-model-id", updateModelId); // Update data attribute
+        $addNotes.data("update-model-id", updateModelId);
     });
 
-    $(".updateStatus-button").on("click", function (event) {
-        // Set the form for updating an existing record
-        var recordId = $(this).data("id");
-
-        $("#formpoc").modal("show");
-        $("#formpoc form").attr("action", "/status/update?id=" + recordId); // Adjust the action URL
-        $("#btn-n-save").show();
-        $("#btn-n-add").hide();
-        $("#formpoc-header").html('<i class="ti ti-eye text-dark me-2 text-white"></i>Update Record');
-        $("#formpoc-button").html('<i class = "ti ti-pencil"></i> Update');
-        // Retrieve and populate existing record data
-        $.ajax({
-            url: "/status/get-record", // Add a new action to retrieve record data
-            method: "GET",
-            data: { id: recordId },
-            success: function (data) {
-                // Assuming data is in JSON format
-                console.log(data.description)
-                $("#status-description").val(data.description);
-
-            },
-            error: function () {
-                // Handle error if needed
-            }
-        });
-
-        // Set the updateModelId
-        updateModelId = recordId;
-        $("#add-notes").data("update-model-id", updateModelId); // Update data attribute
-    });
-
-    $(".updateuser-button").on("click", function (event) {
-        // Set the form for updating an existing record
-        var recordId = $(this).data("id");
-        $("#formpoc").modal("show");
-        $("#formpoc form").attr("action", "/user/update?id=" + recordId); // Adjust the action URL
-        $("#btn-n-save").show();
-        $("#btn-n-add").hide();
-        $("#formpoc-header").html('<i class="ti ti-eye text-dark me-2 text-white"></i>Update Record');
-        $("#formpoc-button").html('<i class = "ti ti-pencil"></i> Update');
-        // Retrieve and populate existing record data
-        $.ajax({
-            url: "/user/get-record", // Add a new action to retrieve record data
-            method: "GET",
-            data: { id: recordId },
-            success: function (data) {
-                // Assuming data is in JSON format
-                $("#useradmin-username").val(data.username);
-                $("#useradmin-matric_number").val(data.matric_number);
-                $("#useradmin-email").val(data.email);
-            },
-            error: function () {
-                // Handle error if needed
-            }
-        });
-
-        // Set the updateModelId
-        updateModelId = recordId;
-        $("#add-notes").data("update-model-id", updateModelId); // Update data attribute
-    });
-
-    $("#btn-n-add").attr("disabled", false); // Enable the button
+    $("#btn-n-add").attr("disabled", false);
 });
-
-
-
