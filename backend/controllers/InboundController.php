@@ -488,7 +488,7 @@ class InboundController extends Controller
             $this->sendEmailWithLink($model, $modelPoc->name, $modelPoc->email, $token, $templateId, $reason);
         }
 
-
+        $model->temp = $reason;
         if ($model->save()) {
             return $this->redirect(["index"]);
         }

@@ -87,6 +87,7 @@ use Yii;
  * @property string|null $Connect_host_email
  * @property Courses[] $courses
  * @property Iiumcourse[] $iiumcourses
+ * @property string|null $temp
  */
 class Outbound extends \yii\db\ActiveRecord
 {
@@ -228,13 +229,35 @@ class Outbound extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Iiumcourse::class, ['student_id' => 'ID']);
     }
+
     public function afterSave($insert, $changedAttributes)
     {
+        //------------------log after any change
+//        parent::afterSave($insert, $changedAttributes);
+//
+//        if (!$insert && isset($changedAttributes['Status'])) {
+//            $this->createStatusLog($changedAttributes['Status'], $this->Status);
+//        }
+        //-----------------log only after status change
         parent::afterSave($insert, $changedAttributes);
 
-        if (!$insert && isset($changedAttributes['Status'])) {
-            // Log the status change
-            $this->createStatusLog($changedAttributes['Status'], $this->Status);
+        if (!$insert) {
+            $oldStatus = $changedAttributes['Status'];
+            $newStatus = $this->Status;
+
+            if ($oldStatus !== $newStatus) {
+                if(($oldStatus === 12 && $newStatus === 1) || ($oldStatus === 32 && $newStatus === 21)){
+                    $this->createStatusLog($oldStatus, $newStatus, $this->temp);
+                }
+                elseif (($oldStatus === 1 && $newStatus === 12)){
+                    $this->createStatusLog($oldStatus, $newStatus, $this->Note_hod);
+                }
+                elseif (($oldStatus === 21 && $newStatus === 32)){
+                    $this->createStatusLog($oldStatus, $newStatus, $this->Note_dean);
+                }
+                else
+                    $this->createStatusLog($oldStatus, $newStatus, null);
+            }
         }
     }
 
@@ -244,12 +267,13 @@ class Outbound extends \yii\db\ActiveRecord
      * @param int $oldStatus
      * @param int $newStatus
      */
-    protected function createStatusLog($oldStatus, $newStatus)
+    protected function createStatusLog($oldStatus, $newStatus, $message)
     {
         $log = new Log();
         $log->outbound_id = $this->ID;
         $log->old_status = $oldStatus;
         $log->new_status = $newStatus;
+        $log->message = $message;
         $log->save();
     }
 }

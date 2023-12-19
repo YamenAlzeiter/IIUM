@@ -17,7 +17,11 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
         'summary' => '', // Show the current page and total pages
         'columns' => [
             [
-                'label' => 'Status',
+                'attribute' => 'created_at', 'label' => 'Date', 'format' => ['date', 'php:d/M/Y h:i'],
+
+            ],
+            [
+                'label' => 'Current Status',
                 'format' => 'raw',
                 'value' => function ($model) {
                     $statusModel = Status::findOne(['ID' => $model->new_status]);
@@ -38,19 +42,19 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                 'contentOptions' => ['class' => 'col-1'],
             ],
             [
-                'attribute' => 'old_status',
+                'attribute' => 'From',
                 'value' => function ($model) {
                     return getStatusFrom($model->new_status);
                 },
             ],
             [
-                'attribute' => 'old_status',
+                'attribute' => 'To',
                 'value' => function ($model) {
                     return getStatusTo($model->new_status);
                 },
             ],
             'message',
-            'created_at:datetime',
+
             // Add more columns as needed
         ],
     ]); ?>

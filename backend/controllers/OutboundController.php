@@ -130,7 +130,7 @@ class OutboundController extends Controller
         $logsDataProvider = new ActiveDataProvider([
             'query' => Log::find()->where(['outbound_id' => $ID]),
             'pagination' => [
-                'pageSize' => 20, // Adjust the page size as needed
+                'pageSize' => 50, // Adjust the page size as needed
             ],
             'sort' => [
                 'defaultOrder' => ['created_at' => SORT_DESC], // Display logs by creation time in descending order
@@ -480,6 +480,7 @@ class OutboundController extends Controller
             $this->sendEmailWithLink($model, $modelPoc->name, $modelPoc->email, $token, $templateId, $reason);
         }
 
+        $model->temp = $reason;
 
         if ($model->save()) {
             return $this->redirect(["index"]);

@@ -32,6 +32,7 @@ use yii\helpers\Html;
                         'data-target' => '#formpoc',
                         'title' => 'View/ Update', // Tooltip for the 'View' action
                     ]);
+
                     $deleteButton = Html::a('<i class="ti ti-trash fs-7"></i>', ['delete', 'id' => $model->id], [
                         'class' => 'text-danger edit mx-1',
                         'data-toggle' => 'tooltip',
@@ -41,8 +42,12 @@ use yii\helpers\Html;
                             'method' => 'post',
 
                         ],
+                        'disabled' => $model->id === 1 ? true : false, // Disable the button for ID 1
                     ]);
-
+                    if($model->id === 1){
+                        return $updateButton;
+                    }
+                    else
                     return $updateButton . ' ' . $deleteButton;
                 },
             ],

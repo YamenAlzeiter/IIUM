@@ -23,7 +23,7 @@ class AppAsset extends AssetBundle
         'js/form_validation.js',
         'js/filter.js',
         'js/notes.js',
-        'js/insertRecipientName.js',
+        'js/insertButtons.js',
         'js/counter.js',
         'js/charts.js',
     ];

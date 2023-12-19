@@ -293,6 +293,7 @@ $this->registerJs("
         options_donut
     );
     chart_pie_donut.render();
+    
 ");
 
 ?>

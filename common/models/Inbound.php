@@ -83,6 +83,7 @@ use Yii;
  * @property string|null $created_at
  * @property resource|null $offer_letter
  * @property string|null $reference_number
+ * @property string|null $temp
  */
 class Inbound extends \yii\db\ActiveRecord
 {
@@ -207,11 +208,31 @@ class Inbound extends \yii\db\ActiveRecord
     }
     public function afterSave($insert, $changedAttributes)
     {
+//        parent::afterSave($insert, $changedAttributes);
+//
+//        if (!$insert && isset($changedAttributes['Status'])) {
+//            // Log the status change
+//            $this->createStatusLog($changedAttributes['Status'], $this->Status);
+//        }
         parent::afterSave($insert, $changedAttributes);
 
-        if (!$insert && isset($changedAttributes['Status'])) {
-            // Log the status change
-            $this->createStatusLog($changedAttributes['Status'], $this->Status);
+        if (!$insert) {
+            $oldStatus = $changedAttributes['Status'];
+            $newStatus = $this->Status;
+
+            if ($oldStatus !== $newStatus) {
+                if(($oldStatus === 16 && $newStatus === 5) || ($oldStatus === 36 && $newStatus === 25)){
+                    $this->createStatusLog($oldStatus, $newStatus, $this->temp);
+                }
+                elseif (($oldStatus === 5 && $newStatus === 16)){
+                    $this->createStatusLog($oldStatus, $newStatus, $this->note_kulliyyah);
+                }
+                elseif (($oldStatus === 25 && $newStatus === 36)){
+                    $this->createStatusLog($oldStatus, $newStatus, $this->note_msd_cps);
+                }
+                else
+                    $this->createStatusLog($oldStatus, $newStatus, null);
+            }
         }
     }
 
@@ -221,12 +242,13 @@ class Inbound extends \yii\db\ActiveRecord
      * @param int $oldStatus
      * @param int $newStatus
      */
-    protected function createStatusLog($oldStatus, $newStatus)
+    protected function createStatusLog($oldStatus, $newStatus, $message)
     {
         $log = new Inlog();
         $log->outbound_id = $this->ID;
         $log->old_status = $oldStatus;
         $log->new_status = $newStatus;
+        $log->message = $message;
         $log->save();
     }
 }
