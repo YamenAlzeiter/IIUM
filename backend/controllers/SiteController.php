@@ -200,6 +200,7 @@ class SiteController extends Controller
 
     public function actionResetPassword($token)
     {
+        $this->layout = 'blank';
         try {
             $model = new ResetPasswordForm($token);
         } catch (InvalidArgumentException $e) {
