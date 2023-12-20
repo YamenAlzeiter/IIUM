@@ -208,17 +208,15 @@ class Inbound extends \yii\db\ActiveRecord
     }
     public function afterSave($insert, $changedAttributes)
     {
-//        parent::afterSave($insert, $changedAttributes);
-//
-//        if (!$insert && isset($changedAttributes['Status'])) {
-//            // Log the status change
-//            $this->createStatusLog($changedAttributes['Status'], $this->Status);
-//        }
-        parent::afterSave($insert, $changedAttributes);
 
-        if (!$insert) {
+        parent::afterSave($insert, $changedAttributes);
+        $newStatus = $this->Status;
+        if($newStatus === 10){
+            $this->createStatusLog("", $newStatus, $this->temp);
+        }
+
+        elseif (!$insert && isset($changedAttributes['Status'])) {
             $oldStatus = $changedAttributes['Status'];
-            $newStatus = $this->Status;
 
             if ($oldStatus !== $newStatus) {
                 if(($oldStatus === 16 && $newStatus === 5) || ($oldStatus === 36 && $newStatus === 25)){

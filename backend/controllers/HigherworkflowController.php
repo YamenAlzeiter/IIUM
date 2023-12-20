@@ -9,6 +9,7 @@ use common\models\Inbound;
 use common\models\Poc;
 use common\models\Status;
 use Yii;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\UploadedFile;
 

@@ -232,34 +232,30 @@ class Outbound extends \yii\db\ActiveRecord
 
     public function afterSave($insert, $changedAttributes)
     {
-        //------------------log after any change
-//        parent::afterSave($insert, $changedAttributes);
-//
-//        if (!$insert && isset($changedAttributes['Status'])) {
-//            $this->createStatusLog($changedAttributes['Status'], $this->Status);
-//        }
-        //-----------------log only after status change
         parent::afterSave($insert, $changedAttributes);
-
-        if (!$insert) {
+        $newStatus = $this->Status;
+        if($newStatus === 10){
+            $this->createStatusLog("", $newStatus, $this->temp);
+        }
+        elseif (!$insert && isset($changedAttributes['Status'])) {
             $oldStatus = $changedAttributes['Status'];
-            $newStatus = $this->Status;
 
             if ($oldStatus !== $newStatus) {
                 if(($oldStatus === 12 && $newStatus === 1) || ($oldStatus === 32 && $newStatus === 21)){
                     $this->createStatusLog($oldStatus, $newStatus, $this->temp);
-                }
-                elseif (($oldStatus === 1 && $newStatus === 12)){
+                } elseif (($oldStatus === 1 && $newStatus === 12)){
                     $this->createStatusLog($oldStatus, $newStatus, $this->Note_hod);
                 }
                 elseif (($oldStatus === 21 && $newStatus === 32)){
                     $this->createStatusLog($oldStatus, $newStatus, $this->Note_dean);
                 }
-                else
+                else {
                     $this->createStatusLog($oldStatus, $newStatus, null);
+                }
             }
         }
     }
+
 
     /**
      * Create a log entry for status change.

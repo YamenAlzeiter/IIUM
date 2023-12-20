@@ -1,7 +1,8 @@
 <?php
 
-use common\models\Outbound;
+use common\models\Ob010;
 use common\models\Status;
+use common\models\Ststus;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -37,8 +38,8 @@ use yii\grid\GridView;
                 'Name', 'Matric_Number', [
                     'label' => 'Status', 'headerOptions' => ['class' => 'col-2'], 'attribute' => 'Status',
                     'format' => 'raw', 'value' => function ($model) {
-                        $statusModel = Ststus::findOne(['ID' => $model->Status]);
-                        $statusMeaning = $statusModel ? $statusModel->Description : '';
+                        $statusModel = Status::findOne(['ID' => $model->Status]);
+                        $statusMeaning = $statusModel ? $statusModel->description : '';
 
                         $class = '';
 
@@ -58,7 +59,7 @@ use yii\grid\GridView;
                     'headerOptions' => ['class' => 'text-primary'], 'format' => 'raw', 'value' => function ($model) {
                         $actions = Html::a('View', ['view', 'ID' => $model->ID], ['class' => 'btn btn-dark me-2']);
 
-                        if($model->Status === null || $model->Status === 3){
+                        if ($model->Status === null || $model->Status === 3) {
                             $actions .= Html::a('Update', ['update', 'ID' => $model->ID],
                                 ['class' => 'btn btn-secondary']);
                         }

@@ -1,22 +1,20 @@
 <?php
 
-use common\models\Courses;
-use common\models\Iiumcourse;
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
 /** @var common\models\Outbound $model */
-/** @var Courses $coursesModel */
-/** @var Iiumcourse $iiumcoursesModel */
 
-
+$this->title = 'Create Outbound';
+$this->params['breadcrumbs'][] = ['label' => 'Outbounds', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="ob010-create">
+<div class="outbound-create">
+
+    <h1><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
         'model' => $model,
-        'coursesData' => $coursesData,
-        'iiumcourseData' => $iiumcourseData,
     ]) ?>
 
 </div>
