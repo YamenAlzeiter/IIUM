@@ -12,6 +12,9 @@ use yii\web\YiiAsset;
 
 require Yii::getAlias('@common').'/Helpers/helper.php';
 
+$creationYearLastTwoDigits = date('y', strtotime($model->created_at));
+
+$fileName = $creationYearLastTwoDigits . '_' . $model->ID;
 
 ?>
 
@@ -162,46 +165,21 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 								</strong>
 							</div>
 							<div class = "col-md-6">
-								<P><strong>Offer Letter: </strong>
-                                    <?= ($model->Offer_letter) ? Html::a('OfferLetter'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Offer_letter,
-                                            PATHINFO_EXTENSION), [
+								<p class="fw-semibold"><?= ($model->Offer_letter) ? Html::a('Offer Letter', [
                                         'download', 'id' => $model->ID,
-                                        'file' => 'OfferLetter'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Offer_letter,
-                                                PATHINFO_EXTENSION)
-                                    ]) : ''; ?>
-								</P>
-								<P><strong>Academic Transcript: </strong>
-                                    <?= ($model->Academic_transcript) ? Html::a('AcademicTranscript'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Academic_transcript,
-                                            PATHINFO_EXTENSION), [
+                                        'file' => $fileName.'_offerLetter'.'.pdf']) : ''; ?></p>
+								<p class="fw-semibold"><?= ($model->Academic_transcript) ? Html::a('Academic Transcript', [
                                         'download', 'id' => $model->ID,
-                                        'file' => 'AcademicTranscript'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Academic_transcript,
-                                                PATHINFO_EXTENSION)
-                                    ]) : ''; ?>
-								</P>
-								<P><strong>Programme Brochure: </strong>
-                                    <?= ($model->Program_brochure) ? Html::a('ProgramBrochure'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Program_brochure,
-                                            PATHINFO_EXTENSION), [
+                                        'file' => $fileName.'_AcademicTranscript'.'.pdf']) : ''; ?></p>
+								<p class="fw-semibold"><?= ($model->Program_brochure) ? Html::a('Program Brochure', [
                                         'download', 'id' => $model->ID,
-                                        'file' => 'ProgramBrochure'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Program_brochure,
-                                                PATHINFO_EXTENSION)
-                                    ]) : ''; ?>
-								</P>
-								<P><strong>Latest Pay Slip: </strong>
-                                    <?= ($model->Latest_pay_slip) ? Html::a('LatestPaySlip'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Latest_pay_slip,
-                                            PATHINFO_EXTENSION), [
+                                        'file' => $fileName.'_ProgramBrochure'.'.pdf']) : ''; ?></p>
+								<p class="fw-semibold"><?= ($model->Latest_pay_slip) ? Html::a('Latest Pay Slip', [
                                         'download', 'id' => $model->ID,
-                                        'file' => 'LatestPaySlip'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Latest_pay_slip,
-                                                PATHINFO_EXTENSION)
-                                    ]) : ''; ?>
-								</P>
-								<P><strong>Other Latest Pay Slip: </strong>
-                                    <?= ($model->Other_latest_pay_slip) ? Html::a('OtherLatestPaySlip'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Other_latest_pay_slip,
-                                            PATHINFO_EXTENSION), [
+                                        'file' => $fileName.'_LatestPaySlip'.'.pdf']) : ''; ?></p>
+								<p class="fw-semibold"><?= ($model->Other_latest_pay_slip) ? Html::a('Other Latest Pay Slip', [
                                         'download', 'id' => $model->ID,
-                                        'file' => 'OtherLatestPaySlip'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Other_latest_pay_slip,
-                                                PATHINFO_EXTENSION)
-                                    ]) : ''; ?>
-								</P>
+                                        'file' => $fileName.'_OtherLatestPaySlip'.'.pdf']) : ''; ?></p>
 							</div>
                             <?php if ($model->Status >= 41): ?>
 								<div class = "col-md-6">

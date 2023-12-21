@@ -338,4 +338,17 @@ class OutboundController extends Controller
 
         return $this->redirect(['index']);
     }
+    public function actionDownload($id, $file)
+    {
+        $model = $this->findModel($id);
+
+        // Set the file path based on your file storage location
+        $filePath = 'C:\xampp\htdocs\IIUM_Inbound_Oubbound\frontend\uploads/'.$file;
+
+        if (file_exists($filePath)) {
+            Yii::$app->response->sendFile($filePath);
+        } else {
+            throw new NotFoundHttpException('The file does not exist.');
+        }
+    }
 }

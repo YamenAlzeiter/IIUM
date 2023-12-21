@@ -169,7 +169,7 @@ class OutboundController extends Controller
 
     public function actionDownload($id, $file)
     {
-        $filePath = 'C:\xampp\htdocs\playground1\frontend\uploads/'.$file;
+        $filePath = 'C:\xampp\htdocs\IIUM_Inbound_Oubbound\frontend\uploads/'.$file;
         Yii::info("File Path: ".$filePath, "fileDownload");
         if (file_exists($filePath)) {
             Yii::$app->response->sendFile($filePath);
