@@ -827,63 +827,21 @@ use yii\bootstrap5\ActiveForm;
 			                                    provided<strong></p>
 
 
-			            <?php
-                        $template = '
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="{inputId}" class="form-label">{labelText}</label>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <input type="file" class="form-control file-input" id="{inputId}" name="{inputName}" accept=".pdf, .docx" {Attribute}>
-                    </div>
-                </div>
-            </div>
-            ';
-
-                        // Function to check if the file is
-                        function isFile($file) {
-                            return $file === null;
-                        }
-
-                        // File input sections
-                        echo strtr($template, [
-                            '{inputId}' => 'offerLetter',
-                            '{labelText}' => 'Offer Letter/Invitation Letter/Acceptance Letter from Host University',
-                            '{inputName}' => 'Outbound[Offer_letter]',
-                            '{Attribute}' => isFile($model->Offer_letter) ? '' : '',
-                        ]);
-
-                        echo strtr($template, [
-                            '{inputId}' => 'academicTranscript',
-                            '{labelText}' => 'Latest certified academic transcript',
-                            '{inputName}' => 'Outbound[Academic_transcript]',
-                            '{Attribute}' => isFile($model->Academic_transcript) ? '' :'',
-                        ]);
-
-                        echo strtr($template, [
-                            '{inputId}' => 'programBrochure',
-                            '{labelText}' => 'Program brochure (if available)',
-                            '{inputName}' => 'Outbound[Program_brochure]',
-                            '{Attribute}' => isFile($model->Program_brochure) ? '' : '',
-                        ]);
-
-                        echo strtr($template, [
-                            '{inputId}' => 'latestPaySlip',
-                            '{labelText}' => 'Parent or Guardian latest payslip',
-                            '{inputName}' => 'Outbound[Latest_pay_slip]',
-                            '{Attribute}' => isFile($model->Latest_pay_slip) ? '' : '',
-                        ]);
-
-                        echo strtr($template, [
-                            '{inputId}' => 'otherLatestPaySlip',
-                            '{labelText}' => 'Other Parent or Guardian latest payslip (if available)',
-                            '{inputName}' => 'Outbound[Other_latest_pay_slip]',
-                            '{Attribute}' => isFile($model->Other_latest_pay_slip) ? '' : '',
-                        ]);
-                        ?>
+            <?= $form->field($model, 'Offer_letter')->fileInput([
+                'class' => 'form-control mb-2'
+            ])->label(false) ?>
+            <?= $form->field($model, 'Academic_transcript')->fileInput([
+                'class' => 'form-control mb-2'
+            ])->label(false) ?>
+            <?= $form->field($model, 'Program_brochure')->fileInput([
+                'class' => 'form-control mb-2'
+            ])->label(false) ?>
+            <?= $form->field($model, 'Latest_pay_slip')->fileInput([
+                'class' => 'form-control mb-2'
+            ])->label(false) ?>
+            <?= $form->field($model, 'Other_latest_pay_slip')->fileInput([
+                'class' => 'form-control mb-2'
+            ])->label(false) ?>
 
 
 

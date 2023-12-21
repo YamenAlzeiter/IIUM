@@ -166,15 +166,7 @@ class InboundController extends Controller
                     }
                 }
                 if ($model->validate() && $model->save()) {
-                    // Load and save Courses data
-                    $coursesData = Yii::$app->request->post('CoursesModel', []);
-                    $this->saveCoursesData($model, $coursesData);
 
-                    // Load and save IIUM Courses data
-                    $iiumcourseData = Yii::$app->request->post('IiumcoursesModel', []);
-                    $this->saveIiumCoursesData($model, $iiumcourseData);
-
-                    // If everything is successful, commit the transaction
                     $transaction->commit();
 
                     Yii::$app->session->setFlash('success', 'Application created successfully.');

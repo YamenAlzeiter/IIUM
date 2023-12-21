@@ -14,9 +14,9 @@ class m231126_042322_create_iiumcourses_table extends Migration
     {
         $this->createTable('{{%iiumcourse}}', [
             'id' => $this->primaryKey(),
-            'course_code' => $this->string(20)->notNull(),
-            'course_name' => $this->string(255)->notNull(),
-            'credit_hours' => $this->integer()->notNull(),
+            'course_code' => $this->string(20),
+            'course_name' => $this->string(255),
+            'credit_hours' => $this->integer(),
             'student_id' => $this->integer(), // Define a foreign key here
         ]);
 

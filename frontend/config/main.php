@@ -1,11 +1,6 @@
 <?php
-$params = array_merge(
-    require __DIR__ . '/../../common/config/params.php',
-    require __DIR__ . '/../../common/config/params-local.php',
-    require __DIR__ . '/params.php',
-    require __DIR__ . '/params-local.php'
-);
-
+$params = array_merge(require __DIR__ . '/../../common/config/params.php', require __DIR__ . '/../../common/config/params-local.php', require __DIR__ . '/params.php', require __DIR__ . '/params-local.php');
+$uniqueKey = bin2hex(random_bytes(32));
 return [
     'id' => 'app-frontend',
     'basePath' => dirname(__DIR__),
@@ -13,7 +8,9 @@ return [
     'controllerNamespace' => 'frontend\controllers',
     'components' => [
         'request' => [
+            'cookieValidationKey' => $uniqueKey,
             'csrfParam' => '_csrf-frontend',
+            'enableCsrfValidation' => true,
         ],
         'user' => [
             'identityClass' => 'common\models\User',
@@ -41,9 +38,9 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                '' => 'outbound/index',
             ],
         ],
-
     ],
     'params' => $params,
 ];

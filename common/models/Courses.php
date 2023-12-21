@@ -31,8 +31,7 @@ class Courses extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['course_code', 'course_name', 'credit_hours'], 'required'],
-            [['credit_hours', 'student_id'], 'default', 'value' => null],
+
             [['credit_hours', 'student_id'], 'integer'],
             [['course_code'], 'string', 'max' => 20],
             [['course_name'], 'string', 'max' => 255],
