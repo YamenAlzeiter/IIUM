@@ -9,8 +9,7 @@ use yii\bootstrap5\ActiveForm;
 
 /** @var yii\web\View $this */
 /** @var common\models\Outbound $model */
-/** @var Iiumcourse $coursesData */
-/** @var Iiumcourse $iiumcourseData */
+
 
 ?>
 <div>
