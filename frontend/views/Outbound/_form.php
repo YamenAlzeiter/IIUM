@@ -31,10 +31,12 @@ use yii\bootstrap5\ActiveForm;
 				</div>
 				<div class = "col-md-6">
 					<div class = "form__div">
-						<input type = "text" class = "form__input form-control" id = "validationCustomCitizenship"
-						       name = "Outbound[Citizenship]"
-						       maxlength = "255" placeholder = " "
-						       value = "<?= $model->Citizenship ?>" >
+
+						<select class = "form__input form-control countries" id = "validationCustomCitizenship"
+						        name = "Outbound[Citizenship]"
+						>
+							<option value = "">Select Nationality</option>
+						</select>
 						<label for = "validationCustomCitizenship" class = "form__label">Citizenship</label>
 					</div>
 				</div>
@@ -885,7 +887,6 @@ use yii\bootstrap5\ActiveForm;
 					<div>
 						<button class="button submit-btn" type="submit" name="saveWithoutValidation" value="validate">Submit</button>
 					</div>
-
 					<div>
 						<button class = "button btn-navigate-form-step" type = "button" step_number = "5">Prev</button>
 
@@ -896,139 +897,45 @@ use yii\bootstrap5\ActiveForm;
     <?php ActiveForm::end(); ?>
 </div>
 
-
 <script>
-    // AJAX utility function
-    function ajaxCall() {
-        this.send = function (data, url, method, success, type) {
-            type = type || "json";
-            var successRes = function (data) {
-                success(data);
-            };
-            var errorRes = function (xhr, ajaxOptions, thrownError) {
-                console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-            };
-            jQuery.ajax({
-                url: url,
-                type: method,
-                data: data,
-                success: successRes,
-                error: errorRes,
-                dataType: type,
-                timeout: 60000
-            });
-        };
-    }
 
-    // LocationInfo class for managing country and state information
-    function LocationInfo(selectElement, stateSelectElement, countryModelValue, stateModelValue) {
-        var rootUrl = "https://geodata.phplift.net/api/index.php";
-        var call = new ajaxCall();
+    var nationalityModelValue = "<?= htmlspecialchars($model->Citizenship) ?>";
 
-        // Set the value of a select element
-        this.setSelectValue = function (element, value) {
-            element.val(value).trigger("change");
-        };
+    var dropdownData = [
+        {
+            countryId: '#countryId5',
+            stateId: '#stateId1',
+            countryModel: "<?= htmlspecialchars($model->Country)?>",
+            stateModel: "<?= htmlspecialchars($model->State)?>"
+        },
+        {
+            countryId: '#countryId4',
+            stateId: '#stateId2',
+            countryModel: "<?= htmlspecialchars($model->Mailing_Country)?>",
+            stateModel: "<?= htmlspecialchars($model->Mailing_State)?>"
+        },
+        {
+            countryId: jQuery("#countryId3"),
+            stateId: jQuery("#stateId3"),
+            countryModel: "<?= htmlspecialchars($model->Emergency_country) ?>",
+            stateModel: "<?= htmlspecialchars($model->Emergency_tate) ?>"
+        },
+        {
+            countryId: jQuery("#countryId2"),
+            stateId: null, // Replace with the actual state ID
+            countryModel: "<?= htmlspecialchars($model->Country_host_university) ?>",
+            stateModel: null // Set to null or adjust based on your data
+        },
+        {
+            countryId: jQuery("#countryId1"),
+            stateId: null,
+            countryModel: "<?= htmlspecialchars($model->Connect_host_country) ?>",
+            stateModel: null
+        }
+        // Add more objects for additional dropdowns...
+    ];
 
-        // Get the list of countries and populate the select element
-        this.getCountries = function () {
-            var url = rootUrl + "?type=getCountries";
-            var method = "post";
-            var data = {};
-            call.send(data, url, method, function (data) {
-                selectElement.find("option:eq(0)").html("Select Country");
-                jQuery.each(data.result, function (key, val) {
-                    var option = jQuery("<option>");
-                    option.attr("value", val.name).text(val.name);
-                    option.attr("countryId", val.id);
-                    if (val.name === countryModelValue) {
-                        option.prop("selected", true);
-                    }
-                    selectElement.append(option);
-                });
 
-                selectElement.trigger("change");
-                selectElement.prop("disabled", false);
-            });
-        };
-
-        // Get the list of states based on the selected country and populate the state select element
-        this.getStates = function (countryId) {
-            stateSelectElement.find("option:gt(0)").remove();
-            var url = rootUrl + "?type=getStates&countryId=" + countryId;
-            var method = "post";
-            var data = {};
-            call.send(data, url, method, function (data) {
-                stateSelectElement.find("option:eq(0)").html("Select State");
-                jQuery.each(data.result, function (key, val) {
-                    var option = jQuery("<option>");
-                    option.attr("value", val.name).text(val.name);
-                    option.attr("stateid", val.id);
-                    if (val.name === stateModelValue) {
-                        option.prop("selected", true);
-                    }
-
-                    stateSelectElement.append(option);
-                });
-
-                stateSelectElement.prop("disabled", false);
-            });
-        };
-    }
-
-    // Document ready function
-    jQuery(function () {
-        var countrySelects = [
-            {
-                selectElement: jQuery("#countryId5"),
-                stateSelectElement: jQuery("#stateId1"),
-                countryModelValue: "<?= htmlspecialchars($model->Country) ?>",
-                stateModelValue: "<?= htmlspecialchars($model->State) ?>"
-            },
-            {
-                selectElement: jQuery("#countryId4"),
-                stateSelectElement: jQuery("#stateId2"),
-                countryModelValue: "<?= htmlspecialchars($model->Mailing_Country) ?>",
-                stateModelValue: "<?= htmlspecialchars($model->Mailing_State) ?>"
-            },
-            {
-                selectElement: jQuery("#countryId3"),
-                stateSelectElement: jQuery("#stateId3"),
-                countryModelValue: "<?= htmlspecialchars($model->Emergency_country) ?>",
-                stateModelValue: "<?= htmlspecialchars($model->Emergency_tate) ?>"
-            },
-            {
-                selectElement: jQuery("#countryId2"),
-                stateSelectElement: null, // Replace with the actual state ID
-                countryModelValue: "<?= htmlspecialchars($model->Country_host_university) ?>",
-                stateModelValue: null // Set to null or adjust based on your data
-            },
-            {
-                selectElement: jQuery("#countryId1"),
-                stateSelectElement: null,
-                countryModelValue: "<?= htmlspecialchars($model->Connect_host_country) ?>",
-                stateModelValue: null
-            }
-            // Add more countrySelects for additional sections if needed
-        ];
-
-        countrySelects.forEach(function (countrySelect) {
-            var loc = new LocationInfo(countrySelect.selectElement, countrySelect.stateSelectElement, countrySelect.countryModelValue, countrySelect.stateModelValue);
-
-            loc.getCountries();
-
-            countrySelect.selectElement.on("change", function (ev) {
-                var countryId = jQuery("option:selected", this).attr("countryid");
-                if (countryId !== "") {
-                    loc.getStates(countryId);
-                } else {
-                    if (countrySelect.stateSelectElement) {
-                        countrySelect.stateSelectElement.find("option:gt(0)").remove();
-                    }
-                }
-            });
-        });
-    });
 </script>
 
 <script>

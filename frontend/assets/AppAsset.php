@@ -17,6 +17,7 @@ class AppAsset extends AssetBundle
     ];
     public $js = [
         'js/form-wizard.js',
+        'js/region.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',
