@@ -7,6 +7,7 @@ use common\models\Courses;
 use common\models\Iiumcourse;
 use common\models\Ob010;
 use common\models\Outbound;
+use common\models\Poc;
 use common\models\States;
 use Exception;
 use Yii;
@@ -45,12 +46,26 @@ class OutboundController extends Controller
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Outbound::find()->where(['ID' => Yii::$app->user->id]),
-        ]);
+        $id = Yii::$app->user->id;
 
-        return $this->render('index', [
-            'dataProvider' => $dataProvider,
+        $student = Outbound::findOne($id);
+
+        if (!$student) {
+            return $this->render('index', ['noRecord' => true]);
+        }
+
+        $personInChargeId = $student->Person_in_charge_ID;
+        $modelPoc1 = Poc::findOne(['id' => $personInChargeId]);
+
+        $deanId = $student->Dean_ID;
+        $modelPoc2 = Poc::findOne(['id' => $deanId]);
+
+        $courses = Courses::find()->where(['student_id' => $student->ID])->all();
+        $iiumcourses = Iiumcourse::find()->where(['student_id' => $student->ID])->all();
+
+        return $this->render("index", [
+            "model" => $student, "modelPoc1" => $modelPoc1, "modelPoc2" => $modelPoc2, "courses" => $courses,
+            'iiumcourses' => $iiumcourses,
         ]);
     }
 
@@ -212,7 +227,7 @@ class OutboundController extends Controller
                         $transaction->commit();
 
                         Yii::$app->session->setFlash('success', 'Application created successfully.');
-                        return $this->redirect(['view', 'ID' => $model->ID]);
+                        return $this->redirect(['index']);
                     }
                 }
             } catch (Exception $e) {
@@ -281,6 +296,10 @@ class OutboundController extends Controller
                     $updateFile('Latest_pay_slip', 'LatestPaySlip');
                     $updateFile('Other_latest_pay_slip', 'OtherLatestPaySlip');
 
+                    if ($this->request->post('saveWithoutValidation') === 'validate') {
+                        // Set status to 10 only when the 'submit' button is clicked
+                        $model->Status = 10;
+                    }
                     // Save the main model and update Courses/Iiumcourse records
                     if ($model->validate() && $model->save()) {
                         // Update Courses records
@@ -309,7 +328,7 @@ class OutboundController extends Controller
                         $transaction->commit();
 
                         Yii::$app->session->setFlash('success', 'Application updated successfully.');
-                        return $this->redirect(['view', 'ID' => $model->ID]);
+                        return $this->redirect(['index']);
                     }
                 }
             } catch (Exception $e) {
@@ -391,5 +410,17 @@ class OutboundController extends Controller
         Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
         return $options;
     }
+    public function actionGetRecord($id)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
 
+        $model = Outbound::findOne($id);
+
+        return [
+            'Proof_of_sponsorship' => $model->Proof_of_sponsorship,
+            'Proof_insurance_cover' => $model->Proof_insurance_cover,
+            'Letter_of_indemnity' => $model->Letter_of_indemnity,
+            'Flight_ticket' => $model->Flight_ticket,
+        ];
+    }
 }

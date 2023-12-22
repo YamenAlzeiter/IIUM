@@ -14,10 +14,12 @@ class AppAsset extends AssetBundle
     public $css = [
         'css/site.css',
         'css/styles.css',
+        'css/icons/tabler-icons/tabler-icons.css'
     ];
     public $js = [
         'js/form-wizard.js',
-        'js/region.js'
+        'js/region.js',
+        'js/notes.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',
