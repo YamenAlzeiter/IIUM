@@ -58,7 +58,7 @@ use yii\helpers\Html;
 </div>
 
 <div class="mt-3 px-4 d-flex flex-row gap-2">
-	<a href="javascript:void(0)" class="btn btn-outline-dark d-flex align-items-center px-3" id="add-notes">
+	<a href="javascript:void(0)" class="btn btn-outline-dark d-flex align-items-center px-3" id="add-user">
 		<i class="ti ti-file me-0 me-md-1 fs-4"></i>
 		<span class="d-none d-md-block font-weight-medium fs-3">Create New Record</span>
 	</a>
@@ -95,7 +95,7 @@ use yii\helpers\Html;
 			</div>
 			<div class="modal-footer">
 				<div class="form-group">
-                    <?= Html::submitButton('',['class' => 'btn btn-outline-dark px-4 py-2', 'name' => 'save-button', 'id'=>'formpoc-button'])?>
+                    <?= Html::submitButton('',['class' => 'btn btn-outline-dark px-4 py-2', 'name' => 'save-button', 'id'=>'submit-button'])?>
 				</div>
 			</div>
             <?php ActiveForm::end(); ?>

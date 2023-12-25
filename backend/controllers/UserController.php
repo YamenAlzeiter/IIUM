@@ -108,31 +108,17 @@ class UserController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
-//    public function actionCreate()
-//    {
-//        $model = new SignupForm(); // Create a form model for user registration
-//        $user = new Admin();
-//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-//            // Handle successful creation
-//
-//            $password = 'admin'; // Set the initial password
-//
-//
-//            $user->username = $model->username;
-//            $user->email = $model->email;
-//            $user->matric_number = $model->matric_number;
-//
-//            $user->setPassword($password); // Set the password for the Admin model
-//            $user->generateAuthKey(); // Generate an authentication key
-//
-//            return $this->redirect(['index']);
-//        }
-//
-//
-//        return $this->render('create', [
-//            'model' => $model,
-//        ]);
-//    }
+   public function actionCreate()
+   {
+       $model = new SignupForm();
+        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
+            $password = 'admin'; // Set the initial password
+            $model->setPassword($password); // Set the password for the Admin model
+            $model->generateAuthKey(); // Generate an authentication key
+            Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
+            return $this->redirect(['index']);
+        }
+   }
 
 
 

@@ -57,7 +57,7 @@ $this->title = 'Person In Charge';
 </div>
 
 <div class="mt-3 px-4 d-flex flex-row gap-2">
-	<a href="javascript:void(0)" class="btn btn-outline-dark d-flex align-items-center px-3" id="add-notes">
+	<a href="javascript:void(0)" class="btn btn-outline-dark d-flex align-items-center px-3" id="add-pos">
 		<i class="ti ti-file me-0 me-md-1 fs-4"></i>
 		<span class="d-none d-md-block font-weight-medium fs-3">Create New Record</span>
 	</a>
