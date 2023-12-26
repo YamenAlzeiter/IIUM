@@ -118,7 +118,6 @@ class Inbound extends \yii\db\ActiveRecord
             [['Academic_lvl_edu'], 'string', 'max' => 20],
             [['Propose_duration_of_study', 'Financial_funding'], 'string', 'max' => 30],
             [['Approval_person_mobile_number'], 'string', 'max' => 16],
-            [['Email_address'], 'unique'],
         ];
     }
 

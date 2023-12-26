@@ -438,7 +438,7 @@ class InboundController extends Controller
     {
         $model = $this->findModel($ID);
         $name = $model->Name;
-        $email = $model->Email;
+        $email = $model->Email_address;
         if ($model->Status === 10) {
             $status = 7;
         } elseif ($model->Status === 51) {

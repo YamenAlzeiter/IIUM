@@ -609,6 +609,49 @@ use yii\bootstrap5\ActiveForm;
 			<h4 class = "text-capitalize mt-4">Proposed courses of study at iium</h4>
 
 			<!--	table location-->
+			<div class = "container mt-lg-5">
+				<div class = "row" id = "tableContainer">
+					<div class = "col">
+						<h4 class = "text-center mb-4">Courses offered by host University</h4>
+						<table class = "table">
+							<thead>
+							<tr>
+								<th style = "width: 30%">Course Code</th>
+								<th style = "width: 50%">Course Name</th>
+								<th style = "width: 20%">Credit Hours</th>
+							</tr>
+							</thead>
+							<tbody>
+                            <?php for ($i = 0; $i < 7; $i++) : ?>
+								<tr>
+									<td class="py-2 px-1">
+										<input type="hidden" name="CoursesModel[<?= $i ?>][id]"
+										       value="<?= isset($coursesData[$i]['id']) ? $coursesData[$i]['id'] : '' ?>">
+										<input type="text" class="form-control"
+										       name="CoursesModel[<?= $i ?>][course_code]" placeholder="Course Code"
+										       value="<?= isset($coursesData[$i]['course_code']) ? $coursesData[$i]['course_code'] : '' ?>"
+										>
+									</td>
+									<td class="py-2 px-1">
+										<input type="text" class="form-control"
+										       name="CoursesModel[<?= $i ?>][course_name]" placeholder="Course Name"
+										       value="<?= isset($coursesData[$i]['course_name']) ? $coursesData[$i]['course_name'] : '' ?>"
+										>
+									</td>
+									<td class="py-2 px-1">
+										<input type="text" class="form-control"
+										       name="CoursesModel[<?= $i ?>][credit_hours]" placeholder="Credit Hours"
+										       value="<?= isset($coursesData[$i]['credit_hours']) ? $coursesData[$i]['credit_hours'] : '' ?>"
+										>
+									</td>
+								</tr>
+                            <?php endfor; ?>
+
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
 
 			<div class = "mt-3 d-flex justify-content-between">
 				<div>
@@ -953,7 +996,7 @@ use yii\bootstrap5\ActiveForm;
 							        onclick = "submitForm('noValidate')">Save
 							</button>
 							<div>
-								<button class="button submit-btn submity" type="button" name="saveWithoutValidation" onclick="submitForm('validate')">Submit</button>
+								<button class="button submit-btn" type="submit" name="saveWithoutValidation" value="validate" >Submit</button>
 							</div>
 						</div>
 					</div>
@@ -1000,293 +1043,56 @@ use yii\bootstrap5\ActiveForm;
 
 </script>
 
-<script>
-    // Function to navigate between form steps
-    const navigateToFormStep = (stepNumber) => {
-        // Hide all form steps
-        document.querySelectorAll(".form-step").forEach((formStepElement) => {
-            formStepElement.classList.add("d-none");
-        });
 
-        // Mark all form steps as unfinished
-        document.querySelectorAll(".form-stepper-list").forEach((formStepHeader) => {
-            formStepHeader.classList.add("form-stepper-unfinished");
-            formStepHeader.classList.remove("form-stepper-active", "form-stepper-completed", "is-invalid", "form-stepper-invalid");
-        });
-
-        // Show the current form step
-        document.querySelector("#step-" + stepNumber).classList.remove("d-none");
-
-        // Select the form step circle (progress bar)
-        const formStepCircle = document.querySelector('li[step="' + stepNumber + '"]');
-
-        // Mark the current form step as active
-        formStepCircle.classList.remove("form-stepper-unfinished", "form-stepper-completed", "is-invalid");
-        formStepCircle.classList.add("form-stepper-active");
-
-        // Loop through each form step circle up to the current step number
-        for (let index = 0; index < stepNumber; index++) {
-            const formStepCircle = document.querySelector('li[step="' + index + '"]');
-            if (formStepCircle) {
-                // Mark the form step as completed
-                formStepCircle.classList.remove("form-stepper-unfinished", "form-stepper-active", "is-invalid");
-                formStepCircle.classList.add("form-stepper-completed");
-            }
-        }
-    };
-
-    // Function to validate the form step before navigating to the next step
-    const validateFormStep = (stepNumber) => {
-        const formStep = document.querySelector("#step-" + stepNumber);
-        const inputElements = formStep.querySelectorAll("input, select, textarea");
-
-        // Perform your custom validation logic here
-        let isValid = true;
-
-        inputElements.forEach((input) => {
-            // Add an event listener to track changes in the input fields
-            input.addEventListener("input", () => {
-                input.classList.remove("is-invalid");
-            });
-
-            if (!input.checkValidity()) {
-                isValid = false;
-                input.classList.add("is-invalid");
-            } else {
-                input.classList.remove("is-invalid");
-            }
-        });
-
-        // Highlight the step in the form-stepper when it's not valid
-        const formStepperList = document.querySelector('li[step="' + stepNumber + '"]');
-        if (!isValid) {
-            formStepperList.classList.remove("form-stepper-completed")
-
-            formStepperList.classList.add("form-stepper-invalid");
-        } else {
-            formStepperList.classList.remove("form-stepper-invalid");
-        }
-
-        // Return whether the form step is valid or not
-        return isValid;
-    };
-
-    document.querySelectorAll(".form-stepper-list").forEach((formStepperList) => {
-        formStepperList.addEventListener("click", () => {
-            const stepNumber = parseInt(formStepperList.getAttribute("step"));
-            navigateToFormStep(stepNumber);
-        });
-    });
-
-    // Add click event listeners to form navigation buttons
-    document.querySelectorAll(".btn-navigate-form-step").forEach((formNavigationBtn) => {
-        formNavigationBtn.addEventListener("click", () => {
-            const stepNumber = parseInt(formNavigationBtn.getAttribute("step_number"));
-
-            // Call the function to navigate to the target form step
-            navigateToFormStep(stepNumber);
-        });
-    });
-
-    // Function to navigate to the previous step
-    document.querySelector(".btn-prev").addEventListener("click", function () {
-        const stepNumber = parseInt(this.getAttribute("step_number"));
-        const prevStepNumber = stepNumber - 1;
-
-        // Check if it's the first step, and do not proceed to a negative step
-        if (prevStepNumber > 0) {
-            navigateToFormStep(prevStepNumber);
-        }
-    });
-
-    // Function to submit the form
-    function submitForm(validationType) {
-        // Get the last step number
-        const lastStepNumber = document.querySelectorAll(".form-step").length;
-
-        if (validationType === 'validate') {
-            // Validate all form steps before submitting
-            for (let i = 1; i <= lastStepNumber; i++) {
-                if (!validateFormStep(i)) {
-                    return; // Do not proceed if validation fails
-                }
-            }
-            if (getCurrentStepNumber() === lastStepNumber) {
-                document.getElementById('statusInput').value = 10;
-            }
-        }
-
-        // Capture the form element
-        const form = document.getElementById('myForm'); // Make sure to use the correct form ID
-
-        // Set the status to 10 if it's the last step
-
-
-        // Your AJAX submit logic here
-        $.ajax({
-            type: 'POST',
-            url: form.action,
-            data: new FormData(form),
-            processData: false,
-            contentType: false,
-            success: function (data) {
-                // Handle the success response, if needed
-                console.log(data);
-            },
-            error: function (xhr, status, error) {
-                // Handle the error, if needed
-                console.error(xhr.responseText);
-            }
-        });
-
-        console.log("Form submitted successfully");
-    }
-
-    // Function to get the current step number
-    function getCurrentStepNumber() {
-        const activeStep = document.querySelector('.form-stepper-active');
-        return activeStep ? parseInt(activeStep.getAttribute('step')) : 0;
-    }
-</script>
-
-<script>
-    // AJAX utility function
-    function ajaxCall() {
-        this.send = function (data, url, method, success, type) {
-            type = type || "json";
-            var successRes = function (data) {
-                success(data);
-            };
-            var errorRes = function (xhr, ajaxOptions, thrownError) {
-                console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-            };
-            jQuery.ajax({
-                url: url,
-                type: method,
-                data: data,
-                success: successRes,
-                error: errorRes,
-                dataType: type,
-                timeout: 60000
-            });
-        };
-    }
-
-    // LocationInfo class for managing country information
-    function LocationInfo(selectElement, countryModelValue) {
-        var rootUrl = "https://geodata.phplift.net/api/index.php";
-        var call = new ajaxCall();
-
-        // Set the value of a select element
-        this.setSelectValue = function (element, value) {
-            element.val(value).trigger("change");
-        };
-
-        // Get the list of countries and populate the select element
-        this.getCountries = function () {
-            var url = rootUrl + "?type=getCountries";
-            var method = "post";
-            var data = {};
-            call.send(data, url, method, function (data) {
-                selectElement.find("option:eq(0)").html("Select Country");
-                jQuery.each(data.result, function (key, val) {
-                    var option = jQuery("<option>");
-                    option.attr("value", val.name).text(val.name);
-                    option.attr("countryId", val.id);
-                    if (val.name === countryModelValue) {
-                        option.prop("selected", true);
-                    }
-                    selectElement.append(option);
-                });
-
-                selectElement.trigger("change");
-                selectElement.prop("disabled", false);
-            });
-        };
-    }
-
-    // Document ready function
-    jQuery(function () {
-        var countrySelects = [
-            {
-                selectElement: jQuery("#countryId5"),
-                countryModelValue: "<?= htmlspecialchars($model->Country_of_origin) ?>"
-            },
-            {
-                selectElement: jQuery("#countryId4"),
-                countryModelValue: "<?= htmlspecialchars($model->Country_of_residence) ?>"
-            },
-            {
-                selectElement: jQuery("#countryId3"), countryModelValue: "<?= htmlspecialchars($model->Country) ?>"
-            },
-            {
-                selectElement: jQuery("#countryId2"),
-                countryModelValue: "<?= htmlspecialchars($model->Emergency_country) ?>"
-            },
-            {
-                selectElement: jQuery("#countryId1"),
-                //countryModelValue: "<?php //= htmlspecialchars($model->connect_host_country) ?>//"
-            }
-            // Add more countrySelects for additional sections if needed
-        ];
-
-        countrySelects.forEach(function (countrySelect) {
-            var loc = new LocationInfo(countrySelect.selectElement, countrySelect.countryModelValue);
-            loc.getCountries();
-        });
-    });
-</script>
-
-
-<script>
-    // Function to toggle the visibility and required attribute of the table and text area
-    function toggleFields() {
-        var selectedOption = document.getElementById('lvl_edu').value;
-        var tableContainer = document.getElementById('tableContainer');
-        var textareaContainer = document.getElementById('textareaContainer');
-        var tableInputs = tableContainer.querySelectorAll('input');
-        var textareaInput = document.getElementById('model-Research');
-
-        if (selectedOption !== 'UG' && selectedOption !== 'PG') {
-            tableContainer.style.display = 'none';
-            textareaContainer.style.display = 'none';
-
-            // Remove the required attribute from all input fields
-            tableInputs.forEach(function (input) {
-                input.removeAttribute('required');
-            });
-
-            textareaInput.removeAttribute('required');
-        } else if (selectedOption === 'UG') {
-            tableContainer.style.display = 'flex';
-            textareaContainer.style.display = 'none';
-
-            // Add the required attribute to input fields in the UG table
-            tableInputs.forEach(function (input) {
-                input.setAttribute('required', 'required');
-            });
-
-            textareaInput.removeAttribute('required');
-        } else if (selectedOption === 'PG') {
-            tableContainer.style.display = 'none';
-            textareaContainer.style.display = 'block';
-
-            // Remove the required attribute from input fields in the UG table
-            tableInputs.forEach(function (input) {
-                input.removeAttribute('required');
-            });
-
-            // Add the required attribute to the textarea in the PG section
-            textareaInput.setAttribute('required', 'required');
-        }
-    }
-
-    // Attach an event listener to the dropdown to trigger the toggle function
-    document.getElementById('lvl_edu').addEventListener('change', toggleFields);
-
-    // Initial state based on the default dropdown value
-    toggleFields();
-</script>
+<!--<script>-->
+<!--    // Function to toggle the visibility and required attribute of the table and text area-->
+<!--    function toggleFields() {-->
+<!--        var selectedOption = document.getElementById('lvl_edu').value;-->
+<!--        var tableContainer = document.getElementById('tableContainer');-->
+<!--        var textareaContainer = document.getElementById('textareaContainer');-->
+<!--        var tableInputs = tableContainer.querySelectorAll('input');-->
+<!--        var textareaInput = document.getElementById('model-Research');-->
+<!---->
+<!--        if (selectedOption !== 'UG' && selectedOption !== 'PG') {-->
+<!--            tableContainer.style.display = 'none';-->
+<!--            textareaContainer.style.display = 'none';-->
+<!---->
+<!--            // Remove the required attribute from all input fields-->
+<!--            tableInputs.forEach(function (input) {-->
+<!--                input.removeAttribute('required');-->
+<!--            });-->
+<!---->
+<!--            textareaInput.removeAttribute('required');-->
+<!--        } else if (selectedOption === 'UG') {-->
+<!--            tableContainer.style.display = 'flex';-->
+<!--            textareaContainer.style.display = 'none';-->
+<!---->
+<!--            // Add the required attribute to input fields in the UG table-->
+<!--            tableInputs.forEach(function (input) {-->
+<!--                input.setAttribute('required', 'required');-->
+<!--            });-->
+<!---->
+<!--            textareaInput.removeAttribute('required');-->
+<!--        } else if (selectedOption === 'PG') {-->
+<!--            tableContainer.style.display = 'none';-->
+<!--            textareaContainer.style.display = 'block';-->
+<!---->
+<!--            // Remove the required attribute from input fields in the UG table-->
+<!--            tableInputs.forEach(function (input) {-->
+<!--                input.removeAttribute('required');-->
+<!--            });-->
+<!---->
+<!--            // Add the required attribute to the textarea in the PG section-->
+<!--            textareaInput.setAttribute('required', 'required');-->
+<!--        }-->
+<!--    }-->
+<!---->
+<!--    // Attach an event listener to the dropdown to trigger the toggle function-->
+<!--    document.getElementById('lvl_edu').addEventListener('change', toggleFields);-->
+<!---->
+<!--    // Initial state based on the default dropdown value-->
+<!--    toggleFields();-->
+<!--</script>-->
 
 
 <script>

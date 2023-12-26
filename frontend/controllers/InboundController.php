@@ -2,9 +2,11 @@
 
 namespace frontend\controllers;
 
+use common\models\Countries;
 use common\models\Courses;
 use common\models\Iiumcourse;
 use common\models\Inbound;
+use common\models\Outbound;
 use Exception;
 use Yii;
 use yii\filters\AccessControl;
@@ -224,31 +226,6 @@ class InboundController extends Controller
         return $model;
     }
 
-    private function saveCoursesData($model, $coursesData)
-    {
-        foreach ($coursesData as $courseInfo) {
-            $coursesModel = new Courses();
-            $coursesModel->attributes = $courseInfo;
-            $coursesModel->student_id = $model->ID;
-
-            if (!$coursesModel->save()) {
-                throw new Exception('Failed to save Courses records.');
-            }
-        }
-    }
-
-    private function saveIiumCoursesData($model, $iiumcourseData)
-    {
-        foreach ($iiumcourseData as $iiumcourseInfo) {
-            $iiumcoursesModel = new Iiumcourse();
-            $iiumcoursesModel->attributes = $iiumcourseInfo;
-            $iiumcoursesModel->student_id = $model->ID;
-
-            if (!$iiumcoursesModel->save()) {
-                throw new Exception('Failed to save IIUM course records.');
-            }
-        }
-    }
     /**
      * Updates an existing Inbound model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -259,45 +236,63 @@ class InboundController extends Controller
     public function actionUpdate($ID)
     {
         $this->layout = 'progressInbound';
-        $model = $this->findModel($ID);
+        $model = Inbound::findOne($ID);
 
-        if ($model ->Status !== 3 && $model -> Status !== null ) {
+        // Retrieve courses data
+
+        if ($model->Status !== 7 && $model->Status !== null) {
             Yii::$app->session->setFlash('error', "Your application on process now, Can't update your INFO during that.");
             // Redirect to a different page or reload the current page
             return $this->redirect(['inbound/index']); // Replace 'controller/action' with the appropriate route
         }
-        if ($this->request->isPost) {
+        $coursesData = Courses::find()->where(['student_id' => $ID])->all();
+
+
+        if (Yii::$app->request->isPost) {
             $transaction = Yii::$app->db->beginTransaction();
 
             try {
-                // Load data into the model
-                if ($model->load($this->request->post())) {
+
+                if ($model->load(Yii::$app->request->post())) {
                     // Helper function for updating file
                     $updateFile = function ($attribute, $fileNamePrefix) use ($model) {
                         $file = UploadedFile::getInstance($model, $attribute);
                         if ($file) {
-                            $baseUploadPath = 'C:/xampp/htdocs/playground1/common/uploads';
+                            $baseUploadPath = 'C:/xampp/htdocs/IIUM_Inbound_Oubbound/frontend/uploads';
                             $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $file->name);
-                            $fileName = $fileNamePrefix . '_' . $model->Name . '_' . $model->ID . '.' . $file->extension;
+                            $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
+                            $fileName = $creationYearLastTwoDigits . '_' . $model->ID . '_' . $fileNamePrefix . '.' . $file->extension;
                             $file->saveAs($baseUploadPath . '/' . $fileName);
                             $model->$attribute = $fileName; // Update the model attribute with the new file name
                         }
                     };
 
                     // Update each file
-                    $updateFile('English_certificate', 'English_certificate');
-                    $updateFile('Recommendation_letter', 'Recommendation_letter');
                     $updateFile('Passport', 'Passport');
-                    $updateFile('Latest_passport_photo', 'Latest_passport_photo');
-                    $updateFile('Latest_certified_academic_transcript', 'Latest_certified_academic_transcript');
-                    $updateFile('Confirmation_letter', 'Confirmation_letter');
-                    $updateFile('Confirmation_letter', 'Confirmation_letter');
-                    $updateFile('Sponsorship_letter', 'Sponsorship_letter');
+                    $updateFile('Latest_passport_photo', 'LatestPassportPhoto');
+                    $updateFile('Latest_certified_academic_transcript', 'LatestCertifiedAcademicTranscript');
+                    $updateFile('Confirmation_letter', 'ConfirmationLetter');
+                    $updateFile('Sponsorship_letter', 'SponsorshipLetter');
+                    $updateFile('Recommendation_letter', 'RecommendationLetter');
+                    $updateFile('English_certificate', 'EnglishCertificate');
 
-
-
-                    // Save the model
+                    if ($this->request->post('saveWithoutValidation') === 'validate') {
+                        // Set status to 10 only when the 'submit' button is clicked
+                        $model->Status = 10;
+                    }
+                    // Save the main model and update Courses/Iiumcourse records
                     if ($model->validate() && $model->save()) {
+                        // Update Courses records
+                        foreach ($_POST['CoursesModel'] as $courseData) {
+                            $courseModel = Courses::findOne($courseData['id']);
+                            $courseModel->attributes = $courseData;
+
+                            if (!$courseModel->validate() || !$courseModel->save()) {
+                                Yii::error("Error saving Courses record: " . print_r($courseModel->errors, true));
+                                // Handle the error case, you might want to render the update view again with an error message
+                            }
+                        }
+
                         // If everything is successful, commit the transaction
                         $transaction->commit();
 
@@ -315,7 +310,7 @@ class InboundController extends Controller
         }
 
         return $this->render('update', [
-            'model' => $model,
+            'model' => $model, 'coursesData' => $coursesData,
         ]);
     }
 
@@ -362,5 +357,28 @@ class InboundController extends Controller
         } else {
             throw new NotFoundHttpException('The file does not exist.');
         }
+    }
+    public function actionGetCountries()
+    {
+        $countries = Countries::find()->all(); // Replace YourCountryModel with your actual model class name
+        $options = '<option value="">Select Country</option>';
+        foreach ($countries as $country) {
+            $options .= '<option value="' . $country->id . '">' . $country->name . '</option>';
+        }
+
+        Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        return $options;
+    }
+
+    public function actionGetNationality()
+    {
+        $countries = Countries::find()->all(); // Replace YourCountryModel with your actual model class name
+        $options = '<option value="">Select Country</option>';
+        foreach ($countries as $country) {
+            $options .= '<option value="' . $country->nationality . '">' . $country->nationality . '</option>';
+        }
+
+        Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        return $options;
     }
 }

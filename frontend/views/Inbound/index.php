@@ -58,7 +58,7 @@ if (!isset($noRecord)) {
 			</div>
 		</div>
 		<div>
-            <?php if ($model->Status === null || $model->Status === 3) : ?>
+            <?php if ($model->Status === null || $model->Status === 7) : ?>
                 <?= Html::a(
                     '<i class="ti ti-refresh"></i> Update your Info',
                     ['update', 'ID' => $model->ID],
@@ -191,14 +191,9 @@ if (!isset($noRecord)) {
 							<p class = "mb-2 fw-light mb-1"><strong>Mobile
 							                                        Number: </strong> <?= $model->Approval_person_mobile_number ?></p>
 							<p class = "mb-2 fw-light mb-1"><strong>Date: </strong> <?= $model->Approval_date ?></p>
-							<P><strong>Recommendation Letter: </strong>
-                                <?= ($model->Recommendation_letter) ? Html::a('Recommendation_letter'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Recommendation_letter,
-                                        PATHINFO_EXTENSION), [
-                                    'download', 'id' => $model->ID,
-                                    'file' => 'Recommendation_letter'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Recommendation_letter,
-                                            PATHINFO_EXTENSION)
-                                ]) : ''; ?>
-							</P>
+							<p class="fw-semibold"><?= ($model->Recommendation_letter) ? Html::a('Recommendation Letter', [
+                                    'download', 'id' => $model->ID, 'file' => $fileName . '_RecommendationLetter' . '.pdf'
+                                ]) : ''; ?></p>
 						</div>
 					</div>
 				</div>
@@ -216,8 +211,8 @@ if (!isset($noRecord)) {
 								</strong>
 							</div>
 
-							<p class="fw-semibold"><?= ($model->Passport) ? Html::a('Offer Letter', [
-                                    'download', 'id' => $model->ID, 'file' => $fileName . '_offerLetter' . '.pdf'
+							<p class="fw-semibold"><?= ($model->Passport) ? Html::a('Passport', [
+                                    'download', 'id' => $model->ID, 'file' => $fileName . '_Passport' . '.pdf'
                                 ]) : ''; ?></p>
 						</div>
 					</div>
