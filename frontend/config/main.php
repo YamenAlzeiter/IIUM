@@ -38,7 +38,7 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                '' => 'outbound/index',
+                
             ],
         ],
     ],

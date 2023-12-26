@@ -9,6 +9,7 @@ use common\models\Inbound;
 use common\models\Outbound;
 use common\models\States;
 use Exception;
+use frontend\components\UserTypeRestriction;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -27,17 +28,21 @@ class InboundController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::class, 'only' => ['index', 'create', 'upload'],
-                // Define the actions that require access control
+                'class' => AccessControl::class,
+                'only' => ['index', 'create', 'upload'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'upload'], 'allow' => true, 'roles' => ['@'],
+                        'actions' => ['index', 'create', 'upload'],
+                        'allow' => true,
+                        'roles' => ['@'],
                     ],
                 ],
             ],
+            'userTypeRestriction' => [
+                'class' => UserTypeRestriction::class,
+            ],
         ];
     }
-
 
     /**
      * Lists all Inbound models.

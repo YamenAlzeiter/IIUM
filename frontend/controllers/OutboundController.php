@@ -18,6 +18,7 @@ use yii\filters\VerbFilter;
 use yii\web\Response;
 use yii\web\UploadedFile;
 use function PHPUnit\Framework\returnArgument;
+use frontend\components\UserTypeRestriction;
 
 /**
  * OutboundController implements the CRUD actions for Outbound model.
@@ -38,6 +39,9 @@ class OutboundController extends Controller
                         'actions' => ['index', 'create', 'upload'], 'allow' => true, 'roles' => ['@'],
                     ],
                 ],
+            ],
+            'userTypeRestriction' => [
+                'class' => UserTypeRestriction::class,
             ],
         ];
     }

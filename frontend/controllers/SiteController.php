@@ -77,6 +77,7 @@ class SiteController extends Controller
     {
         return $this->render('index');
     }
+    
 
     /**
      * Logs in a user.
@@ -88,14 +89,23 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
-
+    
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            $currentUser = Yii::$app->user->identity;
+    
+            if ($currentUser && $currentUser->type === 'I') {
+                return $this->redirect(['inbound/index']);
+            } elseif ($currentUser && $currentUser->type === 'O') {
+                return $this->redirect(['outbound/index']);
+            } else {
+                // Handle other cases or errors
+                return $this->render('error');
+            }
         }
-
+    
         $model->password = '';
-
+    
         return $this->render('login', [
             'model' => $model,
         ]);
