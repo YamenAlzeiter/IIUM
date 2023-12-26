@@ -3,6 +3,7 @@
 use common\models\Inbound;
 use common\models\Status;
 use Psy\Util\Json;
+use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\LinkPager;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -69,7 +70,7 @@ if (!isset($noRecord)) {
                 ); ?>
 
             <?php endif; ?>
-            <?php if ($model->Status === 41) : ?>
+            <?php if ($model->Status === 45) : ?>
 				<div class="mt-3 px-4 d-flex flex-row gap-2">
 					<a class="update-button btn btn-outline-dark d-flex align-items-center px-3" id="upload" data-toggle="modal" title="View" data-target="#form-upload">
 						<i class="ti ti-upload me-0 me-md-1 fs-4"></i>
@@ -214,6 +215,22 @@ if (!isset($noRecord)) {
 							<p class="fw-semibold"><?= ($model->Passport) ? Html::a('Passport', [
                                     'download', 'id' => $model->ID, 'file' => $fileName . '_Passport' . '.pdf'
                                 ]) : ''; ?></p>
+
+							<p class="fw-semibold"><?= ($model->Latest_passport_photo) ? Html::a('Latest Passport Photo', [
+                                    'download', 'id' => $model->ID, 'file' => $fileName . '_LatestPassportPhoto' . '.pdf'
+                                ]) : ''; ?></p>
+
+							<p class="fw-semibold"><?= ($model->Latest_certified_academic_transcript) ? Html::a('Latest Certified Academic Transcript', [
+                                    'download', 'id' => $model->ID, 'file' => $fileName . '_LatestCertifiedAcademicTranscript' . '.pdf'
+                                ]) : ''; ?></p>
+
+							<p class="fw-semibold"><?= ($model->Confirmation_letter) ? Html::a('Confirmation Letter', [
+                                    'download', 'id' => $model->ID, 'file' => $fileName . '_ConfirmationLetter' . '.pdf'
+                                ]) : ''; ?></p>
+
+							<p class="fw-semibold"><?= ($model->Sponsorship_letter) ? Html::a('Sponsorship Letter', [
+                                    'download', 'id' => $model->ID, 'file' => $fileName . '_SponsorshipLetter' . '.pdf'
+                                ]) : ''; ?></p>
 						</div>
 					</div>
 				</div>
@@ -267,14 +284,9 @@ if (!isset($noRecord)) {
 					</strong>
 				</div>
 				<p class = "mb-2 fw-light mb-1"><strong>English Proficiency: </strong> <?= getAnswer($model->English_native) ?></p>
-				<p class = "mb-2 fw-light mb-1"><strong>Result: </strong> <?= $model->English_test_name ?></p><P><strong>English Certificate: </strong>
-                    <?= ($model->English_certificate) ? Html::a('English_certificate'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->English_certificate,
-                            PATHINFO_EXTENSION), [
-                        'download', 'id' => $model->ID,
-                        'file' => 'English_certificate'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->English_certificate,
-                                PATHINFO_EXTENSION)
-                    ]) : ''; ?>
-				</P>
+				<p class="fw-semibold"><?= ($model->English_certificate) ? Html::a('English Certificate', [
+                        'download', 'id' => $model->ID, 'file' => $fileName . '_EnglishCertificate' . '.pdf'
+                    ]) : ''; ?></p>
 			</div>
 		</div>
 	</div>
@@ -327,23 +339,52 @@ if (!isset($noRecord)) {
         <?php endif; ?>
 	</div>
 </div>
-<div class = "d-flex flex-row justify-content-center mt-5 gap-2 ">
-    <?= Html::
-    a('<button type="button" class="btn btn-outline-dark">
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
-                                      <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
-                                  </svg>back</button>', Yii::$app->request->referrer) ?>
-    <?= Html::a('Action', ['action', 'ID' => $model->ID], ['class' => 'btn btn-secondary']) ?>
-    <?php if (Yii::$app->user->can('superAdmin')): ?>
-        <?= Html::a('Delete', ['delete', 'ID' => $model->ID], [
-            'class' => 'btn btn-danger', 'data' => [
-                'confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',
-            ],
-        ]) ?>
-        <?= Html::button('Update', [
-            'class' => 'btn btn-primary',
-            'onclick' => 'location.href='.Json::encode(Url::to(['update', 'ID' => $model->ID])),
-        ]) ?>
-    <?php endif; ?>
-</div>
-<?php endif; ?>
+
+<div class="modal fade" id="form-upload" tabindex="-1" role="dialog">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content border-0">
+			<div class="modal-header bg-dark">
+				<h6 id="form-upload-header" class="text-white mb-0"></h6>
+
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="form-box">
+					<div class="form-content">
+                        <?php $form = ActiveForm::begin([
+                            'options' => ['enctype' => 'multipart/form-data'],
+                            'action' => ['outbound/upload', 'ID' => $model->ID], // Pass the ID to the action
+                        ]); ?>
+                        <?= Html::hiddenInput('ID', $model->ID) ?>
+						<div class="row d-flex align-items-center justify-content-center">
+							<div class="col-md-6">
+								<div class="mb-3">
+									<label for="formFile" class="form-label">Proof of sponsorship/ Funding/ Grant(Official Letter)</label>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="mb-3">
+                                    <?= $form->field($model, 'Passport')->fileInput([
+                                        'class' => 'form-control', 'id' => 'Passport',
+                                    ])->label(false) ?>
+								</div>
+							</div>
+						</div>
+
+
+						<div class="form-group mt-2">
+							<div class="form-group">
+                                <?= Html::submitButton('', ['class' => 'btn btn-outline-dark px-4 py-2', 'name' => 'save-button', 'id' => 'form-upload-button']) ?>
+							</div>
+						</div>
+
+                        <?php ActiveForm::end(); ?>
+					</div>
+				</div>
+			</div>
+
+
+            <?php endif; ?>
+
+
+

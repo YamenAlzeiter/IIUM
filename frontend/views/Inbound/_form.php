@@ -108,9 +108,11 @@ use yii\bootstrap5\ActiveForm;
 			<div class = "row mb-2">
 				<div class = "col-md-6">
 					<div class = "form__div">
-						<input type = "text" class = "form__input form-control" id = "validationCustomCitizenship"
-						       name = "Inbound[Citizenship]"
-						       maxlength = "255" placeholder = " " value = "<?= $model->Citizenship ?>" required>
+
+						<select class = "form__input form-control countries" id = "validationCustomCitizenship"
+						        name = "Inbound[Citizenship]" required>
+							<option value = "">Select Nationality</option>
+						</select>
 						<label for = "validationCustomCitizenship" class = "form__label">Citizenship</label>
 					</div>
 				</div>
@@ -121,7 +123,7 @@ use yii\bootstrap5\ActiveForm;
 						        required>
 							<option value = "">Select Country</option>
 						</select>
-						<label for = "validationCustomCitizenship" class = "form__label">Country of Origion</label>
+						<label for = "validationCustomCountryOFOrigin" class = "form__label">Country of Origion</label>
 					</div>
 				</div>
 				<div class = "col-md-3">
@@ -131,7 +133,7 @@ use yii\bootstrap5\ActiveForm;
 						        required>
 							<option value = "">Select Country</option>
 						</select>
-						<label for = "validationCustomCitizenship" class = "form__label">Country of Residence</label>
+						<label for = "validationCustomCounryOfResidence" class = "form__label">Country of Residence</label>
 					</div>
 				</div>
 			</div>
@@ -175,7 +177,7 @@ use yii\bootstrap5\ActiveForm;
 						        required>
 							<option value = "">Select Country</option>
 						</select>
-						<label for = "validationCustomCitizenship" class = "form__label">Country</label>
+						<label for = "validationCustomCountry" class = "form__label">Country</label>
 					</div>
 				</div>
 				<div class = "mt-3 d-flex justify-content-between">
@@ -255,7 +257,7 @@ use yii\bootstrap5\ActiveForm;
 						        required>
 							<option value = "">Select Country</option>
 						</select>
-						<label for = "validationCustomCitizenship" class = "form__label">Country</label>
+						<label for = "validationCustomEmergencyCountry" class = "form__label">Country</label>
 					</div>
 				</div>
 			</div>
@@ -996,7 +998,7 @@ use yii\bootstrap5\ActiveForm;
 							        onclick = "submitForm('noValidate')">Save
 							</button>
 							<div>
-								<button class="button submit-btn" type="submit" name="saveWithoutValidation" value="validate" >Submit</button>
+								<button class="button submit-btn" type="button" name="saveWithoutValidation" value="validate"  onclick= "submitForm('validate')">Submit</button>
 							</div>
 						</div>
 					</div>
@@ -1008,6 +1010,38 @@ use yii\bootstrap5\ActiveForm;
 		</section>
 	</form>
 </div>
+
+<script>
+
+    var nationalityModelValue = "<?= htmlspecialchars($model->Citizenship) ?>";
+
+    var dropdownData = [
+        {
+            countryId: '#countryId5',
+            stateId: null,
+            countryModel: "<?= htmlspecialchars($model->Country_of_origin)?>",
+            stateModel: null,
+        },
+        {
+            countryId: '#countryId4',
+            stateId: null,
+            countryModel: "<?= htmlspecialchars($model->Country_of_residence)?>",
+            stateModel: null,
+        },
+        {
+            countryId: jQuery("#countryId3"),
+            stateId: null,
+            countryModel: "<?= htmlspecialchars($model->Country) ?>",
+            stateModel: null,
+        },
+        {
+            countryId: jQuery("#countryId2"),
+            stateId: null, // Replace with the actual state ID
+            countryModel: "<?= htmlspecialchars($model->Emergency_country) ?>",
+            stateModel: null // Set to null or adjust based on your data
+        },
+    ];
+</script>
 
 <script>
     $(document).ready(function () {

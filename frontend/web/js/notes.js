@@ -8,7 +8,7 @@ $(function () {
 
     function resetFormAndModal() {
         updateModelId = null;
-        $form[0].reset();
+        // $form[0].reset();
         $btnNSave.hide();
         $btnNAdd.show();
         console.log('im here')

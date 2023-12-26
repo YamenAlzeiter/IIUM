@@ -7,6 +7,7 @@ use common\models\Courses;
 use common\models\Iiumcourse;
 use common\models\Inbound;
 use common\models\Outbound;
+use common\models\States;
 use Exception;
 use Yii;
 use yii\filters\AccessControl;
@@ -358,27 +359,6 @@ class InboundController extends Controller
             throw new NotFoundHttpException('The file does not exist.');
         }
     }
-    public function actionGetCountries()
-    {
-        $countries = Countries::find()->all(); // Replace YourCountryModel with your actual model class name
-        $options = '<option value="">Select Country</option>';
-        foreach ($countries as $country) {
-            $options .= '<option value="' . $country->id . '">' . $country->name . '</option>';
-        }
 
-        Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
-        return $options;
-    }
 
-    public function actionGetNationality()
-    {
-        $countries = Countries::find()->all(); // Replace YourCountryModel with your actual model class name
-        $options = '<option value="">Select Country</option>';
-        foreach ($countries as $country) {
-            $options .= '<option value="' . $country->nationality . '">' . $country->nationality . '</option>';
-        }
-
-        Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
-        return $options;
-    }
 }

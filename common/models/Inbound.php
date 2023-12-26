@@ -112,7 +112,7 @@ class Inbound extends \yii\db\ActiveRecord
             [['Relation_ship', 'Postcode', 'Emergency_postCode'], 'string', 'max' => 10],
             [['Passport_Number'], 'string', 'max' => 9],
             [['Religion', 'Mazhab', 'Country_of_origin', 'Country_of_residence', 'Country', 'Emergency_country', 'Sponsor_name', 'Room_type', 'reference_number'], 'string', 'max' => 100],
-            [['Citizenship'], 'string', 'max' => 2],
+            [['Citizenship'], 'string', 'max' => 512],
             [['Mobile_Number', 'Emergency_phoneNumber'], 'string', 'max' => 15],
             [['Email_address', 'Emergency_name', 'Emergency_email', 'Emergency_homeAddress', 'Academic_home_university', 'Academic_name_of_programme', 'Academic_name_of_faculty', 'Research_title', 'English_test_name', 'English_other_test_name', 'Propose_type_of_programme', 'Propose_type_of_programme_other', 'Propose_kulliyyah_applied', 'campus_location', 'Financial_funding_other', 'Approval_university_person_name', 'Approval_person_position', 'Approval_person_email', 'Student_declaration_name', 'note_kulliyyah', 'note_msd_cps', 'Token'], 'string', 'max' => 512],
             [['Academic_lvl_edu'], 'string', 'max' => 20],
