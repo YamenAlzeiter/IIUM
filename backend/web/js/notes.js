@@ -12,6 +12,18 @@ $(function () {
         $(this).addClass("active");
     });
 
+    $("#add-notes").on("click", function (event) {
+        // Set the form for creating a new record
+        $("#formpoc").modal("show");
+        $("#btn-n-save").hide();
+        $("#btn-n-add").show();
+        $("#formpoc-header").html('<i class="ti ti-file text-dark me-2 text-white"></i>Create New Record');
+        $("#formpoc-button").html('<i class = "ti ti-plus"></i> Add');
+        // Reset the updateModelId
+        updateModelId = null;
+        $("#add-notes").data("update-model-id", updateModelId); // Update data attribute
+    });
+
     function showModal(modalId, headerText, buttonText, formAction, recordId, ajaxUrl, successCallback) {
         $(modalId).modal("show");
         $("#btn-n-save, #btn-n-add").toggle(); // Toggle save and add buttons

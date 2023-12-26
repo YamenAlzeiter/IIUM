@@ -120,23 +120,10 @@ function submitForm(validationType) {
     // Set the status to 10 if it's the last step
 
 
-    // Your AJAX submit logic here
-    $.ajax({
-        type: 'POST',
-        url: form.action,
-        data: new FormData(form),
-        processData: false,
-        contentType: false,
-        success: function (data) {
-            // Handle the success response, if needed
-            console.log(data);
-        },
-        error: function (xhr, status, error) {
-            // Handle the error, if needed
-            console.error(xhr.responseText);
-        }
-    });
+    document.querySelector('.submit-btn').type = 'submit';
 
+    // Submit the form
+    document.getElementById("myForm").submit();
     console.log("Form submitted successfully");
 }
 

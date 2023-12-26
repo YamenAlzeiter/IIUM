@@ -10,12 +10,16 @@ use yii\bootstrap5\ActiveForm;
 /** @var yii\web\View $this */
 /** @var common\models\Outbound $model */
 
+function isFileRequired($file)
+{
+    return $file === null;
+}
 
 ?>
 <div>
 
 	<!-- Step 1 Content -->
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([ 'id' => 'myForm']); ?>
 		<input type = "hidden" name = "<?= Yii::$app->request->csrfParam ?>"
 		       value = "<?= Yii::$app->request->csrfToken ?>"
 		       >
@@ -25,7 +29,7 @@ use yii\bootstrap5\ActiveForm;
 					<div class = "form__div">
 						<input type = "text" class = "form__input form-control" id = "validationCustom01"
 						       name = "Outbound[Matric_Number]"
-						       maxlength = "255" placeholder = " " value = "<?= $model->Matric_Number ?>" >
+						       maxlength = "255" placeholder = " " value = "<?= $model->Matric_Number ?>" required>
 						<label for = "validationCustomMatric" class = "form__label">Matric Number</label>
 					</div>
 				</div>
@@ -33,8 +37,7 @@ use yii\bootstrap5\ActiveForm;
 					<div class = "form__div">
 
 						<select class = "form__input form-control countries" id = "validationCustomCitizenship"
-						        name = "Outbound[Citizenship]"
-						>
+						        name = "Outbound[Citizenship]" required>
 							<option value = "">Select Nationality</option>
 						</select>
 						<label for = "validationCustomCitizenship" class = "form__label">Citizenship</label>
@@ -43,7 +46,7 @@ use yii\bootstrap5\ActiveForm;
 			</div>
 			<div class = "form__div">
 				<input type = "text" class = "form__input form-control" id = "validationCustomName" name = "Outbound[Name]"
-				       maxlength = "255" placeholder = " " value = "<?= $model->Name ?>" >
+				       maxlength = "255" placeholder = " " value = "<?= $model->Name ?>" required>
 				<label for = "validationCustomName" class = "form__label">Name</label>
 			</div>
 			<div class = "row align-items-center">
@@ -51,7 +54,7 @@ use yii\bootstrap5\ActiveForm;
 					<legend class = "col-form-label col-sm-2 pt-0">Gender</legend>
 					<div class = "form-check form-check-inline">
 						<input id = "gender_male" type = "radio" name = "Outbound[Gender]" value = "M"
-						       class = "form-check-input" <?= $model->Gender === 'M' ? 'checked' : '' ?> >
+						       class = "form-check-input" <?= $model->Gender === 'M' ? 'checked' : '' ?> required>
 						<label for = "gender_male" class = "form-check-label">Male</label>
 					</div>
 					<div class = "form-check form-check-inline pl-3">
@@ -64,7 +67,7 @@ use yii\bootstrap5\ActiveForm;
 					<div class = "form__div">
 						<input type = "date" class = "form__input form-control" name = "Outbound[Date_of_Birth]"
 						       placeholder = " "
-						       value = "<?= $model->Date_of_Birth ?>" >
+						       value = "<?= $model->Date_of_Birth ?>" required>
 						<label for = "validationCustomPassport" class = "form__label">Date of Birth</label>
 					</div>
 				</div>
@@ -75,7 +78,7 @@ use yii\bootstrap5\ActiveForm;
 						<input type = "text" class = "form__input form-control" id = "validationCustomPassport"
 						       name = "Outbound[Passport_Number]"
 						       maxlength = "255" placeholder = " "
-						       value = "<?= $model->Passport_Number ?>" >
+						       value = "<?= $model->Passport_Number ?>" required>
 						<label for = "validationCustomPassport" class = "form__label">Passport Number</label>
 					</div>
 				</div>
@@ -83,7 +86,7 @@ use yii\bootstrap5\ActiveForm;
 					<div class = "form__div">
 						<input type = "date" class = "form__input form-control" name = "Outbound[Passport_Expiration]"
 						       placeholder = " "
-						       value = "<?= $model->Passport_Expiration ?>" >
+						       value = "<?= $model->Passport_Expiration ?>" required>
 						<label for = "validationCustomPassport" class = "form__label">Expiration Date</label>
 					</div>
 				</div>
@@ -93,7 +96,7 @@ use yii\bootstrap5\ActiveForm;
 					<div class = "form__div">
 						<input type = "tel" class = "form__input form-control" id = "validationCustomMobile"
 						       name = "Outbound[Mobile_Number]"
-						       maxlength = "255" placeholder = " " value = "<?= $model->Mobile_Number ?>" >
+						       maxlength = "255" placeholder = " " value = "<?= $model->Mobile_Number ?>" required>
 						<label for = "validationCustomMobile" class = "form__label">Mobile Number</label>
 					</div>
 				</div>
@@ -101,7 +104,7 @@ use yii\bootstrap5\ActiveForm;
 					<div class = "form__div">
 						<input type = "email" class = "form__input form-control" id = "validationCustomEmail"
 						       name = "Outbound[Email]"
-						       maxlength = "100" placeholder = " " value = "<?= $model->Email ?>" >
+						       maxlength = "100" placeholder = " " value = "<?= $model->Email ?>" required>
 						<label for = "validationCustomEmail" class = "form__label">Email</label>
 					</div>
 				</div>
@@ -109,7 +112,7 @@ use yii\bootstrap5\ActiveForm;
 
 			<div class = "form__div">
     <textarea class = "form__input form-control" id = "validationCustomAddress" name = "Outbound[Permanent_Address]"
-              maxlength = "255"  placeholder = " "><?= $model->Permanent_Address ?></textarea>
+              maxlength = "255"  placeholder = " " required><?= $model->Permanent_Address ?></textarea>
 				<label for = "validationCustomAddress" class = "form__label">Permanent Address</label>
 			</div>
 
@@ -119,7 +122,7 @@ use yii\bootstrap5\ActiveForm;
 						<input type = "number" class = "form__input form-control" id = "validationCustomPostcode"
 						       name = "Outbound[Postcode]"
 						       value = "<?= $model->Postcode ?>"
-						        placeholder = " ">
+						        placeholder = " " required>
 						<label for = "validationCustomPostcode" class = "form__label">Postal Code</label>
 					</div>
 				</div>
@@ -134,7 +137,7 @@ use yii\bootstrap5\ActiveForm;
 				<div class = "col-md-6">
 					<div class = "form__div">
 						<select class = "form__input form-control states" id = "stateId1" name = "Outbound[State]"
-						        value = "<?= $model->State ?>" >
+						        value = "<?= $model->State ?>" required>
 							<option value = "">Select State</option>
 						</select>
 					</div>
@@ -142,7 +145,7 @@ use yii\bootstrap5\ActiveForm;
 			</div>
 			<div class = "form__div">
     <textarea class = "form__input form-control" id = "validationCustomMailingAddress" name = "Outbound[Mailing_Address]"
-              maxlength = "255"  placeholder = " "><?= $model->Mailing_Address ?></textarea>
+              maxlength = "255"  placeholder = " " required><?= $model->Mailing_Address ?></textarea>
 				<label for = "validationCustomMailingAddress" class = "form__label">Mailing Address</label>
 			</div>
 
@@ -150,23 +153,22 @@ use yii\bootstrap5\ActiveForm;
 				<div class = "col-md-6">
 					<div class = "form__div">
 						<input type = "number" class = "form__input form-control" id = "validationCustomMailingPostcode"
-						       value = '<?= $model->Postcode ?>' name = "Outbound[Mailing_Postcode]" maxlength = "255"
-						        placeholder = " ">
+						       value = '<?= $model->Mailing_Postcode?>' name = "Outbound[Mailing_Postcode]" maxlength = "255"
+						        placeholder = " " required>
 						<label for = "validationCustomMailingPostcode" class = "form__label">Mailing Post Code</label>
 					</div>
 				</div>
 				<div class = "col-md-6">
 					<div class = "form__div">
 						<select class = "form__input form-control countries" id = "countryId4"
-						        name = "Outbound[Mailing_Country]" >
+						        name = "Outbound[Mailing_Country]" required>
 							<option value = "">Select Country</option>
 						</select>
 					</div>
 				</div>
 				<div class = "col-md-6">
 					<div class = "form__div">
-						<select class = "form__input form-control states" id = "stateId2" name = "Outbound[Mailing_State]"
-						        >
+						<select class = "form__input form-control states" id = "stateId2" name = "Outbound[Mailing_State]" required>
 							<option value = "">Select State</option>
 						</select>
 					</div>
@@ -175,7 +177,7 @@ use yii\bootstrap5\ActiveForm;
 			<div class = "mt-3 d-flex justify-content-between">
 				<div>
 					<div>
-						<button class = "button submit-btn" type = "submit" name = "saveWithoutValidation">Save</button>
+						<button class="button submit-btn" type="button" name="saveWithoutValidation" onclick="submitForm('noValidate')">Save</button>
 					</div>
 				</div>
 				<div>
@@ -193,7 +195,7 @@ use yii\bootstrap5\ActiveForm;
 					<div class = "form__div">
 						<input type = "text" class = "form__input form-control" id = "validationCustomEmName"
 						       name = "Outbound[Emergency_name]"
-						       maxlength = "255" placeholder = " " value = "<?= $model->Emergency_name ?>" >
+						       maxlength = "255" placeholder = " " value = "<?= $model->Emergency_name ?>" required>
 						<label for = "validationCustomEmName" class = "form__label">Name</label>
 					</div>
 				</div>
@@ -205,7 +207,7 @@ use yii\bootstrap5\ActiveForm;
 						<input type = "text" class = "form__input form-control"
 						       id = "validationCustomEmRelationship"
 						       name = "Outbound[Emergency_relationship]"
-						       maxlength = "255" placeholder = " " value = "<?= $model->Emergency_relationship ?>" >
+						       maxlength = "255" placeholder = " " value = "<?= $model->Emergency_relationship ?>" required>
 						<label for = "validationCustomEmRelationship" class = "form__label">Relationship</label>
 					</div>
 				</div>
@@ -213,7 +215,7 @@ use yii\bootstrap5\ActiveForm;
 					<div class = "form__div">
 						<input type = "text" class = "form__input form-control" id = "validationCustomEmPhoneNumber"
 						       name = "Outbound[Emergency_phoneNumber]"
-						       maxlength = "255" placeholder = " " value = "<?= $model->Emergency_phoneNumber ?>" >
+						       maxlength = "255" placeholder = " " value = "<?= $model->Emergency_phoneNumber ?>" required>
 						<label for = "validationCustomEmPhoneNumber" class = "form__label">Phone Number</label>
 					</div>
 				</div>
@@ -222,7 +224,7 @@ use yii\bootstrap5\ActiveForm;
 
 						<input type = "email" class = "form__input form-control" id = "validationCustomEmEmail"
 						       name = "Outbound[Emergency_email]"
-						       maxlength = "255" placeholder = " " value = "<?= $model->Emergency_email ?>" >
+						       maxlength = "255" placeholder = " " value = "<?= $model->Emergency_email ?>" required>
 						<label for = "validationCustomEmEmail" class = "form__label">Email</label>
 					</div>
 				</div>
@@ -230,7 +232,7 @@ use yii\bootstrap5\ActiveForm;
 
 			<div class = "form__div">
     <textarea class = "form__input form-control" id = "validationCustomEmHomeAddress" name = "Outbound[Emergency_homeAddress]"
-              maxlength = "255"  placeholder = " "><?= $model->Emergency_homeAddress ?></textarea>
+              maxlength = "255"  placeholder = " " required><?= $model->Emergency_homeAddress ?></textarea>
 				<label for = "validationCustomEmHomeAddress" class = "form__label">Home Address</label>
 			</div>
 
@@ -239,23 +241,21 @@ use yii\bootstrap5\ActiveForm;
 					<div class = "form__div">
 						<input type = "number" class = "form__input form-control" id = "validationCustomEmPostCode"
 						       name = "Outbound[Emergency_postCode]"
-						       maxlength = "255"  placeholder = " " value = "<?= $model->Emergency_postCode ?>">
+						       maxlength = "255"  placeholder = " " value = "<?= $model->Emergency_postCode ?>" required>
 						<label for = "validationCustomEmPostCode" class = "form__label">Post Code</label>
 					</div>
 				</div>
 				<div class = "col-md-3">
 					<div class = "form__div">
 						<select class = "form__input form-control countries" id = "countryId3"
-						        name = "Outbound[Emergency_country]"
-						        >
+						        name = "Outbound[Emergency_country]" required>
 							<option value = "">Select Country</option>
 						</select>
 					</div>
 				</div>
 				<div class = "col-md-3">
 					<div class = "form__div">
-						<select class = "form__input form-control states" id = "stateId3" name = "Outbound[Emergency_tate]"
-						        >
+						<select class = "form__input form-control states" id = "stateId3" name = "Outbound[Emergency_tate]" required>
 							<option value = "">Select State</option>
 						</select>
 					</div>
@@ -281,7 +281,7 @@ use yii\bootstrap5\ActiveForm;
 			<div class = "row mt-3 d-flex flex-row align-items-center">
 				<div class = "col-md-5">
 					<div class = "form__div">
-						<select class = "form__input form-control" id = "lvl_edu" name = "Outbound[Academic_lvl_edu]" >
+						<select class = "form__input form-control" id = "lvl_edu" name = "Outbound[Academic_lvl_edu]" required>
 							<option value = "">Select your Level of Education</option>
 							<option value = "UG" <?php echo ($model->Academic_lvl_edu === 'UG') ? 'selected' : ''; ?>>Under
 							                                                                                          Graduate
@@ -294,7 +294,7 @@ use yii\bootstrap5\ActiveForm;
 				</div>
 				<div class = "col-md-6">
 					<div class = "form__div">
-						<select class = "form__input form-control" id = "kulliyyah" name = "Outbound[Academic_kulliyyah]" >
+						<select class = "form__input form-control" id = "kulliyyah" name = "Outbound[Academic_kulliyyah]" required>
 							<option value = "">Select Kulliyyah</option>
                             <?php
                             $kulliyyahOptions = [
@@ -323,7 +323,7 @@ use yii\bootstrap5\ActiveForm;
 					</div>
 					<div class = "col-md-4">
 						<div class = "form__div">
-							<select class = "form__input form-control" id = "sem" name = "Outbound[Academic_current_semester]" >
+							<select class = "form__input form-control" id = "sem" name = "Outbound[Academic_current_semester]" required>
 								<option value = "">Select Semester</option>
                                 <?php
                                 for ($i = 1; $i <= 12; $i++) {
@@ -337,7 +337,7 @@ use yii\bootstrap5\ActiveForm;
 						<div class = "form__div">
 							<input type = "text" class = "form__input form-control" id = "validationCustomYear"
 							       name = "Outbound[Academic_current_year]" value = "<?= $model->Academic_current_year ?>"
-							       maxlength = "255" placeholder = " " >
+							       maxlength = "255" placeholder = " " required>
 							<label for = "validationCustomYear" class = "form__label">Year</label>
 						</div>
 					</div>
@@ -348,7 +348,7 @@ use yii\bootstrap5\ActiveForm;
 						<div class = "form__div">
 							<input type = "text" class = "form__input form-control" id = "validationCustomProgram"
 							       name = "Outbound[Academic_name_of_programme]" value = "<?= $model->Academic_name_of_programme ?>"
-							       maxlength = "255" placeholder = " " >
+							       maxlength = "255" placeholder = " " required>
 							<label for = "validationCustomProgram" class = "form__label">Programme</label>
 						</div>
 					</div>
@@ -356,7 +356,7 @@ use yii\bootstrap5\ActiveForm;
 						<div class = "form__div">
 							<input type = "text" class = "form__input form-control" id = "validationCustomCGPA"
 							       name = "Outbound[Academic_cgpa]" value = "<?= $model->Academic_cgpa ?>"
-							       maxlength = "255" placeholder = " " >
+							       maxlength = "255" placeholder = " " required>
 							<label for = "validationCustomCGPA" class = "form__label">Current CGPA</label>
 						</div>
 					</div>
@@ -368,8 +368,7 @@ use yii\bootstrap5\ActiveForm;
 
 				<div class = "col-md-4">
 					<div class = "form__div">
-						<select class = "form__input form-control" id = "e_lang_pro" name = "Outbound[English_language_proficiency]"
-						        >
+						<select class = "form__input form-control" id = "e_lang_pro" name = "Outbound[English_language_proficiency]" required>
 							<option value = "">Select Language Proficiency</option>
                             <?php foreach (["Malaysia University English Test (MUET)", "TOFEL", "IELTS"] as $option): ?>
 								<option value = "<?= $option ?>" <?= ($model->English_language_proficiency === $option) ? 'selected' : '' ?>>
@@ -384,7 +383,7 @@ use yii\bootstrap5\ActiveForm;
 					<div class = "form__div">
 						<input type = "text" class = "form__input form-control" id = "validationCustomResult"
 						       name = "Outbound[English_result]" value = "<?= $model->English_result ?>"
-						       maxlength = "255"  placeholder = " ">
+						       maxlength = "255"  placeholder = " " required>
 						<label for = "validationCustomResult" class = "form__label">Result</label>
 					</div>
 				</div>
@@ -409,13 +408,13 @@ use yii\bootstrap5\ActiveForm;
 						<div class = "form-check form-check-inline">
 							<input type = "radio" class = "form-check-input" id = "academic_accept"
 							       name = "Outbound[Financial_funded_accept]"
-							       value = "1" <?= $model->Financial_funded_accept === 1 ? 'checked' : '' ?> >
+							       value = "1" <?= $model->Financial_funded_accept === 1 ? 'checked' : '' ?> required>
 							<label class = "form-check-label" for = "academic_accept">Yes</label>
 						</div>
 						<div class = "form-check form-check-inline">
 							<input type = "radio" class = "form-check-input" id = "academic_accept"
 							       name = "Outbound[Financial_funded_accept]"
-							       value = "0" <?= $model->Financial_funded_accept === 0 ? 'checked' : '' ?> >
+							       value = "0" <?= $model->Financial_funded_accept === 0 ? 'checked' : '' ?>>
 							<label class = "form-check-label" for = "academic_accept">No</label>
 						</div>
 					</div>
@@ -424,7 +423,7 @@ use yii\bootstrap5\ActiveForm;
 				<div class = "col-md-4 mt-2">
 					<div class = "form__div">
 						<select class = "form__input form-control" id = "sponsoring_name"
-						        name = "Outbound[Sponsoring_name]" >
+						        name = "Outbound[Sponsoring_name]" required>
 							<option value = "">Select Name of Sponsoring Body</option>
                             <?php
                             $sponsoringBodyOptions = ["JPA", "MAEA", "PTPTN", "OTHERS"];
@@ -453,7 +452,7 @@ use yii\bootstrap5\ActiveForm;
 					<div class = "form__div">
 						<input type = "number" class = "form__input form-control" id = "validationCustomFunding"
 						       name = "Outbound[Sponsoring_funding]" value = "<?= $model->Sponsoring_funding ?>" maxlength = "255"
-						       placeholder = " " >
+						       placeholder = " " required>
 						<label for = "validationCustomFunding" class = "form__label">Funding/ Sponsoring Amount
 						                                                             (RM)</label>
 					</div>
@@ -462,7 +461,7 @@ use yii\bootstrap5\ActiveForm;
 
 			<div class = "mt-3 d-flex justify-content-between">
 				<div>
-					<button class = "button submit-btn" type = "submit" name = "saveWithoutValidation">Save</button>
+					<button class="button submit-btn" type="button" name="saveWithoutValidation" onclick="submitForm('noValidate')">Save</button>
 				</div>
 				<div>
 					<button class="button btn-navigate-form-step" type="button" step_number="2">Prev</button>
@@ -485,11 +484,10 @@ use yii\bootstrap5\ActiveForm;
                         ];
 
                         foreach ($mobilityOptions as $value => $label) {
-                            $checked = ($model->Type_mobility === $value) ? 'checked' : '';
-                            ?>
+                            $checked = ($model->Type_mobility === $value) ? 'checked' : ''; ?>
 							<div class = "form-check form-check-inline">
 								<input type = "radio" class = "form-check-input" id = "type_mobility_<?= $value ?>"
-								       name = "Outbound[Type_mobility]" value = "<?= $value ?>" <?= $checked ?> >
+								       name = "Outbound[Type_mobility]" value = "<?= $value ?>" <?= $checked ?> required>
 								<label class = "form-check-label"
 								       for = "type_mobility_<?= $value ?>"><?= $label ?></label>
 							</div>
@@ -503,8 +501,7 @@ use yii\bootstrap5\ActiveForm;
 
 				<div class = "col-md-6">
 					<div class = "form__div">
-						<select class = "form__input form-control" id = "type_program" name = "Outbound[Type_mobility_program]"
-						        >
+						<select class = "form__input form-control" id = "type_program" name = "Outbound[Type_mobility_program]" required>
 							<option value = "">Select Type of Programme</option>
                             <?php
                             $programOptions = [
@@ -539,23 +536,23 @@ use yii\bootstrap5\ActiveForm;
 					<div class = "form__div">
 						<input type = "text" class = "form__input form-control" id = "validationCustomHostUniName"
 						       name = "Outbound[Host_university_name]" maxlength = "255"  placeholder = " "
-						       value = "<?= htmlspecialchars($model->Host_university_name ?? '') ?>">
+						       value = "<?= htmlspecialchars($model->Host_university_name ?? '') ?>" required>
 						<label for = "validationCustomHostUniName" class = "form__label">Name of Host University</label>
 					</div>
 				</div>
 				<div class = "col-md-3">
 					<div class = "form__div">
 						<input type = "date" class = "form__input form-control" id = "validationCustomMobilityFrom"
-						       name = "Outbound[Mobility_from]" 
-						       value = "<?= htmlspecialchars($model->Mobility_from ?? '') ?>">
+						       name = "Outbound[Mobility_from]"
+						       value = "<?= htmlspecialchars($model->Mobility_from ?? '') ?>" required>
 						<label for = "validationCustomMobilityFrom" class = "form__label">Mobility From</label>
 					</div>
 				</div>
 				<div class = "col-md-3">
 					<div class = "form__div">
 						<input type = "date" class = "form__input form-control" id = "validationCustomMobilityUntil"
-						       name = "Outbound[Mobility_until]" 
-						       value = "<?= htmlspecialchars($model->Mobility_until ?? '') ?>">
+						       name = "Outbound[Mobility_until]"
+						       value = "<?= htmlspecialchars($model->Mobility_until ?? '') ?>" required>
 						<label for = "validationCustomMobilityUntil" class = "form__label">Mobility Until</label>
 					</div>
 				</div>
@@ -566,8 +563,7 @@ use yii\bootstrap5\ActiveForm;
 				<div class = "col-md-6">
 					<div class = "form__div">
 						<select class = "form__input form-control countries" id = "countryId2"
-						        name = "Outbound[Country_host_university]"
-						        >
+						        name = "Outbound[Country_host_university]" required>
 							<option value = "">Select Country</option>
 						</select>
 					</div>
@@ -578,12 +574,12 @@ use yii\bootstrap5\ActiveForm;
 						<div class = "form-check form-check-inline">
 							<input type = "radio" class = "form-check-input" id = "credit_transfer_availability_1"
 							       name = "Outbound[credit_transfer_availability]" value = "1"
-                                <?= ($model->credit_transfer_availability == 1) ? 'checked' : '' ?>>
+                                <?= ($model->credit_transfer_availability == 1) ? 'checked' : '' ?> required>
 							<label class = "form-check-label" for = "credit_transfer_availability_1">Yes</label>
 						</div>
 						<div class = "form-check form-check-inline">
 							<input type = "radio" class = "form-check-input" id = "credit_transfer_availability_0"
-							       name = "Outbound[credit_transfer_avability]" value = "0"
+							       name = "Outbound[credit_transfer_availability]" value = "0"
                                 <?= ($model->credit_transfer_availability == 0) ? 'checked' : '' ?>>
 							<label class = "form-check-label" for = "credit_transfer_availability_0">No</label>
 						</div>
@@ -603,7 +599,7 @@ use yii\bootstrap5\ActiveForm;
 					<div class = "form__div">
 						<input type = "text" class = "form__input form-control" id = "validationCustomConnectHostName"
 						       name = "Outbound[Connect_host_name]" maxlength = "255"  placeholder = " "
-						       value = "<?= htmlspecialchars($model->Connect_host_name ?? '') ?>">
+						       value = "<?= htmlspecialchars($model->Connect_host_name ?? '') ?>" required>
 						<label for = "validationCustomConnectHostName" class = "form__label">Name</label>
 					</div>
 				</div>
@@ -612,7 +608,7 @@ use yii\bootstrap5\ActiveForm;
 						<input type = "text" class = "form__input form-control"
 						       id = "validationCustomConnectHostPosition"
 						       name = "Outbound[Connect_host_position]" maxlength = "255"  placeholder = " "
-						       value = "<?= htmlspecialchars($model->Connect_host_position ?? '') ?>">
+						       value = "<?= htmlspecialchars($model->Connect_host_position ?? '') ?>" required>
 						<label for = "validationCustomConnectHostPosition" class = "form__label">Position</label>
 					</div>
 				</div>
@@ -621,7 +617,7 @@ use yii\bootstrap5\ActiveForm;
 						<input type = "text" class = "form__input form-control"
 						       id = "validationCustomConnectHostMobileNo"
 						       name = "Outbound[Connect_host_mobile_number]" maxlength = "255"  placeholder = " "
-						       value = "<?= htmlspecialchars($model->Connect_host_mobile_number ?? '') ?>">
+						       value = "<?= htmlspecialchars($model->Connect_host_mobile_number ?? '') ?>" required>
 						<label for = "validationCustomConnectHostMobileNo" class = "form__label">Mobile Number</label>
 					</div>
 				</div>
@@ -629,8 +625,8 @@ use yii\bootstrap5\ActiveForm;
 
 			<div class = "form__div mt-2">
     <textarea class = "form__input form-control" id = "validationCustomConnectHostAddress"
-              name = "Outbound[Connect_host_address]" maxlength = "255" 
-              placeholder = " "><?= htmlspecialchars($model->Connect_host_address ?? '') ?></textarea>
+              name = "Outbound[Connect_host_address]" maxlength = "255"
+              placeholder = " " required><?= htmlspecialchars($model->Connect_host_address ?? '') ?></textarea>
 				<label for = "validationCustomConnectHostAddress" class = "form__label">Address</label>
 			</div>
 
@@ -640,14 +636,14 @@ use yii\bootstrap5\ActiveForm;
 						<input type = "number" class = "form__input form-control"
 						       id = "validationCustomConnectHostPostcode"
 						       name = "Outbound[Connect_host_postcode]"  placeholder = " "
-						       value = "<?= htmlspecialchars($model->Connect_host_postcode ?? '') ?>">
+						       value = "<?= htmlspecialchars($model->Connect_host_postcode ?? '') ?>" required>
 						<label for = "validationCustomConnectHostPostcode" class = "form__label">Post Code</label>
 					</div>
 				</div>
 				<div class = "col-md-6">
 					<div class = "form__div">
 						<select class = "form__input form-control countries" id = "countryId1"
-						        name = "Outbound[Connect_host_country]" >
+						        name = "Outbound[Connect_host_country]"  required>
 							<option value = "">Select Country</option>
 						</select>
 					</div>
@@ -661,7 +657,7 @@ use yii\bootstrap5\ActiveForm;
 						<div class = "form-check form-check-inline">
 							<input type = "radio" class = "form-check-input" id = "host_scholarship_1"
 							       name = "Outbound[host_scholarship]" value = "1"
-                                <?= ($model->host_scholarship == 1) ? 'checked' : '' ?>>
+                                <?= ($model->host_scholarship == 1) ? 'checked' : '' ?> required>
 							<label class = "form-check-label" for = "host_scholarship_1">Yes</label>
 						</div>
 						<div class = "form-check form-check-inline">
@@ -677,10 +673,8 @@ use yii\bootstrap5\ActiveForm;
 						<input type = "number" class = "form__input form-control"
 						       id = "validationCustomHostScholarshipAmount"
 						       name = "Outbound[host_scholarship_amount]" maxlength = "255" placeholder = " "
-						       value = "<?= htmlspecialchars($model->host_scholarship_amount ?? '') ?>" >
-						<label for = "validationCustomHostScholarshipAmount" class = "form__label">Amount of
-						                                                                           Scholarship/grant
-						                                                                           (RM)</label>
+						       value = "<?= htmlspecialchars($model->host_scholarship_amount ?? '') ?>" required>
+						<label for = "validationCustomHostScholarshipAmount" class = "form__label">Amount of Scholarship/grant (RM)</label>
 					</div>
 				</div>
 			</div>
@@ -688,7 +682,7 @@ use yii\bootstrap5\ActiveForm;
 
 			<div class = "mt-3 d-flex justify-content-between">
 				<div>
-					<button class = "button submit-btn" type = "submit" name = "saveWithoutValidation">Save</button>
+					<button class="button submit-btn" type="button" name="saveWithoutValidation" onclick="submitForm('noValidate')">Save</button>
 				</div>
 				<div>
 					<button class="button btn-navigate-form-step" type="button" step_number="3">Prev</button>
@@ -803,7 +797,7 @@ use yii\bootstrap5\ActiveForm;
 			</div>
 			<div class = "mt-3 d-flex justify-content-between">
 				<div>
-					<button class = "button submit-btn" type = "submit" name = "saveWithoutValidation">Save</button>
+					<button class="button submit-btn" type="button" name="saveWithoutValidation" onclick="submitForm('noValidate')">Save</button>
 				</div>
 				<div>
 					<button class="button btn-navigate-form-step" type="button" step_number="4">Prev</button>
@@ -829,22 +823,25 @@ use yii\bootstrap5\ActiveForm;
 
 
             <?= $form->field($model, 'Offer_letter')->fileInput([
-                'class' => 'form-control mb-2'
-            ])->label(false) ?>
+                'class' => 'form-control mb-2',
+                'required' => isFileRequired($model->Offer_letter),
+            ])?>
             <?= $form->field($model, 'Academic_transcript')->fileInput([
-                'class' => 'form-control mb-2'
-            ])->label(false) ?>
+                'class' => 'form-control mb-2',
+                'required' => isFileRequired($model->Academic_transcript),
+            ])?>
             <?= $form->field($model, 'Program_brochure')->fileInput([
-                'class' => 'form-control mb-2'
-            ])->label(false) ?>
+                'class' => 'form-control mb-2',
+                'required' => isFileRequired($model->Program_brochure),
+            ])?>
             <?= $form->field($model, 'Latest_pay_slip')->fileInput([
-                'class' => 'form-control mb-2'
-            ])->label(false) ?>
+                'class' => 'form-control mb-2',
+                'required' => isFileRequired($model->Latest_pay_slip),
+            ])?>
             <?= $form->field($model, 'Other_latest_pay_slip')->fileInput([
-                'class' => 'form-control mb-2'
-            ])->label(false) ?>
-
-
+                'class' => 'form-control mb-2',
+                'required' => isFileRequired($model->Other_latest_pay_slip),
+            ])?>
 
 			<div>
 				<p class = "font-monospace">I declare that all the information provided in this application from is
@@ -867,8 +864,8 @@ use yii\bootstrap5\ActiveForm;
 					<legend class = "col-form-label col-sm-2 pt-0">Do you agree?</legend>
 					<div class = "form-check form-check-inline">
 						<input type = "radio" class = "form-check-input" id = "model-agreement-0"
-						       name = "Outbound[agreement]" value = "0"  <?= $model->agreement === 0 ? 'checked' : '' ?> >
-						<label class = "form-check-label" for = "model-agreement-0" >No</label>
+						       name = "Outbound[agreement]" value = "0"  <?= $model->agreement === 0 ? 'checked' : '' ?> required>
+						<label class = "form-check-label" for = "model-agreement-0" required >No</label>
 					</div>
 					<div class = "form-check form-check-inline pl-3">
 						<input type = "radio" class = "form-check-input" id = "model-agreement-1"
@@ -880,12 +877,11 @@ use yii\bootstrap5\ActiveForm;
 				<input type="hidden" name="Outbound[Status]" id="statusInput" value="">
 				<div class = "mt-3 d-flex justify-content-between">
 					<div>
-						<button class = "button submit-btn" type = "submit" name = "saveWithoutValidation">Save</button>
+						<button class="button submit-btn" type="button" name="saveWithoutValidation" onclick="submitForm('noValidate')">Save</button>
 					</div>
 
-
 					<div>
-						<button class="button submit-btn" type="submit" name="saveWithoutValidation" value="validate">Submit</button>
+						<button class="button submit-btn" type="button" name="saveWithoutValidation" value="validate" onclick = "submitForm('validate')">Submit</button>
 					</div>
 					<div>
 						<button class = "button btn-navigate-form-step" type = "button" step_number = "5">Prev</button>
@@ -932,10 +928,7 @@ use yii\bootstrap5\ActiveForm;
             countryModel: "<?= htmlspecialchars($model->Connect_host_country) ?>",
             stateModel: null
         }
-        // Add more objects for additional dropdowns...
     ];
-
-
 </script>
 
 <script>
@@ -953,31 +946,31 @@ use yii\bootstrap5\ActiveForm;
 
             // Remove the  attribute from all input fields
             tableInputs.forEach(function (input) {
-                input.removeAttribute('');
+                input.removeAttribute('required');
             });
 
-            textareaInput.removeAttribute('');
+            textareaInput.removeAttribute('required');
         } else if (selectedOption === 'UG') {
             tableContainer.style.display = 'flex';
             textareaContainer.style.display = 'none';
 
             // Add the  attribute to input fields in the UG table
             tableInputs.forEach(function (input) {
-                input.setAttribute('', '');
+                input.setAttribute('required', 'required');
             });
 
-            textareaInput.removeAttribute('');
+            textareaInput.removeAttribute('required');
         } else if (selectedOption === 'PG') {
             tableContainer.style.display = 'none';
             textareaContainer.style.display = 'block';
 
             // Remove the  attribute from input fields in the UG table
             tableInputs.forEach(function (input) {
-                input.removeAttribute('');
+                input.removeAttribute('required');
             });
 
             // Add the  attribute to the textarea in the PG section
-            textareaInput.setAttribute('', '');
+            textareaInput.setAttribute('required', 'required');
         }
     }
 

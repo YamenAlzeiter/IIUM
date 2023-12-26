@@ -234,14 +234,16 @@ class Outbound extends \yii\db\ActiveRecord
     {
         parent::afterSave($insert, $changedAttributes);
         $newStatus = $this->Status;
-        if($newStatus === 10){
-            $this->createStatusLog("", $newStatus, $this->temp);
-        }
-        elseif (!$insert && isset($changedAttributes['Status'])) {
+//        if($newStatus === 10){
+//            $this->createStatusLog("", $newStatus, $this->temp);
+//        }
+        if (!$insert && isset($changedAttributes['Status'])) {
             $oldStatus = $changedAttributes['Status'];
-
+            if($newStatus === 10){
+                $this->createStatusLog("", $newStatus, $this->temp);
+            }
             if ($oldStatus !== $newStatus) {
-                if(($oldStatus === 12 && $newStatus === 1) || ($oldStatus === 32 && $newStatus === 21)){
+                if(($oldStatus === 12 && $newStatus === 1) || ($oldStatus === 32 && $newStatus === 21) || $newStatus === 3){
                     $this->createStatusLog($oldStatus, $newStatus, $this->temp);
                 } elseif (($oldStatus === 1 && $newStatus === 12)){
                     $this->createStatusLog($oldStatus, $newStatus, $this->Note_hod);

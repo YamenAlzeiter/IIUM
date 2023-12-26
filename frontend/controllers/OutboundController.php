@@ -10,6 +10,7 @@ use common\models\Poc;
 use common\models\States;
 use Exception;
 use Yii;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
@@ -28,13 +29,17 @@ class OutboundController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(parent::behaviors(), [
-            'verbs' => [
-                'class' => VerbFilter::className(), 'actions' => [
-                    'delete' => ['POST'],
+        return [
+            'access' => [
+                'class' => AccessControl::class, 'only' => ['index', 'create', 'upload'],
+                // Define the actions that require access control
+                'rules' => [
+                    [
+                        'actions' => ['index', 'create', 'upload'], 'allow' => true, 'roles' => ['@'],
+                    ],
                 ],
             ],
-        ]);
+        ];
     }
 
     /**
@@ -301,26 +306,26 @@ class OutboundController extends Controller
                     // Save the main model and update Courses/Iiumcourse records
                     if ($model->validate() && $model->save()) {
                         // Update Courses records
-                        // foreach ($_POST['CoursesModel'] as $courseData) {
-                        //     $courseModel = Courses::findOne($courseData['id']);
-                        //     $courseModel->attributes = $courseData;
+                         foreach ($_POST['CoursesModel'] as $courseData) {
+                             $courseModel = Courses::findOne($courseData['id']);
+                             $courseModel->attributes = $courseData;
 
-                        //     if (!$courseModel->validate() || !$courseModel->save()) {
-                        //         Yii::error("Error saving Courses record: " . print_r($courseModel->errors, true));
-                        //         // Handle the error case, you might want to render the update view again with an error message
-                        //     }
-                        // }
+                             if (!$courseModel->validate() || !$courseModel->save()) {
+                                 Yii::error("Error saving Courses record: " . print_r($courseModel->errors, true));
+                                 // Handle the error case, you might want to render the update view again with an error message
+                             }
+                         }
 
-                        // // Update Iiumcourse records
-                        // foreach ($_POST['IiumcoursesModel'] as $iiumcourseData) {
-                        //     $iiumcourseModel = Iiumcourse::findOne($iiumcourseData['id']);
-                        //     $iiumcourseModel->attributes = $iiumcourseData;
+                         // Update Iiumcourse records
+                         foreach ($_POST['IiumcoursesModel'] as $iiumcourseData) {
+                             $iiumcourseModel = Iiumcourse::findOne($iiumcourseData['id']);
+                             $iiumcourseModel->attributes = $iiumcourseData;
 
-                        //     if (!$iiumcourseModel->validate() || !$iiumcourseModel->save()) {
-                        //         Yii::error("Error saving Iiumcourse record: " . print_r($iiumcourseModel->errors, true));
-                        //         // Handle the error case, you might want to render the update view again with an error message
-                        //     }
-                        // }
+                             if (!$iiumcourseModel->validate() || !$iiumcourseModel->save()) {
+                                 Yii::error("Error saving Iiumcourse record: " . print_r($iiumcourseModel->errors, true));
+                                 // Handle the error case, you might want to render the update view again with an error message
+                             }
+                         }
 
                         // If everything is successful, commit the transaction
                         $transaction->commit();
@@ -377,8 +382,10 @@ public function actionUpload($ID)
                 }
             }
 
+            $model->Status = 51;
             // Only change the Status if any file was uploaded
             if ($model->validate() && $model->save()) {
+
                 $transaction->commit();
                 Yii::$app->session->setFlash('success', 'Application updated successfully.');
                 return $this->redirect(['index']);
