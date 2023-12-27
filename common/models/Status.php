@@ -9,6 +9,7 @@ use Yii;
  *
  * @property int $ID
  * @property string|null $description
+ * @property string $status
  */
 class Status extends \yii\db\ActiveRecord
 {
@@ -26,7 +27,7 @@ class Status extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['description'], 'string', 'max' => 35],
+            [['description','status'], 'string', 'max' => 512],
         ];
     }
 

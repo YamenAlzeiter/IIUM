@@ -318,7 +318,7 @@ use yii\bootstrap5\ActiveForm;
 						       name = "Inbound[Academic_name_of_programme]"
 						       value = "<?= $model->Academic_name_of_programme ?>"
 						       maxlength = "255" placeholder = " " required>
-						<label for = "Academic_name_of_programme" class = "form__label">Home University</label>
+						<label for = "Academic_name_of_programme" class = "form__label">Academic Name of Programme</label>
 					</div>
 				</div>
 
@@ -347,7 +347,7 @@ use yii\bootstrap5\ActiveForm;
                             }
                             ?>
 						</select>
-						<label for = "Academic_current_year" class = "form__label">Current Semester</label>
+						<label for = "Academic_current_year" class = "form__label">Current Year</label>
 					</div>
 				</div>
 			</div>
@@ -364,11 +364,11 @@ use yii\bootstrap5\ActiveForm;
 				</div>
 				<div class = "col-md-6">
 					<div class = "form__div">
-						<input type = "number" class = "form__input form-control" id = "Academic_current_result"
+						<input class = "form__input form-control" id = "Academic_current_result"
 						       name = "Inbound[Academic_current_result]"
 						       value = "<?= $model->Academic_current_result ?>"
 						       maxlength = "255" placeholder = " " required>
-						<label for = "Academic_current_result" class = "form__label">Home University</label>
+						<label for = "Academic_current_result" class = "form__label">Current CGPA</label>
 					</div>
 				</div>
 			</div>
@@ -526,25 +526,21 @@ use yii\bootstrap5\ActiveForm;
 					<div class = "row">
 						<legend class = "col-3 col-form-label">Type of Mobility</legend>
 						<div class = "col py-2-5">
-                            <?php
-                            $mobilityOptions = [
-                                "1" => "Physical", "2" => "Virtual",
-                            ];
-                            foreach ($mobilityOptions as $value => $label) {
-                                $checked = ($model->Propose_type_of_mobility === $value) ? 'checked' : '';
-                                ?>
-								<div class = "form-check form-check-inline">
-									<input type = "radio" class = "form-check-input"
-									       id = "Propose_type_of_mobility<?= $value ?>"
-									       name = "Inbound[Propose_type_of_mobility]"
-									       value = "<?= $value ?>" <?= $checked ?> required>
-									<label class = "form-check-label"
-									       for = "Propose_type_of_mobility<?= $value ?>"><?= $label ?></label>
-								</div>
-                            <?php } ?>
+							<div class = "form-check form-check-inline">
+								<input id = "Propose_type_of_mobility" type = "radio" name = "Inbound[Propose_type_of_mobility]" value = "1"
+								       class = "form-check-input" <?= $model->Propose_type_of_mobility === 1 ? 'checked' : '' ?> required>
+								<label for = "Propose_type_of_mobility" class = "form-check-label">Physical</label>
+							</div>
+							<div class = "form-check form-check-inline pl-3">
+								<input id = "Propose_type_of_mobility_no" type = "radio" name = "Inbound[Propose_type_of_mobility]" value = "2"
+								       class = "form-check-input" <?= $model->Propose_type_of_mobility === 2 ? 'checked' : '' ?>>
+								<label for = "Propose_type_of_mobility_no" class = "form-check-label">Virtual</label>
+							</div>
 						</div>
 					</div>
 				</div>
+
+
 				<div class = "col-md-6">
 					<div class = "form__div">
 						<input type = "text" class = "form__input form-control"
@@ -558,14 +554,6 @@ use yii\bootstrap5\ActiveForm;
 			</div>
 
 			<div class = "row mt-2 d-flex flex-row align-items-center">
-<!--				<div class = "col-md-6">-->
-<!--					<div class = "form__div">-->
-<!--						<input type = "text" class = "form__input form-control" id = "validationCustomHostUniName"-->
-<!--						       name = "Inbound[Propose_kulliyyah_applied]" maxlength = "255" required placeholder = " "-->
-<!--						       value = "--><?php //= htmlspecialchars($model->Propose_kulliyyah_applied ?? '') ?><!--">-->
-<!--						<label for = "validationCustomHostUniName" class = "form__label">Kulliyyah Applied</label>-->
-<!--					</div>-->
-<!--				</div>-->
 				<div class = "col-md-3">
 					<div class = "form__div">
 						<input type = "date" class = "form__input form-control" id = "Propose_duration_start"
@@ -586,24 +574,20 @@ use yii\bootstrap5\ActiveForm;
 
 			<div class = "col-6">
 				<div class = "row">
-					<legend class = "col-3 col-form-label">Type of Mobility</legend>
+					<legend class = "col-3 col-form-label">Transfer of Credit Hours</legend>
 					<div class = "col py-2-5">
-                        <?php
-                        $mobilityOptions = [
-                            "Semester" => "Semester", "Others" => "Others",
-                        ];
-                        foreach ($mobilityOptions as $value => $label) {
-                            $checked = ($model->Propose_duration_of_study === $value) ? 'checked' : '';
-                            ?>
+						<div class = "col py-2-5">
 							<div class = "form-check form-check-inline">
-								<input type = "radio" class = "form-check-input"
-								       id = "Propose_duration_of_study<?= $value ?>"
-								       name = "Inbound[Propose_duration_of_study]"
-								       value = "<?= $value ?>" <?= $checked ?> required>
-								<label class = "form-check-label"
-								       for = "Propose_duration_of_study<?= $value ?>"><?= $label ?></label>
+								<input id = "Propose_duration_of_study_semester" type = "radio" name = "Inbound[Propose_duration_of_study]" value = "Semester"
+								       class = "form-check-input" <?= $model->Propose_duration_of_study === "Semester" ? 'checked' : '' ?> required>
+								<label for = "Propose_duration_of_study_semester" class = "form-check-label">Semester</label>
 							</div>
-                        <?php } ?>
+							<div class = "form-check form-check-inline pl-3">
+								<input id = "Propose_duration_of_study_others" type = "radio" name = "Inbound[Propose_duration_of_study]" value = "Others"
+								       class = "form-check-input" <?= $model->Propose_duration_of_study === "Others" ? 'checked' : '' ?>>
+								<label for = "Propose_duration_of_study_others" class = "form-check-label">Others</label>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -1045,34 +1029,34 @@ use yii\bootstrap5\ActiveForm;
 
 <script>
     $(document).ready(function () {
-        // Function to handle radio button changes
         function handleRadioChange() {
-            // Hide all elements initially
-            $('#Scholarship').hide();
-            $('#otherFunding').hide();
+            // Hide all elements initially and remove 'required' attribute from all inputs
+            $('#Scholarship, #otherFunding').hide();
+            $('#validationCustomSponsor_name, #validationCustomFinancial_funding_sponsor_amount, #Financial_funding_other')
+                .prop('required', false);
 
-            // Show/hide elements based on the selected radio button
             if ($('#Financial_funding_self').prop('checked')) {
-                // Show elements for the first option
-                // No need to do anything additional as elements are already hidden
+                // No need to do anything for 'Self-sponsor'
             } else if ($('#Financial_funding_scholarship').prop('checked')) {
-                // Show elements for the second option
+                // Show elements for 'Scholarship' and make Sponsor Name and Amount required
                 $('#Scholarship').show();
+                $('#validationCustomSponsor_name, #validationCustomFinancial_funding_sponsor_amount')
+                    .prop('required', true);
             } else if ($('#Financial_funding_other').prop('checked')) {
-                // Show elements for the third option
+                // Show elements for 'Other' and make 'Please Specify' required
                 $('#otherFunding').show();
+                $('#Financial_funding_other').prop('required', true);
             }
         }
 
-        // Check the state of radio buttons when the page is loaded
         handleRadioChange();
 
-        // Set up event handlers for radio button changes
-        $('#Financial_funding_self, #Financial_funding_scholarship, #Financial_funding_other').on('change', function () {
-            // Call the function to handle radio button changes
-            handleRadioChange();
-        });
+        $('#Financial_funding_self, #Financial_funding_scholarship, #Financial_funding_other')
+            .on('change', function () {
+                handleRadioChange();
+            });
     });
+
 
 
 </script>

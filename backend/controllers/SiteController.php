@@ -39,7 +39,7 @@ class SiteController extends Controller
 //                        'allow' => true,
 //                    ],
                     [
-                        'actions' => ['logout', 'index'],
+                        'actions' => ['logout', 'index', 'inbound-dashboard','outbound-dashboard'],
                         'allow' => true,
                         'roles' => ['@'], // Allow access only for authenticated users
                     ],
@@ -72,7 +72,7 @@ class SiteController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
+    public function actionInboundDashboard()
     {
         $months = $this->getMonthNames();
         $counts = $this->getMonthlyCounts();
@@ -80,7 +80,23 @@ class SiteController extends Controller
         $maleCount = $this->getGenderCount('M');
         $femaleCount = $this->getGenderCount('F');
 
-        return $this->render('index', [
+        return $this->render('inboundDashboard', [
+            'months' => json_encode($months),
+            'counts' => json_encode($counts),
+            'maleCount' => $maleCount,
+            'femaleCount' => $femaleCount,
+        ]);
+    }
+
+    public function actionOutboundDashboard()
+    {
+        $months = $this->getMonthNames();
+        $counts = $this->getMonthlyCountsO();
+
+        $maleCount = $this->getGenderCountO('M');
+        $femaleCount = $this->getGenderCountO('F');
+
+        return $this->render('outboundDashboard', [
             'months' => json_encode($months),
             'counts' => json_encode($counts),
             'maleCount' => $maleCount,
@@ -100,6 +116,34 @@ class SiteController extends Controller
 
 // Function to get counts for each month
     private function getMonthlyCounts()
+    {
+        $data = (new \yii\db\Query())
+            ->select([
+                new Expression('EXTRACT(MONTH FROM created_at) AS month'),
+                new Expression('COUNT(*) AS count')
+            ])
+            ->from('inbound')
+            ->where(['not', ['Status' => null]])
+            ->groupBy([new Expression('EXTRACT(MONTH FROM created_at)')])
+            ->all();
+
+        $counts = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $found = false;
+            foreach ($data as $entry) {
+                if ((int)$entry['month'] === $i) {
+                    $counts[] = (int)$entry['count'];
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) {
+                $counts[] = 0;
+            }
+        }
+        return $counts;
+    }
+    private function getMonthlyCountsO()
     {
         $data = (new \yii\db\Query())
             ->select([
@@ -132,11 +176,17 @@ class SiteController extends Controller
     private function getGenderCount($gender)
     {
         return (new \yii\db\Query())
+            ->from('inbound')
+            ->where(['Gender' => $gender])
+            ->count();
+    }
+    private function getGenderCountO($gender)
+    {
+        return (new \yii\db\Query())
             ->from('outbound')
             ->where(['Gender' => $gender])
             ->count();
     }
-
 
 
 

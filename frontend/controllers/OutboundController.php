@@ -18,7 +18,7 @@ use yii\filters\VerbFilter;
 use yii\web\Response;
 use yii\web\UploadedFile;
 use function PHPUnit\Framework\returnArgument;
-use frontend\components\UserTypeRestriction;
+
 
 /**
  * OutboundController implements the CRUD actions for Outbound model.
@@ -32,18 +32,21 @@ class OutboundController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::class, 'only' => ['index', 'create', 'upload'],
+                'class' => AccessControl::class, 'only' => ['index', 'create', 'upload','update'],
                 // Define the actions that require access control
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'upload'], 'allow' => true, 'roles' => ['@'],
+                        'actions' => ['index', 'create', 'upload','update'], 'allow' => true,
+                        'roles' => ['@'],
+                        'matchCallback' => function ($rule, $action) {
+                            $user = Yii::$app->user->identity->type;
+                            return ($user === "O");
+                        }
                     ],
                 ],
             ],
-            'userTypeRestriction' => [
-                'class' => UserTypeRestriction::class,
-            ],
         ];
+
     }
 
     /**
@@ -213,8 +216,6 @@ class OutboundController extends Controller
                         }
                         //
                         $coursesData = Yii::$app->request->post('CoursesModel', []);
-
-
                         foreach ($coursesData as $courseInfo) {
                             $coursesModel = new Courses();
                             $coursesModel->attributes = $courseInfo;

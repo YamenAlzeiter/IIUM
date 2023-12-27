@@ -2,11 +2,11 @@
 
 namespace backend\controllers;
 
-use common\models\Courses;
 use common\models\EmailTemplate;
 use common\models\Iiumcourse;
 use common\models\Inbound;
 use backend\views\Inbound\inboundSearch;
+use common\models\InCourses;
 use common\models\Inlog;
 use common\models\Kcdio;
 use common\models\Log;
@@ -71,6 +71,7 @@ class InboundController extends Controller
 
         // Exclude records with null status
         $dataProvider->query->andWhere(['not', ['Status' => null]]);
+
 
         return $this->render("index",
             [  'searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'status' => $statusModel,
@@ -164,12 +165,11 @@ class InboundController extends Controller
         $deanId = $student->msd_cps;
         $modelPoc2 = Poc::findOne(['id' => $deanId]);
 
-        $courses = Courses::find()->where(['student_id' => $student->ID])->all();
-        $iiumcourses = Iiumcourse::find()->where(['student_id' => $student->ID])->all();
+        $courses = InCourses::find()->where(['student_id' => $student->ID])->all();
+
 
         return $this->render("view", [
             "model" => $student, "modelPoc1" => $modelPoc1, "modelPoc2" => $modelPoc2, "courses" => $courses,
-            'iiumcourses' => $iiumcourses,
         ]);
     }
 
@@ -400,6 +400,7 @@ class InboundController extends Controller
             $status = intval($this->request->post("status"));
             $reason = $this->request->post("reason");
 
+            $model->temp = $reason;
             $model->Status = $status;
             if ($model->save()) {
                 $this->sendEmailToApplicant($name, $email, $reason, $templateId);
@@ -449,7 +450,7 @@ class InboundController extends Controller
 
         if ($this->request->isPost) {
             $reason = $this->request->post("reason");
-
+            $model->temp = $reason;
             $model->Status = $status;
             if ($model->save()) {
                 $this->sendEmailToApplicant($name, $email, $reason, $templateId);

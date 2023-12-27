@@ -394,7 +394,7 @@ class OutboundController extends Controller
         if ($this->request->isPost) {
             $status = intval($this->request->post("status"));
             $reason = $this->request->post("reason");
-
+            $model->temp = $reason;
             $model->Status = $status;
             if ($model->save()) {
                 $this->sendEmailToApplicant($name, $email, $reason, $templateId);

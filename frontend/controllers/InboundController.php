@@ -2,14 +2,11 @@
 
 namespace frontend\controllers;
 
-use common\models\Countries;
+
 use common\models\Courses;
-use common\models\Iiumcourse;
 use common\models\Inbound;
-use common\models\Outbound;
-use common\models\States;
+use common\models\InCourses;
 use Exception;
-use frontend\components\UserTypeRestriction;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -29,20 +26,23 @@ class InboundController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['index', 'create', 'upload'],
+                'only' => ['index', 'create', 'upload','update'],
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'upload'],
+                        'actions' => ['index', 'create', 'upload', 'update'],
                         'allow' => true,
-                        'roles' => ['@'],
+                        'matchCallback' => function ($rule, $action) {
+                            $user = Yii::$app->user->identity->type;
+                            return ($user === "I");
+                        }
                     ],
                 ],
-            ],
-            'userTypeRestriction' => [
-                'class' => UserTypeRestriction::class,
+
             ],
         ];
+
     }
+
 
     /**
      * Lists all Inbound models.
@@ -51,19 +51,19 @@ class InboundController extends Controller
      */
     public function actionIndex()
     {
-        $id = Yii::$app->user->id;
 
-        $student = Inbound::findOne($id);
+            $id = Yii::$app->user->id;
+            $student = Inbound::findOne($id);
 
-        if (!$student) {
-            return $this->render('index', ['noRecord' => true]);
-        }
+            if (!$student) {
+                return $this->render('index', ['noRecord' => true]);
+            }
 
-        $courses = Courses::find()->where(['student_id' => $student->ID])->all();
+            $courses = InCourses::find()->where(['student_id' => $student->ID])->all();
 
-        return $this->render("index", [
-            "model" => $student, "courses" => $courses,
-        ]);
+            return $this->render("index", [
+                "model" => $student, "courses" => $courses,
+            ]);
     }
 
     /**
@@ -88,7 +88,7 @@ class InboundController extends Controller
         $model = new Inbound(['ID' => Yii::$app->user->id]);
 
         //-------------- Create new instances for related course models --------------\\
-        $coursesModel = new Courses();
+        $coursesModel = new InCourses();
         //-------------- Define arrays to store data related to courses --------------\\
         $coursesData = [];
 
@@ -189,10 +189,8 @@ class InboundController extends Controller
                         }
                         //
                         $coursesData = Yii::$app->request->post('CoursesModel', []);
-
-
                         foreach ($coursesData as $courseInfo) {
-                            $coursesModel = new Courses();
+                            $coursesModel = new InCourses();
                             $coursesModel->attributes = $courseInfo;
                             $coursesModel->student_id = $model->ID;
                             $coursesModel->save();
@@ -251,7 +249,7 @@ class InboundController extends Controller
             // Redirect to a different page or reload the current page
             return $this->redirect(['inbound/index']); // Replace 'controller/action' with the appropriate route
         }
-        $coursesData = Courses::find()->where(['student_id' => $ID])->all();
+        $coursesData = InCourses::find()->where(['student_id' => $ID])->all();
 
 
         if (Yii::$app->request->isPost) {
@@ -286,11 +284,11 @@ class InboundController extends Controller
                         // Set status to 10 only when the 'submit' button is clicked
                         $model->Status = 10;
                     }
-                    // Save the main model and update Courses/Iiumcourse records
+
                     if ($model->validate() && $model->save()) {
                         // Update Courses records
                         foreach ($_POST['CoursesModel'] as $courseData) {
-                            $courseModel = Courses::findOne($courseData['id']);
+                            $courseModel = InCourses::findOne($courseData['id']);
                             $courseModel->attributes = $courseData;
 
                             if (!$courseModel->validate() || !$courseModel->save()) {

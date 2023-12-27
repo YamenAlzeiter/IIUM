@@ -98,7 +98,7 @@ $(function () {
     $(".updateStatus-button").on("click", function () {
         var recordId = $(this).data("id");
         setUpdateForm("#formpoc", "/status/update?id=", recordId, "/status/get-record", function (data) {
-            $("#status-description").val(data.description);
+            $("#status-status").val(data.status);
             //... populate other fields for update status action if available
         });
     });

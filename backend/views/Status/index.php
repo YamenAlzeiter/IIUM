@@ -20,6 +20,7 @@ $this->title = 'Status';
         'summary' => '', // Show the current page and total pages
         'columns' => [
             'ID',
+			'status',
             'description',
             [
                 'label' => 'Actions',
@@ -66,7 +67,7 @@ $this->title = 'Status';
                         <?php $form = ActiveForm::begin(['options' => ['id' => 'myForm']]); ?>
 
 
-                        <?= $form->field($model, 'description')->textInput(['maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'description'])->label(false) ?>
+                        <?= $form->field($model, 'status')->textInput(['maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'Status'])->label(false) ?>
 
 						<div class="text-center mt-2">
                             <?= Html::submitButton('<i class="ti ti-pencil"></i> Update', ['class' => 'btn btn-outline-primary']) ?>

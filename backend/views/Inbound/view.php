@@ -29,7 +29,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
         ?>
 		<p class = "fw-light mb-0 align-items-end">
             <?= Html::tag('span',
-                ($statusModel = Status::findOne(['ID' => $model->Status])) ? $statusModel->description : '', [
+                ($statusModel = Status::findOne(['ID' => $model->Status])) ? $statusModel->status : '', [
                     'class' => 'rounded-3 fw-semibold m-0', 'id' => 'status-badge',
                 ]) ?>
 		</p>

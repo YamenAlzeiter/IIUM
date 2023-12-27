@@ -1,28 +1,28 @@
 <?php
 
-namespace common\models;
+namespace app\models;
 
 use Yii;
 
 /**
- * This is the model class for table "courses".
+ * This is the model class for table "in_courses".
  *
  * @property int $id
- * @property string $course_code
- * @property string $course_name
- * @property int $credit_hours
+ * @property string|null $course_code
+ * @property string|null $course_name
+ * @property int|null $credit_hours
  * @property int|null $student_id
  *
- * @property Outbound $student
+ * @property Inbound $student
  */
-class Courses extends \yii\db\ActiveRecord
+class InCourses extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'courses';
+        return 'in_courses';
     }
 
     /**
@@ -31,11 +31,11 @@ class Courses extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-
+            [['credit_hours', 'student_id'], 'default', 'value' => null],
             [['credit_hours', 'student_id'], 'integer'],
             [['course_code'], 'string', 'max' => 20],
             [['course_name'], 'string', 'max' => 255],
-            [['student_id'], 'exist', 'skipOnError' => true, 'targetClass' => Outbound::class, 'targetAttribute' => ['student_id' => 'ID']],
+            [['student_id'], 'exist', 'skipOnError' => true, 'targetClass' => Inbound::class, 'targetAttribute' => ['student_id' => 'ID']],
         ];
     }
 
@@ -60,7 +60,6 @@ class Courses extends \yii\db\ActiveRecord
      */
     public function getStudent()
     {
-        return $this->hasOne(Outbound::class, ['ID' => 'student_id']);
+        return $this->hasOne(Inbound::class, ['ID' => 'student_id']);
     }
-
 }

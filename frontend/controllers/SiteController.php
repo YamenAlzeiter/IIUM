@@ -98,9 +98,6 @@ class SiteController extends Controller
                 return $this->redirect(['inbound/index']);
             } elseif ($currentUser && $currentUser->type === 'O') {
                 return $this->redirect(['outbound/index']);
-            } else {
-                // Handle other cases or errors
-                return $this->render('error');
             }
         }
     

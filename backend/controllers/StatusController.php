@@ -57,7 +57,15 @@ class StatusController extends Controller
     {
         $model = new Status();
         $dataProvider = new ActiveDataProvider([
-            'query' => Status::find()->orderBy(['ID' => SORT_ASC]),
+            'query' => Status::find()
+                ->orderBy([
+                    new \yii\db\Expression("CASE 
+                    WHEN type = 'I/O' THEN 1 
+                    WHEN type = 'O' THEN 2 
+                    WHEN type = 'I' THEN 3 
+                    ELSE 4 END"),
+                    'ID' => SORT_ASC, // Sort within each type by ID in ascending order
+                ]),
         ]);
 
         $dataProvider->pagination = [
@@ -97,7 +105,7 @@ class StatusController extends Controller
         $model = Status::findOne($id);
 
         return [
-            'description' => $model->description,
+            'status' => $model->status,
         ];
     }
 

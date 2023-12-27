@@ -31,7 +31,7 @@ class HodworkflowController extends Controller
 
 
             $this->layout = 'main';
-            throw new NotFoundHttpException("The Applicant $model->Name has already been Processed, Current Applicant Status: $statusModel->description");
+            throw new NotFoundHttpException("The Applicant $model->Name has already been Processed, Current Applicant Status: $statusModel->status");
         }
 
         return parent::beforeAction($action);

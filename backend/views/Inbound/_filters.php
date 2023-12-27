@@ -2,11 +2,26 @@
 <?php
 
 use common\models\Status;
+use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var backend\views\Outbound\outboundSearch $searchModel */
-$statusModel =  Status::find()->all();
+$statusModelID10 = Status::find()
+    ->where(['ID' => 10, 'type' => ['I', 'I/O']])
+    ->one();
+
+// Fetch all records except ID 10, ordered by ID
+$statusModelsExceptID10 = Status::find()
+    ->where(['not', ['ID' => 10]])
+    ->andWhere(['type' => ['I', 'I/O']])
+    ->orderBy(['ID' => SORT_ASC])
+    ->all();
+
+// Merge the results
+$statusModels = [$statusModelID10];
+$statusModel = array_merge($statusModels, $statusModelsExceptID10);
+
 ?>
 
 
@@ -23,7 +38,7 @@ $statusModel =  Status::find()->all();
 
 
     <?= $form->field($searchModel, 'Status')->dropDownList(
-        \yii\helpers\ArrayHelper::map($statusModel, 'ID', 'description'),
+        \yii\helpers\ArrayHelper::map($statusModel, 'ID', 'status'),
         ['prompt' => 'Select Status', 'class' => 'form-select mb-2']
     ) ?>
 

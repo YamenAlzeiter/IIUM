@@ -49,7 +49,7 @@ if (!isset($noRecord)) {
                     ]);
                     echo Html::tag(
                         'p',
-                        ($statusModel = Status::findOne(['ID' => $model->Status])) ? $statusModel->description : '',
+                        ($statusModel = Status::findOne(['ID' => $model->Status])) ? $statusModel->status : '',
                         [
                             'class' => ' fw-semibold m-0 ' . $statusClass, 'id' => 'status-badge',
                         ]

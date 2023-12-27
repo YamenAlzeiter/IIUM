@@ -6,11 +6,13 @@ $(function () {
         ""
     );
     var controller = path.split("/"); // Get the controller part of the URL
-    if (controller[0] !== "email-tamplate") {
+    if (controller[0] !== "site" && controller[0] !== "email-tamplate") {
+
         // Remove the last element if it's "index"
         controller.pop();
     }else if(controller[0] === "email-tamplate"){
         controller[1] = controller[1].split("?")[1];
+
     }
     console.log(controller)
     // Check if the controller is not empty before selecting and activating

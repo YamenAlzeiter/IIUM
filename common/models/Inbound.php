@@ -205,6 +205,11 @@ class Inbound extends \yii\db\ActiveRecord
             'reference_number' => 'Reference Number',
         ];
     }
+
+    public function getCourses()
+    {
+        return $this->hasMany(InCourses::class, ['student_id' => 'ID']);
+    }
     public function afterSave($insert, $changedAttributes)
     {
 
@@ -218,7 +223,7 @@ class Inbound extends \yii\db\ActiveRecord
             $oldStatus = $changedAttributes['Status'];
 
             if ($oldStatus !== $newStatus) {
-                if(($oldStatus === 16 && $newStatus === 5) || ($oldStatus === 36 && $newStatus === 25)){
+                if(($oldStatus === 16 && $newStatus === 5) || ($oldStatus === 36 && $newStatus === 25) || $newStatus === 7){
                     $this->createStatusLog($oldStatus, $newStatus, $this->temp);
                 }
                 elseif (($oldStatus === 5 && $newStatus === 16)){
