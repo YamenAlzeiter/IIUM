@@ -313,20 +313,20 @@ class OutboundController extends Controller
             if ($status === 1) {
                 $token = Yii::$app->security->generateRandomString(32);
                 $model->setAttribute('Person_in_charge_ID', $selectedPersonId);
-                $template = 1;
+                $template = 7;
             } elseif ($status === 21) {
                 $token = Yii::$app->security->generateRandomString(32);
                 $model->setAttribute('Dean_ID', $selectedPersonId);
-                $template = 1;
+                $template = 7;
             } elseif ($status === 41) {
                 $token = null;
                 $selectedPersonInChargeName = $model->Name;
-                $template = 5;
+                $template = 8;
                 $email = $model->Email;
             } elseif ($status === 61){
                 $token = null;
                 $selectedPersonInChargeName = $model->Name;
-                $template = 6;
+                $template = 10;
                 $email = $model->Email;
             }
 
@@ -389,7 +389,7 @@ class OutboundController extends Controller
         $name = $model->Name;
         $email = $model->Email;
 
-        $templateId = 4;
+        $templateId = 2;
 
         if ($this->request->isPost) {
             $status = intval($this->request->post("status"));
@@ -441,7 +441,7 @@ class OutboundController extends Controller
             $status = 41;
         }
 
-        $templateId = 3;
+        $templateId = 1;
 
         if ($this->request->isPost) {
             $reason = $this->request->post("reason");

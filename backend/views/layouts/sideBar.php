@@ -26,13 +26,15 @@
                     'items' => [
                         [
                             'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
-                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu">Email to Higher</span>',
+                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu">Outbound Dashboard</span>',
                             'url' => '/site/outbound-dashboard', 'options' => ['class' => 'sidebar-item'],
-                        ], [
+                        ],
+                       [
                             'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
-                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu">Email to Higher (Redirect)</span>',
+                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu">Inbound Dashboard</span>',
                             'url' => '/site/inbound-dashboard', 'options' => ['class' => 'sidebar-item'],
                         ],
+
                     ],
                 ], [
                     'template' => '<a href="{url}" class="sidebar-link">{label}</a>',
@@ -62,32 +64,46 @@
                     'items' => [
                         [
                             'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
-                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu">Email to Higher</span>',
+                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu text-wrap">Incomplete Application</span>',
                             'url' => '/email-tamplate/view?id=1', 'options' => ['class' => 'sidebar-item'],
                         ], [
                             'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
-                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu">Email to Higher (Redirect)</span>',
+                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu text-wrap">Application Rejected</span>',
                             'url' => '/email-tamplate/view?id=2', 'options' => ['class' => 'sidebar-item'],
                         ], [
                             'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
-                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu">Application not Complete</span>',
+                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu text-wrap">Approval process for Inbound</span>',
                             'url' => '/email-tamplate/view?id=3', 'options' => ['class' => 'sidebar-item'],
                         ], [
                             'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
-                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu">Application Rejected</span>',
+                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu text-wrap">Issue offer letter to applicant</span>',
                             'url' => '/email-tamplate/view?id=4', 'options' => ['class' => 'sidebar-item'],
                         ], [
                             'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
-                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu">Upload Before Leave</span>',
+                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu text-wrap">Upload proof of payment</span>',
                             'url' => '/email-tamplate/view?id=5', 'options' => ['class' => 'sidebar-item'],
                         ], [
                             'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
-                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu">Accept</span>',
+                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu text-wrap">Matriculate applicant and email Pin No to applicant </span>',
                             'url' => '/email-tamplate/view?id=6', 'options' => ['class' => 'sidebar-item'],
                         ], [
                             'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
-                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu">Upload Files Before Comeback</span>',
+                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu text-wrap">Approval process for Outbound</span>',
                             'url' => '/email-tamplate/view?id=7 ', 'options' => ['class' => 'sidebar-item'],
+                        ],
+                        [
+                            'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
+                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu text-wrap">Upload documents before leaving Malaysia</span>',
+                            'url' => '/email-tamplate/view?id=8 ', 'options' => ['class' => 'sidebar-item'],
+                        ],
+                        [
+                            'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
+                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu text-wrap">Upload documents before return back to Malaysia</span>',
+                            'url' => '/email-tamplate/view?id=9 ', 'options' => ['class' => 'sidebar-item'],
+                        ],[
+                            'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
+                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu text-wrap">Congrats!</span>',
+                            'url' => '/email-tamplate/view?id=10 ', 'options' => ['class' => 'sidebar-item'],
                         ],
                     ],
                 ], [
@@ -100,11 +116,16 @@
             ], 'submenuTemplate' => "<ul class='collapse first-level' aria-expanded = 'false'>{items}</ul>",
         ]);
         ?>
+<div class="d-flex gap-lg-6 align-items-center ">
+    <?= Html::beginForm(['/site/logout'], 'post', ['class' => 'd-flex']) ?>
+    <?= Html::button(
+        '<i class="ti ti-logout fs-7"></i>',
+        ['class' => 'btn btn-light logout fs-3', 'type' => 'submit', 'title' => 'Log Out']
+    ) ?>
+    <?= Html::endForm() ?>
+	<p class="mb-0 border-2 border-dark fw-semibold">Hello <?= Yii::$app->user->identity->username?></p>
+</div>
 
-        <?= Html::beginForm(['/site/logout'], 'post', ['class' => 'd-flex']) ?>
-        <?= Html::button('<i class="ti ti-logout"></i><span class="hide-menu">Logout</span>',
-            ['class' => 'btn btn-link logout text-decoration-none', 'type' => 'submit']) ?>
-        <?= Html::endForm() ?>
 
 
 	</nav>

@@ -210,7 +210,7 @@ function getCount($countType)
         case 'Rejected':
             return Outbound::find()->where(['Status' => [2, 12, 22, 32, 42, 52, 6, 16, 26, 36, 46, 56]])->count();
         case 'Process':
-            return Outbound::find()->where(['Status' => [1, 10, 11, 21, 31, 41, 51, 5, 15, 25, 35, 45, 55, 65]])->count();
+            return Outbound::find()->where(['Status' => [1, 10, 11, 21, 31, 41, 51]])->count();
         case 'TotalI':
             return Inbound::find()->where(['not', ['Status' => null]])->count();
         case 'AcceptedI':
@@ -223,3 +223,14 @@ function getCount($countType)
             return 0; // Or handle other cases accordingly
     }
 }
+//function getStatusFilter($type)
+//{
+//    switch ($type){
+//        case 'AcceptedO': return '61';
+//        case 'RejectedO': return '2+12+22+32+42+52';
+//        case 'InProcessO': return '1+10+11+21+31+41+51';
+//        case 'AcceptedI': return '65';
+//        case 'RejectedI': return '6+16+26+36+46+56';
+//        case 'InProcessI': return '5+10+15+25+35+45+55';
+//    }
+//}

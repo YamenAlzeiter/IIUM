@@ -79,7 +79,7 @@ $this->registerJs("
             height: 350,
             type: 'line',
             toolbar: {
-                show: false,
+                show: true,'offsetX': -10, 'offsetY': 20
             },
         },
         stroke: {

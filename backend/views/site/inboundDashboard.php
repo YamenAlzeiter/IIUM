@@ -14,35 +14,42 @@ $this->title = 'Dashboard';
 <div class="row">
     <div class="col-lg-3">
         <div class = "card rounded-2 overflow-hidden hover-img">
-            <div class = "card-body">
-                <h4 class="text-center fw-semibold text-dark">Total</h4>
-                <p class="value text-center fw-bolder fs-8 " akhi="<?=getCount('TotalI')?>">0</p>
-            </div>
+		        <div class = "card-body">
+			        <h4 class="text-center fw-semibold text-dark">Total</h4>
+			        <p class="value text-center fw-bolder fs-8 " akhi="<?=getCount('TotalI')?>">0</p>
+		        </div>
         </div>
     </div>
     <div class="col-lg-3">
+	    <a href = "">
         <div class = "card rounded-2 overflow-hidden hover-img bg-light-green">
+
             <div class = "card-body">
                 <h4 class="text-center fw-semibold text-success-style2">Accepted</h4>
                 <p class="value text-center fw-bolder fs-8 text-success-style2" akhi="<?=getCount('AcceptedI')?>">0</p>
             </div>
         </div>
+	    </a>
     </div>
     <div class="col-lg-3">
+	    <a href = "">
         <div class = "card bg-light-danger rounded-2 overflow-hidden hover-img">
             <div class = "card-body">
                 <h4 class="text-center fw-semibold text-danger">Rejected</h4>
                 <p class="value text-center fw-bolder fs-8 text-danger" akhi="<?=getCount('RejectedI')?>">0</p>
             </div>
         </div>
+	    </a>
     </div>
     <div class="col-lg-3">
+	    <a href = "">
         <div class = "card bg-light-autom rounded-2 overflow-hidden hover-img">
             <div class = "card-body">
                 <h4 class="text-center fw-semibold text-warning">In Process</h4>
                 <p class="value text-center fw-bolder fs-8 text-warning" akhi="<?=getCount('ProcessI')?>">0</p>
             </div>
         </div>
+	    </a>
     </div>
 </div>
 <div class="row">
@@ -64,6 +71,7 @@ $this->title = 'Dashboard';
     </div>
 </div>
 
+
 <?php
 $this->registerJs("
     var months = " . $months . ";
@@ -79,7 +87,7 @@ $this->registerJs("
             height: 350,
             type: 'line',
             toolbar: {
-                show: false,
+                show: true,'offsetX': -10, 'offsetY': 20
             },
         },
         stroke: {
@@ -123,7 +131,7 @@ $this->registerJs("
             forceNiceScale: true, 
         },
         tooltip: {
-            theme: 'dark',
+            theme: 'light',
         },
     };
 
@@ -151,6 +159,9 @@ $this->registerJs("
             options: {
                 chart: {
                     width: 200,
+                      selection: {
+    enabled: false
+  }
                 },
                 legend: {
                     show: false,

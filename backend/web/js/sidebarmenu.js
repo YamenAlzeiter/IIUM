@@ -7,22 +7,25 @@ $(function () {
     );
     var controller = path.split("/"); // Get the controller part of the URL
     if (controller[0] !== "site" && controller[0] !== "email-tamplate") {
-
         // Remove the last element if it's "index"
         controller.pop();
     }else if(controller[0] === "email-tamplate"){
         controller[1] = controller[1].split("?")[1];
-
     }
-    console.log(controller)
+
     // Check if the controller is not empty before selecting and activating
     if (controller.length > 0) {
         var element = $("ul#sidebarnav a").filter(function () {
             var href = this.href;
             // Check if each element in the controller is included in the href
+
             var isMatch = controller.every(function (item) {
+                if(href.includes("dashboard")){
+                    return false
+                }
                 return href.includes(item);
             });
+
             return href === url || isMatch;
         });
 

@@ -57,6 +57,7 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                '' => 'site/outbound-dashboard',
             ],
         ],
         'authManager' => [

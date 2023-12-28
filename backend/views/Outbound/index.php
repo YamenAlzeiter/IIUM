@@ -16,64 +16,6 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 
 ?>
 
-<div class = "row">
-	<div class = "col-lg-3">
-		<div class = "card rounded-2 overflow-hidden hover-img">
-			<div class = "card-body">
-				<div class = "d-flex justify-content-center align-items-center header-info gap-1 mb-3">
-					<i class = "ti ti-sum fw-semibold text-dark-emphasis"></i>
-					<strong>
-						<h4 class = "fw-semibold text-dark-emphasis mb-0">Total</h4>
-					</strong>
-				</div>
-				<p class = "value text-center fw-bolder fs-8 " akhi = "<?= getCount('Total') ?>">0</p>
-			</div>
-		</div>
-	</div>
-	<div class = "col-lg-3">
-		<div class = "card rounded-2 overflow-hidden hover-img bg-light-green">
-			<div class = "card-body">
-				<div class = "d-flex justify-content-center align-items-center header-info gap-1 mb-3">
-					<i class = "ti ti-circle-check fw-semibold text-success-style2"></i>
-					<strong>
-						<h4 class = "text-center fw-semibold text-success-style2 mb-0">Accepted</h4>
-					</strong>
-				</div>
-				<p class = "value text-center fw-bolder fs-8 text-success-style2" akhi = "<?= getCount('Accepted') ?>">
-					0</p>
-			</div>
-		</div>
-	</div>
-	<div class = "col-lg-3">
-		<div class = "card bg-light-danger rounded-2 overflow-hidden hover-img">
-			<div class = "card-body">
-				<div class = "d-flex justify-content-center align-items-center header-info gap-1 mb-3">
-					<i class = "ti ti-ban fw-semibold text-danger"></i>
-					<strong>
-
-						<h4 class = "text-center fw-semibold text-danger mb-0">Rejected</h4>
-					</strong>
-				</div>
-				<p class = "value text-center fw-bolder fs-8 text-danger" akhi = "<?= getCount('Rejected') ?>">0</p>
-			</div>
-		</div>
-	</div>
-	<div class = "col-lg-3">
-		<div class = "card bg-light-autom rounded-2 overflow-hidden hover-img">
-			<div class = "card-body">
-				<div class = "d-flex justify-content-center align-items-center header-info gap-1 mb-3">
-					<i class = "ti ti-loader-quarter text-warning fw-semibold"></i>
-					<strong>
-						<h4 class = "text-center fw-semibold text-warning mb-0">In Process</h4>
-					</strong>
-				</div>
-				<p class = "value text-center fw-bolder fs-8 text-warning" akhi = "<?= getCount('Process') ?>">0</p>
-			</div>
-		</div>
-	</div>
-</div>
-
-
 <div class = "accordion-item mb-2">
 
     <?= Html::button('<i class="ti ti-filter"></i>Filter', [

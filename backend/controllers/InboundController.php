@@ -57,12 +57,6 @@ class InboundController extends Controller
         $searchModel = new inboundSearch();
         $statusModel = new Status();
 
-        $months = $this->getMonthNames();
-        $counts = $this->getMonthlyCounts();
-
-        $maleCount = $this->getGenderCount('M');
-        $femaleCount = $this->getGenderCount('F');
-
 
         $dataProvider = $searchModel->search($this->request->queryParams);
         $dataProvider->pagination = [
@@ -74,9 +68,7 @@ class InboundController extends Controller
 
 
         return $this->render("index",
-            [  'searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'status' => $statusModel,
-                'months' => json_encode($months), 'counts' => json_encode($counts), 'maleCount' => $maleCount,
-                'femaleCount' => $femaleCount,]);
+            [  'searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'status' => $statusModel,]);
     }
     private function getMonthNames()
     {
@@ -314,11 +306,11 @@ class InboundController extends Controller
             if ($status === 5) {
                 $token = Yii::$app->security->generateRandomString(32);
                 $model->setAttribute('Kulliyyah', $selectedPersonId);
-                $template = 1;
+                $template = 3;
             } elseif ($status === 25) {
                 $token = Yii::$app->security->generateRandomString(32);
                 $model->setAttribute('msd_cps', $selectedPersonId);
-                $template = 1;
+                $template = 4;
             } elseif ($status === 45) {
                 $token = null;
                 $selectedPersonInChargeName = $model->Name;
@@ -327,7 +319,7 @@ class InboundController extends Controller
             } elseif ($status === 65) {
                 $token = null;
                 $selectedPersonInChargeName = $model->Name;
-                $template = 6;
+                $template = 10;
                 $email = $model->Email_address;
             }
 
@@ -394,7 +386,7 @@ class InboundController extends Controller
         $name = $model->Name;
         $email = $model->Email;
 
-        $templateId = 4;
+        $templateId = 2;
 
         if ($this->request->isPost) {
             $status = intval($this->request->post("status"));
@@ -446,7 +438,7 @@ class InboundController extends Controller
             $status = 41;
         }
         $path = '@backend/views/email/emailReject.php';
-        $templateId = 3;
+        $templateId = 1;
 
         if ($this->request->isPost) {
             $reason = $this->request->post("reason");

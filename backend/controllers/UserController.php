@@ -103,27 +103,6 @@ class UserController extends Controller
             'model' => $model,
         ]);
     }
-    /**
-     * Creates a new UserAdmin model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return string|\yii\web\Response
-     */
-   public function actionCreate()
-   {
-       $model = new SignupForm();
-        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
-            $password = 'admin'; // Set the initial password
-            $model->setPassword($password); // Set the password for the Admin model
-            $model->generateAuthKey(); // Generate an authentication key
-            Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
-            return $this->redirect(['index']);
-        }
-   }
-
-
-
-
-
 
 
     /**

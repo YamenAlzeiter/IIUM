@@ -53,7 +53,7 @@ $(function () {
 
     $("#add-user").on("click", function () {
         $('#formpoc').modal("show");
-        $("#formpoc form").attr("action", "/user/create");
+        $("#formpoc form").attr("action", "/user/index");
    });
    
 
@@ -114,4 +114,9 @@ $(function () {
     });
 
     $("#btn-n-add").attr("disabled", false); // Enable the button
+
+    $('#formpoc').on('hidden.bs.modal', function (e) {
+        // Reset the form fields when the modal is closed
+        $(this).find('form')[0].reset();
+    });
 });

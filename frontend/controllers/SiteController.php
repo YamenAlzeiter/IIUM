@@ -158,15 +158,22 @@ class SiteController extends Controller
      *
      * @return mixed
      */
-    public function actionSignup()
+    public function actionCreate()
     {
         $model = new SignupForm();
+
         if ($model->load(Yii::$app->request->post()) && $model->signup()) {
-            Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
-            return $this->goHome();
+            Yii::$app->session->setFlash('success', 'User created successfully.');
+            return $this->redirect(['index']);
+        } else {
+            Yii::$app->session->setFlash('error', 'Failed to create user.');
+            // Fetch and handle errors, if any
+            $errors = $model->getErrors();
+            // Handle errors as needed for debugging or displaying to the user
+            // Example: var_dump($errors);
         }
 
-        return $this->render('signup', [
+        return $this->render('index', [
             'model' => $model,
         ]);
     }

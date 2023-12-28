@@ -15683,6 +15683,10 @@ a:hover {
   color: #5D87FF;
 }
 
+a .card:hover{
+  filter: brightness(98%);
+}
+
 ul {
   list-style: none;
   padding-left: 0;

@@ -79,15 +79,15 @@ use yii\helpers\Html;
                         <?php $form = ActiveForm::begin(['options' => ['id' => 'myForm']]); ?>
 
 						<div class="mb-3">
-                            <?= $form->field($model, 'username')->textInput(['maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'Username'])->label(false) ?>
+                            <?= $form->field($model, 'username')->textInput(['maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'Username', 'required' => true])->label(false) ?>
 						</div>
 
 						<div class="row align-items-center">
 							<div class="col-md-4 mb-3">
-                                <?= $form->field($model, 'matric_number')->textInput(['maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'Matric Number'])->label(false) ?>
+                                <?= $form->field($model, 'matric_number')->textInput(['maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'Matric Number', 'required' => true])->label(false) ?>
 							</div>
 							<div class="col-md-4 mb-3">
-                                <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'email'])->label(false) ?>
+                                <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'email', 'required' => true])->label(false) ?>
 							</div>
 						</div>
 					</div>
@@ -96,6 +96,7 @@ use yii\helpers\Html;
 			<div class="modal-footer">
 				<div class="form-group">
                     <?= Html::submitButton('',['class' => 'btn btn-outline-dark px-4 py-2', 'name' => 'save-button', 'id'=>'submit-button'])?>
+
 				</div>
 			</div>
             <?php ActiveForm::end(); ?>
