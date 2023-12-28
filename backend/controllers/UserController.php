@@ -8,6 +8,7 @@ use common\models\Admin;
 use common\models\Kcdio;
 use common\models\Poc;
 use common\models\User;
+use SebastianBergmann\ObjectReflector\Exception;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
@@ -59,29 +60,44 @@ class UserController extends Controller
             'query' => UserAdmin::find(),
         ]);
 
-        if ($this->request->isPost && $model->load($this->request->post())) {
-            if ($model->save()) {
-                // Redirect to the view page after successful creation
-                return $this->redirect(['index']);
+        if ($this->request->isPost) {
+            try {
+                if ($model->load($this->request->post())) {
+                    // Validate the model before attempting to save
+                    if ($model->validate()) {
+                        // Check if the matric number already exists
+
+                        $existingUser = UserAdmin::findOne(['matric_number' => $model->matric_number]);
+                        if ($existingUser) {
+                            Yii::$app->session->setFlash('error', 'Matric number already exists.');
+                            return $this->redirect(['index']);
+                        }
+
+                        // Assign values and save the Admin model
+                        $user->username = $model->username;
+                        $user->email = $model->email;
+                        $user->matric_number = $model->matric_number;
+
+                        $password = 'admin'; // Set the initial password
+                        $user->setPassword($password);
+                        $user->generateAuthKey();
+
+                        // Try saving the Admin model
+                        if ($user->save()) {
+                            Yii::$app->session->setFlash('success', 'User created successfully.');
+                            return $this->redirect(['index']);
+                        } else {
+                            Yii::$app->session->setFlash('error', 'Unable to save the user.');
+                        }
+                    } else {
+                        Yii::$app->session->setFlash('error', 'Unable to save the User, failed validation: try to use different Email or Matric Number.');
+                    }
+                }
+            } catch (Exception $e) {
+                Yii::$app->session->setFlash('error', 'An error occurred while creating the user.');
+                Yii::error($e->getMessage());
             }
         }
-        if ($model->load(Yii::$app->request->post())) {
-            // Handle successful creation
-
-            $password = 'admin'; // Set the initial password
-
-
-            $user->username = $model->username;
-            $user->email = $model->email;
-            $user->matric_number = $model->matric_number;
-
-            $user->setPassword($password); // Set the password for the Admin model
-            $user->generateAuthKey(); // Generate an authentication key
-            if ($user->save()) {
-                return $this->redirect(['index']);
-            }
-        }
-
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
@@ -89,20 +105,12 @@ class UserController extends Controller
         ]);
     }
 
-    /**
-     * Displays a single UserAdmin model.
-     * @param int $id ID
-     * @return string
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        $model = UserAdmin::findOne($id);
 
-        return $this->render('view', [
-            'model' => $model,
-        ]);
-    }
+
+
+
+
+
 
 
     /**

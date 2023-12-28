@@ -1,9 +1,8 @@
 <div>
-	<div class = "brand-logo d-flex align-items-center justify-content-between">
-		<h1>IIUM LOGO</h1>
-		<div class = "close-btn d-xl-none d-block sidebartoggler cursor-pointer" id = "sidebarCollapse">
-			<i class = "ti ti-x fs-8"></i>
-		</div>
+	<div class = "mt-4 brand-logo d-flex align-items-center gap-2">
+		<img src="/images/iiumLogo.png" alt="IIUM Logo" class="w-25 h-25">
+		<h4 class="mb-0 fw-semibold">IO Dashboard</h4>
+
 	</div>
 
 	<nav class = "sidebar-nav scroll-sidebar" data-simplebar = "">
@@ -116,7 +115,7 @@
             ], 'submenuTemplate' => "<ul class='collapse first-level' aria-expanded = 'false'>{items}</ul>",
         ]);
         ?>
-<div class="d-flex gap-lg-6 align-items-center ">
+<div class="d-flex gap-lg-6 align-items-center mb-4">
     <?= Html::beginForm(['/site/logout'], 'post', ['class' => 'd-flex']) ?>
     <?= Html::button(
         '<i class="ti ti-logout fs-7"></i>',

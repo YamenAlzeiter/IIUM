@@ -31,4 +31,7 @@ class AppAsset extends AssetBundle
         'yii\web\YiiAsset',
         'yii\bootstrap5\BootstrapAsset',
     ];
+    public $images = [
+        'images\iiumLogo.png',
+    ];
 }
