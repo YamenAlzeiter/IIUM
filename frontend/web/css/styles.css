@@ -7686,6 +7686,11 @@ textarea.form-control-lg {
   color: #f8fafd !important;
 }
 
+.iiumlogo {
+  width: 60px;
+  overflow: hidden;
+}
+
 .ratio {
   position: relative;
   width: 100%;
@@ -8354,6 +8359,10 @@ textarea.form-control-lg {
 
 .mw-100 {
   max-width: 100% !important;
+}
+
+.mw-50 {
+  max-width: 50% !important;
 }
 
 .vw-100 {
@@ -9171,7 +9180,9 @@ textarea.form-control-lg {
 .p-0 {
   padding: 0 !important;
 }
-
+.p-100{
+  padding-top: 8.5rem !important;
+}
 .p-1 {
   padding: 0.25rem !important;
 }

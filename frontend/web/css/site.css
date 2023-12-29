@@ -66,6 +66,8 @@ body{
 #signUpForm .form-header .stepIndicator:last-child:after {
     display: none;
 }
+
+
 #signUpForm input {
     padding: 15px 20px;
     width: 100%;
@@ -107,8 +109,24 @@ body{
     background-color: #fff;
     color: #009688;
 }
+
+
 /*===== GOOGLE FONTS =====*/
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap");
+.img-fluid{
+    position: relative;
+    z-index: -19;
+}
+.img-fluid::before{
+
+    content: "";
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
 /*===== VARIABLES CSS =====*/
 :root {
     /*===== Colores =====*/

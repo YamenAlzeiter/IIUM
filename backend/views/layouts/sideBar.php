@@ -1,9 +1,10 @@
-<div>
-	<div class = "mt-4 brand-logo d-flex align-items-center gap-2">
-		<img src="/images/iiumLogo.png" alt="IIUM Logo" class="w-25 h-25">
-		<h4 class="mb-0 fw-semibold">IO Dashboard</h4>
 
-	</div>
+	<a href = "">
+		<div class = "mt-4 brand-logo d-flex align-items-center gap-2">
+			<img src="/images/iiumLogo.png" alt="IIUM Logo" class="w-25 h-25">
+			<h4 class="mb-0 fw-semibold">IO Dashboard</h4>
+		</div>
+	</a>
 
 	<nav class = "sidebar-nav scroll-sidebar" data-simplebar = "">
 
@@ -130,4 +131,4 @@
 	</nav>
 
 
-</div>
+

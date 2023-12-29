@@ -26,6 +26,7 @@ if (!isset($noRecord)) {
 
 <?php if (isset($noRecord) && $noRecord === true) : ?>
 	<div class="alert alert-warning d-flex justify-content-center align-items-center gap-1">
+		<h4 class="fw-semibold">Hello <?= Yii::$app->user->identity?></h4>
 		<p class="text-capitalize alert m-0 p-0">No records found yet</p>
 		<p class="text-capitalize alert m-0 p-0">
 			<strong><?php echo Html::a('Create One', ['create'], ['class' => ' m-0 p-0 alert']); ?></strong>

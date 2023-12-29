@@ -57,6 +57,7 @@ class SiteController extends Controller
      */
     public function actions()
     {
+        $this->layout= 'blank';
         return [
             'error' => [
                 'class' => \yii\web\ErrorAction::class,
@@ -75,6 +76,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        $this->layout = 'main';
         return $this->render('index');
     }
     
@@ -86,6 +88,7 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
+
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -93,7 +96,7 @@ class SiteController extends Controller
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             $currentUser = Yii::$app->user->identity;
-    
+
             if ($currentUser && $currentUser->type === 'I') {
                 return $this->redirect(['inbound/index']);
             } elseif ($currentUser && $currentUser->type === 'O') {
@@ -158,22 +161,16 @@ class SiteController extends Controller
      *
      * @return mixed
      */
-    public function actionCreate()
+    public function actionSignup()
     {
+        $this->layout= 'blank';
         $model = new SignupForm();
-
         if ($model->load(Yii::$app->request->post()) && $model->signup()) {
-            Yii::$app->session->setFlash('success', 'User created successfully.');
-            return $this->redirect(['index']);
-        } else {
-            Yii::$app->session->setFlash('error', 'Failed to create user.');
-            // Fetch and handle errors, if any
-            $errors = $model->getErrors();
-            // Handle errors as needed for debugging or displaying to the user
-            // Example: var_dump($errors);
+            Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
+            return $this->redirect('login');
         }
 
-        return $this->render('index', [
+        return $this->render('signup', [
             'model' => $model,
         ]);
     }

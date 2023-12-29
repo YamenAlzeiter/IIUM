@@ -30,25 +30,38 @@ AppAsset::register($this);
 	<header>
         <?php
         NavBar::begin([
-            'brandLabel' => Yii::$app->name,
-            'brandUrl' => Yii::$app->homeUrl,
             'options' => [
-                'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
+                'class' => 'navbar navbar-expand-md bg-white fixed-top mb-3 shadow-sm', // Update class here
             ],
         ]);
-
-
+        echo Html::a(
+            '<div class="brand-logo d-flex align-items-center gap-2">' .
+            Html::img('/images/iiumLogo.svg', ['alt' => 'IIUM Logo', 'class' => 'iiumlogo']) .
+            '<h4 class="mb-0 fw-semibold">Inbound/ Outbound Application</h4>' .
+            '</div>',
+            Yii::$app->homeUrl, // Update brand URL here
+            ['class' => 'navbar-brand'] // Add class to the brand link
+        );
 
         echo Nav::widget([
             'options' => ['class' => 'navbar-nav me-auto mb-2 mb-md-0'],
         ]);
         if (Yii::$app->user->isGuest) {
-            echo Html::tag('div',Html::a('Login',['/site/login'],['class' => ['btn btn-link login text-decoration-none']]),['class' => ['d-flex']]);
+            echo Html::tag(
+                    'div',
+                    Html::a('Login', ['/site/login'], ['class' => ['btn btn-light login text-decoration-none me-2']]),
+                    ['class' => ['d-flex']]
+                ) . Html::tag(
+                    'div',
+                    Html::a('Sign up', ['/site/signup'], ['class' => ['btn btn-outline-dark text-decoration-none']]),
+                    ['class' => ['d-flex']]
+                );
+
         } else {
             echo Html::beginForm(['/site/logout'], 'post', ['class' => 'd-flex'])
-                . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->username . ')',
-                    ['class' => 'btn btn-link logout text-decoration-none']
+                . Html::button(
+                    '<i class="ti ti-logout fs-7"></i>',
+                    ['class' => 'btn btn-light logout fs-3', 'type' => 'submit', 'title' => 'Log Out']
                 )
                 . Html::endForm();
         }
@@ -57,7 +70,7 @@ AppAsset::register($this);
 	</header>
 
 	<main role="main" class="flex-shrink-0">
-		<div class="container">
+		<div class="container p-100">
             <?= Breadcrumbs::widget([
                 'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
             ]) ?>
