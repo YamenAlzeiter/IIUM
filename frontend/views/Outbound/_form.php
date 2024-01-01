@@ -117,7 +117,7 @@ function isFileRequired($file)
 			</div>
 
 			<div class = "row mt-2">
-				<div class = "col-md-6">
+				<div class = "col-md-4">
 					<div class = "form__div">
 						<input type = "number" class = "form__input form-control" id = "validationCustomPostcode"
 						       name = "Outbound[Postcode]"
@@ -126,7 +126,7 @@ function isFileRequired($file)
 						<label for = "validationCustomPostcode" class = "form__label">Postal Code</label>
 					</div>
 				</div>
-				<div class = "col-md-6">
+				<div class = "col-md-4">
 					<div class = "form__div">
 						<select class = "form__input form-control countries" id = "countryId5" name = "Outbound[Country]"
 						        >
@@ -134,7 +134,7 @@ function isFileRequired($file)
 						</select>
 					</div>
 				</div>
-				<div class = "col-md-6">
+				<div class = "col-md-4">
 					<div class = "form__div">
 						<select class = "form__input form-control states" id = "stateId1" name = "Outbound[State]"
 						        value = "<?= $model->State ?>" required>
@@ -142,6 +142,7 @@ function isFileRequired($file)
 						</select>
 					</div>
 				</div>
+			
 			</div>
 			<div class = "form__div">
     <textarea class = "form__input form-control" id = "validationCustomMailingAddress" name = "Outbound[Mailing_Address]"
@@ -150,7 +151,7 @@ function isFileRequired($file)
 			</div>
 
 			<div class = "row mt-2">
-				<div class = "col-md-6">
+				<div class = "col-md-4">
 					<div class = "form__div">
 						<input type = "number" class = "form__input form-control" id = "validationCustomMailingPostcode"
 						       value = '<?= $model->Mailing_Postcode?>' name = "Outbound[Mailing_Postcode]" maxlength = "255"
@@ -158,7 +159,7 @@ function isFileRequired($file)
 						<label for = "validationCustomMailingPostcode" class = "form__label">Mailing Post Code</label>
 					</div>
 				</div>
-				<div class = "col-md-6">
+				<div class = "col-md-4">
 					<div class = "form__div">
 						<select class = "form__input form-control countries" id = "countryId4"
 						        name = "Outbound[Mailing_Country]" required>
@@ -166,7 +167,7 @@ function isFileRequired($file)
 						</select>
 					</div>
 				</div>
-				<div class = "col-md-6">
+				<div class = "col-md-4">
 					<div class = "form__div">
 						<select class = "form__input form-control states" id = "stateId2" name = "Outbound[Mailing_State]" required>
 							<option value = "">Select State</option>
