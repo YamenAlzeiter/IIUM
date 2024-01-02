@@ -65,7 +65,7 @@ class InboundController extends Controller
 
         // Exclude records with null status
         $dataProvider->query->andWhere(['not', ['Status' => null]]);
-
+        $dataProvider->sort->defaultOrder = ['updated_at' => SORT_DESC];
 
         return $this->render("index",
             [  'searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'status' => $statusModel,]);
@@ -384,7 +384,7 @@ class InboundController extends Controller
     {
         $model = $this->findModel($ID);
         $name = $model->Name;
-        $email = $model->Email;
+        $email = $model->Email_address;
 
         $templateId = 2;
 

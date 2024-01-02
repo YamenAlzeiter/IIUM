@@ -1,19 +1,22 @@
-$(document).ready(function() {
-    dropdownData.forEach(function(data) {
-        setupCountryStateDropdown(data.countryId, data.stateId, data.countryModel, data.stateModel);
-    });
 
-    $.ajax({
-    url: '/outbound/get-nationality',
-    method: 'GET',
-    success: function(response) {
-        $('#validationCustomCitizenship').html(response);
-        if (nationalityModelValue !== '') {
-            $('#validationCustomCitizenship').val(nationalityModelValue).change();
-        }
+$(document).ready(function() {
+    if (typeof dropdownData !== 'undefined') {
+        dropdownData.forEach(function(data) {
+            setupCountryStateDropdown(data.countryId, data.stateId, data.countryModel, data.stateModel);
+        });
+        $.ajax({
+            url: '/outbound/get-nationality',
+            method: 'GET',
+            success: function(response) {
+                $('#validationCustomCitizenship').html(response);
+                if (nationalityModelValue !== '') {
+                    $('#validationCustomCitizenship').val(nationalityModelValue).change();
+
+                }
+            }
+        });
     }
-});
-});
+    });
 
 function setupCountryStateDropdown(countryIdSelector, stateIdSelector, countryModelValue, stateModelValue) {
     // AJAX call for populating countries

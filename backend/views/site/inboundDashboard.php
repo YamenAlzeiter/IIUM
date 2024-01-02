@@ -126,8 +126,8 @@ $this->registerJs("
         },
         yaxis: {
             min: Math.min(0),
-            max: Math.max(20),
-             tickAmount: 11,
+            max: Math.max(15),
+             tickAmount: 13,
             forceNiceScale: true, 
         },
         tooltip: {

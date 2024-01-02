@@ -367,6 +367,9 @@ ul.form-stepper > li:not(:last-of-type) {
 .form-stepper-horizontal li:after {
     background-color: #dee2e6;
 }
+.form-stepper-horizontal li:focus {
+    text-decoration: underline;
+}
 .form-stepper-horizontal li.form-stepper-completed:after {
     background-color: #0e9594;
 }
@@ -393,6 +396,7 @@ ul.form-stepper li a .form-stepper-circle {
     background-color: #FA896B !important;
     color: #fff;
 }
+
 
 .form-stepper .form-stepper-invalid .label {
     color: #FA896B !important;

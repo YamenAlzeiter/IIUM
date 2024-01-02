@@ -41,7 +41,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
         'columns' => [
             [
                 'attribute' => 'updated_at', 'contentOptions' => ['class' => 'col-1'], // Set the width for this column
-                'format' => ['date', 'php:Y-m-d'], // Format the date part only
+
             ], [
                 'attribute' => 'Name', 'contentOptions' => ['class' => 'col-2 text-truncate'],
             ], [

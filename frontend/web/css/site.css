@@ -334,10 +334,13 @@ ul.form-stepper .form-stepper-circle {
     position: ative;
 }
 ul.form-stepper .form-stepper-circle span {
-    position: absolute;
     top: 50%;
     left: 50%;
     transform: translateY(-50%) translateX(-50%);
+}
+.form-height{
+   min-height: 41rem;
+overflow: hidden;
 }
 .form-stepper-horizontal {
     
@@ -362,21 +365,20 @@ ul.form-stepper > li:not(:last-of-type) {
     margin-bottom: 0 !important;
 }
 .form-stepper-horizontal li {
-    position: relative;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
+    flex-direction: column;
     -webkit-box-flex: 1;
     -ms-flex: 1;
-    flex: 1;
     -webkit-box-align: start;
     -ms-flex-align: start;
-    align-items: start;
+    align-items: center;
     -webkit-transition: 0.5s;
     transition: 0.5s;
+
 }
 .form-stepper-horizontal li:not(:last-child):after {
-    position: relative;
     -webkit-box-flex: 1;
     -ms-flex: 1;
     flex: 1;
@@ -394,7 +396,7 @@ ul.form-stepper > li:not(:last-of-type) {
     flex: unset;
 }
 ul.form-stepper li a .form-stepper-circle {
-    display: inline-block;
+
     width: 40px;
     height: 40px;
     margin-right: 0;
@@ -415,12 +417,20 @@ ul.form-stepper li a .form-stepper-circle {
 }
 
 .form-stepper .form-stepper-invalid .label {
+    transition: color 0.3s ease-in-out, font-size 0.3s ease-in-out, font-weight 0.3s ease-in-out;
     color: #FA896B !important;
+}
+
+.form-stepper .label:hover{
+    text-decoration: underline;
 }
 
 
 .form-stepper .form-stepper-active .label {
-    color: #4361ee !important;
+    transition: color 0.3s ease-in-out, font-size 0.3s ease-in-out, font-weight 0.3s ease-in-out;
+    color: #000000 !important;
+    font-weight: bolder;
+    font-size: 1.2rem;
 }
 
 .form-stepper .form-stepper-unfinished .form-stepper-circle {
@@ -431,7 +441,10 @@ ul.form-stepper li a .form-stepper-circle {
     color: #fff;
 }
 .form-stepper .form-stepper-completed .label {
-    color: #0e9594 !important;
+    transition: color 0.3s ease-out, font-size 0.2s ease-out, font-weight 0.1s ease-out;
+    color: #40916c !important;
+    font-size: 1.1rem;
+    font-weight: bold;
 }
 .form-stepper .form-stepper-completed .form-stepper-circle:hover {
     background-color: #0e9594 !important;
@@ -445,8 +458,9 @@ ul.form-stepper li a .form-stepper-circle {
 }
 .form-stepper .label {
     font-size: 1rem;
-    margin-top: 0.5rem;
+    transition: color 0.3s ease-out, font-size 0.2s ease-out, font-weight 0.1s ease-out;
 }
+
 .form-stepper a {
     cursor: default;
 }

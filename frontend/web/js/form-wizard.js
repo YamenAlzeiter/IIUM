@@ -86,16 +86,6 @@ document.querySelectorAll(".btn-navigate-form-step").forEach((formNavigationBtn)
     });
 });
 
-// Function to navigate to the previous step
-document.querySelector(".btn-prev").addEventListener("click", function () {
-    const stepNumber = parseInt(this.getAttribute("step_number"));
-    const prevStepNumber = stepNumber - 1;
-
-    // Check if it's the first step, and do not proceed to a negative step
-    if (prevStepNumber > 0) {
-        navigateToFormStep(prevStepNumber);
-    }
-});
 
 // Function to submit the form
 function submitForm(validationType) {
@@ -120,7 +110,7 @@ function submitForm(validationType) {
     // Set the status to 10 if it's the last step
 
 
-    document.querySelector('.submit-btn').type = 'submit';
+    // document.querySelector('.submit-btn').type = 'submit';
 
     // Submit the form
     document.getElementById("myForm").submit();

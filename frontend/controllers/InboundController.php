@@ -264,7 +264,7 @@ class InboundController extends Controller
                         if ($file) {
                             $baseUploadPath = 'C:/xampp/htdocs/IIUM_Inbound_Oubbound/frontend/uploads';
                             $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $file->name);
-                            $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
+                            $creationYearLastTwoDigits = date('y', strtotime($model->created_at));
                             $fileName = $creationYearLastTwoDigits . '_' . $model->ID . '_' . $fileNamePrefix . '.' . $file->extension;
                             $file->saveAs($baseUploadPath . '/' . $fileName);
                             $model->$attribute = $fileName; // Update the model attribute with the new file name
