@@ -116,27 +116,21 @@ class HigherworkflowController extends \yii\web\Controller
 
                     $model->offer_letter->saveAs($baseUploadPath.'/'.$fileName);
                 }
-
+                    return $this->redirect(['view', 'ID' => $model->ID, 'token' => $model->Token],);
             }
         }
     }
-    public function actionViewFile($ID, $fileName, $token)
+
+    public function actionDownload($ID, $file)
     {
-        $model = $this->findModel($ID);
-
-        // Check if the provided token is valid
-        if (!$this->isValidToken($ID, $token)) {
-            throw new ForbiddenHttpException('You are not authorized to access this file.');
-        }
-
-        $filePath = 'C:/xampp/htdocs/IIUM_Inbound_Oubbound/frontend/uploads/' . $fileName;
-
+        $filePath = 'C:\xampp\htdocs\IIUM_Inbound_Oubbound\frontend\uploads/'.$file;
+        Yii::info("File Path: ".$filePath, "fileDownload");
         if (file_exists($filePath)) {
-            Yii::$app->response->sendFile($filePath)->send();
+            Yii::$app->response->sendFile($filePath);
         } else {
-            throw new NotFoundHttpException('The requested file does not exist.');
+            Yii::info("File not found: ".$file, "fileDownload");
+            throw new NotFoundHttpException('The file does not exist.');
         }
     }
-
 
 }

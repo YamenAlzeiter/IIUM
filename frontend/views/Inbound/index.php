@@ -354,7 +354,7 @@ if (!isset($noRecord)) {
 					<div class="form-content">
                         <?php $form = ActiveForm::begin([
                             'options' => ['enctype' => 'multipart/form-data'],
-                            'action' => ['outbound/upload', 'ID' => $model->ID], // Pass the ID to the action
+                            'action' => ['inbound/upload', 'ID' => $model->ID], // Pass the ID to the action
                         ]); ?>
                         <?= Html::hiddenInput('ID', $model->ID) ?>
 						<div class="row d-flex align-items-center justify-content-center">

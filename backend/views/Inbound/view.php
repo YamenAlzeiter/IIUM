@@ -22,17 +22,14 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
         <?php
         $statusModel = Status::findOne(['ID' => $model->Status]);
         $iconClass = getStatusIconClass($model->Status); // Implement your own logic to get the icon class based on status
-
-        echo Html::tag('i', '', [
-            'class' => 'ti ti-circle '.$iconClass,
+        $statusClass = getStatusClass($model->Status);
+        echo Html::tag('span', '', [
+            'class' => ''.$iconClass,
+        ]);
+        echo Html::tag('p',($statusModel = Status::findOne(['ID' => $model->Status])) ? $statusModel->status : '', [
+            'class' => ' fw-semibold m-0  '.$statusClass, 'id' => 'status-badge text-capitalize',
         ]);
         ?>
-		<p class = "fw-light mb-0 align-items-end">
-            <?= Html::tag('span',
-                ($statusModel = Status::findOne(['ID' => $model->Status])) ? $statusModel->status : '', [
-                    'class' => 'rounded-3 fw-semibold m-0', 'id' => 'status-badge',
-                ]) ?>
-		</p>
 	</div>
 </div>
 <div class = "row">
@@ -42,7 +39,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 				<div class = "d-flex align-items-center header-info gap-1 mb-3">
 					<i class = "ti ti-user-circle text-dark"></i>
 					<strong>
-						<h4 class = "fw-semibold m-0">Personal Info</h4>
+						<h4 class = "fw-semibold m-0 ">Personal Info</h4>
 					</strong>
 				</div>
 				<div class = "row">
@@ -184,7 +181,9 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 							<p class="fw-semibold"><?= ($model->Sponsorship_letter) ? Html::a('Sponsorship Letter', [
                                     'download', 'id' => $model->ID, 'file' => $fileName . '_SponsorshipLetter' . '.pdf'
                                 ]) : ''; ?></p>
-
+							<p class="fw-semibold"><?= ($model->offer_letter) ? Html::a('Offer Letter', [
+                                    'download', 'id' => $model->ID, 'file' => $fileName . '_offerLetter' . '.pdf'
+                                ]) : ''; ?></p>
 						</div>
 					</div>
 				</div>

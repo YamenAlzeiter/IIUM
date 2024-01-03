@@ -26,17 +26,14 @@ $fileName = $creationYearLastTwoDigits . '_' . $model->ID;
         <?php
         $statusModel = Status::findOne(['ID' => $model->Status]);
         $iconClass = getStatusIconClass($model->Status); // Implement your own logic to get the icon class based on status
-
-        echo Html::tag('i', '', [
-            'class' => 'ti ti-circle '.$iconClass,
+        $statusClass = getStatusClass($model->Status);
+        echo Html::tag('span', '', [
+            'class' => ''.$iconClass,
+        ]);
+        echo Html::tag('p',($statusModel = Status::findOne(['ID' => $model->Status])) ? $statusModel->status : '', [
+            'class' => ' fw-semibold m-0  '.$statusClass, 'id' => 'status-badge text-capitalize',
         ]);
         ?>
-		<p class = "fw-light mb-0 align-items-end">
-            <?= Html::tag('span',
-                ($statusModel = Status::findOne(['ID' => $model->Status])) ? $statusModel->status : '', [
-                    'class' => 'rounded-3 fw-semibold m-0', 'id' => 'status-badge',
-                ]) ?>
-		</p>
 	</div>
 </div>
 <div class = "row">
@@ -170,57 +167,56 @@ $fileName = $creationYearLastTwoDigits . '_' . $model->ID;
 								</strong>
 							</div>
 							<div class = "col-md-6">
-								<p class="fw-semibold"><?= ($model->Offer_letter) ? Html::a('Offer Letter', [
-                                        'download', 'id' => $model->ID,
-                                        'file' => $fileName.'_offerLetter'.'.pdf']) : ''; ?></p>
-								<p class="fw-semibold"><?= ($model->Academic_transcript) ? Html::a('Academic Transcript', [
-                                        'download', 'id' => $model->ID,
-                                        'file' => $fileName.'_AcademicTranscript'.'.pdf']) : ''; ?></p>
-								<p class="fw-semibold"><?= ($model->Program_brochure) ? Html::a('Program Brochure', [
-                                        'download', 'id' => $model->ID,
-                                        'file' => $fileName.'_ProgramBrochure'.'.pdf']) : ''; ?></p>
-								<p class="fw-semibold"><?= ($model->Latest_pay_slip) ? Html::a('Latest Pay Slip', [
-                                        'download', 'id' => $model->ID,
-                                        'file' => $fileName.'_LatestPaySlip'.'.pdf']) : ''; ?></p>
-								<p class="fw-semibold"><?= ($model->Other_latest_pay_slip) ? Html::a('Other Latest Pay Slip', [
-                                        'download', 'id' => $model->ID,
-                                        'file' => $fileName.'_OtherLatestPaySlip'.'.pdf']) : ''; ?></p>
-							</div>
-                            <?php if ($model->Status >= 41): ?>
-								<div class = "col-md-6">
-									<P><strong>Proof of sponsorship/ funding/ grant (Official Letter)</strong>
-                                        <?= ($model->Proof_of_sponsorship) ? Html::a('ProofOfSponsorship'.'_'.$model->ID.'.'.pathinfo($model->Proof_of_sponsorship,
-                                                PATHINFO_EXTENSION), [
-                                            'download', 'id' => $model->ID,
-                                            'file' => 'ProofOfSponsorship'.'_'.$model->ID.'.'.pathinfo($model->Proof_of_sponsorship,
-                                                    PATHINFO_EXTENSION)
-                                        ]) : ''; ?>
-									</P>
-									<P><strong>Other Latest Pay Slip: </strong>
-                                        <?= ($model->Other_latest_pay_slip) ? Html::a('ProofInsuranceCover'.'_'.$model->ID.'.'.pathinfo($model->Other_latest_pay_slip,
-                                                PATHINFO_EXTENSION), [
-                                            'download', 'id' => $model->ID,
-                                            'file' => 'ProofInsuranceCover'.'_'.$model->ID.'.'.pathinfo($model->Other_latest_pay_slip,
-                                                    PATHINFO_EXTENSION)
-                                        ]) : ''; ?>
-									</P>
-									<P><strong>Other Latest Pay Slip: </strong>
-                                        <?= ($model->Letter_of_indemnity) ? Html::a('LetterOfIndemnity'.'_'.$model->ID.'.'.pathinfo($model->Letter_of_indemnity,
-                                                PATHINFO_EXTENSION), [
-                                            'download', 'id' => $model->ID,
-                                            'file' => 'LetterOfIndemnity'.'_'.$model->ID.'.'.pathinfo($model->Letter_of_indemnity,
-                                                    PATHINFO_EXTENSION)
-                                        ]) : ''; ?>
-									</P>
-									<P><strong>Other Latest Pay Slip: </strong>
-                                        <?= ($model->Flight_ticket) ? Html::a('FlightTicket'.'_'.$model->ID.'.'.pathinfo($model->Flight_ticket,
-                                                PATHINFO_EXTENSION), [
-                                            'download', 'id' => $model->ID,
-                                            'file' => 'FlightTicket'.'_'.$model->ID.'.'.pathinfo($model->Flight_ticket, PATHINFO_EXTENSION)
-                                        ]) : ''; ?>
-									</P>
+									<p class="fw-semibold"><?= ($model->Offer_letter) ? Html::a('Offer Letter', [
+	                                         'download', 'ID' => $model->ID, 'token'=> $model->token, 'file' => $fileName.'_OfferLetter'.'.pdf']) : ''; ?></p>
+									<p class="fw-semibold"><?= ($model->Academic_transcript) ? Html::a('Academic Transcript', [
+	                                         'download', 'ID' => $model->ID, 'token'=> $model->token,
+	                                        'file' => $fileName.'_AcademicTranscript'.'.pdf']) : ''; ?></p>
+									<p class="fw-semibold"><?= ($model->Program_brochure) ? Html::a('Program Brochure', [
+	                                         'download', 'ID' => $model->ID, 'token'=> $model->token,
+	                                        'file' => $fileName.'_ProgramBrochure'.'.pdf']) : ''; ?></p>
+									<p class="fw-semibold"><?= ($model->Latest_pay_slip) ? Html::a('Latest Pay Slip', [
+	                                         'download', 'ID' => $model->ID, 'token'=> $model->token,
+	                                        'file' => $fileName.'_LatestPaySlip'.'.pdf']) : ''; ?></p>
+									<p class="fw-semibold"><?= ($model->Other_latest_pay_slip) ? Html::a('Other Latest Pay Slip', [
+	                                         'download', 'ID' => $model->ID, 'token'=> $model->token,
+	                                        'file' => $fileName.'_OtherLatestPaySlip'.'.pdf']) : ''; ?></p>
 								</div>
-                            <?php endif; ?>
+	                            <?php if ($model->Status >= 41): ?>
+									<div class = "col-md-6">
+										<P><strong>Proof of sponsorship/ funding/ grant (Official Letter)</strong>
+	                                        <?= ($model->Proof_of_sponsorship) ? Html::a('ProofOfSponsorship'.'_'.$model->ID.'.'.pathinfo($model->Proof_of_sponsorship,
+	                                                PATHINFO_EXTENSION), [
+	                                             'download', 'ID' => $model->ID, 'token'=> $model->token,
+	                                            'file' => 'ProofOfSponsorship'.'_'.$model->ID.'.'.pathinfo($model->Proof_of_sponsorship,
+	                                                    PATHINFO_EXTENSION)
+	                                        ]) : ''; ?>
+										</P>
+										<P><strong>Other Latest Pay Slip: </strong>
+	                                        <?= ($model->Other_latest_pay_slip) ? Html::a('ProofInsuranceCover'.'_'.$model->ID.'.'.pathinfo($model->Other_latest_pay_slip,
+	                                                PATHINFO_EXTENSION), [
+	                                             'download', 'ID' => $model->ID, 'token'=> $model->token,
+	                                            'file' => 'ProofInsuranceCover'.'_'.$model->ID.'.'.pathinfo($model->Other_latest_pay_slip,
+	                                                    PATHINFO_EXTENSION)
+	                                        ]) : ''; ?>
+										</P>
+										<P><strong>Other Latest Pay Slip: </strong>
+	                                        <?= ($model->Letter_of_indemnity) ? Html::a('LetterOfIndemnity'.'_'.$model->ID.'.'.pathinfo($model->Letter_of_indemnity,
+	                                                PATHINFO_EXTENSION), [
+	                                             'download', 'ID' => $model->ID, 'token'=> $model->token,
+	                                            'file' => 'LetterOfIndemnity'.'_'.$model->ID.'.'.pathinfo($model->Letter_of_indemnity,
+	                                                    PATHINFO_EXTENSION)
+	                                        ]) : ''; ?>
+										</P>
+										<P><strong>Other Latest Pay Slip: </strong>
+	                                        <?= ($model->Flight_ticket) ? Html::a('FlightTicket'.'_'.$model->ID.'.'.pathinfo($model->Flight_ticket,
+	                                                PATHINFO_EXTENSION), [
+	                                             'download', 'id' => $model->ID, 'token'=> $model->token,
+	                                            'file' => 'FlightTicket'.'_'.$model->ID.'.'.pathinfo($model->Flight_ticket, PATHINFO_EXTENSION)
+	                                        ]) : ''; ?>
+										</P>
+									</div>
+	                            <?php endif; ?>
 						</div>
 					</div>
 				</div>

@@ -215,13 +215,18 @@ class Inbound extends \yii\db\ActiveRecord
 
         parent::afterSave($insert, $changedAttributes);
         $newStatus = $this->Status;
-        if($newStatus === 10){
-            $this->createStatusLog("", $newStatus, $this->temp);
+        if ($this->Status == 10){
+            if ($changedAttributes['Status'] == 7){
+
+                $this->createStatusLog(0, $this->Status, "Application has been resubmitted");
+            }
+            else
+                $this->createStatusLog(0, $this->Status, "Application has been submitted");
         }
 
         elseif (!$insert && isset($changedAttributes['Status'])) {
             $oldStatus = $changedAttributes['Status'];
-
+            $this->updateAttributes(['updated_at' => date('Y-m-d H:i:s')]);
             if ($oldStatus !== $newStatus) {
                 if(($oldStatus === 16 && $newStatus === 5) || ($oldStatus === 36 && $newStatus === 25) || $newStatus === 7){
                     $this->createStatusLog($oldStatus, $newStatus, $this->temp);

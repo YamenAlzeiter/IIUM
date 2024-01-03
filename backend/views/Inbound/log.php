@@ -13,9 +13,10 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 
     <?= GridView::widget([
         'dataProvider' => $logsDataProvider,
-        'tableOptions' => ['class' => 'table border text-nowrap customize-table mb-0 text-center'],
+        'tableOptions' => ['class' => 'table border text-wrap customize-table mb-0 text-center'],
         'summary' => '', // Show the current page and total pages
         'columns' => [
+
             [
                 'label' => 'Status',
                 'format' => 'raw',
@@ -25,9 +26,9 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 
                     $class = '';
 
-                    if (in_array($model->new_status, [2, 12, 22, 32, 42])) {
+                    if (in_array($model->new_status, [6, 16, 22, 36, 46])) {
                         $class = 'badge bg-danger-subtle text-danger fw-semibold fs-3';
-                    } elseif ($model->new_status == 61) {
+                    } elseif ($model->new_status == 65) {
                         $class = 'badge bg-success-subtle text-success fw-semibold fs-3';
                     } else {
                         $class = 'badge bg-warning-subtle text-warning fw-semibold fs-3';
@@ -37,7 +38,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                 },
                 'contentOptions' => ['class' => 'col-1'],
             ],
-            [
+	        [
                 'attribute' => 'old_status',
                 'value' => function ($model) {
                     return getStatusFrom($model->new_status);
@@ -49,7 +50,10 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                     return getStatusTo($model->new_status);
                 },
             ],
-            'message',
+            [
+                'attribute' => 'message',
+                'contentOptions' => ['class' => 'col-4 ']
+            ],
             'created_at:datetime',
             // Add more columns as needed
         ],

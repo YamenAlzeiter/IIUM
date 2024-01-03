@@ -16,21 +16,9 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 
 ?>
 
-<div class = "accordion-item mb-2">
+<div class = "d-flex flex-row gap-3 mt-2 mb-2 ">
 
-    <?= Html::button('<i class="ti ti-filter"></i>Filter', [
-        'class' => ' collapsed fs-4 fw-semibold shadow-none btn btn-outline-dark', 'type' => 'button',
-        'data-bs-toggle' => 'collapse', 'data-bs-target' => '#flush-collapsefour', 'aria-expanded' => 'false',
-        'aria-controls' => 'flush-collapsefour', 'id' => 'toggle-filters-btn'
-    ]) ?>
-
-	<div id = "flush-collapsefour" class = "accordion-collapse collapse"
-	     aria-labelledby = "flush-headingfour"
-	     data-bs-parent = "#accordionFlushExample">
-		<div class = "accordion-body fw-normal">
             <?= $this->render('_filters', ['searchModel' => $searchModel]); ?>
-		</div>
-	</div>
 </div>
 
 <div class = "table-responsive rounded-2 mb-4">
@@ -95,13 +83,8 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
             ],
         ], 'pager' => [
             'class' => LinkPager::class,
-            'options' => ['class' => 'pagination mt-3 justify-content-right pagination-lg'],
+            'options' => ['class' => 'pagination justify-content-right pagination-lg'],
         ], 'layout' => "{pager}\n{items}\n",
     ]); ?>
 </div>
-
-
-
-
-
 

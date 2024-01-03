@@ -116,7 +116,6 @@ function getStatusTo($status)
             return 'International Office';
 
 
-
         case 1:
             return 'HOD';
         case 5:
@@ -127,12 +126,15 @@ function getStatusTo($status)
         case 25:
             return 'AMAD/CPS';
 
+
         case 2:
         case 3:
         case 6:
         case 7:
         case 41:
+        case 45:
         case 61:
+        case 65:
             return 'Student';
 
         default:
@@ -182,7 +184,7 @@ function getStatusIconClass($status)
 {
     if ($status == 2 || $status == 12 || $status == 22 || $status == 32 || $status == 42) {
         return 'round-8 text-bg-danger rounded-circle d-inline-block ';
-    } elseif ($status == 61) {
+    } elseif ($status == 61 || $status == 65) {
         return 'round-8 text-bg-success rounded-circle d-inline-block';
     } else {
         return 'round-8 text-bg-warning rounded-circle d-inline-block';
@@ -193,7 +195,7 @@ function getStatusClass($status)
 {
     if ($status == 2 || $status == 12 || $status == 22 || $status == 32 || $status == 42) {
         return 'text-danger fw-semibold fs-3';
-    } elseif ($status == 61) {
+    } elseif ($status == 61 || $status == 65) {
         return 'text-success fw-semibold fs-3';
     } else {
         return 'text-warning fw-semibold fs-3';

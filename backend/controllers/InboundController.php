@@ -434,10 +434,9 @@ class InboundController extends Controller
         $email = $model->Email_address;
         if ($model->Status === 10) {
             $status = 7;
-        } elseif ($model->Status === 51) {
-            $status = 41;
+        } elseif ($model->Status === 55) {
+            $status = 45;
         }
-        $path = '@backend/views/email/emailReject.php';
         $templateId = 1;
 
         if ($this->request->isPost) {
@@ -476,7 +475,7 @@ class InboundController extends Controller
                 }
             }
 
-            $templateId = 2;
+            $templateId = 11;
 
             $this->sendEmailWithLink($model, $modelPoc->name, $modelPoc->email, $token, $templateId, $reason);
         }

@@ -13,8 +13,6 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 ?>
 
 <div class = "d-flex gap-2 justify-content-end mb-4 align-items-center">
-	<a href="/higherworkflow/view-file?ID=<?= $model->ID ?>&fileName=<?= $fileName ?>_offerLetter.pdf&token=<?= $model->Token ?>" class = "btn btn-outline-dark d-flex align-items-center px-3"
-	   id = "action"><span class = "d-none d-md-block font-weight-medium fs-3">View Passport</span></a>
 
     <?= Html::a('<button class="btn btn-warning p-3 rounded-circle d-flex align-items-center justify-content-center customizer-btn"><i class="ti ti-eye fs-5"></i></button>',
         ['view-full', 'ID' => $model->ID, 'token' => $model->Token],) ?>

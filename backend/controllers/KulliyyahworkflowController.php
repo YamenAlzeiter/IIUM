@@ -132,17 +132,16 @@ class KulliyyahworkflowController extends \yii\web\Controller
             }
         }
     }
-    public function actionDownload($id, $file)
+    public function actionDownload($ID, $file)
     {
-        $model = $this->findModel($id);
-
-        // Set the file path based on your file storage location
         $filePath = 'C:\xampp\htdocs\IIUM_Inbound_Oubbound\frontend\uploads/'.$file;
-
+        Yii::info("File Path: ".$filePath, "fileDownload");
         if (file_exists($filePath)) {
             Yii::$app->response->sendFile($filePath);
         } else {
+            Yii::info("File not found: ".$file, "fileDownload");
             throw new NotFoundHttpException('The file does not exist.');
         }
     }
+
 }

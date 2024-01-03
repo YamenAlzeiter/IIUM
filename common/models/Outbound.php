@@ -234,10 +234,15 @@ class Outbound extends \yii\db\ActiveRecord
     {
         parent::afterSave($insert, $changedAttributes);
         $newStatus = $this->Status;
-//        if($newStatus === 10){
-//            $this->createStatusLog("", $newStatus, $this->temp);
-//        }
-        if (!$insert && isset($changedAttributes['Status'])) {
+        if ($this->Status == 10){
+            if ($changedAttributes['Status'] == 3){
+
+                $this->createStatusLog(0, $this->Status, "Application has been resubmitted");
+            }
+            else
+                $this->createStatusLog(0, $this->Status, "Application has been submitted");
+        }
+        elseif (!$insert && isset($changedAttributes['Status'])) {
             $oldStatus = $changedAttributes['Status'];
             if($newStatus === 10){
                 $this->createStatusLog("", $newStatus, $this->temp);

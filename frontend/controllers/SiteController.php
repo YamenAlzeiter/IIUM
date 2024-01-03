@@ -77,6 +77,12 @@ class SiteController extends Controller
     public function actionIndex()
     {
         $this->layout = 'main';
+        $currentUser = Yii::$app->user->identity;
+        if ($currentUser && $currentUser->type === 'I') {
+            return $this->redirect(['inbound/index']);
+        } elseif ($currentUser && $currentUser->type === 'O') {
+            return $this->redirect(['outbound/index']);
+        }
         return $this->render('index');
     }
     

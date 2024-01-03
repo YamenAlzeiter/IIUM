@@ -475,7 +475,7 @@ class OutboundController extends Controller
                 $modelPoc = Poc::findOne(['id' => $deanId]);
                 $model->Status = 21;
             }
-            $templateId = 2;
+            $templateId = 11;
 
             $this->sendEmailWithLink($model, $modelPoc->name, $modelPoc->email, $token, $templateId, $reason);
         }

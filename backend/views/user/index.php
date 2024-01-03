@@ -65,12 +65,12 @@ use yii\helpers\Html;
 </div>
 <!-- Modal Add notes -->
 <div class="modal fade" id="formpoc" tabindex="-1" role="dialog" aria-labelledby="formpoc" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content border-0">
-			<div class="modal-header bg-dark">
-				<h6 id="formpoc-header" class="text-white mb-0"></h6>
+	<div class="modal-dialog  modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h6 id="formpoc-header" class="text-dark mb-0"></h6>
 
-				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+				<button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal"
 				        aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
@@ -83,10 +83,10 @@ use yii\helpers\Html;
 						</div>
 
 						<div class="row align-items-center">
-							<div class="col-md-4 mb-3">
+							<div class="col-md-6 mb-3">
                                 <?= $form->field($model, 'matric_number')->textInput(['maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'Matric Number', 'required' => true])->label(false) ?>
 							</div>
-							<div class="col-md-4 mb-3">
+							<div class="col-md-6 mb-3">
                                 <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'email', 'required' => true])->label(false) ?>
 							</div>
 						</div>

@@ -1,7 +1,8 @@
 
-body{
+body {
     font-family: 'Open Sans', sans-serif;
 }
+
 #signUpForm {
     max-width: 500px;
     background-color: #ffffff;
@@ -10,23 +11,28 @@ body{
     box-shadow: 0px 6px 18px rgb(0 0 0 / 9%);
     border-radius: 12px;
 }
+
 #signUpForm .form-header {
     gap: 5px;
     text-align: center;
     font-size: .9em;
 }
+
 #signUpForm .form-header .stepIndicator {
     position: relative;
     flex: 1;
     padding-bottom: 30px;
 }
+
 #signUpForm .form-header .stepIndicator.active {
     font-weight: 600;
 }
+
 #signUpForm .form-header .stepIndicator.finish {
     font-weight: 600;
     color: #009688;
 }
+
 #signUpForm .form-header .stepIndicator::before {
     content: "";
     position: absolute;
@@ -40,14 +46,17 @@ body{
     border-radius: 50%;
     border: 3px solid #ecf5f4;
 }
+
 #signUpForm .form-header .stepIndicator.active::before {
     background-color: #a7ede8;
     border: 3px solid #d5f9f6;
 }
+
 #signUpForm .form-header .stepIndicator.finish::before {
     background-color: #009688;
     border: 3px solid #b7e1dd;
 }
+
 #signUpForm .form-header .stepIndicator::after {
     content: "";
     position: absolute;
@@ -57,15 +66,19 @@ body{
     height: 3px;
     background-color: #f3f3f3;
 }
+
 #signUpForm .form-header .stepIndicator.active::after {
     background-color: #a7ede8;
 }
+
 #signUpForm .form-header .stepIndicator.finish::after {
     background-color: #009688;
 }
+
 #signUpForm .form-header .stepIndicator:last-child:after {
     display: none;
 }
+
 #signUpForm input {
     padding: 15px 20px;
     width: 100%;
@@ -73,21 +86,26 @@ body{
     border: 1px solid #e3e3e3;
     border-radius: 5px;
 }
+
 #signUpForm input:focus {
     border: 1px solid #009688;
     outline: 0;
 }
+
 #signUpForm input.invalid {
     border: 1px solid #ffaba5;
 }
+
 #signUpForm .step {
     display: none;
 }
-#signUpForm .form-footer{
-    overflow:auto;
+
+#signUpForm .form-footer {
+    overflow: auto;
     gap: 20px;
 }
-#signUpForm .form-footer button{
+
+#signUpForm .form-footer button {
     background-color: #009688;
     border: 1px solid #009688 !important;
     color: #ffffff;
@@ -99,6 +117,7 @@ body{
     flex: 1;
     margin-top: 5px;
 }
+
 #signUpForm .form-footer button:hover {
     opacity: 0.8;
 }
@@ -107,21 +126,21 @@ body{
     background-color: #fff;
     color: #009688;
 }
+
 /*===== GOOGLE FONTS =====*/
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap");
-/*===== VARIABLES CSS =====*/
+
 :root {
-    /*===== Colores =====*/
+
     --first-color: #1A73E8;
     --input-color: #80868B;
     --border-color: #DADCE0;
-    /*===== Fuente y tipografia =====*/
+
     --body-font: "Roboto", sans-serif;
     --normal-font-size: 1rem;
     --small-font-size: .75rem;
 }
 
-/*===== BASE =====*/
 
 /*===== FORM =====*/
 .dropdown-icon {
@@ -133,6 +152,7 @@ body{
     color: var(--input-color);
     pointer-events: none;
 }
+
 .l-form {
     display: flex;
     justify-content: center;
@@ -145,11 +165,13 @@ body{
     font-weight: 500;
     margin-bottom: 2.5rem;
 }
+
 .form__div {
     position: relative;
     height: 52px;
     margin-bottom: 1rem;
 }
+
 .form__div_small {
     position: relative;
     margin-bottom: 1rem;
@@ -169,6 +191,7 @@ body{
     background: none;
     z-index: 1;
 }
+
 .form__label {
     position: absolute;
     left: 2rem;
@@ -179,6 +202,7 @@ body{
     font-size: var(--normal-font-size);
     transition: 0.3s;
 }
+
 .form__label_small {
     position: absolute;
     left: 1rem;
@@ -189,6 +213,7 @@ body{
     font-size: var(--normal-font-size);
     transition: 0.3s;
 }
+
 .form__button {
     display: block;
     margin-left: auto;
@@ -202,6 +227,7 @@ body{
     cursor: pointer;
     transition: 0.3s;
 }
+
 .form__button:hover {
     box-shadow: 0 10px 36px rgba(0, 0, 0, 0.15);
 }
@@ -215,6 +241,7 @@ body{
     font-weight: 500;
     z-index: 10;
 }
+
 .form__input:focus + .form__label_small {
     top: -0.5rem;
     left: 1rem;
@@ -232,6 +259,7 @@ body{
     font-size: var(--small-font-size);
     font-weight: 500;
 }
+
 .form__input:not(:placeholder-shown).form__input:not(:focus) + .form__label_small {
     top: -0.5rem;
     left: 1rem;
@@ -270,19 +298,24 @@ main > .container {
 h2 {
     margin: 0;
 }
+
 #multi-step-form-container {
     margin-top: 2rem;
 }
+
 .text-center {
     text-align: center;
 }
+
 .mx-auto {
     margin-left: auto;
     margin-right: auto;
 }
+
 .pl-0 {
     padding-left: 0;
 }
+
 .button {
     padding: 0.7rem 1.5rem;
     border: 1px solid #4361ee;
@@ -291,37 +324,46 @@ h2 {
     border-radius: 5px;
     cursor: pointer;
 }
+
 .submit-btn {
     border: 1px solid #0e9594;
     background-color: #0e9594;
 }
+
 .mt-3 {
     margin-top: 2rem;
 }
+
 .d-none {
     display: none;
 }
+
 .form-step {
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 20px;
     padding: 2rem;
 }
+
 .font-normal {
     font-weight: normal;
 }
+
 ul.form-stepper {
     counter-reset: section;
     margin-bottom: 3rem;
 }
+
 ul.form-stepper .form-stepper-circle {
     position: relative;
 }
+
 ul.form-stepper .form-stepper-circle span {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translateY(-50%) translateX(-50%);
 }
+
 .form-stepper-horizontal {
     position: relative;
     display: -webkit-box;
@@ -332,15 +374,18 @@ ul.form-stepper .form-stepper-circle span {
     justify-content: space-between;
 
 }
+
 ul.form-stepper > li:not(:last-of-type) {
     margin-bottom: 0.625rem;
     -webkit-transition: margin-bottom 0.4s;
     -o-transition: margin-bottom 0.4s;
     transition: margin-bottom 0.4s;
 }
+
 .form-stepper-horizontal > li:not(:last-of-type) {
     margin-bottom: 0 !important;
 }
+
 .form-stepper-horizontal li {
     position: relative;
     display: -webkit-box;
@@ -355,6 +400,7 @@ ul.form-stepper > li:not(:last-of-type) {
     -webkit-transition: 0.5s;
     transition: 0.5s;
 }
+
 .form-stepper-horizontal li:not(:last-child):after {
     position: relative;
     -webkit-box-flex: 1;
@@ -364,18 +410,23 @@ ul.form-stepper > li:not(:last-of-type) {
     content: "";
     top: 32%;
 }
+
 .form-stepper-horizontal li:after {
     background-color: #dee2e6;
 }
+
 .form-stepper-horizontal li:focus {
     text-decoration: underline;
 }
+
 .form-stepper-horizontal li.form-stepper-completed:after {
     background-color: #0e9594;
 }
+
 .form-stepper-horizontal li:last-child {
     flex: unset;
 }
+
 ul.form-stepper li a .form-stepper-circle {
     display: inline-block;
     width: 40px;
@@ -387,6 +438,7 @@ ul.form-stepper li a .form-stepper-circle {
     border-radius: 50%;
     cursor: pointer;
 }
+
 .form-stepper .form-stepper-active .form-stepper-circle {
     background-color: #4361ee !important;
     color: #fff;
@@ -401,7 +453,8 @@ ul.form-stepper li a .form-stepper-circle {
 .form-stepper .form-stepper-invalid .label {
     color: #FA896B !important;
 }
-.form-stepper  a{
+
+.form-stepper a {
     width: 100px;
 }
 
@@ -412,56 +465,47 @@ ul.form-stepper li a .form-stepper-circle {
 .form-stepper .form-stepper-unfinished .form-stepper-circle {
     background-color: #f8f7ff;
 }
+
 .form-stepper .form-stepper-completed .form-stepper-circle {
     background-color: #0e9594 !important;
     color: #fff;
 }
+
 .form-stepper .form-stepper-completed .label {
     color: #0e9594 !important;
 }
+
 .form-stepper .form-stepper-completed .form-stepper-circle:hover {
     background-color: #0e9594 !important;
     color: #fff !important;
 }
+
 .form-stepper .form-stepper-active span.text-muted {
     color: #fff !important;
 }
+
 .form-stepper .form-stepper-completed span.text-muted {
     color: #fff !important;
 }
+
 .form-stepper .label {
     font-size: 1rem;
     margin-top: 0.5rem;
 }
+
 .form-stepper a {
     cursor: default;
 }
+
 /* add sorting icons to gridview sort links */
 
-
-
-
-.form-container{
+.form-container {
     border-radius: 3rem;
 }
-/*.container{*/
-/*    background: black;*/
-/*}*/
 
-.grid-view th,
-.grid-view td:last-child {
-    white-space: nowrap;
-}
 
-.grid-view .filters input,
-.grid-view .filters select {
-    min-width: 50px;
-}
-
-.hint-block {
-    display: block;
-    margin-top: 5px;
-    color: #999;
+section#tooltip p {
+    margin: 20px 0;
 }
 
 .error-summary {
@@ -478,9 +522,9 @@ ul.form-stepper li a .form-stepper-circle {
     color: rgba(255, 255, 255, 0.5);
 }
 
-@media(max-width:767px) {
+@media (max-width: 767px) {
     .nav li > form > button.logout {
-        display:block;
+        display: block;
         text-align: left;
         width: 100%;
         padding: 10px 0;

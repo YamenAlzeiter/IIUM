@@ -105,6 +105,11 @@
                             'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu text-wrap">Congrats!</span>',
                             'url' => '/email-tamplate/view?id=10 ', 'options' => ['class' => 'sidebar-item'],
                         ],
+                        [
+                            'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
+                            'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu text-wrap">Reconsideration</span>',
+                            'url' => '/email-tamplate/view?id=11 ', 'options' => ['class' => 'sidebar-item'],
+                        ],
                     ],
                 ], [
                     'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',

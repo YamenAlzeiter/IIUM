@@ -122,7 +122,7 @@ class HodworkflowController extends Controller
         }
     }
 
-    public function actionDownload($id, $file)
+    public function actionDownload($ID, $file)
     {
         $filePath = 'C:\xampp\htdocs\IIUM_Inbound_Oubbound\frontend\uploads/'.$file;
         Yii::info("File Path: ".$filePath, "fileDownload");

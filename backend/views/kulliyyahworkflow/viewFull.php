@@ -27,7 +27,7 @@ $fileName = $creationYearLastTwoDigits . '_' . $model->ID;
         $iconClass = getStatusIconClass($model->Status); // Implement your own logic to get the icon class based on status
 
         echo Html::tag('i', '', [
-            'class' => 'ti ti-circle '.$iconClass,
+            'class' => $iconClass,
         ]);
         ?>
 		<p class = "fw-light mb-0 align-items-end">
@@ -148,14 +148,9 @@ $fileName = $creationYearLastTwoDigits . '_' . $model->ID;
 							<p class = "mb-2 fw-light mb-1"><strong>Mobile
 							                                        Number: </strong> <?= $model->Approval_person_mobile_number ?></p>
 							<p class = "mb-2 fw-light mb-1"><strong>Date: </strong> <?= $model->Approval_date ?></p>
-							<P><strong>Recommendation Letter: </strong>
-                                <?= ($model->Recommendation_letter) ? Html::a('Recommendation_letter'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Recommendation_letter,
-                                        PATHINFO_EXTENSION), [
-                                    'download', 'id' => $model->ID,
-                                    'file' => 'Recommendation_letter'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Recommendation_letter,
-                                            PATHINFO_EXTENSION)
-                                ]) : ''; ?>
-							</P>
+							<p class="fw-semibold"><?= ($model->Recommendation_letter) ? Html::a('RecommendationLetter', [
+                                    'download', 'ID' => $model->ID, 'token'=> $model->Token, 'file' => $fileName . '_RecommendationLetter' . '.pdf'
+                                ]) : ''; ?></p>
 						</div>
 					</div>
 				</div>
@@ -214,14 +209,9 @@ $fileName = $creationYearLastTwoDigits . '_' . $model->ID;
 					</strong>
 				</div>
 				<p class = "mb-2 fw-light mb-1"><strong>English Proficiency: </strong> <?= getAnswer($model->English_native) ?></p>
-				<p class = "mb-2 fw-light mb-1"><strong>Result: </strong> <?= $model->English_test_name ?></p><P><strong>English Certificate: </strong>
-                    <?= ($model->English_certificate) ? Html::a('English_certificate'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->English_certificate,
-                            PATHINFO_EXTENSION), [
-                        'download', 'id' => $model->ID,
-                        'file' => 'English_certificate'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->English_certificate,
-                                PATHINFO_EXTENSION)
-                    ]) : ''; ?>
-				</P>
+				<p class="fw-semibold"><?= ($model->English_certificate) ? Html::a('English Certificate', [
+                        'download', 'ID' => $model->ID, 'token'=> $model->Token, 'file' => $fileName . '_EnglishCertificate' . '.pdf'
+                    ]) : ''; ?></p>
 			</div>
 		</div>
 		<div class="card shadow-none border bg-light-gray">
@@ -234,49 +224,25 @@ $fileName = $creationYearLastTwoDigits . '_' . $model->ID;
 						</strong>
 					</div>
 
-					<P><strong>Passport: </strong>
-                        <?= ($model->Passport) ? Html::a('Passport'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Passport,
-                                PATHINFO_EXTENSION), [
-                            'download', 'id' => $model->ID,
-                            'file' => 'Passport'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Passport,
-                                    PATHINFO_EXTENSION)
-                        ]) : ''; ?>
-					</P>
-					<P><strong>Latest passport photo: </strong>
-                        <?= ($model->Latest_passport_photo) ? Html::a('Latest_passport_photo'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Latest_passport_photo,
-                                PATHINFO_EXTENSION), [
-                            'download', 'id' => $model->ID,
-                            'file' => 'Latest_passport_photo'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Latest_passport_photo,
-                                    PATHINFO_EXTENSION)
-                        ]) : ''; ?>
-					</P>
-					<P><strong>Latest certified academic transcript: </strong>
-                        <?= ($model->Latest_certified_academic_transcript) ? Html::a('Latest_certified_academic_transcript'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Latest_certified_academic_transcript,
-                                PATHINFO_EXTENSION), [
-                            'download', 'id' => $model->ID,
-                            'file' => 'Latest_certified_academic_transcript'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Latest_certified_academic_transcript,
-                                    PATHINFO_EXTENSION)
-                        ]) : ''; ?>
-					</P>
-					<P><strong>Confirmation letter: </strong>
-                        <?= ($model->Confirmation_letter) ? Html::a('Confirmation_letter'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Confirmation_letter,
-                                PATHINFO_EXTENSION), [
-                            'download', 'id' => $model->ID,
-                            'file' => 'Confirmation_letter'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Confirmation_letter,
-                                    PATHINFO_EXTENSION)
-                        ]) : ''; ?>
-					</P>
-					<P><strong>Sponsorship letter: </strong>
-                        <?= ($model->Sponsorship_letter) ? Html::a('Sponsorship_letter'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Sponsorship_letter,
-                                PATHINFO_EXTENSION), [
-                            'download', 'id' => $model->ID,
-                            'file' => 'Sponsorship_letter'.'_'.$model->Name.'_'.$model->ID.'.'.pathinfo($model->Sponsorship_letter,
-                                    PATHINFO_EXTENSION)
-                        ]) : ''; ?>
-					</P>
-					<p class="fw-semibold"><?= ($model->offer_letter) ? Html::a('Offer Letter', [
-                            'download', 'id' => $model->ID,
-                            'file' => $fileName.'_offerLetter'.'.pdf']) : ''; ?></p>
+					<p class="fw-semibold"><?= ($model->Passport) ? Html::a('Passport', [
+                            'download', 'ID' => $model->ID, 'token'=> $model->Token, 'file' => $fileName . '_Passport' . '.pdf'
+                        ]) : ''; ?></p>
+
+					<p class="fw-semibold"><?= ($model->Latest_passport_photo) ? Html::a('Latest Passport Photo', [
+                            'download', 'ID' => $model->ID, 'token'=> $model->Token, 'file' => $fileName . '_LatestPassportPhoto' . '.pdf'
+                        ]) : ''; ?></p>
+
+					<p class="fw-semibold"><?= ($model->Latest_certified_academic_transcript) ? Html::a('Latest Certified Academic Transcript', [
+                            'download', 'ID' => $model->ID, 'token'=> $model->Token, 'file' => $fileName . '_LatestCertifiedAcademicTranscript' . '.pdf'
+                        ]) : ''; ?></p>
+
+					<p class="fw-semibold"><?= ($model->Confirmation_letter) ? Html::a('Confirmation Letter', [
+                            'download', 'ID' => $model->ID, 'token'=> $model->Token, 'file' => $fileName . '_ConfirmationLetter' . '.pdf'
+                        ]) : ''; ?></p>
+
+					<p class="fw-semibold"><?= ($model->Sponsorship_letter) ? Html::a('Sponsorship Letter', [
+                            'download', 'ID' => $model->ID, 'token'=> $model->Token, 'file' => $fileName . '_SponsorshipLetter' . '.pdf'
+                        ]) : ''; ?></p>
 				</div>
 			</div>
 		</div>

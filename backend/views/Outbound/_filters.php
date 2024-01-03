@@ -24,22 +24,16 @@ $statusModel = array_merge($statusModels, $statusModelsExceptID10);
 ?>
 
 
-<?php $form = ActiveForm::begin([
-    'action' => ['index'], // Change the action as needed
-    'method' => 'get',
-]); ?>
-<div class = "d-flex flex-row gap-3 mt-2 mb-2">
+<?php $form = ActiveForm::begin(['action' => ['index'], 'method' => 'get']); ?>
+<div class = "d-flex flex-row gap-3 align-items-center">
 
     <?= $form->field($searchModel, 'Name') ?>
 
-    <?= $form->field($searchModel, 'Gender')->dropDownList(['M' => 'Male', 'F' => 'Female'],
-        ['prompt' => 'All']) ?>
+    <?= $form->field($searchModel, 'Gender')->dropDownList(['M' => 'Male', 'F' => 'Female'], ['prompt' => 'All']) ?>
 
-    <?= $form->field($searchModel, 'Status')->dropDownList(
-        \yii\helpers\ArrayHelper::map($statusModel, 'ID', 'status'),
-        ['prompt' => 'Select Status', 'class' => 'form-select mb-2']
-    ) ?>
+    <?= $form->field($searchModel, 'Status')->dropDownList(\yii\helpers\ArrayHelper::map($statusModel, 'ID', 'status'), ['prompt' => 'Select Status', 'class' => 'form-select']) ?>
 
-    <?= Html::submitButton('Enter', ['class' => 'collapsed fs-4 fw-semibold shadow-none btn btn-danger align-self-end']) ?>
+    <?= Html::submitButton('Search', ['class' => 'collapsed fs-3 fw-semibold shadow-none btn btn-dark align-self-end']) ?>
+
 </div>
 <?php ActiveForm::end(); ?>

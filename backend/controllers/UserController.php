@@ -2,19 +2,15 @@
 
 namespace backend\controllers;
 
-use backend\models\SignupForm;
 use backend\models\UserAdmin;
 use common\models\Admin;
-use common\models\Kcdio;
-use common\models\Poc;
-use common\models\User;
 use SebastianBergmann\ObjectReflector\Exception;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii\web\Response;
 
 /**
@@ -29,29 +25,21 @@ class UserController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
+                'class' => AccessControl::className(), 'rules' => [
                     [
-                        'actions' => ['index', 'view', 'create', 'update', 'delete','get-record'],
-                        'allow' => true,
+                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'get-record'], 'allow' => true,
                         'roles' => ['superAdmin'],
                     ],
                 ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
+            ], 'verbs' => [
+                'class' => VerbFilter::className(), 'actions' => [
                     'delete' => ['POST'],
                 ],
             ],
         ];
     }
 
-    /**
-     * Lists all UserAdmin models.
-     *
-     * @return string
-     */
+
     public function actionIndex()
     {
         $model = new UserAdmin();
@@ -65,13 +53,6 @@ class UserController extends Controller
                 if ($model->load($this->request->post())) {
                     // Validate the model before attempting to save
                     if ($model->validate()) {
-                        // Check if the matric number already exists
-
-                        $existingUser = UserAdmin::findOne(['matric_number' => $model->matric_number]);
-                        if ($existingUser) {
-                            Yii::$app->session->setFlash('error', 'Matric number already exists.');
-                            return $this->redirect(['index']);
-                        }
 
                         // Assign values and save the Admin model
                         $user->username = $model->username;
@@ -90,7 +71,17 @@ class UserController extends Controller
                             Yii::$app->session->setFlash('error', 'Unable to save the user.');
                         }
                     } else {
-                        Yii::$app->session->setFlash('error', 'Unable to save the User, failed validation: try to use different Email or Matric Number.');
+                        $existingUser = UserAdmin::findOne(['matric_number' => $model->matric_number]);
+                        $existingUserEmail = UserAdmin::findOne(['email' => $model->email]);
+                        if ($existingUser && $existingUserEmail) {
+                            Yii::$app->session->setFlash('error', 'Matric Number & Email are Already Exist.');
+                        } elseif ($existingUser) {
+                            Yii::$app->session->setFlash('error', 'Matric Number Already exist.');
+                        } else {
+                            if ($existingUserEmail) {
+                                Yii::$app->session->setFlash('error', 'Email Already Exists.');
+                            }
+                        }
                     }
                 }
             } catch (Exception $e) {
@@ -100,39 +91,52 @@ class UserController extends Controller
         }
 
         return $this->render('index', [
-            'dataProvider' => $dataProvider,
-            'model' => $model,
+            'dataProvider' => $dataProvider, 'model' => $model,
         ]);
     }
 
-
-
-
-
-
-
-
-
-    /**
-     * Updates an existing UserAdmin model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param int $id ID
-     * @return string|\yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
-     */
     public function actionUpdate($id)
     {
         $model = UserAdmin::findOne($id);
+        $dataProvider = new ActiveDataProvider([
+            'query' => UserAdmin::find(),
+        ]);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            // Handle successful update
-            return $this->redirect(['index']);
+        if ($this->request->isPost) {
+            try {
+                if ($model->load($this->request->post())) {
+                    // Validate the model before attempting to save
+                    if ($model->validate()) {
+                        $existingUser = UserAdmin::findOne(['matric_number' => $model->matric_number]);
+                        $existingUserEmail = UserAdmin::findOne(['email' => $model->email]);
+
+                        if (($existingUser && $existingUser->id !== $model->id) || ($existingUserEmail && $existingUserEmail->id !== $model->id)) {
+                            Yii::$app->session->setFlash('error',
+                                'Matric Number or Email already exists for another user.');
+                        } else {
+                            // Save the updated model
+                            if ($model->save()) {
+                                Yii::$app->session->setFlash('success', 'User updated successfully.');
+                                return $this->redirect(['index']);
+                            } else {
+                                Yii::$app->session->setFlash('error', 'Unable to update the user.');
+                            }
+                        }
+                    } else {
+                        Yii::$app->session->setFlash('error', 'Validation failed while updating the user.');
+                    }
+                }
+            } catch (Exception $e) {
+                Yii::$app->session->setFlash('error', 'An error occurred while updating the user.');
+                Yii::error($e->getMessage());
+            }
         }
 
-        return $this->render('update', [
-            'model' => $model,
+        return $this->render('index', [
+            'dataProvider' => $dataProvider, 'model' => $model,
         ]);
     }
+
 
     public function actionGetRecord($id)
     {
@@ -141,19 +145,10 @@ class UserController extends Controller
         $model = UserAdmin::findOne($id);
 
         return [
-            'username' => $model->username,
-            'matric_number' => $model->matric_number,
-            'email' => $model->email,
+            'username' => $model->username, 'matric_number' => $model->matric_number, 'email' => $model->email,
         ];
     }
 
-    /**
-     * Deletes an existing UserAdmin model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $id ID
-     * @return \yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
-     */
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
@@ -161,13 +156,6 @@ class UserController extends Controller
         return $this->redirect(['index']);
     }
 
-    /**
-     * Finds the UserAdmin model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param int $id ID
-     * @return UserAdmin the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
     protected function findModel($id)
     {
         if (($model = UserAdmin::findOne(['id' => $id])) !== null) {

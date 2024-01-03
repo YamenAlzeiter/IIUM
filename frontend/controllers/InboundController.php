@@ -6,6 +6,7 @@ namespace frontend\controllers;
 use common\models\Courses;
 use common\models\Inbound;
 use common\models\InCourses;
+use common\models\Outbound;
 use Exception;
 use Yii;
 use yii\filters\AccessControl;
@@ -316,6 +317,51 @@ class InboundController extends Controller
         return $this->render('update', [
             'model' => $model, 'coursesData' => $coursesData,
         ]);
+    }
+
+    public function actionUpload($ID)
+    {
+        $model = Inbound::findOne($ID);
+
+        if ($model->Status !== 45) {
+            Yii::$app->session->setFlash('error', 'You already submitted your documents. Cannot update any documents now.');
+            return $this->redirect(['inbound/index']);
+        }
+
+        if (Yii::$app->request->isPost) {
+            $transaction = Yii::$app->db->beginTransaction();
+
+            try {
+                $filesToUpdate = [
+                    'Passport' => 'Passport',
+                ];
+
+                foreach ($filesToUpdate as $attribute => $fileNamePrefix) {
+                    $file = UploadedFile::getInstance($model, $attribute);
+                    if ($file) {
+                        $baseUploadPath = 'C:/xampp/htdocs/IIUM_Inbound_Oubbound/frontend/uploads';
+                        $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $file->name);
+                        $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
+                        $fileName = $creationYearLastTwoDigits . '_' . $model->ID . '_' . $fileNamePrefix . '.' . $file->extension;
+                        $file->saveAs($baseUploadPath . '/' . $fileName);
+                        $model->$attribute = $fileName; // Update the model attribute with the new file name
+                    }
+                }
+
+                $model->Status = 55;
+                // Only change the Status if any file was uploaded
+                if ($model->validate() && $model->save()) {
+
+                    $transaction->commit();
+                    Yii::$app->session->setFlash('success', 'Application updated successfully.');
+                    return $this->redirect(['index']);
+                }
+            } catch (Exception $e) {
+                $transaction->rollBack();
+                Yii::$app->session->setFlash('error', 'An error occurred while updating the application.');
+                Yii::error($e->getMessage());
+            }
+        }
     }
 
 

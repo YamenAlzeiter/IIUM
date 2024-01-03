@@ -182,7 +182,7 @@ $this->registerJsFile('https://code.jquery.com/jquery-3.6.0.min.js');
 
 
 <?php ActiveForm::begin(['action' => ['reject', 'ID' => $model->ID], 'class' => 'form']) ?>
-<?= Html::hiddenInput('status', 2, ['id' => 'status-input-reject']); ?>
+<?= Html::hiddenInput('status', 6, ['id' => 'status-input-reject']); ?>
 
 	<div class = "conditional-form-elements-reject" style = "display: none;">
 		<div class = "form-group">

@@ -25,7 +25,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                 'format' => 'raw',
                 'value' => function ($model) {
                     $statusModel = Status::findOne(['ID' => $model->new_status]);
-                    $statusMeaning = $statusModel ? $statusModel->description : '';
+                    $statusMeaning = $statusModel ? $statusModel->status : '';
 
                     $class = '';
 
