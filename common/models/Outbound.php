@@ -88,6 +88,7 @@ use Yii;
  * @property Courses[] $courses
  * @property Iiumcourse[] $iiumcourses
  * @property string|null $temp
+ * @property string|null $driveLink
  */
 class Outbound extends \yii\db\ActiveRecord
 {
@@ -111,7 +112,7 @@ class Outbound extends \yii\db\ActiveRecord
             [['Academic_cgpa', 'English_result', 'Sponsoring_funding'], 'number'],
             [['Offer_letter', 'Academic_transcript', 'Program_brochure', 'Latest_pay_slip', 'Other_latest_pay_slip', 'Proof_of_sponsorship', 'Proof_insurance_cover', 'Letter_of_indemnity', 'Flight_ticket'], 'file', 'extensions' => 'pdf, doc, docx'],
             [['Matric_Number', 'Passport_Number', 'Mobile_Number', 'Emergency_phoneNumber'], 'string', 'max' => 15],
-            [['Name', 'Permanent_Address', 'Mailing_Address'], 'string', 'max' => 255],
+            [['Name', 'Permanent_Address', 'Mailing_Address','driveLink'], 'string', 'max' => 255],
             [['Citizenship', 'Email', 'Note_dean', 'Note_hod', 'Emergency_name', 'Emergency_relationship', 'Emergency_email', 'Emergency_homeAddress', 'Academic_kulliyyah', 'Academic_kulliyyah_others', 'Academic_name_of_programme', 'Research', 'Sponsoring_name', 'Sponsoring_name_other', 'Type_mobility_program', 'Type_mobility_program_other', 'Host_university_name', 'Connect_host_address', 'token', 'Connect_host_email'], 'string', 'max' => 512],
             [['Gender'], 'string', 'max' => 1],
             [['Postcode', 'Mailing_Postcode', 'Emergency_postCode', 'Connect_host_postcode'], 'string', 'max' => 10],

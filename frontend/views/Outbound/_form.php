@@ -469,8 +469,7 @@ function isFileRequired($file)
 				<div class = "col-8 py-2-5">
                     <?php
                     $mobilityOptions = [
-                        "1" => "Physical", "2" => "Virtual", "3" => "Partner with IIUM (MoU/MoA)",
-                        "4" => "Partner University", "5" => "Non-partner University",
+                        "1" => "Physical", "2" => "Virtual"
                     ];
 
                     foreach ($mobilityOptions as $value => $label) {
@@ -585,7 +584,7 @@ function isFileRequired($file)
 		</div>
 
 		<div class = "row mt-2 d-flex flex-row align-items-center">
-			<div class = "col-md-4">
+			<div class = "col-md-6">
 				<div class = "form__div">
 					<input type = "text" class = "form__input form-control" id = "validationCustomConnectHostName"
 					       name = "Outbound[Connect_host_name]" maxlength = "255"  placeholder = " "
@@ -593,7 +592,7 @@ function isFileRequired($file)
 					<label for = "validationCustomConnectHostName" class = "form__label">Name</label>
 				</div>
 			</div>
-			<div class = "col-md-4">
+			<div class = "col-md-6">
 				<div class = "form__div">
 					<input type = "text" class = "form__input form-control"
 					       id = "validationCustomConnectHostPosition"
@@ -602,13 +601,26 @@ function isFileRequired($file)
 					<label for = "validationCustomConnectHostPosition" class = "form__label">Position</label>
 				</div>
 			</div>
-			<div class = "col-md-4">
+		</div>
+
+
+		<div class = "row mt-2 d-flex flex-row align-items-center">
+			<div class = "col-md-6">
 				<div class = "form__div">
 					<input type = "text" class = "form__input form-control"
 					       id = "validationCustomConnectHostMobileNo"
 					       name = "Outbound[Connect_host_mobile_number]" maxlength = "255"  placeholder = " "
 					       value = "<?= htmlspecialchars($model->Connect_host_mobile_number ?? '') ?>" required>
 					<label for = "validationCustomConnectHostMobileNo" class = "form__label">Mobile Number</label>
+				</div>
+			</div>
+			<div class = "col-md-6">
+				<div class = "form__div">
+					<input type = "text" class = "form__input form-control"
+					       id = "validationCustomConnectHostMobileNo"
+					       name = "Outbound[Connect_host_email]" maxlength = "255"  placeholder = " "
+					       value = "<?= htmlspecialchars($model->Connect_host_email ?? '') ?>" required>
+					<label for = "validationCustomConnectHostMobileNo" class = "form__label">Email Address</label>
 				</div>
 			</div>
 		</div>

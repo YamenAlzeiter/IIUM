@@ -269,7 +269,7 @@ class OutboundController extends Controller
 
         // Retrieve courses data
 
-        if ($model->Status !== 3 && $model->Status !== null) {
+        if ($model->Status !== 3 && $model->Status !== null ) {
             Yii::$app->session->setFlash('error', "Your application on process now, Can't update your INFO during that.");
             // Redirect to a different page or reload the current page
             return $this->redirect(['outbound/index']); // Replace 'controller/action' with the appropriate route
@@ -282,7 +282,7 @@ class OutboundController extends Controller
             $transaction = Yii::$app->db->beginTransaction();
 
             try {
-                // Load data into the Ob010 model
+                // Load data into the outbound model
                 if ($model->load(Yii::$app->request->post())) {
                     // Helper function for updating file
                     $updateFile = function ($attribute, $fileNamePrefix) use ($model) {
@@ -332,9 +332,7 @@ class OutboundController extends Controller
                              }
                          }
 
-                        // If everything is successful, commit the transaction
                         $transaction->commit();
-
                         Yii::$app->session->setFlash('success', 'Application updated successfully.');
                         return $this->redirect(['index']);
                     }
@@ -359,7 +357,7 @@ public function actionUpload($ID)
 {
     $model = Outbound::findOne($ID);
 
-    if ($model->Status !== 41) {
+    if ($model->Status !== 41 && $model->Status !== 71) {
         Yii::$app->session->setFlash('error', 'You already submitted your documents. Cannot update any documents now.');
         return $this->redirect(['outbound/index']);
     }
@@ -368,6 +366,7 @@ public function actionUpload($ID)
         $transaction = Yii::$app->db->beginTransaction();
 
         try {
+            if ($model->load(Yii::$app->request->post())) {
             $filesToUpdate = [
                 'Proof_of_sponsorship' => 'ProofOfSponsorship',
                 'Proof_insurance_cover' => 'ProofInsuranceCover',
@@ -386,14 +385,19 @@ public function actionUpload($ID)
                     $model->$attribute = $fileName; // Update the model attribute with the new file name
                 }
             }
-
-            $model->Status = 51;
+                if ($model->Status === 41){
+                    $model->Status = 51;
+                }
+                if ($model->Status === 71){
+                    $model->Status = 81;
+                }
             // Only change the Status if any file was uploaded
             if ($model->validate() && $model->save()) {
 
                 $transaction->commit();
                 Yii::$app->session->setFlash('success', 'Application updated successfully.');
                 return $this->redirect(['index']);
+            }
             }
         } catch (Exception $e) {
             $transaction->rollBack();

@@ -12,7 +12,7 @@ $(function () {
     $(this).addClass("active");
   });
 
-  $("#add-user ,#add-pos").on("click", function (event) {
+  $("#add-user ,#add-pos, #add-notes").on("click", function (event) {
     // Set the form for creating a new record
     $("#formpoc").modal("show");
     $("#btn-n-save").hide();

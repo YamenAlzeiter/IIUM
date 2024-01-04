@@ -1,54 +1,12 @@
 <?php
 
+use common\models\Countries;
 use common\models\Inbound;
 use common\models\Outbound;
 use common\models\Poc;
 use common\models\Kcdio;
+use common\models\States;
 
-function getStatusMeaning($status)
-{
-    //to do change into table
-    switch ($status) {
-            //        base application status
-        case 10:
-            return 'IP New application';
-
-            //        initial status (IO)
-        case 1:
-            return 'Accepted (Initial)';
-        case 2:
-            return 'Rejected';
-        case 3:
-            return 'Not Complete Documents';
-
-            //         after HOD status
-        case 11:
-            return 'Accepted from HOD';
-        case 12:
-            return 'Rejected from HOD';
-
-            //         status IO second
-        case 21:
-            return 'Accept HOD Acceptance';
-        case 22:
-            return 'Reject HOD Acceptance';
-
-            //         after dean status
-        case 31:
-            return 'Accepted from Dean side';
-        case 32:
-            return 'Rejected from Dean side';
-
-            //         status IO third (last)
-        case 41:
-            return 'Accepted';
-        case 42:
-            return 'Reject Dean Acceptance';
-
-        default:
-            return 'Unknown Status';
-    }
-}
 function getStatusFrom($status)
 {
     //to do change into table
@@ -95,7 +53,6 @@ function getStatusFrom($status)
             return 'Unknown Status';
     }
 }
-
 
 function getStatusTo($status)
 {
@@ -159,6 +116,15 @@ function getAnswer($choice)
         return 'Not Selected';
 }
 
+function getMobilityType($mobilityId){
+    if ($mobilityId !== null){
+        switch ($mobilityId){
+            case 1: return 'Physical';
+            case 2: return 'Virtual';
+        }
+    }
+}
+
 function getGenderMeaning($gender)
 {
     switch ($gender) {
@@ -208,23 +174,32 @@ function getCount($countType)
             return Outbound::find()->where(['not', ['Status' => null]])->count();
 
         case 'Accepted':
-            return Outbound::find()->where(['Status' => [61, 62]])->count();
+            return Outbound::find()->where(['Status' => [61,81]])->count();
         case 'Rejected':
             return Outbound::find()->where(['Status' => [2, 12, 22, 32, 42, 52, 6, 16, 26, 36, 46, 56]])->count();
         case 'Process':
-            return Outbound::find()->where(['Status' => [1, 10, 11, 21, 31, 41, 51]])->count();
+            return Outbound::find()->where(['Status' => [1, 10, 11, 21, 31, 41, 51,61,71]])->count();
         case 'TotalI':
             return Inbound::find()->where(['not', ['Status' => null]])->count();
         case 'AcceptedI':
-            return Inbound::find()->where(['Status' => [61, 65]])->count();
+            return Inbound::find()->where(['Status' => [65]])->count();
         case 'RejectedI':
             return Inbound::find()->where(['Status' => [6, 16, 26, 36, 46, 56]])->count();
         case 'ProcessI':
-            return Inbound::find()->where(['Status' => [10, 5, 15, 25, 35, 45, 55, 65]])->count();
+            return Inbound::find()->where(['Status' => [10, 5, 15, 25, 35, 45, 55]])->count();
         default:
             return 0; // Or handle other cases accordingly
     }
 }
+function getCountry($countryID){
+    $countryName = Countries::findOne(['id' => $countryID]);
+    return $countryName = Countries::findOne(['id' => $countryID]) ? $countryName->name : 'hello';
+}
+function getState($stateID){
+    $stateID = States::findOne(['id' => $stateID]);
+    return  $stateID->name ;
+}
+
 //function getStatusFilter($type)
 //{
 //    switch ($type){
