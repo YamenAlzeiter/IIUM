@@ -401,15 +401,15 @@
 					<div class = "row-md-12 mb-2">
 						<legend class = "col-form-label col-lg-4 pt-0">Is English your First/ Main Language?</legend>
 						<div class = "form-check form-check-inline">
-							<input id = "English_native" type = "radio" name = "Inbound[English_native]" value = "1"
+							<input id = "English_native_yes" type = "radio" name = "Inbound[English_native]" value = "1"
 							       class = "form-check-input" <?= $model->English_native === 1 ? 'checked' : '' ?>
 							       required>
-							<label for = "English_native" class = "form-check-label">Yes</label>
+							<label for = "English_native_yes" class = "form-check-label">Yes</label>
 						</div>
 						<div class = "form-check form-check-inline pl-3">
-							<input id = "Mou_or_Moa_no" type = "radio" name = "Inbound[English_native]" value = "0"
+							<input id = "English_native_no" type = "radio" name = "Inbound[English_native]" value = "0"
 							       class = "form-check-input" <?= $model->English_native === 0 ? 'checked' : '' ?>>
-							<label for = "English_native" class = "form-check-label">No</label>
+							<label for = "English_native_no" class = "form-check-label">No</label>
 						</div>
 					</div>
 				</div>

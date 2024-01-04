@@ -20,7 +20,8 @@
         "yiisoft/yii2-symfonymailer": "~2.0.3",
       "ext-json": "*",
         "2amigos/yii2-ckeditor-widget": "^2.1",
-        "2amigos/yii2-tinymce-widget": "^1.1"
+        "2amigos/yii2-tinymce-widget": "^1.1",
+        "nesbot/carbon": "^2.72"
 
     },
     "require-dev": {

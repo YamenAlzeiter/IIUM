@@ -78,7 +78,7 @@ AppAsset::register($this);
 						</ul>
 					</div>
 
-					<div class = "col-xl-7 col-xxl-9">
+					<div class = "col-xl-7 col-xxl-9 shadow">
 						<div class = "min-vh-100 bg-body px-4 align-items-center row justify-content-center">
 							<div class = "col-xxl-10">
                                 <?= $content ?>
