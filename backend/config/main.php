@@ -51,6 +51,11 @@ return [
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
+            'exceptionView' => [
+                'yii\web\ForbiddenHttpException' => 'site/notallowed',
+                // Add more error views for different exceptions here
+            ],
+            'discardExistingOutput' => false,
         ],
 
         'urlManager' => [

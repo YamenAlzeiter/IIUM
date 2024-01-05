@@ -30,7 +30,7 @@ class SiteController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['signup', 'reset-password', 'request-password-reset', 'error', 'login', 'error'],
+                        'actions' => ['signup', 'reset-password', 'request-password-reset','login', 'error','not'],
                         // Include 'request-password-reset'
                         'allow' => true,
                     ],
@@ -251,4 +251,16 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
+    public function actionError()
+    {
+        $exception = Yii::$app->errorHandler->exception;
+        if ($exception instanceof \yii\web\NotFoundHttpException) {
+            return $this->render('error404', ['exception' => $exception]);
+        } elseif ($exception instanceof \yii\web\BadRequestHttpException) {
+            return $this->render('error400', ['exception' => $exception]);
+        } else {
+            return $this->render('error', ['exception' => $exception]);
+        }
+    }
+
 }

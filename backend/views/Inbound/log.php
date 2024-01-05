@@ -1,5 +1,5 @@
 <?php
-
+date_default_timezone_set('UTC');
 use common\models\Status;
 use yii\grid\GridView;
 
@@ -52,9 +52,13 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
             ],
             [
                 'attribute' => 'message',
-                'contentOptions' => ['class' => 'col-4 ']
+                'contentOptions' => ['class' => 'col-4 text']
             ],
-            'created_at:datetime',
+            ['attribute' => 'created_at',
+                'label' => 'Date',
+                'format' => ['date', 'php:d/M/y H:i'],
+
+            ]
             // Add more columns as needed
         ],
     ]); ?>

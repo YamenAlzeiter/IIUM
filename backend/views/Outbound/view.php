@@ -76,6 +76,13 @@ $fileName = $creationYearLastTwoDigits . '_' . $model->ID;
 						<h6 class = "fs-4 fw-semibold mb-0">Permanent Address:</h6>
 						<p class="fs-4 mb-0"><?= $model->Permanent_Address ?></p>
 					</li>
+					<?php if ($model->Status >= 71):?>
+					<li class = "d-flex align-items-center gap-3 mb-2">
+						<i class = "ti ti-brand-google-drive text-dark fs-6"></i>
+						<h6 class = "fs-4 fw-semibold mb-0">Drive Link:</h6>
+					<a href = "<?= $model->driveLink?>" target="_blank" class="text-decoration-underline">click to open applicant google drive</a>
+					</li>
+					<?php endif ;?>
 				</ul>
 			</div>
 		</div>

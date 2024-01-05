@@ -114,6 +114,8 @@ class InboundController extends Controller
                         // Set status to 10 only when the 'submit' button is clicked
                         $model->Status = 10;
                     }
+                    $model->Name = Yii::$app->user->identity->username;
+                    $model->Email_address = Yii::$app->user->identity->email;
 
                     if ($model->validate() && $model->save()) {
                         //-------------------- File Saving --------------------\\

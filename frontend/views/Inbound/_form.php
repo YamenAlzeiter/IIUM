@@ -16,13 +16,15 @@
 		       required>
 		<!-- Step 1 input fields -->
 		<section id = "step-1" class = "form-step">
+
 			<div class = "form-height">
+
 				<div class = "form__div">
-					<input type = "text" class = "form__input form-control" id = "validationCustomName"
+					<input type = "text" class = "form__input form-control" id = "validationCustomName disabledTextInput"
 					       name = "Inbound[Name]"
-					       maxlength = "255" placeholder = " " value = "<?= $model->Name ?>" required>
-					<label for = "validationCustomName" class = "form__label">Name</label>
+					       maxlength = "255" placeholder = " " value = "<?= Yii::$app->user->identity->username?>" disabled>
 				</div>
+
 				<div class = "row align-items-center mb-2">
 					<div class = "col-md-6">
 						<div class = "row-md-6 mb-2">
@@ -149,8 +151,8 @@
 						<div class = "form__div">
 							<input type = "email" class = "form__input form-control" id = "validationCustomEmail"
 							       name = "Inbound[Email_address]"
-							       maxlength = "100" placeholder = " " value = "<?= $model->Email_address ?>" required>
-							<label for = "validationCustomEmail" class = "form__label">Email Address</label>
+							       maxlength = "100" placeholder = " " value = "<?= Yii::$app->user->identity->email?>" disabled>
+
 						</div>
 					</div>
 				</div>

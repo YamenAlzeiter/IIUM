@@ -787,9 +787,14 @@ function isFileRequired($file)
 			</div>
 			<div class = "col" id = "textareaContainer">
 				<div class = "form__div">
-						<textarea class = "form__input form-control" id = "model-Research" name = "Outbound[Research]"
-						><?= htmlspecialchars($model->Research ?? '') ?></textarea>
+						<textarea class = "form__input form-control" id = "model-Research" name = "Outbound[Research]" maxlength="255" >
+							<?= htmlspecialchars($model->Research ?? '') ?></textarea>
 					<label for = "model-Research" class = "form__label">Write your research</label>
+				</div>
+			</div>
+			<div class = "col" id = "noneContainer">
+				<div id = "approval-message-hod" class = "alert alert-danger">
+					<h5 class = "p-0 m-0 text-capitalize alert fw-semibold">Please pick Level of Education in order to view in step</h5>
 				</div>
 			</div>
 
@@ -914,12 +919,14 @@ function isFileRequired($file)
         var selectedOption = document.getElementById('lvl_edu').value;
         var tableContainer = document.getElementById('tableContainer');
         var textareaContainer = document.getElementById('textareaContainer');
+        var noneContainer = document.getElementById('noneContainer');
         var tableInputs = tableContainer.querySelectorAll('input');
         var textareaInput = document.getElementById('model-Research');
 
         if (selectedOption !== 'UG' && selectedOption !== 'PG') {
             tableContainer.style.display = 'none';
             textareaContainer.style.display = 'none';
+            noneContainer.style.display = 'block';
 
             // Remove the  attribute from all input fields
             tableInputs.forEach(function (input) {
@@ -930,6 +937,7 @@ function isFileRequired($file)
         } else if (selectedOption === 'UG') {
             tableContainer.style.display = 'flex';
             textareaContainer.style.display = 'none';
+            noneContainer.style.display = 'none';
 
             // Add the  attribute to input fields in the UG table
             tableInputs.forEach(function (input) {
@@ -940,6 +948,7 @@ function isFileRequired($file)
         } else if (selectedOption === 'PG') {
             tableContainer.style.display = 'none';
             textareaContainer.style.display = 'block';
+            noneContainer.style.display = 'none';
 
             // Remove the  attribute from input fields in the UG table
             tableInputs.forEach(function (input) {
