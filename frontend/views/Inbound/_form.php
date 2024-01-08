@@ -151,7 +151,7 @@
 						<div class = "form__div">
 							<input type = "email" class = "form__input form-control" id = "validationCustomEmail"
 							       name = "Inbound[Email_address]"
-							       maxlength = "100" placeholder = " " value = "<?= Yii::$app->user->identity->email?>" disabled>
+							       maxlength = "100" placeholder = " " value = "<?= Yii::$app->user->identity->email?>" >
 
 						</div>
 					</div>
@@ -564,15 +564,18 @@
 						<div class = "form__div">
 							<input type = "date" class = "form__input form-control" id = "Propose_duration_start"
 							       name = "Inbound[Propose_duration_start]" required
-							       value = "<?= htmlspecialchars($model->Propose_duration_start ?? '') ?>">
+							       value = "<?= htmlspecialchars($model->Propose_duration_start ?? '') ?>"
+							       min="<?= date('Y-m-d') ?>">
 							<label for = "Propose_duration_start" class = "form__label">Mobility From</label>
 						</div>
+
 					</div>
 					<div class = "col-md-3">
 						<div class = "form__div">
-							<input type = "date" class = "form__input form-control" id = "Propose_duration_end"
+							<input type =date class = "form__input form-control" id = "Propose_duration_end"
 							       name = "Inbound[Propose_duration_end]" required
-							       value = "<?= htmlspecialchars($model->Propose_duration_end ?? '') ?>">
+							       value = "<?= htmlspecialchars($model->Propose_duration_end ?? '') ?>"
+							       min="<?= date('Y-m-d') ?>">
 							<label for = "Propose_duration_end" class = "form__label">Mobility Until</label>
 						</div>
 					</div>

@@ -1,5 +1,6 @@
 <?php
 
+use dosamigos\tinymce\TinyMce;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -38,8 +39,8 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 					<p class = "mb-2 fw-light mb-1"><strong>Gender: </strong> <?= getGenderMeaning($model->Gender) ?>
 					</p>
 					<p class = "mb-2 fw-light mb-1"><strong>Postcode: </strong> <?= $model->Postcode ?></p>
-					<p class = "mb-2 fw-light mb-1"><strong>State: </strong> <?= $model->State ?></p>
-					<p class = "mb-2 fw-light mb-1"><strong>Country: </strong> <?= $model->Country ?></p>
+					<p class = "mb-2 fw-light mb-1"><strong>State: </strong> <?= getState($model->State )?></p>
+					<p class = "mb-2 fw-light mb-1"><strong>Country: </strong> <?= getCountry($model->Country) ?></p>
 				</div>
 				<div class = "col-md-6">
 					<p class = "mb-2 fw-light mb-1"><strong>Date of Birth: </strong> <?= $model->Date_of_Birth ?></p>
@@ -50,8 +51,8 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 					<p class = "mb-2 fw-light mb-1"><strong>Mobile Number:</strong> <?= $model->Mobile_Number ?></p>
 					<p class = "mb-2 fw-light mb-1"><strong>Mailing Address: </strong> <?= $model->Mailing_Address ?>
 					</p>
-					<p class = "mb-2 fw-light mb-1"><strong>Mailing state: </strong> <?= $model->Mailing_State ?></p>
-					<p class = "mb-2 fw-light mb-1"><strong>Mailing Country: </strong> <?= $model->Mailing_Country ?>
+					<p class = "mb-2 fw-light mb-1"><strong>Mailing state: </strong> <?= getState($model->Mailing_State) ?></p>
+					<p class = "mb-2 fw-light mb-1"><strong>Mailing Country: </strong> <?= getCountry($model->Mailing_Country) ?>
 					</p>
 				</div>
 			</div>
@@ -213,8 +214,17 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 
 							<div class = "conditional-form-elements-reject" style = "display: none;">
 								<div class = "form-group">
-            <textarea type = "text" class = "form-control" id = "reasonComplete" name = "reason"
-                      placeholder = "Reason for rejection"></textarea>
+                                    <?php
+                                    echo TinyMce::widget([
+                                        'name' => 'reason', // Setting a name for the input
+                                        'options' => ['rows' => 12],
+                                        'language' => 'en',
+                                        'clientOptions' => [
+                                            'toolbar' => false,
+                                        ],
+                                        'value' => '', // Set initial value if needed
+                                    ]);
+                                    ?>
 								</div>
                                 <?= Html::submitButton('Submit', ['class' => 'btn btn-success mt-3']) ?>
 							</div>

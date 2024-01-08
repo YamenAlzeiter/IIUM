@@ -1,5 +1,6 @@
 <?php
 
+use dosamigos\tinymce\TinyMce;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -34,7 +35,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 				<p class = "mb-2"><strong>Email Address:</strong> <?= $model->Email_address ?></p>
 				<p class = "mb-2"><strong>Date of Birth:</strong> <?= $model->Date_of_Birth ?></p>
 				<p class = "mb-2"><strong>Gender:</strong> <?= getGenderMeaning($model->Gender) ?></p>
-				<p class = "mb-2"><strong>Passport Number:</strong> <?= $model->Country_of_origin ?></p>
+				<p class = "mb-2"><strong>Passport Number:</strong> <?=getCountry( $model->Country_of_origin) ?></p>
 			</div>
 		</div>
 	</div>
@@ -117,9 +118,17 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 
 						<div class = "conditional-form-elements-reject" style = "display: none;">
 							<div class = "form-group">
-                                <textarea type = "text" class = "form-control"
-                                          id = "reasonComplete" name = "reason"
-                                          placeholder = "Reason for rejection"></textarea>
+                                <?php
+                                echo TinyMce::widget([
+                                    'name' => 'reason', // Setting a name for the input
+                                    'options' => ['rows' => 12],
+                                    'language' => 'en',
+                                    'clientOptions' => [
+                                        'toolbar' => false,
+                                    ],
+                                    'value' => '', // Set initial value if needed
+                                ]);
+                                ?>
 							</div>
                             <?= Html::submitButton('Submit', ['class' => 'btn btn-dark mt-3 text-end']) ?>
 						</div>

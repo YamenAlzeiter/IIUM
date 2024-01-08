@@ -10,6 +10,7 @@ use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
+use yii\web\JqueryAsset;
 use yii\web\View;
 
 
@@ -71,6 +72,18 @@ AppAsset::register($this);
 
 
     <?php $this->endBody() ?>
+    <?php
+    // Bottom of the view file, before closing body tag
+    $this->registerJsFile('https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js',
+        ['depends' => [JqueryAsset::class]]);
+    $this->registerJs(<<<JS
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+JS
+    );
+    ?>
 	</body>
 	</html>
 <?php $this->endPage();

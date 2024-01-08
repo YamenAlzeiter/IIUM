@@ -36,7 +36,6 @@ class Inlog extends \yii\db\ActiveRecord
             [['outbound_id', 'old_status', 'new_status'], 'default', 'value' => null],
             [['outbound_id', 'old_status', 'new_status'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            [['message'], 'string', 'max' => 255],
             [['outbound_id'], 'exist', 'skipOnError' => true, 'targetClass' => Inbound::class, 'targetAttribute' => ['outbound_id' => 'ID']],
         ];
     }

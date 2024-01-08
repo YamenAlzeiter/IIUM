@@ -109,7 +109,9 @@ body{
     background-color: #fff;
     color: #009688;
 }
-
+.tox-promotion{
+    display: none;
+}
 
 /*===== GOOGLE FONTS =====*/
 .img-fluid{

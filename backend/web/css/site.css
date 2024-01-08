@@ -316,6 +316,71 @@ h2 {
     padding-left: 0;
 }
 
+.con-tooltip {
+
+    position: absolute;
+    background: #F2D1C9;
+    border-radius: 9px;
+    padding: 0 20px;
+    margin: 10px;
+    display: inline-block;
+    transition: all 0.3s ease-in-out;
+    cursor: default;
+
+}
+
+/*tooltip */
+/* Tooltip CSS */
+/* Tooltip CSS */
+.tooltipper {
+
+    word-wrap: break-word; /* Allow long words to wrap */
+    visibility: hidden;
+    z-index: 1;
+    opacity: 0;
+    padding: 10px; /* Adjust padding */
+    background: #333;
+    color: #FFFFFF;
+    position: static;
+    left: 50%;
+    transform: translateX(-50%) translateY(-9px);
+    border-radius: 9px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 0 3px rgba(56, 54, 54, 0.86);
+}
+
+/* Tooltip after */
+.tooltipper::after {
+    content: " ";
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 12px 12.5px 0 12.5px;
+    border-color: #333 transparent transparent transparent;
+    position: absolute;
+    top: 100%; /* Position arrow at the bottom */
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Hover effect */
+.con-tooltip:hover .tooltipper {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.3s linear;
+}
+
+
+
+
+
+
+
+
+
+
+
 .button {
     padding: 0.7rem 1.5rem;
     border: 1px solid #4361ee;

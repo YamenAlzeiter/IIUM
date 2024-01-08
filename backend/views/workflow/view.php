@@ -1,5 +1,6 @@
 <?php
 
+use dosamigos\tinymce\TinyMce;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -217,8 +218,17 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 
 							<div class = "conditional-form-elements-reject" style = "display: none;">
 								<div class = "form-group">
-            <textarea type = "text" class = "form-control" id = "reasonComplete" name = "reason"
-                      placeholder = "Reason for rejection"></textarea>
+                                    <?php
+                                    echo TinyMce::widget([
+                                        'name' => 'reason', // Setting a name for the input
+                                        'options' => ['rows' => 12],
+                                        'language' => 'en',
+                                        'clientOptions' => [
+                                            'toolbar' => false,
+                                        ],
+                                        'value' => '', // Set initial value if needed
+                                    ]);
+                                    ?>
 								</div>
                                 <?= Html::submitButton('Submit', ['class' => 'btn btn-success mt-3']) ?>
 							</div>

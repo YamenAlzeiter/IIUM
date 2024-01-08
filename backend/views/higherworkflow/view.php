@@ -39,7 +39,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 						<p class = "mb-2"><strong>Citizenship:</strong> <?= $model->Citizenship ?></p>
 					</div>
 					<div class = "col-lg-6">
-						<p class = "mb-2"><strong>Country of Origin:</strong> <?= $model->Country_of_origin ?></p>
+						<p class = "mb-2"><strong>Country of Origin:</strong> <?= getCountry($model->Country_of_origin) ?></p>
 						<p class = "mb-2"><strong>Email Address:</strong> <?= $model->Email_address ?></p>
 						<p class = "mb-2"><strong>Passport Number:</strong> <?= $model->Passport_Number ?></p>
 						<p class = "mb-2"><strong>Expiration Date:</strong> <?= $model->Passport_Expiration ?></p>

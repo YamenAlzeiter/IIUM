@@ -113,7 +113,7 @@ class Outbound extends \yii\db\ActiveRecord
             [['Offer_letter', 'Academic_transcript', 'Program_brochure', 'Latest_pay_slip', 'Other_latest_pay_slip', 'Proof_of_sponsorship', 'Proof_insurance_cover', 'Letter_of_indemnity', 'Flight_ticket'], 'file', 'extensions' => 'pdf, doc, docx'],
             [['Matric_Number', 'Passport_Number', 'Mobile_Number', 'Emergency_phoneNumber'], 'string', 'max' => 15],
             [['Name', 'Permanent_Address', 'Mailing_Address','driveLink'], 'string', 'max' => 255],
-            [['Citizenship', 'Email', 'Note_dean', 'Note_hod', 'Emergency_name', 'Emergency_relationship', 'Emergency_email', 'Emergency_homeAddress', 'Academic_kulliyyah', 'Academic_kulliyyah_others', 'Academic_name_of_programme', 'Research', 'Sponsoring_name', 'Sponsoring_name_other', 'Type_mobility_program', 'Type_mobility_program_other', 'Host_university_name', 'Connect_host_address', 'token', 'Connect_host_email'], 'string', 'max' => 512],
+            [['Citizenship', 'Email', 'Emergency_name', 'Emergency_relationship', 'Emergency_email', 'Emergency_homeAddress', 'Academic_kulliyyah', 'Academic_kulliyyah_others', 'Academic_name_of_programme', 'Research', 'Sponsoring_name', 'Sponsoring_name_other', 'Type_mobility_program', 'Type_mobility_program_other', 'Host_university_name', 'Connect_host_address', 'token', 'Connect_host_email'], 'string', 'max' => 512],
             [['Gender'], 'string', 'max' => 1],
             [['Postcode', 'Mailing_Postcode', 'Emergency_postCode', 'Connect_host_postcode'], 'string', 'max' => 10],
             [['State', 'Country', 'Mailing_State', 'Mailing_Country', 'Emergency_tate', 'Emergency_country', 'Country_host_university', 'Connect_host_name', 'Connect_host_position', 'Connect_host_country'], 'string', 'max' => 100],
@@ -249,7 +249,11 @@ class Outbound extends \yii\db\ActiveRecord
                 $this->createStatusLog("", $newStatus, $this->temp);
             }
             if ($oldStatus !== $newStatus) {
-                if(($oldStatus === 12 && $newStatus === 1) || ($oldStatus === 32 && $newStatus === 21) || $newStatus === 3){
+                if(($oldStatus === 12 && $newStatus === 1) ||
+                    ($oldStatus === 32 && $newStatus === 21) ||
+                    $newStatus === 3 ||
+                    $newStatus === 2 ||
+                    ($oldStatus === 51 && $newStatus === 41)){
                     $this->createStatusLog($oldStatus, $newStatus, $this->temp);
                 } elseif (($oldStatus === 1 && $newStatus === 12)){
                     $this->createStatusLog($oldStatus, $newStatus, $this->Note_hod);

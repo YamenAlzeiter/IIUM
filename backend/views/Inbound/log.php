@@ -16,49 +16,53 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
         'tableOptions' => ['class' => 'table border text-wrap customize-table mb-0 text-center'],
         'summary' => '', // Show the current page and total pages
         'columns' => [
-
+			['attribute' => 'created_at',
+                'label' => 'Date',
+                'format' => ['date', 'php:d/M/y H:i'],
+            ],
             [
                 'label' => 'Status',
                 'format' => 'raw',
                 'value' => function ($model) {
                     $statusModel = Status::findOne(['ID' => $model->new_status]);
                     $statusMeaning = $statusModel ? $statusModel->status : '';
-
+                    $status = Status::findOne(['ID' => $model->new_status]);
                     $class = '';
 
                     if (in_array($model->new_status, [6, 16, 22, 36, 46])) {
                         $class = 'badge bg-danger-subtle text-danger fw-semibold fs-3';
+                        $text_color = 'text-danger';
                     } elseif ($model->new_status == 65) {
                         $class = 'badge bg-success-subtle text-success fw-semibold fs-3';
+                        $text_color = 'text-success';
                     } else {
                         $class = 'badge bg-warning-subtle text-warning fw-semibold fs-3';
+                        $text_color = 'text-warning';
                     }
 
-                    return '<div class="' . $class . '">' . $statusMeaning . '</div>';
+                    return '<div class="d-flex align-items-center gap-2"><div class="'.$class.'">'.$statusMeaning.'</div><i class="ti ti-info-circle fs-5 '.$text_color.' " data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true" title="'.htmlspecialchars($status->description).'"></i></div>';
                 },
                 'contentOptions' => ['class' => 'col-1'],
             ],
 	        [
-                'attribute' => 'old_status',
+                'attribute' => 'From',
                 'value' => function ($model) {
                     return getStatusFrom($model->new_status);
                 },
             ],
             [
-                'attribute' => 'old_status',
+                'attribute' => 'To',
                 'value' => function ($model) {
                     return getStatusTo($model->new_status);
                 },
             ],
             [
-                'attribute' => 'message',
-                'contentOptions' => ['class' => 'col-4 text']
+                'attribute' => 'message', 'format' => 'raw', // Set the format to raw for rendering HTML
+                'value' => function ($model) {
+                    return '<i class="ti ti-message-circle fs-7" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true" title="'.htmlspecialchars($model->message).'"></i>'; // Escape HTML characters
+                },
             ],
-            ['attribute' => 'created_at',
-                'label' => 'Date',
-                'format' => ['date', 'php:d/M/y H:i'],
 
-            ]
             // Add more columns as needed
         ],
     ]); ?>

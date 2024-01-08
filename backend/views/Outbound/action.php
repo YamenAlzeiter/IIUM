@@ -1,6 +1,7 @@
 <?php
 
 use common\models\Kcdio;
+use dosamigos\tinymce\TinyMce;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\web\YiiAsset;
@@ -188,8 +189,17 @@ $this->registerJsFile('https://code.jquery.com/jquery-3.6.0.min.js');
 
 		<div class = "conditional-form-elements-reject" style = "display: none;">
 			<div class = "form-group">
-            <textarea type = "text" class = "form-control" id = "reasonComplete" name = "reason"
-                      placeholder = "Reason for rejection"></textarea>
+                <?php
+                echo TinyMce::widget([
+                    'name' => 'reason', // Setting a name for the input
+                    'options' => ['rows' => 12],
+                    'language' => 'en',
+                    'clientOptions' => [
+                        'toolbar' => false,
+                    ],
+                    'value' => '', // Set initial value if needed
+                ]);
+                ?>
 			</div>
 			<div class = "d-flex justify-content-center">
                 <?= Html::submitButton('Submit', ['class' => 'btn btn-dark px-5 mt-3']) ?>
@@ -202,8 +212,17 @@ $this->registerJsFile('https://code.jquery.com/jquery-3.6.0.min.js');
 
 		<div class = "conditional-form-elements-incomplete" style = "display: none;">
 			<div class = "form-group">
-            <textarea type = "text" class = "form-control" id = "reasonComplete" name = "reason"
-                      placeholder = "Reason for not complete"></textarea>
+				<?php
+				echo TinyMce::widget([
+                    'name' => 'reason', // Setting a name for the input
+                    'options' => ['rows' => 12],
+                    'language' => 'en',
+                    'clientOptions' => [
+                        'toolbar' => false,
+                    ],
+                    'value' => '', // Set initial value if needed
+                ]);
+				?>
 			</div>
 			<div class = "d-flex justify-content-center">
                 <?= Html::submitButton('Submit', ['class' => 'btn btn-dark px-5 mt-3']) ?>
@@ -215,8 +234,17 @@ $this->registerJsFile('https://code.jquery.com/jquery-3.6.0.min.js');
 
 		<div class = "resend mt-3" id = "resend" style = "display: none;">
 			<div class = "form-group">
-            <textarea type = "text" class = "form-control" id = "reasonComplete" name = "reason"
-                      placeholder = "State why the application should be reconsidered"></textarea>
+                <?php
+                echo TinyMce::widget([
+                    'name' => 'reason', // Setting a name for the input
+                    'options' => ['rows' => 12],
+                    'language' => 'en',
+                    'clientOptions' => [
+                        'toolbar' => false,
+                    ],
+                    'value' => '', // Set initial value if needed
+                ]);
+                ?>
 			</div>
 			<div class = "d-flex justify-content-center">
                 <?= Html::submitButton('Submit', ['class' => 'btn btn-dark px-5 mt-3']) ?>

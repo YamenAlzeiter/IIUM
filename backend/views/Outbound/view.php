@@ -280,12 +280,6 @@ $fileName = $creationYearLastTwoDigits . '_' . $model->ID;
 					<p class="mb-2 fw-light mb-1"><strong>name: </strong> <?= $modelPoc1->name ?></p>
 					<p class="mb-2 fw-light mb-1"><strong>kulliyyah: </strong> <?= $modelPoc1->kulliah ?></p>
 					<p class="mb-2 fw-light mb-1"><strong>Email: </strong> <a href="mailto:<?= $modelPoc1->email ?>"><?= $modelPoc1->email ?></a></p>
-                    <?php if ($model->Note_hod):?>
-						<div class = "mt-3 mb-2">
-							<h5 class = "fw-semibold m-0">Reason of Rejection</h5>
-						</div>
-						<p class = "mb-2 fw-light mb-1"><strong><?= $model->Note_hod ?></strong></p>
-                    <?php endif;?>
                 <?php else: ?>
 					<p>Person in charge not set yet.</p>
                 <?php endif; ?>
@@ -300,12 +294,6 @@ $fileName = $creationYearLastTwoDigits . '_' . $model->ID;
 					<p class="mb-2 fw-light mb-1"><strong>name: </strong> <?= $modelPoc2->name ?></p>
 					<p class="mb-2 fw-light mb-1"><strong>kulliyyah: </strong> <?= $modelPoc2->kulliah ?></p>
 					<p class="mb-2 fw-light mb-1"><strong>Email: </strong> <a href="mailto:<?= $modelPoc2->email ?>"><?= $modelPoc2->email ?></a></p>
-                    <?php if ($model->Note_dean):?>
-						<div class = "mt-3 mb-2">
-							<h5 class = "fw-semibold m-0">Reason of Rejection</h5>
-						</div>
-						<p class = "mb-2 fw-light mb-1"><strong><?= $model->Note_dean ?></strong></p>
-                    <?php endif;?>
                 <?php else: ?>
 					<p>Dean not set yet.</p>
                 <?php endif; ?>

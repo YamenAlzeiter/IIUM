@@ -21,21 +21,18 @@ $fileName = $creationYearLastTwoDigits . '_' . $model->ID;
         <?= Html::a('<i class="ti ti-arrow-left fs-8"></i>', Yii::$app->request->referrer) ?>
 		<h1 class = "text-capitalize text-start m-0"><?= $model->Name ?></h1>
 	</div>
-	<div class = "d-flex gap-1 align-items-center">
+	<div class = " d-flex gap-1 align-items-center">
         <?php
         $statusModel = Status::findOne(['ID' => $model->Status]);
         $iconClass = getStatusIconClass($model->Status); // Implement your own logic to get the icon class based on status
-
-        echo Html::tag('i', '', [
-            'class' => 'ti ti-circle '.$iconClass,
+        $statusClass = getStatusClass($model->Status);
+        echo Html::tag('span', '', [
+            'class' => ''.$iconClass,
+        ]);
+        echo Html::tag('p',($statusModel = Status::findOne(['ID' => $model->Status])) ? $statusModel->status : '', [
+            'class' => ' fw-semibold m-0  '.$statusClass, 'id' => 'status-badge text-capitalize',
         ]);
         ?>
-		<p class = "fw-light mb-0 align-items-end">
-            <?= Html::tag('span',
-                ($statusModel = Status::findOne(['ID' => $model->Status])) ? $statusModel->status : '', [
-                    'class' => 'rounded-3 fw-semibold m-0', 'id' => 'status-badge',
-                ]) ?>
-		</p>
 	</div>
 </div>
 <div class = "row">
@@ -45,7 +42,7 @@ $fileName = $creationYearLastTwoDigits . '_' . $model->ID;
 				<div class = "d-flex align-items-center header-info gap-1 mb-3">
 					<i class = "ti ti-user-circle text-dark"></i>
 					<strong>
-						<h4 class = "fw-semibold m-0">Personal Info</h4>
+						<h4 class = "fw-semibold m-0 ">Personal Info</h4>
 					</strong>
 				</div>
 				<div class = "row">
@@ -57,11 +54,11 @@ $fileName = $creationYearLastTwoDigits . '_' . $model->ID;
 						<p class = "mb-2 fw-light mb-1"><strong>Religion: </strong> <?= $model->Religion ?></p>
 						<p class = "mb-2 fw-light mb-1"><strong>Mazhab: </strong> <?= $model->Mazhab ?></p>
 						<p class = "mb-2 fw-light mb-1"><strong>Postcode: </strong> <?= $model->Postcode ?></p>
-						<p class = "mb-2 fw-light mb-1"><strong>Country: </strong> <?= $model->Country ?></p>
+						<p class = "mb-2 fw-light mb-1"><strong>Country: </strong> <?= getCountry($model->Country); ?></p>
 					</div>
 					<div class = "col-md-6">
-						<p class = "mb-2 fw-light mb-1"><strong>Country of Origin: </strong> <?= $model->Country_of_origin ?></p>
-						<p class = "mb-2 fw-light mb-1"><strong>Country of Residence: </strong> <?= $model->Country_of_residence ?></p>
+						<p class = "mb-2 fw-light mb-1"><strong>Country of Origin: </strong> <?= getCountry($model->Country_of_origin) ?></p>
+						<p class = "mb-2 fw-light mb-1"><strong>Country of Residence: </strong> <?= getCountry($model->Country_of_residence) ?></p>
 						<p class = "mb-2 fw-light mb-1"><strong>Date of Birth: </strong> <?= $model->Date_of_Birth ?></p>
 						<p class = "mb-2 fw-light mb-1"><strong>Passport Number: </strong> <?= $model->Passport_Number ?></p>
 						<p class = "mb-2 fw-light mb-1"><strong>Passport Expiration: </strong> <?= $model->Passport_Expiration ?></p>
@@ -102,12 +99,12 @@ $fileName = $creationYearLastTwoDigits . '_' . $model->ID;
 						<p class = "mb-2 fw-light mb-1"><strong>Name of Faculty: </strong> <?= $model->Academic_name_of_faculty ?></p>
 						<p class = "mb-2 fw-light mb-1"><strong>Current Result: </strong> <?= $model->Academic_current_result ?></p>
 						<p class = "mb-2 fw-light mb-1"><strong>Research Title: </strong> <?= $model->Research_title ?></p>
-						<p class = "mb-2 fw-light mb-1"><strong>University have MOU/MOA with IIUM: </strong> <?= $model->Mou_or_Moa ?></p>
+						<p class = "mb-2 fw-light mb-1"><strong>University have MOU/MOA with IIUM: </strong> <?= getAnswer($model->Mou_or_Moa) ?></p>
 					</div>
 				</div>
 			</div>
 			<div class="col-lg-6 d-flex flex-column">
-				<div class = "card shadow-none border bg-light-pink flex-fill">
+				<div class = "card shadow-none border flex-fill bg-light-pink">
 					<div class = "card-body">
 						<div class = "d-flex align-items-center header-info gap-1 mb-3">
 							<i class = "ti ti-map-pins text-dark"></i>
@@ -117,7 +114,7 @@ $fileName = $creationYearLastTwoDigits . '_' . $model->ID;
 						</div>
 						<p class = "mb-2 fw-light mb-1"><strong>Type of Programme: </strong> <?= $model->Propose_type_of_programme ?></p>
 						<p class = "mb-2 fw-light mb-1"><strong>Type of Programme (Other): </strong> <?= $model->Propose_type_of_programme_other ?></p>
-						<p class = "mb-2 fw-light mb-1"><strong>Type of Mobility: </strong> <?= $model->Propose_type_of_mobility ?></p>
+						<p class = "mb-2 fw-light mb-1"><strong>Type of Mobility: </strong> <?= getMobilityType($model->Propose_type_of_mobility) ?></p>
 						<p class = "mb-2 fw-light mb-1"><strong>Kulliyyah Applied: </strong> <?= $model->Propose_kulliyyah_applied ?></p>
 						<p class = "mb-2 fw-light mb-1"><strong>Duration:</strong><?= $model->Propose_duration_of_study ?></p>
 						<div class = "d-flex gap-3 ">
@@ -130,8 +127,8 @@ $fileName = $creationYearLastTwoDigits . '_' . $model->ID;
 			</div>
 		</div>
 		<div class="row">
-			<div class="col">
-				<div class="card shadow-none border">
+			<div class="col d-flex flex-column">
+				<div class="card shadow-none flex-fill border">
 					<div class="card-body">
 						<div class="row">
 							<div class = "d-flex align-items-center header-info gap-1 mb-3">
@@ -149,7 +146,7 @@ $fileName = $creationYearLastTwoDigits . '_' . $model->ID;
 							                                        Number: </strong> <?= $model->Approval_person_mobile_number ?></p>
 							<p class = "mb-2 fw-light mb-1"><strong>Date: </strong> <?= $model->Approval_date ?></p>
 							<p class="fw-semibold"><?= ($model->Recommendation_letter) ? Html::a('RecommendationLetter', [
-                                    'download', 'ID' => $model->ID, 'token'=> $model->Token, 'file' => $fileName . '_RecommendationLetter' . '.pdf'
+                                    'download', 'id' => $model->ID, 'file' => $fileName . '_RecommendationLetter' . '.pdf'
                                 ]) : ''; ?></p>
 						</div>
 					</div>
@@ -188,7 +185,7 @@ $fileName = $creationYearLastTwoDigits . '_' . $model->ID;
 						<h4 class = "fw-semibold m-0">Financial Information</h4>
 					</strong>
 				</div>
-				<p class = "mb-2 fw-light mb-1"><strong>Accommodation on Campus: </strong> <?= $model->Financial_accommodation_on_campus ?></p>
+				<p class = "mb-2 fw-light mb-1"><strong>Accommodation on Campus: </strong> <?= getAnswer($model->Financial_accommodation_on_campus) ?></p>
 				<p class = "mb-2 fw-light mb-1"><strong>Campus Location: </strong> <?= $model->campus_location ?></p>
 				<p class = "mb-2 fw-light mb-1"><strong>Financial Funding for Fees and Living Expenses: </strong> <?= $model->Financial_funding ?></p>
                 <?php if ($model->Financial_funding === "Scholarship"): ?>
