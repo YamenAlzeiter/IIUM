@@ -278,7 +278,6 @@ $fileName = $creationYearLastTwoDigits . '_' . $model->ID;
 				</div>
                 <?php if ($modelPoc1): ?>
 					<p class="mb-2 fw-light mb-1"><strong>name: </strong> <?= $modelPoc1->name ?></p>
-					<p class="mb-2 fw-light mb-1"><strong>kulliyyah: </strong> <?= $modelPoc1->kulliah ?></p>
 					<p class="mb-2 fw-light mb-1"><strong>Email: </strong> <a href="mailto:<?= $modelPoc1->email ?>"><?= $modelPoc1->email ?></a></p>
                 <?php else: ?>
 					<p>Person in charge not set yet.</p>

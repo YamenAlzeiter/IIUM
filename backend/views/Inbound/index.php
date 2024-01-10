@@ -33,10 +33,16 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 
             ], [
                 'attribute' => 'Name', 'contentOptions' => ['class' => 'col-2 text-truncate'],
-            ], [
-                'attribute' => 'Country_of_origin', 'contentOptions' => ['class' => 'col-2'],
-                // Apply Bootstrap grid class
-            ], [
+            ],
+            [
+                'attribute' => 'country_of_origin',
+                'label' => 'Country of Origin',
+                'content' => function ($model) {
+                    $countryName = getcountry($model->Country_of_origin); // Assuming getcountry() fetches the country name
+                    return $countryName;
+                },
+                'contentOptions' => ['class' => 'col-2'],
+            ],[
                 'attribute' => 'Academic_home_university', 'contentOptions' => ['class' => 'col-2'],
                 // Apply Bootstrap grid class
             ], [

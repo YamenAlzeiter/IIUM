@@ -30,7 +30,7 @@ $statusModel = array_merge($statusModels, $statusModelsExceptID10);
 
     <?= $form->field($searchModel, 'Gender')->dropDownList(['M' => 'Male', 'F' => 'Female'], ['prompt' => 'All']) ?>
 
-    <?= $form->field($searchModel, 'Status')->dropDownList(ArrayHelper::map($statusModel, 'ID', 'status'), ['prompt' => 'Select Status', 'class' => 'form-select']) ?>
+    <?= $form->field($searchModel, 'Status')->dropDownList(ArrayHelper::map($statusModel, 'ID', 'status'), ['prompt' => 'All', 'class' => 'form-select']) ?>
 
     <?= Html::submitButton('Search', ['class' => 'collapsed fs-3 fw-semibold shadow-none btn btn-dark align-self-end']) ?>
 </div>

@@ -192,12 +192,20 @@ function getCount($countType)
     }
 }
 function getCountry($countryID){
-    $countryName = Countries::findOne(['id' => $countryID]);
-    return $countryName = Countries::findOne(['id' => $countryID]) ? $countryName->name : 'hello';
+    if (!empty($countryID) && is_numeric($countryID)) {
+        $country = Countries::findOne(['id' => $countryID]);
+        return $country ? $country->name : 'Country not found';
+    } else {
+        return 'Invalid country ID';
+    }
 }
 function getState($stateID){
-    $stateID = States::findOne(['id' => $stateID]);
-    return  $stateID->name ;
+    if (!empty($stateID) && is_numeric($stateID)) {
+        $state = States::findOne(['id' => $stateID]);
+        return $state ? $state->name : 'State not found';
+    } else {
+        return 'Invalid state ID';
+    }
 }
 
 //function getStatusFilter($type)

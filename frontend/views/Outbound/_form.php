@@ -861,7 +861,7 @@ function isFileRequired($file)
 	</div>
 </div>
 
-		<input type="hidden" name="Outbound[Status]" id="statusInput" value="">
+		<input type="hidden" name="Outbound[Status]" id="statusInput" value="<?= $model->Status?>">
 	<div class = "d-flex justify-content-between">
 			<button class="btn btn-navigate-form-step btn-next fs-5" type="button" step_number="5">Back</button>
 		<div>

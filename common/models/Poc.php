@@ -12,8 +12,9 @@ use Yii;
  * @property string|null $email
  * @property string|null $email_cc
  * @property string|null $KCDIO
- * @property string|null $kulliah
- * @property string|null $phone_number
+ * @property string|null $email_cc_additional
+ * @property string|null $name_cc1
+ * @property string|null $name_cc2
  */
 class Poc extends \yii\db\ActiveRecord
 {
@@ -31,8 +32,7 @@ class Poc extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'email', 'email_cc', 'KCDIO', 'kulliah'], 'string', 'max' => 512],
-            [['phone_number'], 'string', 'max' => 15],
+            [['name', 'email', 'email_cc', 'KCDIO', 'email_cc_additional', 'name_cc1', 'name_cc2'], 'string', 'max' => 512],
         ];
     }
 
@@ -47,8 +47,9 @@ class Poc extends \yii\db\ActiveRecord
             'email' => 'Email',
             'email_cc' => 'Email Cc',
             'KCDIO' => 'Kcdio',
-            'kulliah' => 'Kulliah',
-            'phone_number' => 'Phone Number',
+            'email_cc_additional' => 'Additional Email Cc',
+            'name_cc1' => 'Name of Cc',
+            'name_cc2' => 'Name of Cc 2',
         ];
     }
 }

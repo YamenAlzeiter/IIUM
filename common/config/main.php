@@ -13,5 +13,6 @@ return [
             'class' => 'yii\rbac\DbManager',
             // 'defaultRoles' => ['guest'], // Set the default roles here if needed
         ],
+
     ],
 ];

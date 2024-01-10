@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "inbound".
@@ -105,8 +106,7 @@ class Inbound extends \yii\db\ActiveRecord
         return [
             [['Date_of_Birth', 'Passport_Expiration', 'Propose_duration_start', 'Propose_duration_end', 'Approval_date', 'Student_declaration_date', 'updated_at', 'created_at'], 'safe'],
             [['Academic_current_semester', 'Academic_current_year', 'Academic_current_result', 'Mou_or_Moa', 'English_native', 'Propose_type_of_mobility', 'Propose_transfer_credit_hours', 'Financial_accommodation_on_campus', 'Financial_funding_sponsor_amount', 'Student_declaration_agreement', 'Status', 'Kulliyyah', 'msd_cps'], 'default', 'value' => null],
-            [['Academic_current_semester', 'Academic_current_year', 'Academic_current_result', 'Mou_or_Moa', 'English_native', 'Propose_type_of_mobility', 'Propose_transfer_credit_hours', 'Financial_accommodation_on_campus', 'Financial_funding_sponsor_amount', 'Student_declaration_agreement', 'Status', 'Kulliyyah', 'msd_cps'], 'integer'],
-            [['English_certificate', 'Recommendation_letter', 'Passport', 'Latest_passport_photo', 'Latest_certified_academic_transcript', 'Confirmation_letter', 'Sponsorship_letter', 'offer_letter'], 'file', 'extensions' => 'pdf'],
+            [['Academic_current_semester', 'Academic_current_year', 'Mou_or_Moa', 'English_native', 'Propose_type_of_mobility', 'Propose_transfer_credit_hours', 'Financial_accommodation_on_campus', 'Financial_funding_sponsor_amount', 'Student_declaration_agreement', 'Status', 'Kulliyyah', 'msd_cps'], 'integer'],            [['English_certificate', 'Recommendation_letter', 'Passport', 'Latest_passport_photo', 'Latest_certified_academic_transcript', 'Confirmation_letter', 'Sponsorship_letter', 'offer_letter'], 'file', 'extensions' => 'pdf'],
             [['Name', 'Permanent_Address', 'Emergency_relationship'], 'string', 'max' => 255],
             [['Gender'], 'string', 'max' => 1],
             [['Relation_ship', 'Postcode', 'Emergency_postCode'], 'string', 'max' => 10],
@@ -118,6 +118,7 @@ class Inbound extends \yii\db\ActiveRecord
             [['Academic_lvl_edu'], 'string', 'max' => 20],
             [['Propose_duration_of_study', 'Financial_funding'], 'string', 'max' => 30],
             [['Approval_person_mobile_number'], 'string', 'max' => 16],
+            [[ 'Academic_current_result'], 'double']
         ];
     }
 
@@ -209,6 +210,15 @@ class Inbound extends \yii\db\ActiveRecord
     public function getCourses()
     {
         return $this->hasMany(InCourses::class, ['student_id' => 'ID']);
+    }
+
+    public function beforeSave($insert)
+    {
+        if($this->isAttributeChanged('Status') || $this->isNewRecord){
+            $this->updated_at = new Expression('NOW()');
+
+        }
+        return parent::beforeSave($insert);
     }
     public function afterSave($insert, $changedAttributes)
     {

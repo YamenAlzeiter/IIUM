@@ -22,7 +22,7 @@
 				<div class = "form__div">
 					<input type = "text" class = "form__input form-control" id = "validationCustomName disabledTextInput"
 					       name = "Inbound[Name]"
-					       maxlength = "255" placeholder = " " value = "<?= Yii::$app->user->identity->username?>" disabled>
+					       maxlength = "255" placeholder = " " value = "<?= $model->Name?>" >
 				</div>
 
 				<div class = "row align-items-center mb-2">
@@ -151,7 +151,7 @@
 						<div class = "form__div">
 							<input type = "email" class = "form__input form-control" id = "validationCustomEmail"
 							       name = "Inbound[Email_address]"
-							       maxlength = "100" placeholder = " " value = "<?= Yii::$app->user->identity->email?>" >
+							       maxlength = "100" placeholder = " " value = "<?= $model->Email_address?>" >
 
 						</div>
 					</div>

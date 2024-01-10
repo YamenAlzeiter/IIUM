@@ -104,9 +104,10 @@ class PocController extends Controller
             'name' => $model->name,
             'email' => $model->email,
             'email_cc' => $model->email_cc,
-            'phone_number' => $model->phone_number,
+            'name_cc1' => $model->name_cc1,
+            'name_cc2' => $model->name_cc2,
+            'email_cc_additional' => $model->email_cc_additional,
             'KCDIO' => $model->KCDIO,
-            'kulliah' => $model->kulliah,
         ];
     }
     public function actionCreate()

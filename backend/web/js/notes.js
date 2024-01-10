@@ -128,10 +128,10 @@ $(function () {
         $("#poc-name").val(data.name);
         $("#poc-email").val(data.email);
         $("#poc-email_cc").val(data.email_cc);
-        $("#poc-phone_number").val(data.phone_number);
+        $("#poc-name_cc1").val(data.name_cc1);
+        $("#poc-email_cc_additional").val(data.email_cc_additional);
+        $("#poc-name_cc2").val(data.name_cc2);
         $("#validationKCDIO").val(data.KCDIO);
-        $("#poc-kulliah").val(data.kulliah);
-        //... populate other fields for update action if available
       },
     );
   });

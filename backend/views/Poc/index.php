@@ -77,37 +77,42 @@ $this->title = 'Person In Charge';
 					<div class="form-content">
                         <?php $form = ActiveForm::begin(['options' => ['id' => 'myForm']]); ?>
 
-                        <div class="mb-3">
-                            <?= $form->field($model, 'name')->textInput(['maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'Name'])->label(false) ?>
-                        </div>
 
 						<div class="row align-items-center">
-							<div class="col-md-4 mb-3">
+
+							<div class="col-md-6 mb-3">
+                                <?= $form->field($model, 'name')->textInput(['maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'Name'])->label(false) ?>
+							</div>
+							<div class="col-md-6 mb-3">
                                 <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'Email'])->label(false) ?>
 							</div>
-							<div class="col-md-4 mb-3">
+
+						</div>
+
+						<div class="row align-items-center">
+							<div class="col-md-6 mb-3">
+                                <?= $form->field($model, 'name_cc1')->textInput(['maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'Email'])->label(false) ?>
+							</div>
+							<div class="col-md-6 mb-3">
                                 <?= $form->field($model, 'email_cc')->textInput(['maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'Email CC'])->label(false) ?>
 							</div>
-							<div class="col-md-4 mb-3">
-                                <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'Phone Number'])->label(false) ?>
+						</div>
+
+						<div class="row align-items-center">
+							<div class="col-md-6 mb-3">
+                                <?= $form->field($model, 'name_cc2')->textInput(['maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'Email'])->label(false) ?>
+							</div>
+							<div class="col-md-6 mb-3">
+                                <?= $form->field($model, 'email_cc_additional')->textInput(['maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'Email CC'])->label(false) ?>
 							</div>
 						</div>
 						<div class="row align-items-center mb-3">
-							<div class="col-md-6">
-								<div class="row-md-6 mb-2 mb-3">
                                     <?= $form->field($modelKedio,
                                         'kcdio')->dropDownList(ArrayHelper::map(Kcdio::find()->all(), 'kcdio', 'kcdio'),
                                         [
                                             'prompt' => 'Select KCDIO', 'class' => 'form__input form-control',
                                             'id' => 'validationKCDIO', 'name' => 'Poc[KCDIO]', 'required' => true,
                                         ])->label(false) ?>
-								</div>
-							</div>
-							<div class="col-md-6">
-								<div class="row-md-6 mb-2 mb-3">
-                                    <?= $form->field($model, 'kulliah')->textInput(['maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'Kulliyyah'])->label(false) ?>
-								</div>
-							</div>
 						</div>
 					</div>
 				</div>

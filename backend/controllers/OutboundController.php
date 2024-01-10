@@ -55,6 +55,9 @@ class OutboundController extends Controller
         $statusModel = new Status();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
+        $dataProvider->query->andWhere(['not', ['Status' => null]]);
+        $dataProvider->sort->defaultOrder = ['updated_at' => SORT_DESC];
+
         $months = $this->getMonthNames();
         $counts = $this->getMonthlyCounts();
 
@@ -67,7 +70,7 @@ class OutboundController extends Controller
         ];
 
         // Exclude records with null status
-        $dataProvider->query->andWhere(['not', ['Status' => null]]);
+
 
         return $this->render("index", [
                 'searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'status' => $statusModel,
@@ -185,7 +188,7 @@ class OutboundController extends Controller
         Yii::info("Selected KCDIO: ".$selectedValueFromKedio, "ajax");
 
         $people = Poc::find()->where(["KCDIO" => $selectedValueFromKedio])->select([
-            "id", "name", "email"
+            "id", "name", "email", "email_cc", "name_cc1", "email_cc_additional", "name_cc2"
         ])->asArray()->all();
 
         Yii::info("People Data: ".json_encode($people), "ajax");
@@ -294,10 +297,15 @@ class OutboundController extends Controller
             $selectedPersonInCharge = $this->request->post("personInChargeDropdown");
             $selectedPersonInChargeName = null;
 
+
+            $emailCc = '';
             if ($selectedPersonInCharge) {
                 $personModel = Poc::findOne($selectedPersonInCharge);
                 if ($personModel) {
                     $selectedPersonInChargeName = $personModel->name;
+                    if($personModel->email_cc != null){
+                        $emailCc = $personModel->email_cc;
+                    }
                 }
             }
             if ($model->Status === 10) {
@@ -335,13 +343,13 @@ class OutboundController extends Controller
 
             $model->Status = $status;
             if ($model->save()) {
-                $this->sendEmailWithLink($model, $selectedPersonInChargeName, $email, $token, $template, $reason);
+                $this->sendEmailWithLink($model, $selectedPersonInChargeName, $email, $token, $template, $reason, $emailCc);
                 return $this->redirect(["index"]);
             }
         }
     }
 
-    public function sendEmailWithLink($model, $name, $email, $token, $templateId, $reason)
+    public function sendEmailWithLink($model, $name, $email, $token, $templateId, $reason, $emailCc)
     {
         $recipientEmail = $email;
         $recipientName = $name;
@@ -374,12 +382,22 @@ class OutboundController extends Controller
         $body = str_replace('{recipientName}', $recipientName, $body);
         $body = str_replace('{link}', $viewLink, $body);
         $body = str_replace('{reason}', $reason, $body);
-        Yii::$app->mailer->compose([
+        $mailer = Yii::$app->mailer->compose([
             'html' => '@backend/views/email/emailTemplate.php'
         ], [
-            'subject' => $emailTemplate->subject, 'recipientName' => $recipientName, 'viewLink' => $viewLink,
-            'reason' => $reason, 'body' => $body
-        ])->setFrom(["noreply@example.com" => "My Application"])->setTo($recipientEmail)->setSubject($emailTemplate->subject)->send();
+            'subject' => $emailTemplate->subject,
+            'recipientName' => $recipientName,
+            'viewLink' => $viewLink,
+            'reason' => $reason,
+            'body' => $body
+        ])->setFrom(["noreply@example.com" => "My Application"])
+            ->setTo($recipientEmail);
+
+        if (!empty($emailCc) && filter_var($emailCc, FILTER_VALIDATE_EMAIL)) {
+            $mailer->setCc($emailCc);
+        }
+
+        $mailer->setSubject($emailTemplate->subject)->send();
     }
 
 

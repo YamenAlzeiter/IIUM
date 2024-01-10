@@ -3,6 +3,9 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 
 /**
@@ -99,6 +102,9 @@ class Outbound extends \yii\db\ActiveRecord
     {
         return 'outbound';
     }
+
+
+
 
     /**
      * {@inheritdoc}
@@ -230,9 +236,17 @@ class Outbound extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Iiumcourse::class, ['student_id' => 'ID']);
     }
+    public function beforeSave($insert)
+    {
+        if($this->isAttributeChanged('Status') || $this->isNewRecord){
+            $this->updated_at = new Expression('NOW()');
 
+        }
+        return parent::beforeSave($insert);
+    }
     public function afterSave($insert, $changedAttributes)
     {
+
         parent::afterSave($insert, $changedAttributes);
         $newStatus = $this->Status;
         if ($this->Status == 10){

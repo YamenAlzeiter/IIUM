@@ -128,7 +128,7 @@ class OutboundController extends Controller
         //-------------------------- Check if an Outbound record already exists for the provided ID--------------------------\\
         if (Outbound::findOne(['ID' => $id])) {
             //-------------- If a record is found, display an error message to the user and redirect to Index--------------\\
-            Yii::$app->session->setFlash('error', "You already created an application.");
+            Yii::$app->session->setFlash('error', "You already created` an application.");
             return $this->redirect(['outbound/index']);
         }
         //--------------  Create a new Outbound record model and set its 'ID' attribute to be the same as the current User ID --------------\\
