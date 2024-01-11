@@ -6,23 +6,35 @@ use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\data\ActiveDataProvider;
 use common\models\Outbound;
+use yii\helpers\Url;
 
 // Import your model class here
 
 /** @var yii\web\View $this */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 $this->title = 'Outbound';
-require Yii::getAlias('@common').'/Helpers/helper.php';
+
+$distinctYears = Outbound::find()
+    ->select(['EXTRACT(YEAR FROM created_at) as year'])
+    ->distinct()
+    ->orderBy(['year' => SORT_DESC])
+    ->asArray()
+    ->column();
+$icon = Html::tag('i', '', ['class' => 'ti ti-file-spreadsheet']);
+
+
+
 
 ?>
 
 <div class = "d-flex flex-row gap-3 mt-2 mb-2 ">
-
             <?= $this->render('_filters', ['searchModel' => $searchModel]); ?>
 </div>
 
 <div class = "table-responsive rounded-2 mb-4">
-    <?= GridView::widget([
+    <?=
+
+    GridView::widget([
         'dataProvider' => $dataProvider,
         'tableOptions' => ['class' => 'table border text-nowrap customize-table mb-0 text-center'], 'summary' => '',
         // Show the current page and total pages
@@ -88,3 +100,29 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
     ]); ?>
 </div>
 
+
+<!--<div class = "form__div">-->
+<!--	<select class = "form__input form-control">-->
+<!--		<option value = "">Download Excel</option>-->
+<!--        --><?php //foreach ($distinctYears as $option): ?>
+<!--			<option value = "--><?php //= $option ?><!--">-->
+<!--                --><?php //= Html::a(
+//                    $icon . ' Download as Excel ' . $option,
+//                    Url::to(['export-excel', 'year' => $option]),
+//
+//                ); ?>
+<!--			</option>-->
+<!--        --><?php //endforeach; ?>
+<!--	</select>-->
+<!--</div>-->
+
+<div class="dropdown">
+	<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+		Dropdown button
+	</button>
+	<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+		<?php foreach($distinctYears as $option): ?>
+		<li><?= Html::a('Year ' . $option, Url::to(['export-excel', 'year' => $option]))?></li>
+		<?php endforeach;?>
+	</ul>
+</div>

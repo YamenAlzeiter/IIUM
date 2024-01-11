@@ -11,12 +11,19 @@ return [
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
-    'modules' => [],
+    'modules' => [
+        'gridview' => [
+            'class' => '\kartik\grid\Module',
+            // enter optional module settings below
+            'downloadAction' => 'gridview/export/download',
+            'i18n' => [
+                'class' => 'yii\i18n\PhpMessageSource',
+                'basePath' => '@kvgrid/messages',
+                'forceTranslation' => true
+            ]
+        ]
+    ],
     'components' => [
-        'ckEditor' => [
-            'class' => 'dosamigos\ckeditor\CKEditor',
-            'preset' => 'full', // You can customize the preset as needed
-        ],
         'request' => [
             'cookieValidationKey' => $uniqueKey,
             'csrfParam' => '_csrf-backend',

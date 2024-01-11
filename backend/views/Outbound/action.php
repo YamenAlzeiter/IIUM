@@ -15,7 +15,6 @@ use yii\widgets\ActiveForm;
 $this->title = $model->Name;
 
 YiiAsset::register($this);
-require Yii::getAlias('@common').'/Helpers/helper.php';
 $this->registerJsFile('https://code.jquery.com/jquery-3.6.0.min.js');
 ?>
 

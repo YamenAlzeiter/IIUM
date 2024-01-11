@@ -19,9 +19,11 @@
         "yiisoft/yii2-bootstrap5": "^2.0",
         "yiisoft/yii2-symfonymailer": "~2.0.3",
       "ext-json": "*",
-        "2amigos/yii2-ckeditor-widget": "^2.1",
         "2amigos/yii2-tinymce-widget": "^1.1",
-        "nesbot/carbon": "^2.72"
+        "nesbot/carbon": "^2.72",
+        "kartik-v/yii2-grid": "^3.5",
+        "kartik-v/yii2-bootstrap5-dropdown": "^1.0",
+        "phpoffice/phpspreadsheet": "^1.29"
 
     },
     "require-dev": {

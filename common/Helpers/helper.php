@@ -99,6 +99,14 @@ function getStatusTo($status)
     }
 }
 
+function statusFiliter($status){
+    switch ($status){
+        case 12: return 1;
+        case 32: return 21;
+        case 16: return 5;
+        default: return $status;
+    }
+}
 function getAnswer($choice)
 {
     if ($choice !== null) {
@@ -114,6 +122,16 @@ function getAnswer($choice)
         }
     } else
         return 'Not Selected';
+}
+
+function getCredit($choice){
+    if($choice!=null){
+        switch ($choice){
+            case 0: return 'Not Credited';
+            case 1: return 'Credited';
+            default: return 'Not Selected';
+        }
+    }
 }
 
 function getMobilityType($mobilityId){

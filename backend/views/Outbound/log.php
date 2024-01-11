@@ -8,7 +8,7 @@ use yii\web\JqueryAsset;
 $this->title = 'Status Change Logs';
 
 /** @var common\models\Log $model */
-require Yii::getAlias('@common').'/Helpers/helper.php';
+
 ?>
 
 	<div class = "outbound-log">

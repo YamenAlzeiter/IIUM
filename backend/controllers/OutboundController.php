@@ -11,6 +11,8 @@ use common\models\Log;
 use common\models\Outbound;
 use common\models\Poc;
 use common\models\Status;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Throwable;
 use Yii;
 use yii\base\Exception;
@@ -24,7 +26,7 @@ use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
-
+require Yii::getAlias('@common').'/Helpers/helper.php';
 class OutboundController extends Controller
 {
     const STATUS_INITIAL = 10;
@@ -40,7 +42,7 @@ class OutboundController extends Controller
                     [
                         'actions' => [
                             'index', 'view', 'update', 'delete', 'action', 'create', 'search', 'accept', 'reject',
-                            'load-people', 'dean-approval', 'resend', 'download', 'complete','log'
+                            'load-people', 'dean-approval', 'resend', 'download', 'complete','log','export-excel'
                         ], 'allow' => true, 'roles' => ['@'],
                     ],
                 ],
@@ -297,7 +299,7 @@ class OutboundController extends Controller
             $selectedPersonInCharge = $this->request->post("personInChargeDropdown");
             $selectedPersonInChargeName = null;
 
-
+            $emailCc2 = '';
             $emailCc = '';
             if ($selectedPersonInCharge) {
                 $personModel = Poc::findOne($selectedPersonInCharge);
@@ -305,6 +307,9 @@ class OutboundController extends Controller
                     $selectedPersonInChargeName = $personModel->name;
                     if($personModel->email_cc != null){
                         $emailCc = $personModel->email_cc;
+                    }
+                    if ($personModel->email_cc_additional != null){
+                        $emailCc2 = $personModel->email_cc_additional;
                     }
                 }
             }
@@ -343,13 +348,13 @@ class OutboundController extends Controller
 
             $model->Status = $status;
             if ($model->save()) {
-                $this->sendEmailWithLink($model, $selectedPersonInChargeName, $email, $token, $template, $reason, $emailCc);
+                $this->sendEmailWithLink($model, $selectedPersonInChargeName, $email, $token, $template, $reason, $emailCc, $emailCc2);
                 return $this->redirect(["index"]);
             }
         }
     }
 
-    public function sendEmailWithLink($model, $name, $email, $token, $templateId, $reason, $emailCc)
+    public function sendEmailWithLink($model, $name, $email, $token, $templateId, $reason, $emailCc1, $emailCc2)
     {
         $recipientEmail = $email;
         $recipientName = $name;
@@ -393,8 +398,16 @@ class OutboundController extends Controller
         ])->setFrom(["noreply@example.com" => "My Application"])
             ->setTo($recipientEmail);
 
-        if (!empty($emailCc) && filter_var($emailCc, FILTER_VALIDATE_EMAIL)) {
-            $mailer->setCc($emailCc);
+        if (!empty($emailCc1) && filter_var($emailCc1, FILTER_VALIDATE_EMAIL)) {
+            $mailer->setCc($emailCc1);
+        }
+
+        if(!empty($emailCc2) && filter_var($emailCc2, FILTER_VALIDATE_EMAIL)){
+            if(empty($emailCc1) || !filter_var($emailCc1,FILTER_VALIDATE_EMAIL)){
+                $mailer->setCc($emailCc2);
+            }else{
+                $mailer->setCc([$emailCc1, $emailCc2]);
+            }
         }
 
         $mailer->setSubject($emailTemplate->subject)->send();
@@ -495,7 +508,7 @@ class OutboundController extends Controller
             }
             $templateId = 11;
 
-            $this->sendEmailWithLink($model, $modelPoc->name, $modelPoc->email, $token, $templateId, $reason);
+            $this->sendEmailWithLink($model, $modelPoc->name, $modelPoc->email, $token, $templateId, $reason, $modelPoc->email_cc, $modelPoc->email_cc_additional);
         }
 
         $model->temp = $reason;
@@ -503,5 +516,132 @@ class OutboundController extends Controller
         if ($model->save()) {
             return $this->redirect(["index"]);
         }
+    }
+
+    public function actionExportExcel($year)
+    {
+        // Set up data provider with your query
+        $dataProvider = new ActiveDataProvider([
+            'query' => Outbound::find()->where(['EXTRACT(YEAR FROM created_at)' => $year]),
+            'pagination' => false,
+        ]);
+
+        // Create a new PhpSpreadsheet object
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->setCellValue('B1', 'Internationalisation of Academic Program: (Outbound)')
+                ->getStyle('B1')
+                ->getFont()
+                ->setBold(true);
+
+        // Set column headers
+        $sheet->setCellValue('A3', 'No')
+            ->setCellValue('B3', 'Student Name')
+            ->setCellValue('C3', 'Studnet ID')
+            ->setCellValue('D3', 'Program')
+            ->setCellValue('E3','Type of Programme')
+            ->setCellValue('F3', 'Name of Outbound University')
+            ->setCellValue('G3', 'Country')
+            ->setCellValue('H3', 'From')
+            ->setCellValue('I3', "To")
+            ->setCellValue('J3', 'K/C/D/I/O');
+
+        for ($col = 'A'; $col !== 'K'; $col++) {
+            $sheet->getStyle($col . '3')->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                ],
+                'alignment' => [
+                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                ],
+            ]);
+            $sheet->getRowDimension('3')->setRowHeight(33);
+            $sheet->getStyle($col . '3')->getAlignment()->setWrapText(true); ;
+
+            switch ($col){
+                case 'A':$sheet->getColumnDimension($col)->setWidth(5); break;
+                case 'B':$sheet->getColumnDimension($col)->setWidth(50); break;
+                case 'C':$sheet->getColumnDimension($col)->setWidth(9); break;
+                case 'D':$sheet->getColumnDimension($col)->setWidth(35); break;
+                case 'E':$sheet->getColumnDimension($col)->setWidth(13); break;
+                case 'F':$sheet->getColumnDimension($col)->setWidth(50); break;
+                case 'G':$sheet->getColumnDimension($col)->setWidth(17); break;
+                case 'H':$sheet->getColumnDimension($col)->setWidth(15); break;
+                case 'I':$sheet->getColumnDimension($col)->setWidth(15); break;
+                case 'J':$sheet->getColumnDimension($col)->setWidth(12); break;
+
+            }
+        }
+        // Populate data
+        $row = 4;
+        foreach ($dataProvider->getModels() as $model) {
+            $sheet->setCellValue('A' . $row, $row - 3)
+                ->setCellValue('B' . $row, $model->Name)
+                ->setCellValue('C' . $row, $model->Matric_Number)
+                ->setCellValue('D' . $row, $model->Type_mobility_program)
+                ->setCellValue('E' . $row, getCredit($model->credit_transfer_availability))
+                ->setCellValue('F' . $row, $model->Host_university_name)
+                ->setCellValue('G' .$row, getCountry($model->Country_host_university))
+                ->setCellValue('H' . $row, $model->Mobility_from)
+                ->setCellValue('I' . $row, $model->Mobility_until)
+//                ->setCellValue('J' . $row, $model->Mobility_from)
+            ;
+            for ($col = 'A'; $col !== 'K'; $col++) {
+                if ($col != 'B' || $row != 1) {
+                    $style = $sheet->getStyle($col.$row);
+                    $style->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                    $style->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+                }
+            }
+            $row++;
+        }
+
+        $row += 4;
+
+        $dataCountry = new ActiveDataProvider([
+            'query' => Outbound::find()
+                ->select(['Country_host_university AS country', 'COUNT(*) AS count'])
+                ->groupBy('country'),
+            'pagination' => false,
+        ]);
+
+        $countryCounts = [];
+
+        foreach ($dataProvider->getModels() as $model) {
+            $country = getCountry($model['Country_host_university']);
+
+            // Increment country count or initialize if not present
+            $countryCounts[$country] = isset($countryCounts[$country]) ? $countryCounts[$country] + 1 : 1;
+        }
+
+// Display country counts
+        foreach ($countryCounts as $country => $count) {
+            $sheet->setCellValue('B' . $row, $country)
+                ->setCellValue('C' . $row, $count);
+            $row++;
+        }
+
+// Display total
+        $sheet->setCellValue('B' . $row, 'Total')
+            ->setCellValue('C' . $row, array_sum($countryCounts));
+
+
+
+        // Create a writer
+        $writer = new Xlsx($spreadsheet);
+
+        // Set file path
+        $filePath = Yii::getAlias('@runtime') . '/Outbound_Export_' . date('YmdHis') . '.xlsx';
+
+        // Save the file
+        $writer->save($filePath);
+
+        // Provide download link
+        Yii::$app->response->sendFile($filePath, 'Outbound_Export_' . date('YmdHis') . '.xlsx')->send();
+        unlink($filePath); // Optionally, you can delete the file after sending it
+
+
     }
 }

@@ -12,8 +12,6 @@ use yii\web\YiiAsset;
 /** @var common\models\Outbound $model */
 /** @var common\models\Poc $modelPoc1 */
 
-require Yii::getAlias('@common').'/Helpers/helper.php';
-
 $creationYearLastTwoDigits = date('y', strtotime($model->created_at));
 
 $fileName = $creationYearLastTwoDigits . '_' . $model->ID;

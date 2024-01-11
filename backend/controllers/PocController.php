@@ -2,6 +2,8 @@
 
 namespace backend\controllers;
 
+use backend\views\Outbound\outboundSearch;
+use backend\views\poc\pocSearch;
 use common\models\Kcdio;
 use common\models\Poc;
 use Yii;
@@ -43,11 +45,11 @@ class PocController extends Controller
      */
     public function actionIndex()
     {
+        $searchModel = new pocSearch();
         $model = new Poc();
         $modelKedio = new Kcdio();
-        $dataProvider = new ActiveDataProvider([
-            'query' => Poc::find(),
-        ]);
+        $dataProvider = $searchModel->search($this->request->queryParams);
+
 
         if ($this->request->isPost && $model->load($this->request->post())) {
             $selectedValueFromKedio = $this->request->post('Poc')['KCDIO'];
@@ -59,6 +61,7 @@ class PocController extends Controller
         }
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'model' => $model,
             'modelKedio' => $modelKedio,

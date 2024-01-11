@@ -15,45 +15,48 @@ use yii\widgets\ActiveForm;
 /** @var int|null $updateModelId */
 $this->title = 'Person In Charge';
 ?>
+<div class = "d-flex flex-row gap-3 mt-2 mb-2 ">
+    <?= $this->render('_search', ['searchModel' => $searchModel,  'modelKedio' => $modelKedio,]); ?>
+</div>
 <div class="table-responsive">
-<?= GridView::widget([
-    'tableOptions' => ['class' => 'table search-table align-middle text-nowrap'], 'summary' => '', // Remove the summary text
+    <?= GridView::widget([
+        'tableOptions' => ['class' => 'table search-table align-middle text-nowrap'], 'summary' => '', // Remove the summary text
 
-    'dataProvider' => $dataProvider,
-    'columns' => [
-        ['class' => 'yii\grid\SerialColumn', 'headerOptions' => ['class' => 'text-dark']],
+        'dataProvider' => $dataProvider,
+        'columns' => [
+            ['class' => 'yii\grid\SerialColumn', 'headerOptions' => ['class' => 'text-dark']],
 
-        'KCDIO',
-        'name',
-        'email:email',
-        [
-            'label' => 'Actions',
-            'contentOptions' => ['class' => 'action-column color-primary'],
-            'headerOptions' => ['class' => 'text-dark'],
-            'format' => 'raw',
-            'value' => function ($model) {
-                $updateButton = Html::a('<i class="ti ti-pencil-minus fs-7"></i>', 'javascript:void(0)', [
-                    'class' => 'text-dark-emphasis edit update-button mx-1',
-                    'data-id' => $model->id,
-                    'data-toggle' => 'modal',
-                    'title' => 'View', // Tooltip for the 'View' action
-                    'data-target' => '#formpoc',
-                ]);
-                $deleteButton = Html::a('<i class="ti ti-trash fs-7"></i>', ['delete', 'id' => $model->id], [
-                    'class' => 'text-danger edit mx-1',
-                    'data-toggle' => 'tooltip',
-                    'title' => 'Delete', // Tooltip for the 'View' action
-                    'data' => [
-                        'confirm' => 'Are you sure you want to delete this item?',
-                        'method' => 'post',
-                    ],
-                ]);
+            'KCDIO',
+            'name',
+            'email:email',
+            [
+                'label' => 'Actions',
+                'contentOptions' => ['class' => 'action-column color-primary'],
+                'headerOptions' => ['class' => 'text-dark'],
+                'format' => 'raw',
+                'value' => function ($model) {
+                    $updateButton = Html::a('<i class="ti ti-pencil-minus fs-7"></i>', 'javascript:void(0)', [
+                        'class' => 'text-dark-emphasis edit update-button mx-1',
+                        'data-id' => $model->id,
+                        'data-toggle' => 'modal',
+                        'title' => 'View', // Tooltip for the 'View' action
+                        'data-target' => '#formpoc',
+                    ]);
+                    $deleteButton = Html::a('<i class="ti ti-trash fs-7"></i>', ['delete', 'id' => $model->id], [
+                        'class' => 'text-danger edit mx-1',
+                        'data-toggle' => 'tooltip',
+                        'title' => 'Delete', // Tooltip for the 'View' action
+                        'data' => [
+                            'confirm' => 'Are you sure you want to delete this item?',
+                            'method' => 'post',
+                        ],
+                    ]);
 
-                return $updateButton . ' ' . $deleteButton;
-            },
+                    return $updateButton . ' ' . $deleteButton;
+                },
+            ],
         ],
-    ],
-]); ?>
+    ]); ?>
 </div>
 
 <div class="mt-3 px-4 d-flex flex-row gap-2">
@@ -67,7 +70,7 @@ $this->title = 'Person In Charge';
 	<div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content border-0">
 			<div class="modal-header">
-			<h6 id="formpoc-header" class="text-dark mb-0"></h6>
+				<h6 id="formpoc-header" class="text-dark mb-0"></h6>
 
 				<button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal"
 				        aria-label="Close"></button>
@@ -107,12 +110,12 @@ $this->title = 'Person In Charge';
 							</div>
 						</div>
 						<div class="row align-items-center mb-3">
-                                    <?= $form->field($modelKedio,
-                                        'kcdio')->dropDownList(ArrayHelper::map(Kcdio::find()->all(), 'kcdio', 'kcdio'),
-                                        [
-                                            'prompt' => 'Select KCDIO', 'class' => 'form__input form-control',
-                                            'id' => 'validationKCDIO', 'name' => 'Poc[KCDIO]', 'required' => true,
-                                        ])->label(false) ?>
+                            <?= $form->field($modelKedio,
+                                'kcdio')->dropDownList(ArrayHelper::map(Kcdio::find()->all(), 'kcdio', 'kcdio'),
+                                [
+                                    'prompt' => 'Select KCDIO', 'class' => 'form__input form-control',
+                                    'id' => 'validationKCDIO', 'name' => 'Poc[KCDIO]', 'required' => true,
+                                ])->label(false) ?>
 						</div>
 					</div>
 				</div>
@@ -126,4 +129,3 @@ $this->title = 'Person In Charge';
 		</div>
 	</div>
 </div>
-

@@ -42,14 +42,14 @@ if (!isset($noRecord)) {
 				<?php if ($model->Status !== null) : ?>
 					<?php
 					$statusModel = Status::findOne(['ID' => $model->Status]);
-					$iconClass = getStatusIconClass($model->Status); // Implement your own logic to get the icon class based on status
-					$statusClass = getStatusClass($model->Status);
+					$iconClass = getStatusIconClass(statusFiliter($model->Status)); // Implement your own logic to get the icon class based on status
+					$statusClass = getStatusClass(statusFiliter($model->Status));
 					echo Html::tag('span', '', [
 						'class' => '' . $iconClass,
 					]);
 					echo Html::tag(
 						'p',
-						($statusModel = Status::findOne(['ID' => $model->Status])) ? $statusModel->status : '',
+						($statusModel = Status::findOne(['ID' => statusFiliter($model->Status)])) ? $statusModel->status : '',
 						[
 							'class' => ' fw-semibold m-0 ' . $statusClass, 'id' => 'status-badge',
 						]

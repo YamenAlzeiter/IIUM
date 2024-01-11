@@ -17,6 +17,7 @@ use Yii;
 use yii\base\Exception;
 use yii\data\ActiveDataProvider;
 use yii\db\Expression;
+use yii\db\Query;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -68,63 +69,15 @@ class InboundController extends Controller
         $dataProvider->sort->defaultOrder = ['updated_at' => SORT_DESC];
 
         return $this->render("index",
-            [  'searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'status' => $statusModel,]);
-    }
-    private function getMonthNames()
-    {
-        $months = [];
-        for ($i = 1; $i <= 12; $i++) {
-            $months[] = date("M", mktime(0, 0, 0, $i, 1));
-        }
-        return $months;
+            ['searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'status' => $statusModel,]);
     }
 
-// Function to get counts for each month
-    private function getMonthlyCounts()
-    {
-        $data = (new \yii\db\Query())
-            ->select([
-                new Expression('EXTRACT(MONTH FROM created_at) AS month'),
-                new Expression('COUNT(*) AS count')
-            ])
-            ->from('inbound')
-            ->where(['not', ['Status' => null]])
-            ->groupBy([new Expression('EXTRACT(MONTH FROM created_at)')])
-            ->all();
-
-        $counts = [];
-        for ($i = 1; $i <= 12; $i++) {
-            $found = false;
-            foreach ($data as $entry) {
-                if ((int)$entry['month'] === $i) {
-                    $counts[] = (int)$entry['count'];
-                    $found = true;
-                    break;
-                }
-            }
-            if (!$found) {
-                $counts[] = 0;
-            }
-        }
-        return $counts;
-    }
-
-// Function to get gender count
-    private function getGenderCount($gender)
-    {
-        return (new \yii\db\Query())
-            ->from('inbound')
-            ->where(['Gender' => $gender])
-            ->count();
-    }
     public function actionLog($ID)
     {
         $logsDataProvider = new ActiveDataProvider([
-            'query' => Inlog::find()->where(['outbound_id' => $ID]),
-            'pagination' => [
+            'query' => Inlog::find()->where(['outbound_id' => $ID]), 'pagination' => [
                 'pageSize' => 20, // Adjust the page size as needed
-            ],
-            'sort' => [
+            ], 'sort' => [
                 'defaultOrder' => ['created_at' => SORT_DESC], // Display logs by creation time in descending order
             ],
         ]);
@@ -134,7 +87,7 @@ class InboundController extends Controller
         ]);
     }
 
-
+// Function to get counts for each month
 
     /**
      * Displays a single Inbound model.
@@ -165,21 +118,7 @@ class InboundController extends Controller
         ]);
     }
 
-    /**
-     * Finds the Inbound model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param  int  $ID  ID
-     * @return Inbound the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($ID)
-    {
-        if (($model = Inbound::findOne(['ID' => $ID])) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
-    }
+// Function to get gender count
 
     /**
      * Creates a new Inbound model.
@@ -221,6 +160,22 @@ class InboundController extends Controller
         return $this->render('update', [
             'model' => $model,
         ]);
+    }
+
+    /**
+     * Finds the Inbound model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param  int  $ID  ID
+     * @return Inbound the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($ID)
+    {
+        if (($model = Inbound::findOne(['ID' => $ID])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
     }
 
     /**
@@ -270,15 +225,14 @@ class InboundController extends Controller
         return $people;
     }
 
-
-    //accept, reject, resend, email
-
     public function actionAccept($ID)
     {
         $model = $this->findModel($ID);
         $token = Yii::$app->security->generateRandomString(32);
 
         $subject = '';
+        $emailCc2 = '';
+        $emailCc = '';
 
         if ($this->request->isPost) {
             $status = intval($this->request->post("status"));
@@ -291,8 +245,15 @@ class InboundController extends Controller
                 $personModel = Poc::findOne($selectedPersonInCharge);
                 if ($personModel) {
                     $selectedPersonInChargeName = $personModel->name;
+                    if ($personModel->email_cc != null) {
+                        $emailCc = $personModel->email_cc;
+                    }
+                    if ($personModel->email_cc_additional != null) {
+                        $emailCc2 = $personModel->email_cc_additional;
+                    }
                 }
             }
+
             if ($model->Status === 10) {
                 $status = 5;
             } elseif ($model->Status === 15) {
@@ -328,13 +289,13 @@ class InboundController extends Controller
 
             $model->Status = $status;
             if ($model->save()) {
-                $this->sendEmailWithLink($model, $selectedPersonInChargeName, $email, $token, $template, $reason);
+                $this->sendEmailWithLink($model, $selectedPersonInChargeName, $email, $token, $template, $reason, $emailCc, $emailCc2);
                 return $this->redirect(["index"]);
             }
         }
     }
 
-    public function sendEmailWithLink($model, $name, $email, $token, $templateId, $reason)
+    public function sendEmailWithLink($model, $name, $email, $token, $templateId, $reason, $emailCc1, $emailCc2)
     {
 
         $recipientEmail = $email;
@@ -369,12 +330,30 @@ class InboundController extends Controller
         $body = str_replace('{link}', $viewLink, $body);
         $body = str_replace('{reason}', $reason, $body);
 
-        Yii::$app->mailer->compose([
+        $mailer = Yii::$app->mailer->compose([
             'html' => '@backend/views/email/emailTemplate.php'
         ], [
-            'subject' => $emailTemplate->subject, 'recipientName' => $recipientName, 'viewLink' => $viewLink,
-            'reason' => $reason, 'body' => $body
-        ])->setFrom(["noreply@example.com" => "My Application"])->setTo($recipientEmail)->setSubject($emailTemplate->subject)->send();
+            'subject' => $emailTemplate->subject,
+            'recipientName' => $recipientName,
+            'viewLink' => $viewLink,
+            'reason' => $reason,
+            'body' => $body
+        ])->setFrom(["noreply@example.com" => "My Application"])
+            ->setTo($recipientEmail);
+
+        if (!empty($emailCc1) && filter_var($emailCc1, FILTER_VALIDATE_EMAIL)) {
+            $mailer->setCc($emailCc1);
+        }
+
+        if(!empty($emailCc2) && filter_var($emailCc2, FILTER_VALIDATE_EMAIL)){
+            if(empty($emailCc1) || !filter_var($emailCc1,FILTER_VALIDATE_EMAIL)){
+                $mailer->setCc($emailCc2);
+            }else{
+                $mailer->setCc([$emailCc1, $emailCc2]);
+            }
+        }
+
+        $mailer->setSubject($emailTemplate->subject)->send();
     }
 
     /**
@@ -401,6 +380,9 @@ class InboundController extends Controller
         }
     }
 
+
+    //accept, reject, resend, email
+
     public function sendEmailToApplicant($name, $email, $reason, $templateId)
     {
         $recipientEmail = $email;
@@ -422,7 +404,8 @@ class InboundController extends Controller
         Yii::$app->mailer->compose([
             'html' => '@backend/views/email/emailTemplate.php'
         ], [
-            'subject' => $emailTemplate->subject, 'recipientName' => $recipientName, 'reason' => $reason, 'body' => $body
+            'subject' => $emailTemplate->subject, 'recipientName' => $recipientName, 'reason' => $reason,
+            'body' => $body
         ])->setFrom(["noreply@example.com" => "My Application"])->setTo($recipientEmail)->setSubject($emailTemplate->subject)->send();
 
     }
@@ -477,7 +460,7 @@ class InboundController extends Controller
 
             $templateId = 11;
 
-            $this->sendEmailWithLink($model, $modelPoc->name, $modelPoc->email, $token, $templateId, $reason);
+            $this->sendEmailWithLink($model, $modelPoc->name, $modelPoc->email, $token, $templateId, $reason, $modelPoc->email_cc, $modelPoc->email_cc_additional);
         }
 
         $model->temp = $reason;
@@ -498,5 +481,44 @@ class InboundController extends Controller
         } else {
             throw new NotFoundHttpException('The file does not exist.');
         }
+    }
+
+    private function getMonthNames()
+    {
+        $months = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $months[] = date("M", mktime(0, 0, 0, $i, 1));
+        }
+        return $months;
+    }
+
+    private function getMonthlyCounts()
+    {
+        $data = (new Query())->select([
+                new Expression('EXTRACT(MONTH FROM created_at) AS month'), new Expression('COUNT(*) AS count')
+            ])->from('inbound')->where([
+                'not', ['Status' => null]
+            ])->groupBy([new Expression('EXTRACT(MONTH FROM created_at)')])->all();
+
+        $counts = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $found = false;
+            foreach ($data as $entry) {
+                if ((int) $entry['month'] === $i) {
+                    $counts[] = (int) $entry['count'];
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) {
+                $counts[] = 0;
+            }
+        }
+        return $counts;
+    }
+
+    private function getGenderCount($gender)
+    {
+        return (new Query())->from('inbound')->where(['Gender' => $gender])->count();
     }
 }
