@@ -13,6 +13,8 @@ use common\models\Log;
 use common\models\Outbound;
 use common\models\Poc;
 use common\models\Status;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Yii;
 use yii\base\Exception;
 use yii\data\ActiveDataProvider;
@@ -23,7 +25,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
-
+require Yii::getAlias('@common').'/Helpers/helper.php';
 /**
  * InboundController implements the CRUD actions for Inbound model.
  */
@@ -40,7 +42,7 @@ class InboundController extends Controller
                     [
                         'actions' => [
                             'index', 'view', 'update', 'delete', 'action', 'create', 'search', 'accept', 'reject',
-                            'load-people', 'dean-approval', 'resend', 'download', 'complete', 'log'
+                            'load-people', 'dean-approval', 'resend', 'download', 'complete', 'log', 'export-excel'
                         ], 'allow' => true, 'roles' => ['@'],
                     ],
                 ],
@@ -65,7 +67,7 @@ class InboundController extends Controller
         ];
 
         // Exclude records with null status
-        $dataProvider->query->andWhere(['not', ['Status' => null]]);
+        $dataProvider->query->andWhere(['and', ['EXTRACT(YEAR FROM created_at)' => date('Y')],['not', ['Status' => null]]]);
         $dataProvider->sort->defaultOrder = ['updated_at' => SORT_DESC];
 
         return $this->render("index",
@@ -483,42 +485,127 @@ class InboundController extends Controller
         }
     }
 
-    private function getMonthNames()
+    public function actionExportExcel($year)
     {
-        $months = [];
-        for ($i = 1; $i <= 12; $i++) {
-            $months[] = date("M", mktime(0, 0, 0, $i, 1));
+        // Set up data provider with your query
+        $dataProvider = new ActiveDataProvider([
+            'query' => Inbound::find()->where(['EXTRACT(YEAR FROM created_at) as year' => $year]),
+            'pagination' => false,
+        ]);
+
+        // Create a new PhpSpreadsheet object
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->setCellValue('B1', 'Internationalisation of Academic Program: (Inbound)')
+            ->getStyle('B1')
+            ->getFont()
+            ->setBold(true);
+
+        // Set column headers
+        $sheet->setCellValue('A3', 'No')
+            ->setCellValue('B3', 'Student Name')
+            ->setCellValue('C3', 'Program')
+            ->setCellValue('D3','Type of Programme')
+            ->setCellValue('E3', 'Name of Outbound University')
+            ->setCellValue('F3', 'Country')
+            ->setCellValue('G3', 'From')
+            ->setCellValue('H3', "To")
+            ->setCellValue('I3', 'K/C/D/I/O');
+
+        for ($col = 'A'; $col !== 'K'; $col++) {
+            $sheet->getStyle($col . '3')->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                ],
+                'alignment' => [
+                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                ],
+            ]);
+            $sheet->getRowDimension('3')->setRowHeight(33);
+            $sheet->getStyle($col . '3')->getAlignment()->setWrapText(true); ;
+
+            switch ($col){
+                case 'A':$sheet->getColumnDimension($col)->setWidth(5); break;
+                case 'B':$sheet->getColumnDimension($col)->setWidth(50); break;
+                case 'C':$sheet->getColumnDimension($col)->setWidth(35); break;
+                case 'D':$sheet->getColumnDimension($col)->setWidth(13); break;
+                case 'E':$sheet->getColumnDimension($col)->setWidth(50); break;
+                case 'F':$sheet->getColumnDimension($col)->setWidth(17); break;
+                case 'G':$sheet->getColumnDimension($col)->setWidth(15); break;
+                case 'H':$sheet->getColumnDimension($col)->setWidth(15); break;
+                case 'I':$sheet->getColumnDimension($col)->setWidth(12); break;
+
+            }
         }
-        return $months;
-    }
-
-    private function getMonthlyCounts()
-    {
-        $data = (new Query())->select([
-                new Expression('EXTRACT(MONTH FROM created_at) AS month'), new Expression('COUNT(*) AS count')
-            ])->from('inbound')->where([
-                'not', ['Status' => null]
-            ])->groupBy([new Expression('EXTRACT(MONTH FROM created_at)')])->all();
-
-        $counts = [];
-        for ($i = 1; $i <= 12; $i++) {
-            $found = false;
-            foreach ($data as $entry) {
-                if ((int) $entry['month'] === $i) {
-                    $counts[] = (int) $entry['count'];
-                    $found = true;
-                    break;
+        // Populate data
+        $row = 4;
+        foreach ($dataProvider->getModels() as $model) {
+            $sheet->setCellValue('A' . $row, $row - 3)
+                ->setCellValue('B' . $row, $model->Name)
+                ->setCellValue('C' . $row, $model->Propose_type_of_programme)
+                ->setCellValue('D' . $row, getCredit($model->Propose_transfer_credit_hours))
+                ->setCellValue('E' . $row, $model->Academic_home_university)
+                ->setCellValue('F' .$row, getCountry($model->Country_of_origin))
+                ->setCellValue('G' . $row, $model->Propose_duration_start)
+                ->setCellValue('H' . $row, $model->Propose_duration_end)
+                ->setCellValue('I' . $row, $model-> Propose_kulliyyah_applied)
+            ;
+            for ($col = 'A'; $col !== 'K'; $col++) {
+                if ($col != 'B' || $row != 1) {
+                    $style = $sheet->getStyle($col.$row);
+                    $style->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                    $style->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
                 }
             }
-            if (!$found) {
-                $counts[] = 0;
-            }
+            $row++;
         }
-        return $counts;
-    }
 
-    private function getGenderCount($gender)
-    {
-        return (new Query())->from('inbound')->where(['Gender' => $gender])->count();
+        $row += 4;
+
+        $dataCountry = new ActiveDataProvider([
+            'query' => Inbound::find()
+                ->select(['Country_of_origin AS country', 'COUNT(*) AS count'])
+                ->groupBy('country'),
+            'pagination' => false,
+        ]);
+
+        $countryCounts = [];
+
+        foreach ($dataProvider->getModels() as $model) {
+            $country = getCountry($model['Country_of_origin']);
+
+            // Increment country count or initialize if not present
+            $countryCounts[$country] = isset($countryCounts[$country]) ? $countryCounts[$country] + 1 : 1;
+        }
+
+// Display country counts
+        foreach ($countryCounts as $country => $count) {
+            $sheet->setCellValue('B' . $row, $country)
+                ->setCellValue('C' . $row, $count);
+            $row++;
+        }
+
+// Display total
+        $sheet->setCellValue('B' . $row, 'Total')
+            ->setCellValue('C' . $row, array_sum($countryCounts));
+
+
+
+        // Create a writer
+        $writer = new Xlsx($spreadsheet);
+
+        // Set file path
+        $filePath = Yii::getAlias('@runtime') . '/Outbound_Export_' . date('YmdHis') . '.xlsx';
+
+        // Save the file
+        $writer->save($filePath);
+
+        // Provide download link
+        Yii::$app->response->sendFile($filePath, 'Outbound_Export_' . date('YmdHis') . '.xlsx')->send();
+        unlink($filePath); // Optionally, you can delete the file after sending it
+
+
     }
 }

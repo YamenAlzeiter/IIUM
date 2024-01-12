@@ -11,6 +11,7 @@
         <?php
 
         use yii\bootstrap5\Html;
+        use yii\helpers\Url;
         use yii\widgets\Menu;
 
         echo Menu::widget([
@@ -27,12 +28,14 @@
                         [
                             'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
                             'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu">Outbound Dashboard</span>',
-                            'url' => '/site/outbound-dashboard', 'options' => ['class' => 'sidebar-item'],
+                            'url' => '/site/outbound-dashboard?year=' . date('Y'),
+                            'options' => ['class' => 'sidebar-item'],
                         ],
                        [
                             'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
                             'label' => '<div class="round-16 d-flex align-items-center justify-content-center"><i class="ti ti-circle"></i></div><span class="hide-menu">Inbound Dashboard</span>',
-                            'url' => '/site/inbound-dashboard', 'options' => ['class' => 'sidebar-item'],
+                            'url' => Url::to(['/site/inbound-dashboard', 'year' => date('Y')]),
+	                       'options' => ['class' => 'sidebar-item'],
                         ],
 
                     ],

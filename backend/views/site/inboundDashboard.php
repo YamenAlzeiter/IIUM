@@ -1,12 +1,36 @@
 <?php
 
+use common\models\Inbound;
 use yii\bootstrap5\Html;
-use dosamigos\ckeditor\CKEditor;
+use yii\helpers\Url;
+
 require Yii::getAlias('@common').'/Helpers/helper.php';
 
-
 $this->title = 'Dashboard';
+
+$year = Yii::$app->request->get('year');
+$distinctYears = Inbound::find()->select(['EXTRACT(YEAR FROM created_at) as year'])->distinct()->orderBy(['year' => SORT_DESC])->asArray()->column();
 ?>
+<div class="d-flex flex-row justify-content-between align-items-center mb-3">
+	<h1 class="fw-semibold">Dashboard: Inbound</h1>
+	<div class = "text-end dropdown">
+		<button class = "btn btn-light btn-lg dropdown-toggle mb-0 fw-semibold" type = "button" id = "dropdownMenuButton1"
+		        data-bs-toggle = "dropdown" aria-expanded = "false">
+			<i class = "ti ti-calendar"></i> Year <?= $year?>
+		</button>
+		<ul class = "dropdown-menu" aria-labelledby = "dropdownMenuButton1">
+
+            <?php foreach ($distinctYears as $option): ?>
+				<li>
+                    <?= Html::a('Year '.$option,
+                        '/site/inbound-dashboard?year=' . $option,
+                        ['class' => 'dropdown-item']) ?>
+				</li>
+            <?php endforeach; ?>
+
+		</ul>
+	</div>
+</div>
 
 
 
@@ -16,7 +40,7 @@ $this->title = 'Dashboard';
         <div class = "card rounded-2 overflow-hidden hover-img">
 		        <div class = "card-body">
 			        <h4 class="text-center fw-semibold text-dark">Total</h4>
-			        <p class="value text-center fw-bolder fs-8 " akhi="<?=getCount('TotalI')?>">0</p>
+			        <p class="value text-center fw-bolder fs-8 " akhi="<?=getCount('TotalI', $year)?>">0</p>
 		        </div>
         </div>
     </div>
@@ -26,7 +50,7 @@ $this->title = 'Dashboard';
 
             <div class = "card-body">
                 <h4 class="text-center fw-semibold text-success-style2">Accepted</h4>
-                <p class="value text-center fw-bolder fs-8 text-success-style2" akhi="<?=getCount('AcceptedI')?>">0</p>
+                <p class="value text-center fw-bolder fs-8 text-success-style2" akhi="<?=getCount('AcceptedI', $year)?>">0</p>
             </div>
         </div>
 	    </a>
@@ -36,7 +60,7 @@ $this->title = 'Dashboard';
         <div class = "card bg-light-danger rounded-2 overflow-hidden hover-img">
             <div class = "card-body">
                 <h4 class="text-center fw-semibold text-danger">Rejected</h4>
-                <p class="value text-center fw-bolder fs-8 text-danger" akhi="<?=getCount('RejectedI')?>">0</p>
+                <p class="value text-center fw-bolder fs-8 text-danger" akhi="<?=getCount('RejectedI', $year)?>">0</p>
             </div>
         </div>
 	    </a>
@@ -46,7 +70,7 @@ $this->title = 'Dashboard';
         <div class = "card bg-light-autom rounded-2 overflow-hidden hover-img">
             <div class = "card-body">
                 <h4 class="text-center fw-semibold text-warning">In Process</h4>
-                <p class="value text-center fw-bolder fs-8 text-warning" akhi="<?=getCount('ProcessI')?>">0</p>
+                <p class="value text-center fw-bolder fs-8 text-warning" akhi="<?=getCount('ProcessI', $year)?>">0</p>
             </div>
         </div>
 	    </a>

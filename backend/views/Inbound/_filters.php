@@ -24,7 +24,7 @@ $statusModel = array_merge($statusModels, $statusModelsExceptID10);
 <?php $form = ActiveForm::begin([
     'action' => ['index'], // Change the action as needed
     'method' => 'get']); ?>
-<div class = "d-flex flex-row gap-3 mt-2 mb-2 ">
+<div class = "d-flex flex-row gap-3 align-items-center">
 
     <?= $form->field($searchModel, 'Name') ?>
 

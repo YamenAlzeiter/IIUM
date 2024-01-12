@@ -65,7 +65,8 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                '' => 'site/outbound-dashboard',
+                '' => '/site/outbound-dashboard', 'year' => date('Y'),
+                '<year:\d{4}>' => '/site/outbound-dashboard',
             ],
         ],
         'authManager' => [

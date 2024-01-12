@@ -11,8 +11,6 @@ use yii\web\YiiAsset;
 /** @var common\models\Inbound $model */
 /** @var common\models\Poc $modelPoc1 */
 
-require Yii::getAlias('@common').'/Helpers/helper.php';
-
 $creationYearLastTwoDigits = date('y', strtotime($model->created_at));
 
 $fileName = $creationYearLastTwoDigits.'_'.$model->ID;
@@ -264,7 +262,6 @@ $fileName = $creationYearLastTwoDigits.'_'.$model->ID;
 				</div>
                 <?php if ($modelPoc1): ?>
 					<p class = "mb-2 fw-light mb-1"><strong>name: </strong> <?= $modelPoc1->name ?></p>
-					<p class = "mb-2 fw-light mb-1"><strong>kulliyyah: </strong> <?= $modelPoc1->kulliah ?></p>
 					<p class = "mb-2 fw-light mb-1"><strong>Email: </strong> <a
 								href = "mailto:<?= $modelPoc1->email ?>"><?= $modelPoc1->email ?></a></p>
                     <?php if ($model->note_msd_cps): ?>
@@ -278,30 +275,6 @@ $fileName = $creationYearLastTwoDigits.'_'.$model->ID;
                 <?php endif; ?>
 			</div>
 		</div>
-		<!--		<div class="card shadow-none border bg-light-info">-->
-		<!--			<div class="card-body">-->
-		<!--				<div class = "mb-3">-->
-		<!--					<h4 class = "fw-semibold m-0">Dean</h4>-->
-		<!--				</div>-->
-		<!--                --><?php //if ($modelPoc2): ?>
-		<!--					<p class="mb-2 fw-light mb-1"><strong>name: </strong> -->
-        <?php //= $modelPoc2->name ?><!--</p>-->
-		<!--					<p class="mb-2 fw-light mb-1"><strong>kulliyyah: </strong> -->
-        <?php //= $modelPoc2->kulliah ?><!--</p>-->
-		<!--					<p class="mb-2 fw-light mb-1"><strong>Email: </strong> <a href="mailto:-->
-        <?php //= $modelPoc2->email ?><!--">--><?php //= $modelPoc2->email ?><!--</a></p>-->
-		<!--                    --><?php //if ($model->note_kulliyyah):?>
-		<!--						<div class = "mt-3 mb-2">-->
-		<!--							<h5 class = "fw-semibold m-0">Reason of Rejection</h5>-->
-		<!--						</div>-->
-		<!--						<p class = "mb-2 fw-light mb-1"><strong>-->
-        <?php //= $model->note_kulliyyah ?><!--</strong></p>-->
-		<!--                    --><?php //endif;?>
-		<!--                --><?php //else: ?>
-		<!--					<p>Dean not set yet.</p>-->
-		<!--                --><?php //endif; ?>
-		<!--			</div>-->
-		<!--		</div>-->
 	</div>
 </div>
 <div class = "card shadow-none border ">

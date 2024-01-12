@@ -14,22 +14,35 @@ use yii\helpers\Url;
 /** @var yii\data\ActiveDataProvider $dataProvider */
 $this->title = 'Outbound';
 
-$distinctYears = Outbound::find()
-    ->select(['EXTRACT(YEAR FROM created_at) as year'])
-    ->distinct()
-    ->orderBy(['year' => SORT_DESC])
-    ->asArray()
-    ->column();
+$distinctYears = Outbound::find()->select(['EXTRACT(YEAR FROM created_at) as year'])->distinct()->orderBy(['year' => SORT_DESC])->asArray()->column();
 $icon = Html::tag('i', '', ['class' => 'ti ti-file-spreadsheet']);
-
-
 
 
 ?>
 
-<div class = "d-flex flex-row gap-3 mt-2 mb-2 ">
-            <?= $this->render('_filters', ['searchModel' => $searchModel]); ?>
+<div class = "d-flex flex-column flex-md-row gap-3 mt-2 mb-2 justify-content-between align-items-end">
+	<div>
+        <?= $this->render('_filters', ['searchModel' => $searchModel]); ?>
+	</div>
+
+	<div class = "dropdown">
+		<button class = "btn btn-excel btn-lg dropdown-toggle mb-0" type = "button" id = "dropdownMenuButton1"
+		        data-bs-toggle = "dropdown" aria-expanded = "false">
+			<i class = "ti ti-file-spreadsheet"></i> Select Year
+		</button>
+		<ul class = "dropdown-menu" aria-labelledby = "dropdownMenuButton1">
+
+            <?php foreach ($distinctYears as $option): ?>
+				<li>
+                    <?= Html::a('Year '.$option, Url::to(['export-excel', 'year' => $option]),
+                        ['class' => 'dropdown-item']) ?>
+				</li>
+            <?php endforeach; ?>
+
+		</ul>
+	</div>
 </div>
+
 
 <div class = "table-responsive rounded-2 mb-4">
     <?=
@@ -49,7 +62,7 @@ $icon = Html::tag('i', '', ['class' => 'ti ti-file-spreadsheet']);
             ], [
                 'attribute' => 'Citizenship', 'contentOptions' => ['class' => 'col-1 text-center'],
             ], [
-                'label' => 'Status', 'format' => 'raw', 'value' => function ($model) {
+                'label' => 'Status', 'attribute' => 'Status', 'format' => 'raw', 'value' => function ($model) {
                     $statusModel = Status::findOne(['ID' => $model->Status]);
                     $statusMeaning = $statusModel ? $statusModel->status : '';
 
@@ -69,60 +82,30 @@ $icon = Html::tag('i', '', ['class' => 'ti ti-file-spreadsheet']);
                     return '<div class="'.$class.'"><span class="'.$classSpan.'"></span>'.$statusMeaning.'</div>';
                 }, 'contentOptions' => ['class' => 'col-1'],
             ], [
-                'label' => 'Actions',
-                'format' => 'raw',
-                'value' => function ($model) {
-                    return '<div class="">' .
-                        Html::a('<i class="ti ti-eye fs-7" data-toggle="tooltip" title="View"></i>', ['view', 'ID' => $model->ID], [
-                            'class' => 'text-info edit update-button mx-1',
-                            'data-toggle' => 'tooltip',
-                            'title' => 'View', // Tooltip for the 'View' action
-                        ]) . ' ' .
-                        Html::a('<i class="ti ti-circle-check fs-7" data-toggle="tooltip" title="Action"></i>', ['action', 'ID' => $model->ID], [
-                            'class' => 'text-danger edit mx-1',
-                            'data-toggle' => 'tooltip',
-                            'data-placement'=>"top",
-                            'title' => 'Action', // Tooltip for the 'Action' action
-                        ]) . ' ' .
-                        Html::a('<i class="ti ti-file-database fs-7" data-toggle="tooltip" title="Log"></i>', ['log', 'ID' => $model->ID], [
-                            'class' => 'text-dark edit mx-1',
-                            'data-toggle' => 'tooltip',
-                            'title' => 'Log', // Tooltip for the 'Log' action
-                        ]) .
+                'label' => 'Actions', 'format' => 'raw', 'value' => function ($model) {
+                    return '<div class="">'.Html::a('<i class="ti ti-eye fs-7" data-toggle="tooltip" title="View"></i>',
+                            ['view', 'ID' => $model->ID], [
+                                'class' => 'text-info edit update-button mx-1', 'data-toggle' => 'tooltip',
+                                'title' => 'View', // Tooltip for the 'View' action
+                            ]).' '.Html::a('<i class="ti ti-circle-check fs-7" data-toggle="tooltip" title="Action"></i>',
+                            ['action', 'ID' => $model->ID], [
+                                'class' => 'text-indigo edit mx-1', 'data-toggle' => 'tooltip',
+                                'data-placement' => "top", 'title' => 'Action', // Tooltip for the 'Action' action
+                            ]).' '.Html::a('<i class="ti ti-trash fs-7" data-toggle="tooltip" title="Log"></i>',
+                            ['delete', 'id' => $model->ID], [
+                                'class' => 'text-danger edit mx-1', 'data-toggle' => 'tooltip', 'title' => 'Log',
+                                // Tooltip for the 'Log' action
+                            ]).' '.Html::a('<i class="ti ti-file-database fs-7" data-toggle="tooltip" title="Log"></i>',
+                            ['log', 'ID' => $model->ID], [
+                                'class' => 'text-dark edit mx-1', 'data-toggle' => 'tooltip', 'title' => 'Log',
+                                // Tooltip for the 'Log' action
+                            ]).
+
                         '</div>';
-                },
-                'contentOptions' => ['class' => 'col-1'],
+                }, 'contentOptions' => ['class' => 'col-1'],
             ],
         ], 'pager' => [
-            'class' => LinkPager::class,
-            'options' => ['class' => 'pagination justify-content-right pagination-lg'],
+            'class' => LinkPager::class, 'options' => ['class' => 'pagination justify-content-right pagination-lg'],
         ], 'layout' => "{pager}\n{items}\n",
     ]); ?>
-</div>
-
-
-<!--<div class = "form__div">-->
-<!--	<select class = "form__input form-control">-->
-<!--		<option value = "">Download Excel</option>-->
-<!--        --><?php //foreach ($distinctYears as $option): ?>
-<!--			<option value = "--><?php //= $option ?><!--">-->
-<!--                --><?php //= Html::a(
-//                    $icon . ' Download as Excel ' . $option,
-//                    Url::to(['export-excel', 'year' => $option]),
-//
-//                ); ?>
-<!--			</option>-->
-<!--        --><?php //endforeach; ?>
-<!--	</select>-->
-<!--</div>-->
-
-<div class="dropdown">
-	<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-		Dropdown button
-	</button>
-	<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-		<?php foreach($distinctYears as $option): ?>
-		<li><?= Html::a('Year ' . $option, Url::to(['export-excel', 'year' => $option]))?></li>
-		<?php endforeach;?>
-	</ul>
 </div>

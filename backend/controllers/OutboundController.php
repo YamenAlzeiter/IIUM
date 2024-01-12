@@ -57,7 +57,7 @@ class OutboundController extends Controller
         $statusModel = new Status();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        $dataProvider->query->andWhere(['not', ['Status' => null]]);
+        $dataProvider->query->andWhere(['and', ['EXTRACT(YEAR FROM created_at)' => date('Y')],['not', ['Status' => null]]]);
         $dataProvider->sort->defaultOrder = ['updated_at' => SORT_DESC];
 
         $months = $this->getMonthNames();
