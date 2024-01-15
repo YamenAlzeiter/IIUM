@@ -11,6 +11,11 @@ use common\models\Log;
 use common\models\Outbound;
 use common\models\Poc;
 use common\models\Status;
+use Google\Client;
+use Google\Service\Drive;
+use Google_Client;
+use Google_Service_Drive;
+use GuzzleHttp\Psr7\StreamWrapper;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Throwable;
@@ -42,7 +47,7 @@ class OutboundController extends Controller
                     [
                         'actions' => [
                             'index', 'view', 'update', 'delete', 'action', 'create', 'search', 'accept', 'reject',
-                            'load-people', 'dean-approval', 'resend', 'download', 'complete','log','export-excel'
+                            'load-people', 'dean-approval', 'resend', 'download', 'complete','log','export-excel','google-drive'
                         ], 'allow' => true, 'roles' => ['@'],
                     ],
                 ],
@@ -522,7 +527,7 @@ class OutboundController extends Controller
     {
         // Set up data provider with your query
         $dataProvider = new ActiveDataProvider([
-            'query' => Outbound::find()->where(['EXTRACT(YEAR FROM created_at)' => $year]),
+            'query' => Outbound::find()->where(['and',['EXTRACT(YEAR FROM created_at)' => $year],['not',['Status'=> 2]]]),
             'pagination' => false,
         ]);
 
@@ -616,17 +621,16 @@ class OutboundController extends Controller
             $countryCounts[$country] = isset($countryCounts[$country]) ? $countryCounts[$country] + 1 : 1;
         }
 
-// Display country counts
+        // Display country counts
         foreach ($countryCounts as $country => $count) {
             $sheet->setCellValue('B' . $row, $country)
                 ->setCellValue('C' . $row, $count);
             $row++;
         }
 
-// Display total
+        // Display total
         $sheet->setCellValue('B' . $row, 'Total')
             ->setCellValue('C' . $row, array_sum($countryCounts));
-
 
 
         // Create a writer
@@ -644,4 +648,5 @@ class OutboundController extends Controller
 
 
     }
+
 }

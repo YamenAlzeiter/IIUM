@@ -4,7 +4,6 @@ use common\models\Inbound;
 use yii\bootstrap5\Html;
 use yii\helpers\Url;
 
-require Yii::getAlias('@common').'/Helpers/helper.php';
 
 $this->title = 'Dashboard';
 
@@ -14,6 +13,10 @@ $distinctYears = Inbound::find()->select(['EXTRACT(YEAR FROM created_at) as year
 <div class="d-flex flex-row justify-content-between align-items-center mb-3">
 	<h1 class="fw-semibold">Dashboard: Inbound</h1>
 	<div class = "text-end dropdown">
+		<a href = "/site/in-backup" class = "btn btn-excel btn-lg mx-2" data-bs-toggle = "tooltip"
+		   data-bs-placement = "left"
+		   data-bs-html = "true" title = "backup all Inbound records in database to your device as excel file"><i
+					class = "ti ti-database-export me-2"></i>Backup</a>
 		<button class = "btn btn-light btn-lg dropdown-toggle mb-0 fw-semibold" type = "button" id = "dropdownMenuButton1"
 		        data-bs-toggle = "dropdown" aria-expanded = "false">
 			<i class = "ti ti-calendar"></i> Year <?= $year?>

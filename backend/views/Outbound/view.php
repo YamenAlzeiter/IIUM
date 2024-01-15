@@ -122,7 +122,7 @@ $fileName = $creationYearLastTwoDigits . '_' . $model->ID;
 
 						<p class = "mb-2 fw-light mb-1"><strong>Host University Name: </strong> <?= $model->Host_university_name ?></p>
 						<p class = "mb-2 fw-light mb-1"><strong>Host University Country: </strong><?= getCountry($model->Connect_host_country); ?></p>
-						<p class = "mb-2 fw-light mb-1"><strong>Avability for Credit Transfer: </strong> <?= getAnswer($model->credit_transfer_availability )?></p>
+						<p class = "mb-2 fw-light mb-1"><strong>Avability for Credit Transfer: </strong> <?= getCredit($model->credit_transfer_availability )?></p>
 						<p class = "mb-2 fw-light mb-1"><strong>Programme Type: </strong> <?= $model->Type_mobility_program ?></p>
                         <?php if ($model->Type_mobility_program_other !== "" && $model->Type_mobility_program_other !== null): ?>
 							<p class = "mb-2 fw-light mb-1"><strong>Programme Type

@@ -489,7 +489,7 @@ class InboundController extends Controller
     {
         // Set up data provider with your query
         $dataProvider = new ActiveDataProvider([
-            'query' => Inbound::find()->where(['EXTRACT(YEAR FROM created_at) as year' => $year]),
+            'query' => Inbound::find()->where(['and',['EXTRACT(YEAR FROM created_at)' => $year],['not',['Status'=> 6]]]),
             'pagination' => false,
         ]);
 

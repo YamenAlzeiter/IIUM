@@ -67,6 +67,7 @@ return [
             'rules' => [
                 '' => '/site/outbound-dashboard', 'year' => date('Y'),
                 '<year:\d{4}>' => '/site/outbound-dashboard',
+                'download/google-drive/<fileId:\w+>' => 'download/google-drive',
             ],
         ],
         'authManager' => [

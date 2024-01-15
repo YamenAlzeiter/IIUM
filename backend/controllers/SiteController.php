@@ -6,15 +6,21 @@ use backend\models\PasswordResetRequestForm;
 use backend\models\ResetPasswordForm;
 use backend\models\SignupForm;
 use common\models\AdminLoginForm;
+use common\models\Outbound;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Yii;
 use yii\base\InvalidArgumentException;
+use yii\data\ActiveDataProvider;
 use yii\db\Expression;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\FileHelper;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
 use yii\web\Response;
-
+require Yii::getAlias('@common').'/Helpers/helper.php';
 /**
  * Site controller
  */
@@ -30,7 +36,7 @@ class SiteController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['signup', 'reset-password', 'request-password-reset','login', 'error','not'],
+                        'actions' => ['signup', 'reset-password', 'request-password-reset','login', 'error','not','out-backup', 'in-backup'],
                         // Include 'request-password-reset'
                         'allow' => true,
                     ],
@@ -254,6 +260,167 @@ class SiteController extends Controller
         } else {
             return $this->render('error', ['exception' => $exception]);
         }
+    }
+    public function actionOutBackup()
+    {
+        // Get the list of columns for the 'outbound' table
+        $tableColumns = Yii::$app->db->getTableSchema('outbound')->columns;
+
+        // Filter out blob columns
+        $nonBlobColumns = array_filter($tableColumns, function ($column) {
+            return !in_array($column->type, ['binary', 'varbinary', 'blob']);
+        });
+
+        // Columns to exclude from export
+        $columnsToExclude = ['temp', 'ID', 'updated_at', 'created_at', 'token'];
+
+        // Extract column names
+        $columnsToFetch = array_map(function ($column) {
+            // Check if $column is an object before accessing 'name' property
+            return is_object($column) ? $column->name : $column;
+        }, array_diff(array_keys($nonBlobColumns), $columnsToExclude));
+
+        // Fetch data excluding blob columns and specified columns
+        $data = (new \yii\db\Query())
+            ->select($columnsToFetch)
+            ->from('outbound')
+            ->all();
+
+        // Columns to process for specific values
+        $countryColumns = ['Country', 'Mailing_Country', 'Emergency_country', 'Connect_host_country'];
+        $stateColumns   = ['State', 'Mailing_State', 'Emergency_state'];
+        $otherColumns   = ['credit_transfer_availability', 'host_scholarship', 'Sponsoring_funding'];
+
+        // Process country columns
+        $this->processColumns($data, $countryColumns, 'getCountry');
+
+        // Process state columns
+        $this->processColumns($data, $stateColumns, 'getState');
+
+        // Process other columns
+        $this->processColumns($data, $otherColumns, 'getAnswer');
+
+        // Create a new Spreadsheet
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+
+        // Set the worksheet title
+        $spreadsheet->getActiveSheet()->setTitle('Outbound Backup');
+
+        // Add headers to the Excel file
+        $spreadsheet->getActiveSheet()->fromArray($columnsToFetch, null, 'A1');
+
+        // Add data to the Excel file
+        $spreadsheet->getActiveSheet()->fromArray($data, null, 'A2');
+
+        // Set the width of all columns to 20
+        foreach (range('A', 'ZZZ') as $column) {
+            $spreadsheet->getActiveSheet()->getColumnDimension($column)->setWidth(20);
+        }
+
+        // Save the Excel file
+        $filePath = $this->saveExcelFile($spreadsheet);
+
+        // Provide download link
+        Yii::$app->response->sendFile($filePath)->send();
+    }
+
+    public function actionInBackup()
+    {
+        // Get the list of columns for the 'outbound' table
+        $tableColumns = Yii::$app->db->getTableSchema('inbound')->columns;
+
+        // Filter out blob columns
+        $nonBlobColumns = array_filter($tableColumns, function ($column) {
+            return !in_array($column->type, ['binary', 'varbinary', 'blob']);
+        });
+
+        // Columns to exclude from export
+        $columnsToExclude = ['temp', 'ID', 'updated_at', 'created_at', 'Token'];
+
+        // Extract column names
+        $columnsToFetch = array_map(function ($column) {
+            // Check if $column is an object before accessing 'name' property
+            return is_object($column) ? $column->name : $column;
+        }, array_diff(array_keys($nonBlobColumns), $columnsToExclude));
+
+        // Fetch data excluding blob columns and specified columns
+        $data = (new \yii\db\Query())
+            ->select($columnsToFetch)
+            ->from('inbound')
+            ->all();
+
+        // Columns to process for specific values
+        $countryColumns = ['Country_of_origin', 'Country_of_residence', 'Country', 'Emergency_country'];
+
+        $otherColumns   = ['Propose_transfer_credit_hours', 'host_scholarship', 'Sponsoring_funding','Mou_or_Moa', 'English_native',];
+
+        // Process country columns
+        $this->processColumns($data, $countryColumns, 'getCountry');
+
+        // Process other columns
+        $this->processColumns($data, $otherColumns, 'getAnswer');
+
+        // Create a new Spreadsheet
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+
+        // Set the worksheet title
+        $spreadsheet->getActiveSheet()->setTitle('inbound Backup');
+
+        // Add headers to the Excel file
+        $spreadsheet->getActiveSheet()->fromArray($columnsToFetch, null, 'A1');
+
+        // Add data to the Excel file
+        $spreadsheet->getActiveSheet()->fromArray($data, null, 'A2');
+
+        // Set the width of all columns to 20
+        foreach (range('A', 'ZZZ') as $column) {
+            $spreadsheet->getActiveSheet()->getColumnDimension($column)->setWidth(20);
+        }
+
+        // Save the Excel file
+        $filePath = $this->saveExcelFile($spreadsheet);
+
+        // Provide download link
+        Yii::$app->response->sendFile($filePath)->send();
+    }
+    /**
+     * Process columns by applying a specified function to their values
+     *
+     * @param array  $data       Data array to be processed
+     * @param array  $columns    Columns to process
+     * @param string $methodName Method to apply to column values
+     */
+    private function processColumns(&$data, $columns, $methodName)
+    {
+        foreach ($data as &$row) {
+            foreach ($columns as $column) {
+                if (isset($row[$column])) {
+                    // Call the specified method on the column value
+                    $processedValue = $methodName($row[$column]);
+
+                    // Update the value in the $data array for the corresponding column
+                    $row[$column] = $processedValue;
+                }
+            }
+        }
+    }
+    /**
+     * Save the Excel file and return the file path
+     *
+     * @param \PhpOffice\PhpSpreadsheet\Spreadsheet $spreadsheet
+     * @return string
+     */
+    private function saveExcelFile($spreadsheet)
+    {
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+
+        // Set file path
+        $filePath = Yii::getAlias('@runtime') . '/Outbound_Export_' . date('YmdHis') . '.xlsx';
+
+        // Save the file
+        $writer->save($filePath);
+
+        return $filePath;
     }
 
 }

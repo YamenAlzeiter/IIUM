@@ -27,9 +27,9 @@ $icon = Html::tag('i', '', ['class' => 'ti ti-file-spreadsheet']);
 		</div>
 
 		<div class = "dropdown">
-			<button class = "btn btn-excel dropdown-toggle mb-0" type = "button" id = "dropdownMenuButton1"
+			<button class = "btn btn-excel btn-lg dropdown-toggle mb-0" type = "button" id = "dropdownMenuButton1"
 			        data-bs-toggle = "dropdown" aria-expanded = "false">
-				<i class = "ti ti-file-spreadsheet"></i> Select Year
+				<i class = "ti ti-file-spreadsheet"></i> Download Excel
 			</button>
 			<ul class = "dropdown-menu" aria-labelledby = "dropdownMenuButton1">
 
