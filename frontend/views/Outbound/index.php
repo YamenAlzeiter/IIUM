@@ -479,7 +479,7 @@ if (!isset($noRecord)) {
                                 <?= Html::hiddenInput('ID', $model->ID) ?>
 
 
-                                <?= $form->field($model, 'driveLink')->textInput(['maxlength' => true]) ?>
+                                <?= $form->field($outFilesModel, 'location[]')->fileInput(['multiple' => true]) ?>
 								<div class="form-group mt-2">
 									<div class="form-group">
                                         <?= Html::submitButton('', ['class' => 'btn btn-outline-dark px-4 py-2', 'name' => 'save-button', 'id' => 'form-upload-button']) ?>

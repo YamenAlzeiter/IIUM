@@ -27,11 +27,14 @@ use yii\db\Expression;
 use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\FileHelper;
 use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
-require Yii::getAlias('@common').'/Helpers/helper.php';
+use yii\web\ServerErrorHttpException;
+
+
 class OutboundController extends Controller
 {
     const STATUS_INITIAL = 10;
@@ -47,7 +50,7 @@ class OutboundController extends Controller
                     [
                         'actions' => [
                             'index', 'view', 'update', 'delete', 'action', 'create', 'search', 'accept', 'reject',
-                            'load-people', 'dean-approval', 'resend', 'download', 'complete','log','export-excel','google-drive'
+                            'load-people', 'dean-approval', 'resend', 'download', 'complete','log','export-excel','google-drive','download-all','download-after'
                         ], 'allow' => true, 'roles' => ['@'],
                     ],
                 ],
@@ -179,7 +182,8 @@ class OutboundController extends Controller
 
     public function actionDownload($id, $file)
     {
-        $filePath = 'C:\xampp\htdocs\IIUM_Inbound_Oubbound\frontend\uploads/'.$file;
+        $baseUploadPath = Yii::getAlias('@common/uploads');
+        $filePath = $baseUploadPath.'/'.$id.'/'.$file;
         Yii::info("File Path: ".$filePath, "fileDownload");
         if (file_exists($filePath)) {
             Yii::$app->response->sendFile($filePath);
@@ -188,6 +192,118 @@ class OutboundController extends Controller
             throw new NotFoundHttpException('The file does not exist.');
         }
     }
+
+    public function actionDownloadAll($id)
+    {
+        $baseUploadPath = Yii::getAlias('@common/uploads');
+        $recordPath = $baseUploadPath . '/' . $id;
+
+        // Check if the record path exists
+        if (!file_exists($recordPath) || !is_dir($recordPath)) {
+            Yii::info("Record path not found: " . $recordPath, "fileDownloadAll");
+            throw new NotFoundHttpException('The record does not exist.');
+        }
+
+        // Create a temporary directory to store the zip file
+        $tempDir = Yii::getAlias('@runtime/temp_zip');
+        FileHelper::createDirectory($tempDir);
+
+        // Zip all files in the record directory
+        $zipFileName = 'Record_' . $id . '_Files.zip';
+        $zipFilePath = $tempDir . '/' . $zipFileName;
+
+        try {
+            $zip = new \ZipArchive();
+            if ($zip->open($zipFilePath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === true) {
+                $files = FileHelper::findFiles($recordPath);
+                foreach ($files as $file) {
+                    $relativePath = $this->getRelativePath($recordPath, $file);
+                    $zip->addFile($file, $relativePath);
+                }
+                $zip->close();
+            } else {
+                throw new Exception('Unable to create zip archive.');
+            }
+        } catch (Exception $e) {
+            Yii::info("Error creating zip archive: " . $e->getMessage(), "fileDownloadAll");
+            throw new ServerErrorHttpException('An error occurred while creating the zip archive.');
+        }
+
+        // Send the zip file to the user
+        if (file_exists($zipFilePath)) {
+            Yii::$app->response->sendFile($zipFilePath, $zipFileName, ['inline' => false])
+                ->on(\yii\web\Response::EVENT_AFTER_SEND, function ($event) use ($tempDir) {
+                    // Clean up temporary directory after the file is sent
+                    FileHelper::removeDirectory($tempDir);
+                });
+        } else {
+            Yii::info("Zip file not found: " . $zipFilePath, "fileDownloadAll");
+            throw new NotFoundHttpException('The zip file does not exist.');
+        }
+    }
+
+    public function actionDownloadAfter($id)
+    {
+        $baseUploadPath = Yii::getAlias('@common/uploads');
+        $recordPath = $baseUploadPath . '/' . $id .'/after';
+
+        // Check if the record path exists
+        if (!file_exists($recordPath) || !is_dir($recordPath)) {
+            Yii::info("Record path not found: " . $recordPath, "fileDownloadAll");
+            throw new NotFoundHttpException('The record does not exist.');
+        }
+
+        // Create a temporary directory to store the zip file
+        $tempDir = Yii::getAlias('@runtime/temp_zip');
+        FileHelper::createDirectory($tempDir);
+
+        // Zip all files in the record directory
+        $zipFileName = 'Record_' . $id . '_Files.zip';
+        $zipFilePath = $tempDir . '/' . $zipFileName;
+
+        try {
+            $zip = new \ZipArchive();
+            if ($zip->open($zipFilePath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === true) {
+                $files = FileHelper::findFiles($recordPath);
+                foreach ($files as $file) {
+                    $relativePath = $this->getRelativePath($recordPath, $file);
+                    $zip->addFile($file, $relativePath);
+                }
+                $zip->close();
+            } else {
+                throw new Exception('Unable to create zip archive.');
+            }
+        } catch (Exception $e) {
+            Yii::info("Error creating zip archive: " . $e->getMessage(), "fileDownloadAll");
+            throw new ServerErrorHttpException('An error occurred while creating the zip archive.');
+        }
+
+        // Send the zip file to the user
+        if (file_exists($zipFilePath)) {
+            Yii::$app->response->sendFile($zipFilePath, $zipFileName, ['inline' => false])
+                ->on(\yii\web\Response::EVENT_AFTER_SEND, function ($event) use ($tempDir) {
+                    // Clean up temporary directory after the file is sent
+                    FileHelper::removeDirectory($tempDir);
+                });
+        } else {
+            Yii::info("Zip file not found: " . $zipFilePath, "fileDownloadAll");
+            throw new NotFoundHttpException('The zip file does not exist.');
+        }
+    }
+
+// Function to get the relative path considering only the last folder
+    private function getRelativePath($basePath, $file)
+    {
+        $basePath = rtrim($basePath, '/');
+        $file = rtrim($file, '/');
+
+        // Find the last occurrence of '/' to get the last folder
+        $lastSlash = strrpos($file, '/');
+        $lastFolder = substr($file, $lastSlash + 1);
+
+        return $lastFolder;
+    }
+
 
     public function actionLoadPeople()
     {
@@ -525,6 +641,7 @@ class OutboundController extends Controller
 
     public function actionExportExcel($year)
     {
+        require Yii::getAlias('@common').'/Helpers/helper.php';
         // Set up data provider with your query
         $dataProvider = new ActiveDataProvider([
             'query' => Outbound::find()->where(['and',['EXTRACT(YEAR FROM created_at)' => $year],['not',['Status'=> 2]]]),

@@ -6,9 +6,11 @@ use common\models\Countries;
 use common\models\Courses;
 use common\models\Iiumcourse;
 use common\models\Outbound;
+use common\models\OutFiles;
 use common\models\Poc;
 use common\models\States;
 use Exception;
+use http\Url;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -32,12 +34,11 @@ class OutboundController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::class, 'only' => ['index', 'create', 'upload','update'],
+                'class' => AccessControl::class, 'only' => ['index', 'create', 'upload', 'update'],
                 // Define the actions that require access control
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'upload','update'], 'allow' => true,
-                        'roles' => ['@'],
+                        'actions' => ['index', 'create', 'upload', 'update'], 'allow' => true, 'roles' => ['@'],
                         'matchCallback' => function ($rule, $action) {
                             $user = Yii::$app->user->identity->type;
                             return ($user === "O");
@@ -72,10 +73,10 @@ class OutboundController extends Controller
 
         $courses = Courses::find()->where(['student_id' => $student->ID])->all();
         $iiumcourses = Iiumcourse::find()->where(['student_id' => $student->ID])->all();
-
+        $outFilesModel = new OutFiles();
         return $this->render("index", [
             "model" => $student, "modelPoc1" => $modelPoc1, "modelPoc2" => $modelPoc2, "courses" => $courses,
-            'iiumcourses' => $iiumcourses,
+            'iiumcourses' => $iiumcourses, 'outFilesModel' => $outFilesModel,
         ]);
     }
 
@@ -163,56 +164,91 @@ class OutboundController extends Controller
 
                     if ($model->validate() && $model->save()) {
                         //-------------------- File Saving --------------------\\
-                        $baseUploadPath = 'C:/xampp/htdocs/IIUM_Inbound_Oubbound/frontend/uploads';
+                        $baseUploadPath = Yii::getAlias('@common/uploads');
                         if ($model->Offer_letter) {
 
                             $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
 
-                            $fileName = $creationYearLastTwoDigits . '_' . $model->ID . '_OfferLetter.' . $model->Offer_letter->extension;
+                            $fileName = $creationYearLastTwoDigits.'_'.$model->ID.'_OfferLetter.'.$model->Offer_letter->extension;
 
                             $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->Offer_letter->name);
 
-                            $model->Offer_letter->saveAs($baseUploadPath . '/' . $fileName);
+                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
+
+                            if (!file_exists(dirname($filePath))) {
+                                mkdir(dirname($filePath), 0777, true);
+                            }
+
+                            $model->Offer_letter->saveAs($filePath);
                         }
                         if ($model->Academic_transcript) {
 
                             $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
 
-                            $fileName = $creationYearLastTwoDigits . '_' . $model->ID . '_AcademicTranscript.' . $model->Academic_transcript->extension;
+                            $fileName = $creationYearLastTwoDigits.'_'.$model->ID.'_AcademicTranscript.'.$model->Academic_transcript->extension;
 
                             $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->Academic_transcript->name);
 
-                            $model->Academic_transcript->saveAs($baseUploadPath . '/' . $fileName);
+
+                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
+
+                            if (!file_exists(dirname($filePath))) {
+                                mkdir(dirname($filePath), 0777, true);
+                            }
+
+                            $model->Offer_letter->saveAs($filePath);
+
                         }
                         if ($model->Program_brochure) {
 
                             $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
 
-                            $fileName = $creationYearLastTwoDigits . '_' . $model->ID . '_ProgramBrochure.' . $model->Program_brochure->extension;
+                            $fileName = $creationYearLastTwoDigits.'_'.$model->ID.'_ProgramBrochure.'.$model->Program_brochure->extension;
 
                             $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->Program_brochure->name);
 
-                            $model->Program_brochure->saveAs($baseUploadPath . '/' . $fileName);
+
+                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
+
+                            if (!file_exists(dirname($filePath))) {
+                                mkdir(dirname($filePath), 0777, true);
+                            }
+
+                            $model->Offer_letter->saveAs($filePath);
                         }
                         if ($model->Latest_pay_slip) {
 
                             $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
 
-                            $fileName = $creationYearLastTwoDigits . '_' . $model->ID . '_LatestPaySlip.' . $model->Latest_pay_slip->extension;
+                            $fileName = $creationYearLastTwoDigits.'_'.$model->ID.'_LatestPaySlip.'.$model->Latest_pay_slip->extension;
 
                             $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->Latest_pay_slip->name);
 
-                            $model->Latest_pay_slip->saveAs($baseUploadPath . '/' . $fileName);
+
+                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
+
+                            if (!file_exists(dirname($filePath))) {
+                                mkdir(dirname($filePath), 0777, true);
+                            }
+
+                            $model->Offer_letter->saveAs($filePath);
                         }
                         if ($model->Other_latest_pay_slip) {
 
                             $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
 
-                            $fileName = $creationYearLastTwoDigits . '_' . $model->ID . '_OtherLatestPaySlip.' . $model->Other_latest_pay_slip->extension;
+                            $fileName = $creationYearLastTwoDigits.'_'.$model->ID.'_OtherLatestPaySlip.'.$model->Other_latest_pay_slip->extension;
 
                             $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->Other_latest_pay_slip->name);
 
-                            $model->Other_latest_pay_slip->saveAs($baseUploadPath . '/' . $fileName);
+
+                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
+
+                            if (!file_exists(dirname($filePath))) {
+                                mkdir(dirname($filePath), 0777, true);
+                            }
+
+                            $model->Offer_letter->saveAs($filePath);
                         }
                         //
                         $coursesData = Yii::$app->request->post('CoursesModel', []);
@@ -269,8 +305,9 @@ class OutboundController extends Controller
 
         // Retrieve courses data
 
-        if ($model->Status !== 3 && $model->Status !== null ) {
-            Yii::$app->session->setFlash('error', "Your application on process now, Can't update your INFO during that.");
+        if ($model->Status !== 3 && $model->Status !== null) {
+            Yii::$app->session->setFlash('error',
+                "Your application on process now, Can't update your INFO during that.");
             // Redirect to a different page or reload the current page
             return $this->redirect(['outbound/index']); // Replace 'controller/action' with the appropriate route
         }
@@ -288,12 +325,19 @@ class OutboundController extends Controller
                     $updateFile = function ($attribute, $fileNamePrefix) use ($model) {
                         $file = UploadedFile::getInstance($model, $attribute);
                         if ($file) {
-                            $baseUploadPath = 'C:/xampp/htdocs/IIUM_Inbound_Oubbound/frontend/uploads';
+                            $baseUploadPath = Yii::getAlias('@common/uploads');
                             $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $file->name);
                             $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
-                            $fileName = $creationYearLastTwoDigits . '_' . $model->ID . '_' . $fileNamePrefix . '.' . $file->extension;
-                            $file->saveAs($baseUploadPath . '/' . $fileName);
-                            $model->$attribute = $fileName; // Update the model attribute with the new file name
+                            $fileName = $creationYearLastTwoDigits.'_'.$model->ID.'_'.$fileNamePrefix.'.'.$file->extension;
+                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
+
+                            // Create directory if not exists
+                            if (!file_exists(dirname($filePath))) {
+                                mkdir(dirname($filePath), 0777, true);
+                            }
+
+                            $file->saveAs($filePath);
+                            $model->$attribute = $fileName;
                         }
                     };
 
@@ -311,26 +355,26 @@ class OutboundController extends Controller
                     // Save the main model and update Courses/Iiumcourse records
                     if ($model->validate() && $model->save()) {
                         // Update Courses records
-                         foreach ($_POST['CoursesModel'] as $courseData) {
-                             $courseModel = Courses::findOne($courseData['id']);
-                             $courseModel->attributes = $courseData;
+                        foreach ($_POST['CoursesModel'] as $courseData) {
+                            $courseModel = Courses::findOne($courseData['id']);
+                            $courseModel->attributes = $courseData;
 
-                             if (!$courseModel->validate() || !$courseModel->save()) {
-                                 Yii::error("Error saving Courses record: " . print_r($courseModel->errors, true));
-                                 // Handle the error case, you might want to render the update view again with an error message
-                             }
-                         }
+                            if (!$courseModel->validate() || !$courseModel->save()) {
+                                Yii::error("Error saving Courses record: ".print_r($courseModel->errors, true));
+                                // Handle the error case, you might want to render the update view again with an error message
+                            }
+                        }
 
-                         // Update Iiumcourse records
-                         foreach ($_POST['IiumcoursesModel'] as $iiumcourseData) {
-                             $iiumcourseModel = Iiumcourse::findOne($iiumcourseData['id']);
-                             $iiumcourseModel->attributes = $iiumcourseData;
+                        // Update Iiumcourse records
+                        foreach ($_POST['IiumcoursesModel'] as $iiumcourseData) {
+                            $iiumcourseModel = Iiumcourse::findOne($iiumcourseData['id']);
+                            $iiumcourseModel->attributes = $iiumcourseData;
 
-                             if (!$iiumcourseModel->validate() || !$iiumcourseModel->save()) {
-                                 Yii::error("Error saving Iiumcourse record: " . print_r($iiumcourseModel->errors, true));
-                                 // Handle the error case, you might want to render the update view again with an error message
-                             }
-                         }
+                            if (!$iiumcourseModel->validate() || !$iiumcourseModel->save()) {
+                                Yii::error("Error saving Iiumcourse record: ".print_r($iiumcourseModel->errors, true));
+                                // Handle the error case, you might want to render the update view again with an error message
+                            }
+                        }
 
                         $transaction->commit();
                         Yii::$app->session->setFlash('success', 'Application updated successfully.');
@@ -353,59 +397,91 @@ class OutboundController extends Controller
 
 // Your existing actionUpload method with modifications
 
-public function actionUpload($ID)
-{
-    $model = Outbound::findOne($ID);
+    public function actionUpload($ID)
+    {
+        $model = Outbound::findOne($ID);
 
-    if ($model->Status !== 41 && $model->Status !== 71) {
-        Yii::$app->session->setFlash('error', 'You already submitted your documents. Cannot update any documents now.');
-        return $this->redirect(['outbound/index']);
-    }
+        if ($model->Status !== 41 && $model->Status !== 71) {
+            Yii::$app->session->setFlash('error',
+                'You already submitted your documents. Cannot update any documents now.');
+            return $this->redirect(['outbound/index']);
+        }
+        $baseUploadPath = Yii::getAlias('@common/uploads');
+        if (Yii::$app->request->isPost) {
+            $transaction = Yii::$app->db->beginTransaction();
 
-    if (Yii::$app->request->isPost) {
-        $transaction = Yii::$app->db->beginTransaction();
+            try {
+                // Handle uploads associated with the Outbound model
+                $filesToUpdate = [
+                    'Proof_of_sponsorship' => 'ProofOfSponsorship', 'Proof_insurance_cover' => 'ProofInsuranceCover',
+                    'Letter_of_indemnity' => 'LetterOfIndemnity', 'Flight_ticket' => 'FlightTicket'
+                ];
 
-        try {
-            if ($model->load(Yii::$app->request->post())) {
-            $filesToUpdate = [
-                'Proof_of_sponsorship' => 'ProofOfSponsorship',
-                'Proof_insurance_cover' => 'ProofInsuranceCover',
-                'Letter_of_indemnity' => 'LetterOfIndemnity',
-                'Flight_ticket' => 'FlightTicket'
-            ];
+                foreach ($filesToUpdate as $attribute => $fileNamePrefix) {
+                    $file = UploadedFile::getInstance($model, $attribute);
+                    if ($file) {
 
-            foreach ($filesToUpdate as $attribute => $fileNamePrefix) {
-                $file = UploadedFile::getInstance($model, $attribute);
-                if ($file) {
-                    $baseUploadPath = 'C:/xampp/htdocs/IIUM_Inbound_Oubbound/frontend/uploads';
-                    $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $file->name);
+                        $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
+                        $fileName = $creationYearLastTwoDigits.'_'.$model->ID.'_'.$fileNamePrefix.'.'.$file->extension;
+                        $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
+
+                        // Create directory if not exists
+                        if (!file_exists(dirname($filePath))) {
+                            mkdir(dirname($filePath), 0777, true);
+                        }
+
+                        $file->saveAs($filePath);
+                        $model->$attribute = $fileName; // Update the model attribute with the new file name
+                    }
+                }
+                $outFilesModel = new OutFiles();
+                $outFilesModel->location = UploadedFile::getInstances($outFilesModel, 'location');
+                OutFiles::deleteAll(['Student_ID' => $model->ID]);
+                foreach ($outFilesModel->location as $key => $file) {
+
                     $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
-                    $fileName = $creationYearLastTwoDigits . '_' . $model->ID . '_' . $fileNamePrefix . '.' . $file->extension;
-                    $file->saveAs($baseUploadPath . '/' . $fileName);
-                    $model->$attribute = $fileName; // Update the model attribute with the new file name
-                }
-            }
-                if ($model->Status === 41){
-                    $model->Status = 51;
-                }
-                if ($model->Status === 71){
-                    $model->Status = 81;
-                }
-            // Only change the Status if any file was uploaded
-            if ($model->validate() && $model->save()) {
+                    $fileName = $creationYearLastTwoDigits.'_'.$model->ID.'_File_'.($key + 1).'.'.$file->extension;
+                    $filePath = $baseUploadPath.'/'.$model->ID.'/after/'.$fileName;
 
-                $transaction->commit();
-                Yii::$app->session->setFlash('success', 'Application updated successfully.');
-                return $this->redirect(['index']);
+                    // Create directory if not exists
+                    if (!file_exists(dirname($filePath))) {
+                        mkdir(dirname($filePath), 0777, true);
+                    }
+
+                    $file->saveAs($filePath);
+                    $model->$attribute = $fileName; // Update the model attribute with the new file name
+
+
+                    // Save the file information to the database
+                    $outFile = new OutFiles();
+                    $outFile->Student_ID = $model->ID;
+                    $outFile->location = $fileName; // Set the location attribute
+                    $outFile->save(false);
+                }
+//                if ($model->Status === 41){
+//                    $model->Status = 51;
+//                }
+//                if ($model->Status === 71){
+//                    $model->Status = 81;
+//                }
+
+                // Save the changes in the Outbound model
+                if ($model->validate() && $model->save()) {
+                    // Handle uploads associated with the OutFiles model
+
+
+                    $transaction->commit();
+                    Yii::$app->session->setFlash('success', 'Application updated successfully.');
+                    return $this->redirect(['index']);
+                }
+            } catch (Exception $e) {
+                $transaction->rollBack();
+                Yii::$app->session->setFlash('error', 'An error occurred while updating the application.');
+                Yii::error($e->getMessage());
             }
-            }
-        } catch (Exception $e) {
-            $transaction->rollBack();
-            Yii::$app->session->setFlash('error', 'An error occurred while updating the application.');
-            Yii::error($e->getMessage());
         }
     }
-}
+
 
     /**
      * Deletes an existing Outbound model.
@@ -420,16 +496,16 @@ public function actionUpload($ID)
 
         return $this->redirect(['index']);
     }
+
     public function actionDownload($id, $file)
     {
-        $model = $this->findModel($id);
-
-        // Set the file path based on your file storage location
-        $filePath = 'C:\xampp\htdocs\IIUM_Inbound_Oubbound\frontend\uploads/' . $file;
-
+        $baseUploadPath = Yii::getAlias('@common/uploads');
+        $filePath = $baseUploadPath.'/'.$id.'/'.$file;
+        Yii::info("File Path: ".$filePath, "fileDownload");
         if (file_exists($filePath)) {
             Yii::$app->response->sendFile($filePath);
         } else {
+            Yii::info("File not found: ".$file, "fileDownload");
             throw new NotFoundHttpException('The file does not exist.');
         }
     }
@@ -441,10 +517,10 @@ public function actionUpload($ID)
 
         $options = '<option value="">Select State</option>';
         foreach ($states as $state) {
-            $options .= '<option value="' . $state->id . '">' . $state->name . '</option>';
+            $options .= '<option value="'.$state->id.'">'.$state->name.'</option>';
         }
 
-        Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        Yii::$app->response->format = Response::FORMAT_RAW;
         return $options;
     }
 
@@ -453,10 +529,10 @@ public function actionUpload($ID)
         $countries = Countries::find()->all(); // Replace YourCountryModel with your actual model class name
         $options = '<option value="">Select Country</option>';
         foreach ($countries as $country) {
-            $options .= '<option value="' . $country->id . '">' . $country->name . '</option>';
+            $options .= '<option value="'.$country->id.'">'.$country->name.'</option>';
         }
 
-        Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        Yii::$app->response->format = Response::FORMAT_RAW;
         return $options;
     }
 
@@ -465,12 +541,13 @@ public function actionUpload($ID)
         $countries = Countries::find()->all(); // Replace YourCountryModel with your actual model class name
         $options = '<option value="">Select Country</option>';
         foreach ($countries as $country) {
-            $options .= '<option value="' . $country->nationality . '">' . $country->nationality . '</option>';
+            $options .= '<option value="'.$country->nationality.'">'.$country->nationality.'</option>';
         }
 
-        Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        Yii::$app->response->format = Response::FORMAT_RAW;
         return $options;
     }
+
     public function actionGetRecord($id)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -480,8 +557,7 @@ public function actionUpload($ID)
         return [
             'Proof_of_sponsorship' => $model->Proof_of_sponsorship,
             'Proof_insurance_cover' => $model->Proof_insurance_cover,
-            'Letter_of_indemnity' => $model->Letter_of_indemnity,
-            'Flight_ticket' => $model->Flight_ticket,
+            'Letter_of_indemnity' => $model->Letter_of_indemnity, 'Flight_ticket' => $model->Flight_ticket,
         ];
     }
 }

@@ -11,7 +11,7 @@ use yii\widgets\ActiveForm;
 /** @var common\models\Outbound $model */
 /** @var common\models\Kcdio $modelKedio */
 
-
+require Yii::getAlias('@common').'/Helpers/helper.php';
 $this->title = $model->Name;
 
 YiiAsset::register($this);

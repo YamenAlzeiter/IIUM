@@ -24,8 +24,9 @@
         "kartik-v/yii2-grid": "^3.5",
         "kartik-v/yii2-bootstrap5-dropdown": "^1.0",
         "phpoffice/phpspreadsheet": "^1.29",
-        "google/apiclient": "^2.15"
-
+        "google/apiclient": "^2.15",
+        "ext-http": "*",
+        "ext-zip": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

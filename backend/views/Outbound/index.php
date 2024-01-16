@@ -17,7 +17,7 @@ $this->title = 'Outbound';
 $distinctYears = Outbound::find()->select(['EXTRACT(YEAR FROM created_at) as year'])->distinct()->orderBy(['year' => SORT_DESC])->asArray()->column();
 $icon = Html::tag('i', '', ['class' => 'ti ti-file-spreadsheet']);
 
-
+require Yii::getAlias('@common').'/Helpers/helper.php';
 ?>
 
 <div class = "d-flex flex-column flex-md-row gap-3 mt-2 mb-2 justify-content-between align-items-end">
@@ -91,11 +91,11 @@ $icon = Html::tag('i', '', ['class' => 'ti ti-file-spreadsheet']);
                             ['action', 'ID' => $model->ID], [
                                 'class' => 'text-indigo edit mx-1', 'data-toggle' => 'tooltip',
                                 'data-placement' => "top", 'title' => 'Action', // Tooltip for the 'Action' action
-                            ]).' '.Html::a('<i class="ti ti-trash fs-7" data-toggle="tooltip" title="Log"></i>',
-                            ['delete', 'id' => $model->ID], [
-                                'class' => 'text-danger edit mx-1', 'data-toggle' => 'tooltip', 'title' => 'Log',
-                                // Tooltip for the 'Log' action
-                            ]).' '.Html::a('<i class="ti ti-file-database fs-7" data-toggle="tooltip" title="Log"></i>',
+                            ]).' '.Html::a('<i class="ti ti-trash fs-7" data-toggle="tooltip" title="Log"></i>', ['delete', 'ID' => $model->ID], [
+                            'class' => 'text-danger edit mx-1', 'data' => [
+                                'confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',
+                            ],
+                        ]) .' '.Html::a('<i class="ti ti-file-database fs-7" data-toggle="tooltip" title="Log"></i>',
                             ['log', 'ID' => $model->ID], [
                                 'class' => 'text-dark edit mx-1', 'data-toggle' => 'tooltip', 'title' => 'Log',
                                 // Tooltip for the 'Log' action

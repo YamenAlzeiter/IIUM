@@ -123,9 +123,10 @@ class HodworkflowController extends Controller
         }
     }
 
-    public function actionDownload($ID, $file)
+    public function actionDownload($id, $file)
     {
-        $filePath = 'C:\xampp\htdocs\IIUM_Inbound_Oubbound\frontend\uploads/'.$file;
+        $baseUploadPath = Yii::getAlias('@common/uploads');
+        $filePath = $baseUploadPath.'/'.$id.'/'.$file;
         Yii::info("File Path: ".$filePath, "fileDownload");
         if (file_exists($filePath)) {
             Yii::$app->response->sendFile($filePath);

@@ -119,7 +119,7 @@ class InboundController extends Controller
 
                     if ($model->validate() && $model->save()) {
                         //-------------------- File Saving --------------------\\
-                        $baseUploadPath = 'C:/xampp/htdocs/IIUM_Inbound_Oubbound/frontend/uploads';
+                        $baseUploadPath = Yii::getAlias('@common/uploads');
                         if ($model->Passport) {
 
                             $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
@@ -265,7 +265,7 @@ class InboundController extends Controller
                     $updateFile = function ($attribute, $fileNamePrefix) use ($model) {
                         $file = UploadedFile::getInstance($model, $attribute);
                         if ($file) {
-                            $baseUploadPath = 'C:/xampp/htdocs/IIUM_Inbound_Oubbound/frontend/uploads';
+                            $baseUploadPath = Yii::getAlias('@common/uploads');
                             $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $file->name);
                             $creationYearLastTwoDigits = date('y', strtotime($model->created_at));
                             $fileName = $creationYearLastTwoDigits . '_' . $model->ID . '_' . $fileNamePrefix . '.' . $file->extension;
@@ -341,7 +341,7 @@ class InboundController extends Controller
                 foreach ($filesToUpdate as $attribute => $fileNamePrefix) {
                     $file = UploadedFile::getInstance($model, $attribute);
                     if ($file) {
-                        $baseUploadPath = 'C:/xampp/htdocs/IIUM_Inbound_Oubbound/frontend/uploads';
+                        $baseUploadPath = Yii::getAlias('@common/uploads');
                         $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $file->name);
                         $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
                         $fileName = $creationYearLastTwoDigits . '_' . $model->ID . '_' . $fileNamePrefix . '.' . $file->extension;
@@ -399,11 +399,8 @@ class InboundController extends Controller
 
     public function actionDownload($id, $file)
     {
-        $model = $this->findModel($id);
-
-        // Set the file path based on your file storage location
-        $filePath = 'C:\xampp\htdocs\IIUM_Inbound_Oubbound\frontend\uploads/' . $file;
-
+        $baseUploadPath = Yii::getAlias('@common/uploads');
+        $filePath = $baseUploadPath.'/'.$id.'/'.$file;
         if (file_exists($filePath)) {
             Yii::$app->response->sendFile($filePath);
         } else {

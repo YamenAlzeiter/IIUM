@@ -95,6 +95,7 @@ use yii\db\Expression;
  */
 class Outbound extends \yii\db\ActiveRecord
 {
+    public $files;
     /**
      * {@inheritdoc}
      */
@@ -235,6 +236,10 @@ class Outbound extends \yii\db\ActiveRecord
     public function getIiumcourses()
     {
         return $this->hasMany(Iiumcourse::class, ['student_id' => 'ID']);
+    }
+    public function getOutboundFiles()
+    {
+        return $this->hasMany(OutFiles::class, ['Student_ID' => 'ID']);
     }
     public function beforeSave($insert)
     {
