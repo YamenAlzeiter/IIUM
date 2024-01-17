@@ -146,8 +146,9 @@ $fileName = $creationYearLastTwoDigits . '_' . $model->ID;
 							                                        Number: </strong> <?= $model->Approval_person_mobile_number ?></p>
 							<p class = "mb-2 fw-light mb-1"><strong>Date: </strong> <?= $model->Approval_date ?></p>
 							<p class="fw-semibold"><?= ($model->Recommendation_letter) ? Html::a('RecommendationLetter', [
-                                    'download', 'id' => $model->ID, 'file' => $fileName . '_RecommendationLetter' . '.pdf'
+                                    'download', 'ID' => $model->ID,'token' => $model->Token ,'file' => $fileName. '_RecommendationLetter' . '.pdf'
                                 ]) : ''; ?></p>
+
 						</div>
 					</div>
 				</div>

@@ -123,10 +123,10 @@ class HodworkflowController extends Controller
         }
     }
 
-    public function actionDownload($id, $file)
+    public function actionDownload($ID, $file)
     {
         $baseUploadPath = Yii::getAlias('@common/uploads');
-        $filePath = $baseUploadPath.'/'.$id.'/'.$file;
+        $filePath = $baseUploadPath.'/'.$ID.'/'.$file;
         Yii::info("File Path: ".$filePath, "fileDownload");
         if (file_exists($filePath)) {
             Yii::$app->response->sendFile($filePath);
@@ -135,4 +135,5 @@ class HodworkflowController extends Controller
             throw new NotFoundHttpException('The file does not exist.');
         }
     }
+
 }

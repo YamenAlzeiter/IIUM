@@ -105,7 +105,7 @@ class HigherworkflowController extends \yii\web\Controller
             $model->offer_letter = UploadedFile::getInstance($model, 'offer_letter');
 
             if ($model->save() && $model->validate()) {
-                $baseUploadPath = 'C:/xampp/htdocs/IIUM_Inbound_Oubbound/frontend/uploads';
+                $baseUploadPath = Yii::getAlias('@common/uploads');
                 if ($model->offer_letter) {
                     // Assuming created_at is a timestamp field in your model
                     $creationYearLastTwoDigits = date('y', strtotime($model->created_at));
@@ -114,17 +114,25 @@ class HigherworkflowController extends \yii\web\Controller
 
                     $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->offer_letter->name);
 
-                    $model->offer_letter->saveAs($baseUploadPath.'/'.$fileName);
+                    $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
+
+                    if (!file_exists(dirname($filePath))) {
+                        mkdir(dirname($filePath), 0777, true);
+                    }
+
+                    $model->offer_letter->saveAs($filePath);
+
+
                 }
                     return $this->redirect(['view', 'ID' => $model->ID, 'token' => $model->Token],);
             }
         }
     }
 
-    public function actionDownload($id, $file)
+    public function actionDownload($ID, $file)
     {
         $baseUploadPath = Yii::getAlias('@common/uploads');
-        $filePath = $baseUploadPath.'/'.$id.'/'.$file;
+        $filePath = $baseUploadPath.'/'.$ID .'/'.$file;
         Yii::info("File Path: ".$filePath, "fileDownload");
         if (file_exists($filePath)) {
             Yii::$app->response->sendFile($filePath);

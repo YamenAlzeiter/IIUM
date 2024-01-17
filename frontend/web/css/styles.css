@@ -2320,6 +2320,10 @@ progress {
   font-size: 0.875em;
   color: #5A6A85;
 }
+.auth-max-width {
+  width: 100%;
+  max-width: 400px;
+}
 
 .form-control {
   display: block;
@@ -2344,9 +2348,11 @@ progress {
 }
 .form-control[type=file] {
   overflow: hidden;
+  color: transparent;
 }
 .form-control[type=file]:not(:disabled):not([readonly]) {
   cursor: pointer;
+  color: transparent;
 }
 .form-control:focus {
   color: #5A6A85;
@@ -7473,6 +7479,11 @@ textarea.form-control-lg {
   background-color: RGBA(19, 222, 185, var(--bs-bg-opacity, 1)) !important;
 }
 
+.text-bg-success-style2{
+  color: #fff !important;
+  background-color: RGBA(64, 145, 108, var(--bs-bg-opacity, 1)) !important;
+}
+
 .text-bg-info {
   color: #fff !important;
   background-color: RGBA(83, 155, 255, var(--bs-bg-opacity, 1)) !important;
@@ -9752,6 +9763,10 @@ textarea.form-control-lg {
 .text-success {
   --bs-text-opacity: 1;
   color: rgba(var(--bs-success-rgb), var(--bs-text-opacity)) !important;
+}
+.text-success-style2 {
+  --bs-text-opacity: 1;
+  color: rgba(64, 145, 108, var(--bs-text-opacity)) !important;
 }
 
 .text-info {

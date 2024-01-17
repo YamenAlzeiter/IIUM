@@ -23,6 +23,7 @@
 					<input type = "text" class = "form__input form-control" id = "validationCustomName disabledTextInput"
 					       name = "Inbound[Name]"
 					       maxlength = "255" placeholder = " " value = "<?= $model->Name?>" >
+					<label for = "validationCustomName" class = "form__label">Name</label>
 				</div>
 
 				<div class = "row align-items-center mb-2">
@@ -152,7 +153,7 @@
 							<input type = "email" class = "form__input form-control" id = "validationCustomEmail"
 							       name = "Inbound[Email_address]"
 							       maxlength = "100" placeholder = " " value = "<?= $model->Email_address?>" >
-
+							<label for = "validationCustomEmail" class = "form__label">Email</label>
 						</div>
 					</div>
 				</div>
@@ -792,6 +793,7 @@
 
 				</div>
 			</div>
+			<input type="hidden" name="Inbound[Status]" id="statusInput" value="<?= $model->Status?>">
 			<div class = "d-flex justify-content-between">
 				<div>
 					<button class="btn btn-navigate-form-step btn-next fs-5" type="button" step_number="4">Back</button>
@@ -921,7 +923,6 @@
 							<label class = "form-check-label" for = "model-agreement-0">No</label>
 						</div>
 					</div>
-					<input type = "hidden" name = "Inbound[Status]" id = "statusInput" value = "">
 				</div>
 			</div>
 

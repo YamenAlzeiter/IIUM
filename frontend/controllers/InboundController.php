@@ -114,8 +114,8 @@ class InboundController extends Controller
                         // Set status to 10 only when the 'submit' button is clicked
                         $model->Status = 10;
                     }
-                    $model->Name = Yii::$app->user->identity->username;
-                    $model->Email_address = Yii::$app->user->identity->email;
+    //                    $model->Name = Yii::$app->user->identity->username;
+    //                    $model->Email_address = Yii::$app->user->identity->email;
 
                     if ($model->validate() && $model->save()) {
                         //-------------------- File Saving --------------------\\
@@ -128,7 +128,13 @@ class InboundController extends Controller
 
                             $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->Passport->name);
 
-                            $model->Passport->saveAs($baseUploadPath . '/' . $fileName);
+                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
+
+                            if (!file_exists(dirname($filePath))) {
+                                mkdir(dirname($filePath), 0777, true);
+                            }
+
+                            $model->Passport->saveAs($filePath);
                         }
                         if ($model->Latest_passport_photo) {
 
@@ -138,7 +144,13 @@ class InboundController extends Controller
 
                             $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->Latest_passport_photo->name);
 
-                            $model->Latest_passport_photo->saveAs($baseUploadPath . '/' . $fileName);
+                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
+
+                            if (!file_exists(dirname($filePath))) {
+                                mkdir(dirname($filePath), 0777, true);
+                            }
+
+                            $model->Latest_passport_photo->saveAs($filePath);
                         }
                         if ($model->Latest_certified_academic_transcript) {
 
@@ -148,7 +160,13 @@ class InboundController extends Controller
 
                             $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->Latest_certified_academic_transcript->name);
 
-                            $model->Latest_certified_academic_transcript->saveAs($baseUploadPath . '/' . $fileName);
+                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
+
+                            if (!file_exists(dirname($filePath))) {
+                                mkdir(dirname($filePath), 0777, true);
+                            }
+
+                            $model->Latest_certified_academic_transcript->saveAs($filePath);
                         }
                         if ($model->Confirmation_letter) {
 
@@ -158,7 +176,13 @@ class InboundController extends Controller
 
                             $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->Confirmation_letter->name);
 
-                            $model->Confirmation_letter->saveAs($baseUploadPath . '/' . $fileName);
+                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
+
+                            if (!file_exists(dirname($filePath))) {
+                                mkdir(dirname($filePath), 0777, true);
+                            }
+
+                            $model->Confirmation_letter->saveAs($filePath);
                         }
                         if ($model->Sponsorship_letter) {
 
@@ -168,7 +192,13 @@ class InboundController extends Controller
 
                             $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->Sponsorship_letter->name);
 
-                            $model->Sponsorship_letter->saveAs($baseUploadPath . '/' . $fileName);
+                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
+
+                            if (!file_exists(dirname($filePath))) {
+                                mkdir(dirname($filePath), 0777, true);
+                            }
+
+                            $model->Sponsorship_letter->saveAs($filePath);
                         }
                         if ($model->Recommendation_letter) {
 
@@ -178,7 +208,13 @@ class InboundController extends Controller
 
                             $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->Recommendation_letter->name);
 
-                            $model->Recommendation_letter->saveAs($baseUploadPath . '/' . $fileName);
+                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
+
+                            if (!file_exists(dirname($filePath))) {
+                                mkdir(dirname($filePath), 0777, true);
+                            }
+
+                            $model->Recommendation_letter->saveAs($filePath);
                         }
                         if ($model->English_certificate) {
 
@@ -188,7 +224,13 @@ class InboundController extends Controller
 
                             $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->English_certificate->name);
 
-                            $model->English_certificate->saveAs($baseUploadPath . '/' . $fileName);
+                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
+
+                            if (!file_exists(dirname($filePath))) {
+                                mkdir(dirname($filePath), 0777, true);
+                            }
+
+                            $model->English_certificate->saveAs($filePath);
                         }
                         //
                         $coursesData = Yii::$app->request->post('CoursesModel', []);
@@ -269,7 +311,12 @@ class InboundController extends Controller
                             $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $file->name);
                             $creationYearLastTwoDigits = date('y', strtotime($model->created_at));
                             $fileName = $creationYearLastTwoDigits . '_' . $model->ID . '_' . $fileNamePrefix . '.' . $file->extension;
-                            $file->saveAs($baseUploadPath . '/' . $fileName);
+                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
+                            if (!file_exists(dirname($filePath))) {
+                                mkdir(dirname($filePath), 0777, true);
+                            }
+
+                            $file->saveAs($filePath);
                             $model->$attribute = $fileName; // Update the model attribute with the new file name
                         }
                     };
@@ -335,17 +382,25 @@ class InboundController extends Controller
 
             try {
                 $filesToUpdate = [
-                    'Passport' => 'Passport',
+                    'proof_of_payment' => 'proof_of_payment',
                 ];
+                $baseUploadPath = Yii::getAlias('@common/uploads');
 
                 foreach ($filesToUpdate as $attribute => $fileNamePrefix) {
                     $file = UploadedFile::getInstance($model, $attribute);
                     if ($file) {
-                        $baseUploadPath = Yii::getAlias('@common/uploads');
+
                         $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $file->name);
                         $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
                         $fileName = $creationYearLastTwoDigits . '_' . $model->ID . '_' . $fileNamePrefix . '.' . $file->extension;
-                        $file->saveAs($baseUploadPath . '/' . $fileName);
+                        $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
+                        $model->proof_of_payment = $filePath;
+                        if (!file_exists(dirname($filePath))) {
+                            mkdir(dirname($filePath), 0777, true);
+                        }
+
+                        $file->saveAs($filePath);
+
                         $model->$attribute = $fileName; // Update the model attribute with the new file name
                     }
                 }

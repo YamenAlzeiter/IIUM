@@ -175,6 +175,7 @@ body{
     margin-bottom: 1rem;
 }
 
+
 .form__input {
     position: relative;
     top: 0;
@@ -525,4 +526,3 @@ ul.form-stepper li a .form-stepper-circle {
 .nav > li > form > button.logout:focus {
     outline: none;
 }
-

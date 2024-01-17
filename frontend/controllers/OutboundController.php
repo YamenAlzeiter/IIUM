@@ -458,12 +458,12 @@ class OutboundController extends Controller
                     $outFile->location = $fileName; // Set the location attribute
                     $outFile->save(false);
                 }
-//                if ($model->Status === 41){
-//                    $model->Status = 51;
-//                }
-//                if ($model->Status === 71){
-//                    $model->Status = 81;
-//                }
+                if ($model->Status === 41){
+                    $model->Status = 51;
+                }
+                if ($model->Status === 71){
+                    $model->Status = 81;
+                }
 
                 // Save the changes in the Outbound model
                 if ($model->validate() && $model->save()) {

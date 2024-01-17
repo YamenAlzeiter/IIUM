@@ -15,7 +15,7 @@ class SignupForm extends Model
     public $email;
     public $password;
     public $type;
-
+    public $matric_number;
     /**
      * {@inheritdoc}
      */
@@ -37,6 +37,8 @@ class SignupForm extends Model
 
             ['type', 'required'],
             ['type', 'in', 'range' => ['I', 'O']],
+
+            ['matric_number','unique','targetClass'=>'\common\models\User', 'message'=>'This matric number has already been taken.'],
         ];
     }
 
@@ -55,6 +57,7 @@ class SignupForm extends Model
         $user->username = $this->username;
         $user->email = $this->email;
         $user->type = $this->type;
+        $user->matric_number = $this->matric_number;
         $user->setPassword($this->password);
         $user->generateAuthKey();
         $user->generateEmailVerificationToken();

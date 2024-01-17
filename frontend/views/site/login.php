@@ -6,39 +6,41 @@
 /** @var LoginForm $model */
 
 use common\models\LoginForm;
-use yii\bootstrap5\Html;
 use yii\bootstrap5\ActiveForm;
+use yii\bootstrap5\Html;
 
 $this->title = 'Login';
 
 ?>
 
+<?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
+
+<?= $form->field($model, 'username')->textInput()->label('Email') ?>
+
+
+<?= $form->field($model, 'password', ['options' => ['class' => 'mb-4']])->passwordInput(['id'=>'password']) ?>
+<div class = "form-check mb-2">
+	<input class = "form-check-input" type = "checkbox" id = "show-password-toggle">
+	<label class = "form-check-label" for = "show-password-toggle">Show Password</label>
+</div>
+
+<div class="d-flex align-items-center justify-content-between mb-4">
+
+    <?= $form->field($model, 'rememberMe',
+        ['options' => ['class' => 'mb-0']])->checkbox(['class' => 'form-check-input primary'])->label('Remember this Device', ['class' => 'form-check-label text-dark fs-3']) ?>
+
+    <?= Html::a('Forgot Password?', ['site/request-password-reset'],['class' =>'text-primary fw-medium fs-3']) ?>
+</div>
+
+<?= Html::submitButton('Login', ['class' => 'btn btn-dark fs-5  w-100 py-8 mb-4 rounded-2', 'name' => 'login-button']) ?>
+
+<div class="d-flex align-items-center justify-content-center">
+	<p class="fs-4 mb-0 fw-medium">New to IIUM?</p>
+    <?= Html::a('Create an Account', ['site/signup'], ['class' => 'text-primary fw-medium ms-2']) ?>
+</div>
 
 
 
-            <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
 
-            <?= $form->field($model, 'username')->textInput(['autofocus' => true])->label('Email') ?>
-
-            <?= $form->field($model, 'password')->passwordInput() ?>
-
-            <?= $form->field($model, 'rememberMe')->checkbox() ?>
-
-			<div class = "my-1 mx-0" style = "color:#999;">
-				If you forgot your password you can <?= Html::a('reset it',
-                    ['site/request-password-reset']) ?>.
-				<br>
-				Need new verification email? <?= Html::a('Resend',
-                    ['site/resend-verification-email']) ?>
-			</div>
-
-			<div class = "form-group d-flex align-items-center mt-3 gap-2">
-                <?= Html::submitButton('Login',
-                    ['class' => 'btn btn-dark fs-5', 'name' => 'login-button']) ?>
-				<p class="mb-0">or</p>
-                <?= Html::a('Sign Up Here!', ['site/signup'], ['class' => 'text-decoration-underline']) ?>
-
-			</div>
-
-            <?php ActiveForm::end(); ?>
+<?php ActiveForm::end(); ?>
 

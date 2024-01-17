@@ -91,7 +91,7 @@
   --bs-dark-bg-subtle: #7C8FAC;
   --bs-primary-border-subtle: #becfff;
   --bs-secondary-border-subtle: #EAEFF4;
-  --bs-success-border-subtle: #a1f2e3;
+  --bs-success-border-subtle: #80c7b9;
   --bs-info-border-subtle: #bad7ff;
   --bs-warning-border-subtle: #ffdfa5;
   --bs-danger-border-subtle: #fdd0c4;
@@ -7489,6 +7489,10 @@ textarea.form-control-lg {
 .text-bg-success {
   color: #fff !important;
   background-color: RGBA(19, 222, 185, var(--bs-bg-opacity, 1)) !important;
+}
+.text-bg-success-style2{
+  color: #fff !important;
+  background-color: RGBA(64, 145, 108, var(--bs-bg-opacity, 1)) !important;
 }
 
 .text-bg-info {

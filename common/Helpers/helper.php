@@ -15,6 +15,7 @@ function getStatusFrom($status)
         case 10:
         case 51:
         case 55:
+        case 81:
             return 'Student';
 
             //        initial status (IO)
@@ -30,6 +31,7 @@ function getStatusFrom($status)
         case 45:
         case 61:
         case 65:
+        case 71:
             return 'International Office';
 
             //         after HOD status
@@ -70,6 +72,7 @@ function getStatusTo($status)
         case 36:
         case 51:
         case 55:
+        case 81:
             return 'International Office';
 
 
@@ -92,6 +95,7 @@ function getStatusTo($status)
         case 45:
         case 61:
         case 65:
+        case 71:
             return 'Student';
 
         default:
@@ -168,8 +172,8 @@ function getStatusIconClass($status)
 {
     if ($status == 2 || $status == 12 || $status == 22 || $status == 32 || $status == 42) {
         return 'round-8 text-bg-danger rounded-circle d-inline-block ';
-    } elseif ($status == 61 || $status == 65) {
-        return 'round-8 text-bg-success rounded-circle d-inline-block';
+    } elseif ($status == 61 || $status == 65 || $status == 81) {
+        return 'round-8 text-bg-success-style2 rounded-circle d-inline-block';
     } else {
         return 'round-8 text-bg-warning rounded-circle d-inline-block';
     }
@@ -179,8 +183,8 @@ function getStatusClass($status)
 {
     if ($status == 2 || $status == 12 || $status == 22 || $status == 32 || $status == 42) {
         return 'text-danger fw-semibold fs-3';
-    } elseif ($status == 61 || $status == 65) {
-        return 'text-success fw-semibold fs-3';
+    } elseif ($status == 61 || $status == 65 || $status == 81) {
+        return 'text-success-style2 fw-semibold fs-3';
     } else {
         return 'text-warning fw-semibold fs-3';
     }

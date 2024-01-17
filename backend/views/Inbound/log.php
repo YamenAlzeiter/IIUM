@@ -6,6 +6,7 @@ use yii\grid\GridView;
 $this->title = 'Status Change Logs';
 
 /** @var common\models\Log $model */
+require Yii::getAlias('@common').'/Helpers/helper.php';
 ?>
 
 <div class="outbound-log">
@@ -32,14 +33,17 @@ $this->title = 'Status Change Logs';
                         $class = 'badge bg-danger-subtle text-danger fw-semibold fs-3';
                         $text_color = 'text-danger';
                     } elseif ($model->new_status == 65) {
-                        $class = 'badge bg-success-subtle text-success fw-semibold fs-3';
-                        $text_color = 'text-success';
+                        $class = 'badge bg-success-subtle text-success-style2 fw-semibold fs-3';
+                        $text_color = 'text-success-style2';
+                    } elseif(in_array($model->new_status, [1,25,45])) {
+                        $class = 'badge bg-primary-subtle text-primary fw-semibold fs-3';
+                        $text_color = 'text-primary';
                     } else {
                         $class = 'badge bg-warning-subtle text-warning fw-semibold fs-3';
                         $text_color = 'text-warning';
                     }
 
-                    return '<div class="d-flex align-items-center gap-2"><div class="'.$class.'">'.$statusMeaning.'</div><i class="ti ti-info-circle fs-5 '.$text_color.' " data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true" title="'.htmlspecialchars($status->description).'"></i></div>';
+                    return '<div class="d-flex align-items-center gap-2"><div class="'.$class.'">'.$statusMeaning.'</div><i class="cursor-pointer ti ti-info-circle fs-5 '.$text_color.' " data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true" title="'.htmlspecialchars($status->description).'"></i></div>';
                 },
                 'contentOptions' => ['class' => 'col-1'],
             ],
@@ -56,9 +60,16 @@ $this->title = 'Status Change Logs';
                 },
             ],
             [
-                'attribute' => 'message', 'format' => 'raw', // Set the format to raw for rendering HTML
+                'attribute' => 'message',
+                'format' => 'raw',
                 'value' => function ($model) {
-                    return '<i class="ti ti-message-circle fs-7" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true" title="'.htmlspecialchars($model->message).'"></i>'; // Escape HTML characters
+                    if ($model->message == "") {
+                        // If $model->message is empty, return a disabled icon or any alternative content
+                        return '<i class="ti ti-message-circle fs-7 disabled-icon text-gray"></i>';
+                    } else {
+                        // If $model->message is not empty, return the regular icon with tooltip
+                        return '<i class="cursor-pointer ti ti-message-circle fs-7 fw-semibold text-dark" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true" title="'.htmlspecialchars($model->message).'"></i>';
+                    }
                 },
             ],
 

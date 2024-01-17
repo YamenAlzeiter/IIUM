@@ -817,12 +817,19 @@ function isFileRequired($file)
 
 
 	<p class = "font-monospace"><strong>I hereby submit this application for the IIUM Student Program (outbound) and attached all the following compulsory documents in support of the information provided</strong></p>
-
+	<div class="form-file">
+		<input type="file" class="form-file-input" id="image_homepage" name="image_homepage">
+		<label class="form-file-label" for="image_homepage">
+			<span class="form-file-text">Choose file...</span>
+			<span class="form-file-button">Browse</span>
+		</label>
+	</div>
 
     <?= $form->field($model, 'Offer_letter')->fileInput([
         'class' => 'form-control mb-2',
         'required' => isFileRequired($model->Offer_letter),
-    ])?>
+    ])->label($model->Name)?>
+	<?php echo $model->Name;?>
     <?= $form->field($model, 'Academic_transcript')->fileInput([
         'class' => 'form-control mb-2',
         'required' => isFileRequired($model->Academic_transcript),

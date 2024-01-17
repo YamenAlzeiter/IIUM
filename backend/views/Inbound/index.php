@@ -16,6 +16,8 @@ $this->title = 'Inbound';
 
 $distinctYears = Inbound::find()->select(['EXTRACT(YEAR FROM created_at) as year'])->distinct()->orderBy(['year' => SORT_DESC])->asArray()->column();
 $icon = Html::tag('i', '', ['class' => 'ti ti-file-spreadsheet']);
+
+require Yii::getAlias('@common').'/Helpers/helper.php';
 ?>
 
 
@@ -78,7 +80,9 @@ $icon = Html::tag('i', '', ['class' => 'ti ti-file-spreadsheet']);
                         if (in_array($model->Status, [6, 16, 26, 36, 46])) {
                             $class = 'badge bg-danger-subtle text-danger fw-semibold fs-3';
                         } elseif ($model->Status == 65) {
-                            $class = 'badge bg-success-subtle text-success fw-semibold fs-3';
+                            $class = 'badge bg-success-subtle text-success-style2 fw-semibold fs-3';
+                        } elseif ($model->Status == 5 || $model->Status == 25 || $model->Status == 45){
+                            $class = 'badge bg-primary-subtle text-primary fw-semibold fs-3';
                         } else {
                             $class = 'badge bg-warning-subtle text-warning fw-semibold fs-3';
                         }
@@ -89,18 +93,18 @@ $icon = Html::tag('i', '', ['class' => 'ti ti-file-spreadsheet']);
                     'label' => 'Actions', 'format' => 'raw', 'value' => function ($model) {
                         return '<div class="">'.Html::a('<i class="ti ti-eye fs-7" data-toggle="tooltip" title="View"></i>',
                                 ['view', 'ID' => $model->ID], [
-                                    'class' => 'text-info edit update-button mx-1', 'data-toggle' => 'tooltip',
+                                    'class' => 'text-dark edit update-button mx-1', 'data-toggle' => 'tooltip',
                                     'title' => 'View', // Tooltip for the 'View' action
                                 ]).' '.Html::a('<i class="ti ti-circle-check fs-7" data-toggle="tooltip" title="Action"></i>',
                                 ['action', 'ID' => $model->ID], [
-                                    'class' => 'text-danger edit mx-1', 'data-toggle' => 'tooltip',
+                                    'class' => 'text-primary edit mx-1', 'data-toggle' => 'tooltip',
                                     'data-placement' => "top", 'title' => 'Action', // Tooltip for the 'Action' action
                                 ]).' '.Html::a('<i class="ti ti-trash fs-7" data-toggle="tooltip" title="Log"></i>',
                                 ['delete', 'id' => $model->ID], [
                                     'class' => 'text-danger edit mx-1', 'data-toggle' => 'tooltip', 'title' => 'Log',
                                 ]).' '.Html::a('<i class="ti ti-file-database fs-7" data-toggle="tooltip" title="Log"></i>',
                                 ['log', 'ID' => $model->ID], [
-                                    'class' => 'text-dark edit mx-1', 'data-toggle' => 'tooltip', 'title' => 'Log',
+                                    'class' => 'text-warning edit mx-1', 'data-toggle' => 'tooltip', 'title' => 'Log',
                                     // Tooltip for the 'Log' action
                                 ]).'</div>';
                     }, 'contentOptions' => ['class' => 'col-1'],

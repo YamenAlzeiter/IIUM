@@ -353,7 +353,6 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 				</div>
                 <?php if ($modelPoc2): ?>
 					<p class = "mb-2 fw-light mb-1"><strong>name: </strong> <?= $modelPoc2->name ?></p>
-					<p class = "mb-2 fw-light mb-1"><strong>kulliyyah: </strong> <?= $modelPoc2->kulliah ?></p>
 					<p class = "mb-2 fw-light mb-1"><strong>Email: </strong> <a
 								href = "mailto:<?= $modelPoc2->email ?>"><?= $modelPoc2->email ?></a></p>
                 <?php else: ?>

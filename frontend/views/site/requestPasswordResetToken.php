@@ -19,7 +19,7 @@ $this->title = 'Request password reset';
                     <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
 
 					<div class="text-center">
-                        <?= Html::submitButton('Send', ['class' => 'btn btn-dark']) ?>
+                        <?= Html::submitButton('Send', ['class' => 'btn btn-dark fs-5  w-100 py-8 mb-4 rounded-2 mt-2']) ?>
 					</div>
 
                     <?php ActiveForm::end(); ?>

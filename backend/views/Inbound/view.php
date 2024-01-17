@@ -1,11 +1,9 @@
 <?php
 
-use common\models\Poc;
 use common\models\Status;
 use Psy\Util\Json;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\web\YiiAsset;
 
 /** @var yii\web\View $this */
 /** @var common\models\Inbound $model */
@@ -14,6 +12,8 @@ use yii\web\YiiAsset;
 $creationYearLastTwoDigits = date('y', strtotime($model->created_at));
 
 $fileName = $creationYearLastTwoDigits.'_'.$model->ID;
+
+require Yii::getAlias('@common').'/Helpers/helper.php';
 ?>
 <div class = "mb-3">
 	<h1 class = "text-capitalize text-start m-0"><?= $model->Name ?></h1>
@@ -190,9 +190,49 @@ $fileName = $creationYearLastTwoDigits.'_'.$model->ID;
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class = "row">
 
+			<div class = "col">
+				<div class = "card shadow-none border bg-light-gray">
+					<div class = "card-body">
+						<div class = "row">
+							<div class = "d-flex align-items-center header-info gap-1 mb-3">
+								<i class = "ti ti-file text-dark"></i>
+								<strong>
+									<h4 class = "fw-semibold m-0">Files</h4>
+								</strong>
+							</div>
+
+							<p class = "fw-semibold"><?= ($model->Passport) ? Html::a('Passport', [
+                                    'download', 'id' => $model->ID, 'file' => $fileName.'_Passport'.'.pdf'
+                                ]) : ''; ?></p>
+
+							<p class = "fw-semibold"><?= ($model->Latest_passport_photo) ? Html::a('Latest Passport Photo',
+                                    [
+                                        'download', 'id' => $model->ID,
+                                        'file' => $fileName.'_LatestPassportPhoto'.'.pdf'
+                                    ]) : ''; ?></p>
+
+							<p class = "fw-semibold"><?= ($model->Latest_certified_academic_transcript) ? Html::a('Latest Certified Academic Transcript',
+                                    [
+                                        'download', 'id' => $model->ID,
+                                        'file' => $fileName.'_LatestCertifiedAcademicTranscript'.'.pdf'
+                                    ]) : ''; ?></p>
+
+							<p class = "fw-semibold"><?= ($model->Confirmation_letter) ? Html::a('Confirmation Letter',
+                                    [
+                                        'download', 'id' => $model->ID, 'file' => $fileName.'_ConfirmationLetter'.'.pdf'
+                                    ]) : ''; ?></p>
+
+							<p class = "fw-semibold"><?= ($model->Sponsorship_letter) ? Html::a('Sponsorship Letter', [
+                                    'download', 'id' => $model->ID, 'file' => $fileName.'_SponsorshipLetter'.'.pdf'
+                                ]) : ''; ?></p>
+							<p class = "fw-semibold"><?= ($model->offer_letter) ? Html::a('Offer Letter', [
+                                    'download', 'id' => $model->ID, 'file' => $fileName.'_offerLetter'.'.pdf'
+                                ]) : ''; ?></p>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 	<div class = "col-lg-4">

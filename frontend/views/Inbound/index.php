@@ -1,14 +1,9 @@
 <?php
 
-use common\models\Inbound;
+
 use common\models\Status;
-use Psy\Util\Json;
 use yii\bootstrap5\ActiveForm;
-use yii\bootstrap5\LinkPager;
 use yii\helpers\Html;
-use yii\helpers\Url;
-use yii\grid\ActionColumn;
-use yii\grid\GridView;
 
 /** @var common\models\Inbound $model */
 /** @var common\models\Courses $courses */
@@ -387,9 +382,14 @@ if (!isset($noRecord)) {
 							</div>
 							<div class = "col-md-6">
 								<div class = "mb-3">
-                                    <?= $form->field($model, 'Passport')->fileInput([
-                                        'class' => 'form-control', 'id' => 'Passport',
-                                    ])->label(false) ?>
+
+                                        <?= $form->field($model, 'proof_of_payment', [
+                                            'template' => "{input}\n{label}\n{error}",
+                                        ])->fileInput([
+                                            'class' => 'form-control',
+                                            'id' => 'proof_of_payment',
+                                        ])->label($model->proof_of_payment, ['class' => 'control-label']) ?>
+
 								</div>
 							</div>
 						</div>

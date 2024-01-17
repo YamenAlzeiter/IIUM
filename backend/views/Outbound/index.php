@@ -71,10 +71,14 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                     if (in_array($model->Status, [2, 12, 22, 32, 42])) {
                         $class = 'badge bg-danger-subtle text-danger fw-semibold fs-3';
                         $classSpan = 'round-8 text-bg-danger rounded-circle d-inline-block me-1';
-                    } elseif ($model->Status == 61) {
-                        $class = 'badge bg-success-subtle text-success fw-semibold fs-3';
-                        $classSpan = 'round-8 text-bg-success rounded-circle d-inline-block me-1';
-                    } else {
+                    } elseif ($model->Status == 61 || $model->Status == 81) {
+                        $class = 'badge bg-success-subtle text-success-style2 fw-semibold fs-3';
+                        $classSpan = 'round-8 text-bg-success-style2 rounded-circle d-inline-block me-1';
+                    } elseif ($model->Status == 1 || $model->Status == 21 || $model->Status == 41 || $model->Status == 71){
+                        $class = 'badge bg-primary-subtle text-primary fw-semibold fs-3';
+                        $classSpan = 'round-8 text-bg-primary rounded-circle d-inline-block me-1';
+                    }
+					else {
                         $class = 'badge bg-warning-subtle text-warning fw-semibold fs-3';
                         $classSpan = 'round-8 text-bg-warning rounded-circle d-inline-block me-1';
                     }
@@ -85,11 +89,11 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                 'label' => 'Actions', 'format' => 'raw', 'value' => function ($model) {
                     return '<div class="">'.Html::a('<i class="ti ti-eye fs-7" data-toggle="tooltip" title="View"></i>',
                             ['view', 'ID' => $model->ID], [
-                                'class' => 'text-info edit update-button mx-1', 'data-toggle' => 'tooltip',
+                                'class' => 'text-dark edit update-button mx-1', 'data-toggle' => 'tooltip',
                                 'title' => 'View', // Tooltip for the 'View' action
                             ]).' '.Html::a('<i class="ti ti-circle-check fs-7" data-toggle="tooltip" title="Action"></i>',
                             ['action', 'ID' => $model->ID], [
-                                'class' => 'text-indigo edit mx-1', 'data-toggle' => 'tooltip',
+                                'class' => 'text-primary edit mx-1', 'data-toggle' => 'tooltip',
                                 'data-placement' => "top", 'title' => 'Action', // Tooltip for the 'Action' action
                             ]).' '.Html::a('<i class="ti ti-trash fs-7" data-toggle="tooltip" title="Log"></i>', ['delete', 'ID' => $model->ID], [
                             'class' => 'text-danger edit mx-1', 'data' => [
@@ -97,7 +101,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                             ],
                         ]) .' '.Html::a('<i class="ti ti-file-database fs-7" data-toggle="tooltip" title="Log"></i>',
                             ['log', 'ID' => $model->ID], [
-                                'class' => 'text-dark edit mx-1', 'data-toggle' => 'tooltip', 'title' => 'Log',
+                                'class' => 'text-warning edit mx-1', 'data-toggle' => 'tooltip', 'title' => 'Log',
                                 // Tooltip for the 'Log' action
                             ]).
 

@@ -25,7 +25,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
-require Yii::getAlias('@common').'/Helpers/helper.php';
+
 /**
  * InboundController implements the CRUD actions for Inbound model.
  */
@@ -486,6 +486,7 @@ class InboundController extends Controller
 
     public function actionExportExcel($year)
     {
+        require Yii::getAlias('@common').'/Helpers/helper.php';
         // Set up data provider with your query
         $dataProvider = new ActiveDataProvider([
             'query' => Inbound::find()->where(['and',['EXTRACT(YEAR FROM created_at)' => $year],['not',['Status'=> 6]]]),
