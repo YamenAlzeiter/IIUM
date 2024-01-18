@@ -145,7 +145,7 @@ if (!isset($noRecord)) {
 							</div>
 							<p class = "mb-2 fw-light mb-1"><strong>Level Of Education: </strong> <?= $model->Academic_lvl_edu ?></p>
 							<p class = "mb-2 fw-light mb-1"><strong>Kulliyyah: </strong> <?= $model->Academic_kulliyyah ?></p>
-                            <?php if ($model->Academic_kulliyyah_others !== "" && $model->Academic_kulliyyah_others !== null): ?>
+                            <?php if ($model->Academic_kulliyyah === 'OTHERS'): ?>
 								<p class="mb-2 fw-light mb-1">
 									<strong>Other Kulliyyah:</strong> <?= $model->Academic_kulliyyah_others ?>
 								</p>
@@ -173,7 +173,7 @@ if (!isset($noRecord)) {
 							<p class = "mb-2 fw-light mb-1"><strong>Host University Country: </strong><?= getCountry($model->Connect_host_country); ?></p>
 							<p class = "mb-2 fw-light mb-1"><strong>Avability for Credit Transfer: </strong> <?= getAnswer($model->credit_transfer_availability )?></p>
 							<p class = "mb-2 fw-light mb-1"><strong>Programme Type: </strong> <?= $model->Type_mobility_program ?></p>
-                            <?php if ($model->Type_mobility_program_other !== "" && $model->Type_mobility_program_other !== null): ?>
+                            <?php if ($model->Type_mobility_program === "Other"): ?>
 								<p class = "mb-2 fw-light mb-1"><strong>Programme Type
 								                                        (Other): </strong> <?= $model->Type_mobility_program_other ?>
 								</p>
@@ -249,10 +249,10 @@ if (!isset($noRecord)) {
                     <?php //= $model->academic_accept ?><!--</p>-->
 					<p class = "mb-2 fw-light mb-1"><strong>Name of Sponsoring Body:</strong> <?= $model->Sponsoring_name ?>
 					</p>
-                    <?php if ($model->Sponsoring_name_other !== "" && $model->Sponsoring_name_other !== null): ?>
+                    <?php if ($model->Sponsoring_name === "OTHERS"):?>
 						<p class = "mb-2 fw-light mb-1"><strong>Other (sponser):</strong> <?= $model->Sponsoring_name_other ?></p>
                     <?php endif;?>
-					<p class = "mb-2 fw-light mb-1"><strong>Funding:</strong> <?=getAnswer($model->Sponsoring_funding)?></p>
+					<p class = "mb-2 fw-light mb-1"><strong>Funding:</strong> <?=$model->Sponsoring_funding ?></p>
 
 				</div>
 			</div>

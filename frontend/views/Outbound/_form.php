@@ -31,7 +31,8 @@ function isFileRequired($file)
 				<div class = "form__div">
 					<input type = "text" class = "form__input form-control" id = "validationCustom01"
 					       name = "Outbound[Matric_Number]"
-					       maxlength = "255" placeholder = " " value = "<?= $model->Matric_Number ?>" required>
+					       maxlength = "255" placeholder = " " value = "<?= Yii::$app->user->identity->matric_number?>" disabled>
+					<input type="hidden" name="Outbound[Matric_Number]" value="<?= Yii::$app->user->identity->matric_number ?>">
 					<label for = "validationCustomMatric" class = "form__label">Matric Number</label>
 				</div>
 			</div>
@@ -48,7 +49,7 @@ function isFileRequired($file)
 		</div>
 		<div class = "form__div">
 			<input type = "text" class = "form__input form-control" id = "validationCustomName" name = "Outbound[Name]"
-			       maxlength = "255" placeholder = " " value = "<?= $model->Name ?>" required>
+			       maxlength = "255" placeholder = " " value="<?= $model->Name ? $model->Name : Yii::$app->user->identity->username ?>" required>
 			<label for = "validationCustomName" class = "form__label">Name</label>
 		</div>
 		<div class = "row align-items-center">
@@ -272,7 +273,7 @@ function isFileRequired($file)
 
 	<div class="form-height">
 		<div class = "row d-flex flex-row align-items-center">
-			<div class = "col-md-5">
+			<div class = "col-md-4">
 				<div class = "form__div">
 					<select class = "form__input form-control" id = "lvl_edu" name = "Outbound[Academic_lvl_edu]" required>
 						<option value = "">Select your Level of Education</option>
@@ -285,7 +286,7 @@ function isFileRequired($file)
 					</select>
 				</div>
 			</div>
-			<div class = "col-md-6">
+			<div class = "col-md-4">
 				<div class = "form__div">
 					<select class = "form__input form-control" id = "kulliyyah" name = "Outbound[Academic_kulliyyah]" required>
 						<option value = "">Select Kulliyyah</option>
@@ -303,37 +304,98 @@ function isFileRequired($file)
 					</select>
 				</div>
 			</div>
+			<div class = "col-md-4">
+				<div class = "form__div">
+					<input type = "text" class = "form__input form-control" id = "validationCustomOthers"
+					       name = "Outbound[Academic_kulliyyah_others]" value = "<?= $model->Academic_kulliyyah_others ?>"
+					       maxlength = "255" placeholder = " ">
+					<label for = "validationCustomOthers" class = "form__label">Others (Please specify)</label>
+				</div>
+			</div>
 
 
 			<div class = "row d-flex flex-row align-items-center">
-				<div class = "col-md-4">
-					<div class = "form__div">
-						<input type = "text" class = "form__input form-control" id = "validationCustomOthers"
-						       name = "Outbound[Academic_kulliyyah_others]" value = "<?= $model->Academic_kulliyyah_others ?>"
-						       maxlength = "255" placeholder = " ">
-						<label for = "validationCustomOthers" class = "form__label">Others (Please specify)</label>
-					</div>
-				</div>
-				<div class = "col-md-4">
-					<div class = "form__div">
-						<select class = "form__input form-control" id = "sem" name = "Outbound[Academic_current_semester]" required>
-							<option value = "">Select Semester</option>
-                            <?php
-                            for ($i = 1; $i <= 12; $i++) {
-                                echo "<option value=\"$i\" ".(($model->Academic_current_semester == $i) ? 'selected' : '').">Semester $i</option>";
+				<script>
+                    $(document).ready(function () {
+                        // Define a function to toggle the "Others" input field based on the selected option
+                        function toggleOthersField(dropdownId, othersInputId, otherOptionValue) {
+                            var dropdown = $("#" + dropdownId);
+                            var othersInput = $("#" + othersInputId).closest(".form__div");
+
+                            // Initially hide or show the "Others" input field based on the selected option
+                            toggle();
+
+                            // Add change event listener to the dropdown
+                            dropdown.change(function () {
+                                // Toggle the "Others" input field based on the selected option
+                                toggle();
+                            });
+
+                            // Function to toggle the "Others" input field based on the selected option
+                            function toggle() {
+                                var selectedOption = dropdown.val();
+
+                                // Check if the selected option is the specified "OTHERS" value
+                                if (selectedOption === otherOptionValue) {
+                                    // Show and make the "Others" input field required
+                                    $("#" + othersInputId).prop("disabled", false);
+                                } else {
+                                    // Hide and remove the required attribute
+                                    $("#" + othersInputId).prop("disabled", true);
+
+                                    // Clear the value in the "Others" input field
+                                    $("#" + othersInputId).val("");
+                                }
                             }
-                            ?>
-						</select>
-					</div>
-				</div>
-				<div class = "col-md-2">
-					<div class = "form__div">
-						<input type = "text" class = "form__input form-control" id = "validationCustomYear"
-						       name = "Outbound[Academic_current_year]" value = "<?= $model->Academic_current_year ?>"
-						       maxlength = "255" placeholder = " " required>
-						<label for = "validationCustomYear" class = "form__label">Year</label>
-					</div>
-				</div>
+                        }
+
+                        // Example usage for the first dropdown
+                        toggleOthersField("kulliyyah", "validationCustomOthers", "OTHERS");
+
+                        // Example usage for the second dropdown
+                        toggleOthersField("sponsoring_name", "validationCustomSponsoringNameOther", "OTHERS");
+
+                        // Example usage for the third dropdown and input field
+                        toggleOthersField("type_program", "validationCustomTypeProgramOther", "Other");
+                    });
+
+                    $(document).ready(function () {
+                        // Define a function to toggle the "Amount of Scholarship/grant (RM)" input field based on the selected radio button
+                        function toggleHostScholarshipAmountField() {
+                            var hostScholarshipYes = $("#host_scholarship_1");
+                            var scholarshipAmountInput = $("#validationCustomHostScholarshipAmount").closest(".form__div");
+
+                            // Initially hide or show the "Amount of Scholarship/grant (RM)" input field based on the selected radio button
+                            toggle();
+
+                            // Add change event listener to the radio buttons
+                            $("input[name='Outbound[host_scholarship]']").change(function () {
+                                // Toggle the "Amount of Scholarship/grant (RM)" input field based on the selected radio button
+                                toggle();
+                            });
+
+                            // Function to toggle the "Amount of Scholarship/grant (RM)" input field based on the selected radio button
+                            function toggle() {
+                                // Check if the "Yes" radio button is checked
+                                if (hostScholarshipYes.is(":checked")) {
+                                    // Show and make the "Amount of Scholarship/grant (RM)" input field required
+
+                                    $("#validationCustomHostScholarshipAmount").prop("disabled", false);
+                                } else {
+                                    // Hide and remove the required attribute
+
+                                    $("#validationCustomHostScholarshipAmount").prop("disabled", true);
+
+                                    // Clear the value in the "Amount of Scholarship/grant (RM)" input field
+                                    $("#validationCustomHostScholarshipAmount").val("");
+                                }
+                            }
+                        }
+
+                        // Example usage for the new set of radio buttons and input field
+                        toggleHostScholarshipAmountField();
+                    });
+				</script>
 			</div>
 
 			<div class = "row d-flex flex-row align-items-center">
@@ -345,7 +407,7 @@ function isFileRequired($file)
 						<label for = "validationCustomProgram" class = "form__label">Programme</label>
 					</div>
 				</div>
-				<div class = "col-md-5">
+				<div class = "col-md-2">
 					<div class = "form__div">
 						<input type = "text" class = "form__input form-control" id = "validationCustomCGPA"
 						       name = "Outbound[Academic_cgpa]" value = "<?= $model->Academic_cgpa ?>"
@@ -353,6 +415,32 @@ function isFileRequired($file)
 						<label for = "validationCustomCGPA" class = "form__label">Current CGPA</label>
 					</div>
 				</div>
+				<div class = "col-md-2">
+					<div class = "form__div">
+						<select class = "form__input form-control" id = "sem" name = "Outbound[Academic_current_semester]" required>
+							<option value = "">Select Semester</option>
+                            <?php
+                            for ($i = 1; $i <= 12; $i++) {
+                                echo "<option value=\"$i\" ".(($model->Academic_current_semester == $i) ? 'selected' : '').">Semester $i</option>";
+                            }
+                            ?>
+						</select>
+					</div>
+				</div>
+
+				<div class = "col-md-2">
+					<div class = "form__div">
+						<select class = "form__input form-control" id = "validationCustomYear" name = "Outbound[Academic_current_year]" required>
+							<option value = "">Select Year</option>
+                            <?php
+                            for ($i = 1; $i <= 6; $i++) {
+                                echo "<option value=\"$i\" ".(($model->Academic_current_year == $i) ? 'selected' : '').">year $i</option>";
+                            }
+                            ?>
+						</select>
+					</div>
+				</div>
+
 			</div>
 
 			<div class = "alert alert-light p-2 my-3">
@@ -385,7 +473,7 @@ function isFileRequired($file)
 					<input type = "text" class = "form__input form-control" id = "validationCustomThirdLang"
 					       name = "Outbound[Third_language]" value = "<?= $model->Third_language ?>"
 					       maxlength = "255"  placeholder = " ">
-					<label for = "validationCustomThirdLang" class = "form__label">Third Language</label>
+					<label for = "validationCustomThirdLang" class = "form__label">Third Language (optional)</label>
 				</div>
 			</div>
 		</div>
@@ -413,11 +501,12 @@ function isFileRequired($file)
 				</div>
 			</div>
 
-			<div class = "col-md-4 mt-2">
-				<div class = "form__div">
-					<select class = "form__input form-control" id = "sponsoring_name"
-					        name = "Outbound[Sponsoring_name]" required>
-						<option value = "">Select Name of Sponsoring Body</option>
+
+			<!-- Your existing HTML code -->
+			<div class="col-md-4 mt-2" id="sponsoringNameColumn">
+				<div class="form__div">
+					<select class="form__input form-control" id="sponsoring_name" name="Outbound[Sponsoring_name]" required>
+						<option value="">Select Name of Sponsoring Body</option>
                         <?php
                         $sponsoringBodyOptions = ["JPA", "MAEA", "PTPTN", "OTHERS"];
 
@@ -429,25 +518,25 @@ function isFileRequired($file)
 					</select>
 				</div>
 			</div>
-			<div class = "col-md-4 mt-2">
-				<div class = "form__div">
-					<input type = "text" class = "form__input form-control"
-					       id = "validationCustomSponsoringNameOther"
-					       name = "Outbound[Sponsoring_name_other]" value = "<?= $model->Sponsoring_name_other ?>"
-					       maxlength = "255" placeholder = " ">
-					<label for = "validationCustomSponsoringNameOther" class = "form__label">Others (Please
-					                                                                         Specify)</label>
+
+			<div class="col-md-4 mt-2" id="sponsoringNameOtherColumn">
+				<div class="form__div">
+					<input type="text" class="form__input form-control" id="validationCustomSponsoringNameOther"
+					       name="Outbound[Sponsoring_name_other]" value="<?= $model->Sponsoring_name_other ?>" maxlength="255"
+					       placeholder=" ">
+					<label for="validationCustomSponsoringNameOther" class="form__label">Others (Please Specify)</label>
 				</div>
 			</div>
-			<div class = "col-md-4 mt-2">
-				<div class = "form__div">
-					<input type = "number" class = "form__input form-control" id = "validationCustomFunding"
-					       name = "Outbound[Sponsoring_funding]" value = "<?= $model->Sponsoring_funding ?>" maxlength = "255"
-					       placeholder = " " required>
-					<label for = "validationCustomFunding" class = "form__label">Funding/ Sponsoring Amount
-					                                                             (RM)</label>
+
+			<div class="col-md-4 mt-2">
+				<div class="form__div">
+					<input type="number" class="form__input form-control" id="validationCustomFunding"
+					       name="Outbound[Sponsoring_funding]" value="<?= $model->Sponsoring_funding ?>" maxlength="255"
+					       placeholder=" " required>
+					<label for="validationCustomFunding" class="form__label">Funding/ Sponsoring Amount (RM)</label>
 				</div>
 			</div>
+
 		</div>
 	</div>
 
@@ -513,6 +602,7 @@ function isFileRequired($file)
 					<input type = "text" class = "form__input form-control"
 					       id = "validationCustomTypeProgramOther"
 					       name = "Outbound[Type_mobility_program_other]"
+					       value="<?= $model->Type_mobility_program_other?>"
 					       maxlength = "255" placeholder = " ">
 					<label for = "validationCustomTypeProgramOther" class = "form__label">Others (Please
 					                                                                      specify)</label>
@@ -533,7 +623,9 @@ function isFileRequired($file)
 				<div class = "form__div">
 					<input type = "date" class = "form__input form-control" id = "validationCustomMobilityFrom"
 					       name = "Outbound[Mobility_from]"
-					       value = "<?= htmlspecialchars($model->Mobility_from ?? '') ?>" required>
+					       value = "<?= htmlspecialchars($model->Mobility_from ?? '') ?>"
+					       min="<?= date('Y-m-d') ?>"
+					       required>
 					<label for = "validationCustomMobilityFrom" class = "form__label">Mobility From</label>
 				</div>
 			</div>
@@ -541,7 +633,9 @@ function isFileRequired($file)
 				<div class = "form__div">
 					<input type = "date" class = "form__input form-control" id = "validationCustomMobilityUntil"
 					       name = "Outbound[Mobility_until]"
-					       value = "<?= htmlspecialchars($model->Mobility_until ?? '') ?>" required>
+					       value = "<?= htmlspecialchars($model->Mobility_until ?? '') ?>"
+					       min="<?= date('Y-m-d') ?>"
+					       required>
 					<label for = "validationCustomMobilityUntil" class = "form__label">Mobility Until</label>
 				</div>
 			</div>
@@ -817,19 +911,13 @@ function isFileRequired($file)
 
 
 	<p class = "font-monospace"><strong>I hereby submit this application for the IIUM Student Program (outbound) and attached all the following compulsory documents in support of the information provided</strong></p>
-	<div class="form-file">
-		<input type="file" class="form-file-input" id="image_homepage" name="image_homepage">
-		<label class="form-file-label" for="image_homepage">
-			<span class="form-file-text">Choose file...</span>
-			<span class="form-file-button">Browse</span>
-		</label>
-	</div>
+
 
     <?= $form->field($model, 'Offer_letter')->fileInput([
         'class' => 'form-control mb-2',
         'required' => isFileRequired($model->Offer_letter),
-    ])->label($model->Name)?>
-	<?php echo $model->Name;?>
+    ])?>
+
     <?= $form->field($model, 'Academic_transcript')->fileInput([
         'class' => 'form-control mb-2',
         'required' => isFileRequired($model->Academic_transcript),

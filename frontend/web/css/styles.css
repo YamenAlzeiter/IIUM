@@ -2349,10 +2349,11 @@ progress {
 .form-control[type=file] {
   overflow: hidden;
   color: transparent;
+
 }
 .form-control[type=file]:not(:disabled):not([readonly]) {
   cursor: pointer;
-  color: transparent;
+
 }
 .form-control:focus {
   color: #5A6A85;
