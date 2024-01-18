@@ -46,18 +46,44 @@ class OutboundController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::class, 'rules' => [
+                'class' => AccessControl::class,
+                'rules' => [
                     [
                         'actions' => [
                             'index', 'view', 'update', 'delete', 'action', 'create', 'search', 'accept', 'reject',
-                            'load-people', 'dean-approval', 'resend', 'download', 'complete','log','export-excel','google-drive','download-all','download-after'
-                        ], 'allow' => true, 'roles' => ['@'],
+                            'load-people', 'dean-approval', 'resend', 'download', 'complete', 'log', 'export-excel', 'google-drive', 'download-all', 'download-after', 'actionDeleteMultiple'
+                        ],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    [
+                        'actions' => ['delete-multiple'], // Allow the delete-multiple action
+                        'allow' => true,
+                        'roles' => ['@'],
                     ],
                 ],
-            ], 'verbs' => ['class' => VerbFilter::class, 'actions' => ['delete' => ['POST']],],
+            ],
+            'verbs' => ['class' => VerbFilter::class, 'actions' => ['delete' => ['POST']],],
         ];
     }
 
+    public function actionDeleteMultiple()
+    {
+        $selectedIds = Yii::$app->request->post('selection'); // Assuming 'selection' is the name of the checkbox column
+
+        if (!empty($selectedIds)) {
+            // Use Yii2 ActiveRecord to delete the selected records
+            Outbound::deleteAll(['ID' => $selectedIds]);
+
+            // Redirect or perform any other action after deletion
+            Yii::$app->session->setFlash('success', 'Deleted successfully');
+            return $this->redirect(['index']);
+        } else {
+            // Handle the case where no records were selected
+            Yii::$app->session->setFlash('error', 'No records selected for deletion.');
+            return $this->redirect(['index']);
+        }
+    }
 
     public function actionIndex()
     {

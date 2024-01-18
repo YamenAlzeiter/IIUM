@@ -70,7 +70,11 @@ AppAsset::register($this);
 		</div>
 	</div>
 
-
+    <script>
+        setTimeout(function(){
+            $('.alert').fadeOut('slow');
+        }, 2500);
+    </script>
     <?php $this->endBody() ?>
     <?php
     // Bottom of the view file, before closing body tag

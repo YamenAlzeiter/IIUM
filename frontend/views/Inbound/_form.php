@@ -20,9 +20,10 @@
 			<div class = "form-height">
 
 				<div class = "form__div">
-					<input type = "text" class = "form__input form-control" id = "validationCustomName disabledTextInput"
+					<input type = "text" class = "form__input form-control"
+					       id = "validationCustomName disabledTextInput"
 					       name = "Inbound[Name]"
-					       maxlength = "255" placeholder = " " value = "<?= $model->Name?>" >
+					       maxlength = "255" placeholder = " " value = "<?= $model->Name ?>">
 					<label for = "validationCustomName" class = "form__label">Name</label>
 				</div>
 
@@ -152,7 +153,7 @@
 						<div class = "form__div">
 							<input type = "email" class = "form__input form-control" id = "validationCustomEmail"
 							       name = "Inbound[Email_address]"
-							       maxlength = "100" placeholder = " " value = "<?= $model->Email_address?>" >
+							       maxlength = "100" placeholder = " " value = "<?= $model->Email_address ?>">
 							<label for = "validationCustomEmail" class = "form__label">Email</label>
 						</div>
 					</div>
@@ -267,10 +268,15 @@
 			</div>
 			<div class = "d-flex justify-content-between">
 				<div>
-					<button class="btn btn-navigate-form-step btn-next fs-5" type="button" step_number="1">Back</button>
-					<button class="btn btn-primary btn-navigate-form-step btn-next fs-5" type="button" step_number="3">Next Step</button>
+					<button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "1">Back
+					</button>
+					<button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button"
+					        step_number = "3">Next Step
+					</button>
 				</div>
-				<button class="btn btn-outline-dark fs-5" type="button" name="saveWithoutValidation" onclick="submitForm('noValidate')"><i class="ti ti-device-floppy"></i> Save</button>
+				<button class = "btn btn-outline-dark fs-5" type = "button" name = "saveWithoutValidation"
+				        onclick = "submitForm('noValidate')"><i class = "ti ti-device-floppy"></i> Save
+				</button>
 			</div>
 
 		</section>
@@ -319,6 +325,13 @@
 							       maxlength = "255" placeholder = " " required>
 							<label for = "Academic_name_of_programme" class = "form__label">Academic Name of
 							                                                                Programme</label>
+						</div>
+						<div class = "form__div">
+		                    <textarea class = "form__input form-control" id = "Research_title"
+		                              name = "Inbound[Research_title]"
+		                              maxlength = "255"
+		                              placeholder = " " required><?= $model->Research_title ?></textarea>
+							<label for = "Research_title" class = "form__label">Research Title</label>
 						</div>
 					</div>
 
@@ -371,14 +384,6 @@
 							<label for = "Academic_current_result" class = "form__label">Current CGPA</label>
 						</div>
 					</div>
-				</div>
-
-
-				<div class = "form__div">
-    <textarea class = "form__input form-control" id = "Research_title"
-              name = "Inbound[Research_title]"
-              maxlength = "255" required placeholder = " "><?= $model->Research_title ?></textarea>
-					<label for = "Research_title" class = "form__label">Research Title</label>
 				</div>
 
 				<div class = "row mt-3 d-flex flex-row align-items-center">
@@ -476,10 +481,15 @@
 			</div>
 			<div class = "d-flex justify-content-between">
 				<div>
-					<button class="btn btn-navigate-form-step btn-next fs-5" type="button" step_number="2">Back</button>
-					<button class="btn btn-primary btn-navigate-form-step btn-next fs-5" type="button" step_number="4">Next Step</button>
+					<button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "2">Back
+					</button>
+					<button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button"
+					        step_number = "4">Next Step
+					</button>
 				</div>
-				<button class="btn btn-outline-dark fs-5" type="button" name="saveWithoutValidation" onclick="submitForm('noValidate')"><i class="ti ti-device-floppy"></i> Save</button>
+				<button class = "btn btn-outline-dark fs-5" type = "button" name = "saveWithoutValidation"
+				        onclick = "submitForm('noValidate')"><i class = "ti ti-device-floppy"></i> Save
+				</button>
 			</div>
 
 		</section>
@@ -514,11 +524,11 @@
 					<div class = "col-md-6">
 						<div class = "form__div">
 							<input type = "text" class = "form__input form-control"
-							       id = "validationCustomTypeProgramOther"
+							       id = "validationTypeProgramOther"
 							       name = "Inbound[Propose_type_of_programme_other]"
 							       maxlength = "255" placeholder = " "
 							       value = "<?= $model->Propose_type_of_programme_other ?>">
-							<label for = "validationCustomTypeProgramOther" class = "form__label">Others (Please
+							<label for = "validationTypeProgramOther" class = "form__label">Others (Please
 							                                                                      specify)</label>
 						</div>
 					</div>
@@ -554,8 +564,7 @@
 							       name = "Inbound[Propose_kulliyyah_applied]"
 							       maxlength = "255" placeholder = " "
 							       value = "<?= $model->Propose_kulliyyah_applied ?>">
-							<label for = "Propose_kulliyyah_applied" class = "form__label">Others (Please
-							                                                               specify)</label>
+							<label for = "Propose_kulliyyah_applied" class = "form__label">Kulliyyah Applied</label>
 						</div>
 					</div>
 				</div>
@@ -566,17 +575,17 @@
 							<input type = "date" class = "form__input form-control" id = "Propose_duration_start"
 							       name = "Inbound[Propose_duration_start]" required
 							       value = "<?= htmlspecialchars($model->Propose_duration_start ?? '') ?>"
-							       min="<?= date('Y-m-d') ?>">
+							       min = "<?= date('Y-m-d') ?>">
 							<label for = "Propose_duration_start" class = "form__label">Mobility From</label>
 						</div>
 
 					</div>
 					<div class = "col-md-3">
 						<div class = "form__div">
-							<input type =date class = "form__input form-control" id = "Propose_duration_end"
+							<input type = date class = "form__input form-control" id = "Propose_duration_end"
 							       name = "Inbound[Propose_duration_end]" required
 							       value = "<?= htmlspecialchars($model->Propose_duration_end ?? '') ?>"
-							       min="<?= date('Y-m-d') ?>">
+							       min = "<?= date('Y-m-d') ?>">
 							<label for = "Propose_duration_end" class = "form__label">Mobility Until</label>
 						</div>
 					</div>
@@ -589,17 +598,17 @@
 							<div class = "col py-2-5">
 								<div class = "form-check form-check-inline">
 									<input id = "Propose_duration_of_study_semester" type = "radio"
-									       name = "Inbound[Propose_duration_of_study]" value = "Semester"
-									       class = "form-check-input" <?= $model->Propose_duration_of_study === "Semester" ? 'checked' : '' ?>
+									       name = "Inbound[Propose_duration_of_study]" value = "0"
+									       class = "form-check-input" <?= $model->Propose_duration_of_study === "0" ? 'checked' : '' ?>
 									       required>
-									<label for = "Propose_duration_of_study_semester" class = "form-check-label">Semester</label>
+									<label for = "Propose_duration_of_study_semester" class = "form-check-label">No</label>
 								</div>
 								<div class = "form-check form-check-inline pl-3">
 									<input id = "Propose_duration_of_study_others" type = "radio"
-									       name = "Inbound[Propose_duration_of_study]" value = "Others"
-									       class = "form-check-input" <?= $model->Propose_duration_of_study === "Others" ? 'checked' : '' ?>>
+									       name = "Inbound[Propose_duration_of_study]" value = "1"
+									       class = "form-check-input" <?= $model->Propose_duration_of_study === "1" ? 'checked' : '' ?>>
 									<label for = "Propose_duration_of_study_others"
-									       class = "form-check-label">Others</label>
+									       class = "form-check-label">Yes</label>
 								</div>
 							</div>
 						</div>
@@ -658,10 +667,15 @@
 			</div>
 			<div class = "d-flex justify-content-between">
 				<div>
-					<button class="btn btn-navigate-form-step btn-next fs-5" type="button" step_number="3">Back</button>
-					<button class="btn btn-primary btn-navigate-form-step btn-next fs-5" type="button" step_number="5">Next Step</button>
+					<button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "3">Back
+					</button>
+					<button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button"
+					        step_number = "5">Next Step
+					</button>
 				</div>
-				<button class="btn btn-outline-dark fs-5" type="button" name="saveWithoutValidation" onclick="submitForm('noValidate')"><i class="ti ti-device-floppy"></i> Save</button>
+				<button class = "btn btn-outline-dark fs-5" type = "button" name = "saveWithoutValidation"
+				        onclick = "submitForm('noValidate')"><i class = "ti ti-device-floppy"></i> Save
+				</button>
 			</div>
 
 		</section>
@@ -793,13 +807,18 @@
 
 				</div>
 			</div>
-			<input type="hidden" name="Inbound[Status]" id="statusInput" value="<?= $model->Status?>">
+			<input type = "hidden" name = "Inbound[Status]" id = "statusInput" value = "<?= $model->Status ?>">
 			<div class = "d-flex justify-content-between">
 				<div>
-					<button class="btn btn-navigate-form-step btn-next fs-5" type="button" step_number="4">Back</button>
-					<button class="btn btn-primary btn-navigate-form-step btn-next fs-5" type="button" step_number="6">Next Step</button>
+					<button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "4">Back
+					</button>
+					<button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button"
+					        step_number = "6">Next Step
+					</button>
 				</div>
-				<button class="btn btn-outline-dark fs-5" type="button" name="saveWithoutValidation" onclick="submitForm('noValidate')"><i class="ti ti-device-floppy"></i> Save</button>
+				<button class = "btn btn-outline-dark fs-5" type = "button" name = "saveWithoutValidation"
+				        onclick = "submitForm('noValidate')"><i class = "ti ti-device-floppy"></i> Save
+				</button>
 			</div>
 		</section>
 		<!-- Step 6 input fields -->
@@ -928,10 +947,15 @@
 
 			<div class = "d-flex justify-content-between">
 				<div>
-					<button class="btn btn-navigate-form-step btn-next fs-5" type="button" step_number="5">Back</button>
-					<button class="btn btn-primary btn-navigate-form-step btn-next fs-5" type="button" step_number="7">Next Step</button>
+					<button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "5">Back
+					</button>
+					<button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button"
+					        step_number = "7">Next Step
+					</button>
 				</div>
-				<button class="btn btn-outline-dark fs-5" type="button" name="saveWithoutValidation" onclick="submitForm('noValidate')"><i class="ti ti-device-floppy"></i> Save</button>
+				<button class = "btn btn-outline-dark fs-5" type = "button" name = "saveWithoutValidation"
+				        onclick = "submitForm('noValidate')"><i class = "ti ti-device-floppy"></i> Save
+				</button>
 			</div>
 		</section>
 		<section id = "step-7" class = "form-step d-none">
@@ -987,10 +1011,15 @@
 			</div>
 
 			<div class = "d-flex justify-content-between">
-				<button class="btn btn-navigate-form-step btn-next fs-5" type="button" step_number="6">Back</button>
+				<button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "6">Back
+				</button>
 				<div>
-					<button class="btn btn-outline-dark fs-5" type="button" name="saveWithoutValidation" onclick="submitForm('noValidate')"><i class="ti ti-device-floppy"></i> Save</button>
-					<button class="btn btn-dark submit-btn px-3 fs-5" type="button" name="saveWithoutValidation" value="validate" onclick = "submitForm('validate')"><i class="ti ti-send"></i> Submit</button>
+					<button class = "btn btn-outline-dark fs-5" type = "button" name = "saveWithoutValidation"
+					        onclick = "submitForm('noValidate')"><i class = "ti ti-device-floppy"></i> Save
+					</button>
+					<button class = "btn btn-dark submit-btn px-3 fs-5" type = "button" name = "saveWithoutValidation"
+					        value = "validate" onclick = "submitForm('validate')"><i class = "ti ti-send"></i> Submit
+					</button>
 				</div>
 			</div>
 
@@ -1098,10 +1127,12 @@
         console.log(dropdown.value);
         if (dropdown.value === "Off Campus") {
             secondDropdown.style.display = "none";
+            room_type.removeAttribute('required');
             room_type.value = "";
         } else {
             secondDropdown.style.display = "flex";
-            room_type.setAttribute('required', 'required');
+            room_type.setAttribute('required', true);
+
         }
     }
 

@@ -103,8 +103,10 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 						</p>
 						<p class = "mb-2 fw-light mb-1"><strong>Level Of
 						                                        Education: </strong> <?= $model->Academic_lvl_edu ?></p>
+						<?php if($model->Academic_lvl_edu === "Diploma" || $model->Academic_lvl_edu === "Degree"):?>
 						<p class = "mb-2 fw-light mb-1">
 							<strong>Programme: </strong> <?= $model->Academic_name_of_programme ?></p>
+						<?php endif;?>
 						<p class = "mb-2 fw-light mb-1"><strong>Current
 						                                        Semester: </strong> <?= $model->Academic_current_semester ?>
 						</p>
@@ -116,8 +118,10 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 						<p class = "mb-2 fw-light mb-1"><strong>Current
 						                                        Result: </strong> <?= $model->Academic_current_result ?>
 						</p>
-						<p class = "mb-2 fw-light mb-1"><strong>Research Title: </strong> <?= $model->Research_title ?>
-						</p>
+                        <?php if($model->Academic_lvl_edu === "Master" || $model->Academic_lvl_edu === "PhD"):?>
+						<p class = "mb-2 fw-light mb-1"><strong>Research Title: </strong> <?= $model->Research_title ?></p>
+						<?php endif;?>
+
 						<p class = "mb-2 fw-light mb-1"><strong>University have MOU/MOA with
 						                                        IIUM: </strong> <?= getAnswer($model->Mou_or_Moa) ?></p>
 					</div>
@@ -135,9 +139,11 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 						<p class = "mb-2 fw-light mb-1"><strong>Type of
 						                                        Programme: </strong> <?= $model->Propose_type_of_programme ?>
 						</p>
+						<?php if($model->Propose_type_of_programme === "Other"):?>
 						<p class = "mb-2 fw-light mb-1"><strong>Type of Programme
 						                                        (Other): </strong> <?= $model->Propose_type_of_programme_other ?>
 						</p>
+						<?php endif;?>
 						<p class = "mb-2 fw-light mb-1"><strong>Type of
 						                                        Mobility: </strong> <?= getMobilityType($model->Propose_type_of_mobility) ?>
 						</p>
@@ -267,6 +273,10 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 				                                        Campus: </strong> <?= getAnswer($model->Financial_accommodation_on_campus) ?>
 				</p>
 				<p class = "mb-2 fw-light mb-1"><strong>Campus Location: </strong> <?= $model->campus_location ?></p>
+				<?php if($model->campus_location !== "Off Campus"):?>
+
+				<p class="mb-2 fw-light mb-1"><strong>Room Type: </strong> <?= $model->Room_type?></p>
+				<?php endif;?>
 				<p class = "mb-2 fw-light mb-1"><strong>Financial Funding for Fees and Living
 				                                        Expenses: </strong> <?= $model->Financial_funding ?></p>
                 <?php if ($model->Financial_funding === "Scholarship"): ?>

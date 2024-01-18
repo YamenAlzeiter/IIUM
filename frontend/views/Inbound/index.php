@@ -152,8 +152,10 @@ if (!isset($noRecord)) {
 						</p>
 						<p class = "mb-2 fw-light mb-1"><strong>Level Of
 						                                        Education: </strong> <?= $model->Academic_lvl_edu ?></p>
+                        <?php if($model->Academic_lvl_edu === "Diploma" || $model->Academic_lvl_edu === "Degree"):?>
 						<p class = "mb-2 fw-light mb-1">
 							<strong>Programme: </strong> <?= $model->Academic_name_of_programme ?></p>
+                        <?php endif;?>
 						<p class = "mb-2 fw-light mb-1"><strong>Current
 						                                        Semester: </strong> <?= $model->Academic_current_semester ?>
 						</p>
@@ -165,8 +167,9 @@ if (!isset($noRecord)) {
 						<p class = "mb-2 fw-light mb-1"><strong>Current
 						                                        Result: </strong> <?= $model->Academic_current_result ?>
 						</p>
-						<p class = "mb-2 fw-light mb-1"><strong>Research Title: </strong> <?= $model->Research_title ?>
-						</p>
+                        <?php if($model->Academic_lvl_edu === "Master" || $model->Academic_lvl_edu === "PhD"):?>
+							<p class = "mb-2 fw-light mb-1"><strong>Research Title: </strong> <?= $model->Research_title ?></p>
+                        <?php endif;?>
 						<p class = "mb-2 fw-light mb-1"><strong>University have MOU/MOA with
 						                                        IIUM: </strong> <?= getAnswer($model->Mou_or_Moa) ?></p>
 					</div>
@@ -184,9 +187,11 @@ if (!isset($noRecord)) {
 						<p class = "mb-2 fw-light mb-1"><strong>Type of
 						                                        Programme: </strong> <?= $model->Propose_type_of_programme ?>
 						</p>
-						<p class = "mb-2 fw-light mb-1"><strong>Type of Programme
-						                                        (Other): </strong> <?= $model->Propose_type_of_programme_other ?>
-						</p>
+                        <?php if($model->Propose_type_of_programme === "Other"):?>
+							<p class = "mb-2 fw-light mb-1"><strong>Type of Programme
+							                                        (Other): </strong> <?= $model->Propose_type_of_programme_other ?>
+							</p>
+                        <?php endif;?>
 						<p class = "mb-2 fw-light mb-1"><strong>Type of
 						                                        Mobility: </strong> <?= getMobilityType($model->Propose_type_of_mobility) ?>
 						</p>
@@ -239,6 +244,48 @@ if (!isset($noRecord)) {
 					</div>
 				</div>
 			</div>
+			<div class = "col">
+				<div class = "card shadow-none border bg-light-gray">
+					<div class = "card-body">
+						<div class = "row">
+							<div class = "d-flex align-items-center header-info gap-1 mb-3">
+								<i class = "ti ti-file text-dark"></i>
+								<strong>
+									<h4 class = "fw-semibold m-0">Files</h4>
+								</strong>
+							</div>
+
+							<p class = "fw-semibold"><?= ($model->Passport) ? Html::a('Passport', [
+                                    'download', 'id' => $model->ID, 'file' => $fileName.'_Passport'.'.pdf'
+                                ]) : ''; ?></p>
+
+							<p class = "fw-semibold"><?= ($model->Latest_passport_photo) ? Html::a('Latest Passport Photo',
+                                    [
+                                        'download', 'id' => $model->ID,
+                                        'file' => $fileName.'_LatestPassportPhoto'.'.pdf'
+                                    ]) : ''; ?></p>
+
+							<p class = "fw-semibold"><?= ($model->Latest_certified_academic_transcript) ? Html::a('Latest Certified Academic Transcript',
+                                    [
+                                        'download', 'id' => $model->ID,
+                                        'file' => $fileName.'_LatestCertifiedAcademicTranscript'.'.pdf'
+                                    ]) : ''; ?></p>
+
+							<p class = "fw-semibold"><?= ($model->Confirmation_letter) ? Html::a('Confirmation Letter',
+                                    [
+                                        'download', 'id' => $model->ID, 'file' => $fileName.'_ConfirmationLetter'.'.pdf'
+                                    ]) : ''; ?></p>
+
+							<p class = "fw-semibold"><?= ($model->Sponsorship_letter) ? Html::a('Sponsorship Letter', [
+                                    'download', 'id' => $model->ID, 'file' => $fileName.'_SponsorshipLetter'.'.pdf'
+                                ]) : ''; ?></p>
+							<p class = "fw-semibold"><?= ($model->offer_letter) ? Html::a('Offer Letter', [
+                                    'download', 'id' => $model->ID, 'file' => $fileName.'_offerLetter'.'.pdf'
+                                ]) : ''; ?></p>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 		<div class = "row">
 
@@ -276,6 +323,10 @@ if (!isset($noRecord)) {
 				                                        Campus: </strong> <?= getAnswer($model->Financial_accommodation_on_campus) ?>
 				</p>
 				<p class = "mb-2 fw-light mb-1"><strong>Campus Location: </strong> <?= $model->campus_location ?></p>
+                <?php if($model->campus_location !== "Off Campus"):?>
+
+					<p class="mb-2 fw-light mb-1"><strong>Room Type: </strong> <?= $model->Room_type?></p>
+                <?php endif;?>
 				<p class = "mb-2 fw-light mb-1"><strong>Financial Funding for Fees and Living
 				                                        Expenses: </strong> <?= $model->Financial_funding ?></p>
                 <?php if ($model->Financial_funding === "Scholarship"): ?>

@@ -1,6 +1,7 @@
 <?php
 
 use common\models\Status;
+use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\LinkPager;
 use yii\grid\GridView;
 use yii\helpers\Html;
@@ -45,6 +46,8 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 
 
 <div class = "table-responsive rounded-2 mb-4">
+	<?php ActiveForm::begin(['action' => ['delete-multiple'], 'method' => 'post']);?>
+
     <?=
 
     GridView::widget([
@@ -52,6 +55,10 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
         'tableOptions' => ['class' => 'table border text-nowrap customize-table mb-0 text-center'], 'summary' => '',
         // Show the current page and total pages
         'columns' => [
+            [
+                'class' => 'yii\grid\CheckboxColumn',
+                'contentOptions' => ['class' => 'col-sm-1 '],
+            ],
             [
                 'attribute' => 'created_at', 'label' => 'Date', 'format' => ['date', 'php:Y-m-d'],
                 'contentOptions' => ['class' => 'col-1'],
@@ -108,8 +115,13 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                         '</div>';
                 }, 'contentOptions' => ['class' => 'col-1'],
             ],
-        ], 'pager' => [
-            'class' => LinkPager::class, 'options' => ['class' => 'pagination justify-content-right pagination-lg'],
-        ], 'layout' => "{pager}\n{items}\n",
-    ]); ?>
+        ],   'pager' => [
+            'class' => LinkPager::class,
+            'options' => ['class' => 'pagination justify-content-end mt-2'], // Align pager to the right
+        ], 'layout' => "{items}\n{pager}",
+    ]);
+    echo Html::submitButton('Delete Selected', ['class' => 'btn btn-danger']);
+    ActiveForm::end();
+    ?>
+
 </div>
