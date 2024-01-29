@@ -42,13 +42,10 @@ $this->title = 'Person In Charge';
                         'title' => 'View', // Tooltip for the 'View' action
                         'data-target' => '#formpoc',
                     ]);
-                    $deleteButton = Html::a('<i class="ti ti-trash fs-7"></i>', ['delete', 'id' => $model->id], [
-                        'class' => 'text-danger edit mx-1',
-                        'data-toggle' => 'tooltip',
-                        'title' => 'Delete', // Tooltip for the 'View' action
+                    $deleteButton = Html::a('<i class="ti ti-trash fs-7" data-toggle="tooltip" title="Log"></i>', ['delete', 'id' => $model->id], [
+                        'class' => 'text-danger edit mx-1 delete-record', // Add a class to identify the delete action
                         'data' => [
-                            'confirm' => 'Are you sure you want to delete this item?',
-                            'method' => 'post',
+                            'action' => Url::to(['delete', 'id' => $model->id]), // Add the action URL to data attributes
                         ],
                     ]);
 

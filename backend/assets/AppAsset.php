@@ -26,6 +26,7 @@ class AppAsset extends AssetBundle
         'js/insertButtons.js',
         'js/counter.js',
         'js/charts.js',
+        'js/sweet-alert.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',

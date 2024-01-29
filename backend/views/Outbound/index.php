@@ -1,12 +1,11 @@
 <?php
 
+use common\models\Outbound;
 use common\models\Status;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\LinkPager;
 use yii\grid\GridView;
 use yii\helpers\Html;
-use yii\data\ActiveDataProvider;
-use common\models\Outbound;
 use yii\helpers\Url;
 
 // Import your model class here
@@ -26,39 +25,57 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
         <?= $this->render('_filters', ['searchModel' => $searchModel]); ?>
 	</div>
 
-	<div class = "dropdown">
-		<button class = "btn btn-excel btn-lg dropdown-toggle mb-0" type = "button" id = "dropdownMenuButton1"
-		        data-bs-toggle = "dropdown" aria-expanded = "false">
-			<i class = "ti ti-file-spreadsheet"></i> Download Excel
+	<div class="d-flex flex-row gap-2">
+		<button class="btn btn-light-danger btn-lg mb-0" id="fake-delete-btn" style="display: none;">
+			<i class="ti ti-trash text-danger fs-6"></i>
 		</button>
-		<ul class = "dropdown-menu" aria-labelledby = "dropdownMenuButton1">
-
-            <?php foreach ($distinctYears as $option): ?>
-				<li>
-                    <?= Html::a('Year '.$option, Url::to(['export-excel', 'year' => $option]),
-                        ['class' => 'dropdown-item']) ?>
-				</li>
-            <?php endforeach; ?>
-
-		</ul>
+		<div>
+			<div class = "btn-group">
+				<button class = "btn btn-light btn-lg dropdown-toggle mb-0 " type = "button" id = "dropdownMenuButton1"
+				        data-bs-toggle = "dropdown" aria-expanded = "false">
+					<i class = "ti ti-calendar"></i>
+				</button>
+				<ul class = "dropdown-menu dropdown-menu-end dropdown-menu-width" aria-labelledby = "dropdownMenuButton1">
+                    <?php foreach ($distinctYears as $option): ?>
+						<li>
+                            <?= Html::a(''.$option, Url::to(['index', 'year' => $option]),
+                                ['class' => 'dropdown-item']) ?>
+						</li>
+                    <?php endforeach; ?>
+				</ul>
+			</div>
+		</div>
+		<div class = "btn-group">
+			<button class = "btn btn-excel btn-lg dropdown-toggle mb-0 " type = "button" id = "dropdownMenuButton1"
+			        data-bs-toggle = "dropdown" aria-expanded = "false">
+				<i class = "ti ti-file-spreadsheet"></i> Download Excel
+			</button>
+			<ul class = "dropdown-menu dropdown-menu-width" aria-labelledby = "dropdownMenuButton1">
+                <?php foreach ($distinctYears as $option): ?>
+					<li>
+                        <?= Html::a('Year '.$option, Url::to(['export-excel', 'year' => $option]),
+                            ['class' => 'dropdown-item']) ?>
+					</li>
+                <?php endforeach; ?>
+			</ul>
+		</div>
 	</div>
+
 </div>
 
-
 <div class = "table-responsive rounded-2 mb-4">
-	<?php ActiveForm::begin(['action' => ['delete-multiple'], 'method' => 'post']);?>
-
-    <?=
-
-    GridView::widget([
+    <?php ActiveForm::begin(['action' => ['delete-multiple'], 'method' => 'post']) ?>
+    <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'tableOptions' => ['class' => 'table border text-nowrap customize-table mb-0 text-center'], 'summary' => '',
-        // Show the current page and total pages
         'columns' => [
-            [
-                'class' => 'yii\grid\CheckboxColumn',
-                'contentOptions' => ['class' => 'col-sm-1 '],
-            ],
+
+				Yii::$app->user->can('superAdmin') ? [
+
+                    'class' => 'yii\grid\CheckboxColumn', 'contentOptions' => ['class' => 'col-sm-1'],
+                    'headerOptions' => ['id' => 'checkbox-header'] // Add an ID to the checkbox header
+
+            ] :['contentOptions' => ['class' => 'col-1 opacity-0']],
             [
                 'attribute' => 'created_at', 'label' => 'Date', 'format' => ['date', 'php:Y-m-d'],
                 'contentOptions' => ['class' => 'col-1'],
@@ -81,11 +98,10 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                     } elseif ($model->Status == 61 || $model->Status == 81) {
                         $class = 'badge bg-success-subtle text-success-style2 fw-semibold fs-3';
                         $classSpan = 'round-8 text-bg-success-style2 rounded-circle d-inline-block me-1';
-                    } elseif ($model->Status == 1 || $model->Status == 21 || $model->Status == 41 || $model->Status == 71){
+                    } elseif ($model->Status == 1 || $model->Status == 21 || $model->Status == 41 || $model->Status == 71) {
                         $class = 'badge bg-primary-subtle text-primary fw-semibold fs-3';
                         $classSpan = 'round-8 text-bg-primary rounded-circle d-inline-block me-1';
-                    }
-					else {
+                    } else {
                         $class = 'badge bg-warning-subtle text-warning fw-semibold fs-3';
                         $classSpan = 'round-8 text-bg-warning rounded-circle d-inline-block me-1';
                     }
@@ -102,26 +118,27 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                             ['action', 'ID' => $model->ID], [
                                 'class' => 'text-primary edit mx-1', 'data-toggle' => 'tooltip',
                                 'data-placement' => "top", 'title' => 'Action', // Tooltip for the 'Action' action
-                            ]).' '.Html::a('<i class="ti ti-trash fs-7" data-toggle="tooltip" title="Log"></i>', ['delete', 'ID' => $model->ID], [
-                            'class' => 'text-danger edit mx-1', 'data' => [
-                                'confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',
-                            ],
-                        ]) .' '.Html::a('<i class="ti ti-file-database fs-7" data-toggle="tooltip" title="Log"></i>',
+                            ]).' '. Html::a('<i class="ti ti-trash fs-7" data-toggle="tooltip" title="Log"></i>', ['delete', 'ID' => $model->ID], [
+                                'class' => 'text-danger edit mx-1 delete-record', // Add a class to identify the delete action
+                                'data' => [
+                                    'action' => Url::to(['delete', 'ID' => $model->ID]), // Add the action URL to data attributes
+                                ],
+                            ]).' '.Html::a('<i class="ti ti-file-database fs-7" data-toggle="tooltip" title="Log"></i>',
                             ['log', 'ID' => $model->ID], [
                                 'class' => 'text-warning edit mx-1', 'data-toggle' => 'tooltip', 'title' => 'Log',
                                 // Tooltip for the 'Log' action
-                            ]).
-
-                        '</div>';
+                            ]).'</div>';
                 }, 'contentOptions' => ['class' => 'col-1'],
             ],
-        ],   'pager' => [
-            'class' => LinkPager::class,
-            'options' => ['class' => 'pagination justify-content-end mt-2'], // Align pager to the right
+        ], 'pager' => [
+            'class' => LinkPager::class, 'options' => ['class' => 'pagination justify-content-end mt-2'],
+            // Align pager to the right
         ], 'layout' => "{items}\n{pager}",
-    ]);
-    echo Html::submitButton('Delete Selected', ['class' => 'btn btn-danger']);
-    ActiveForm::end();
-    ?>
-
+    ]) ?>
+    <?= Html::submitButton('<i class="ti ti-trash text-danger fs-7"></i>', [
+        'class' => 'btn btn-light-danger', 'id' => 'delete-selected-btn', // Add an ID for easier selection
+        'style' => 'display: none;', // Hide the button initially
+    ]) ?>
+    <?php ActiveForm::end() ?>
 </div>
+

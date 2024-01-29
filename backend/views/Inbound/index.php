@@ -1,6 +1,7 @@
 <?php
 
 use common\models\Status;
+use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\LinkPager;
 use yii\grid\GridView;
 use yii\helpers\Html;
@@ -27,13 +28,30 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 		<div>
             <?= $this->render('_filters', ['searchModel' => $searchModel]); ?>
 		</div>
-
+		<div class="d-flex flex-row gap-2">
+			<button class="btn btn-light-danger btn-lg mb-0" id="fake-delete-btn" style="display: none;">
+				<i class="ti ti-trash text-danger fs-6"></i>
+			</button>
+			<div class = "btn-group">
+				<button class = "btn btn-light btn-lg dropdown-toggle mb-0 " type = "button" id = "dropdownMenuButton1"
+				        data-bs-toggle = "dropdown" aria-expanded = "false">
+					<i class = "ti ti-calendar"></i>
+				</button>
+				<ul class = "dropdown-menu dropdown-menu-end dropdown-menu-width" aria-labelledby = "dropdownMenuButton1">
+                    <?php foreach ($distinctYears as $option): ?>
+						<li>
+                            <?= Html::a(''.$option, Url::to(['index', 'year' => $option]),
+                                ['class' => 'dropdown-item']) ?>
+						</li>
+                    <?php endforeach; ?>
+				</ul>
+			</div>
 		<div class = "dropdown">
 			<button class = "btn btn-excel btn-lg dropdown-toggle mb-0" type = "button" id = "dropdownMenuButton1"
 			        data-bs-toggle = "dropdown" aria-expanded = "false">
 				<i class = "ti ti-file-spreadsheet"></i> Download Excel
 			</button>
-			<ul class = "dropdown-menu" aria-labelledby = "dropdownMenuButton1">
+			<ul class = "dropdown-menu dropdown-menu-width" aria-labelledby = "dropdownMenuButton1">
 
                 <?php foreach ($distinctYears as $option): ?>
 					<li>
@@ -44,15 +62,23 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 
 			</ul>
 		</div>
+		</div>
 	</div>
 
 
 	<div class = "table-responsive rounded-2 mb-4">
+        <?php ActiveForm::begin(['action' => ['delete-multiple'], 'method' => 'post']) ?>
         <?= GridView::widget([
             'dataProvider' => $dataProvider,
             'tableOptions' => ['class' => 'table border text-nowrap customize-table mb-0 text-center'], 'summary' => '',
             // Show the current page and total pages
             'columns' => [
+                Yii::$app->user->can('superAdmin') ? [
+
+                    'class' => 'yii\grid\CheckboxColumn', 'contentOptions' => ['class' => 'col-sm-1'],
+                    'headerOptions' => ['id' => 'checkbox-header'] // Add an ID to the checkbox header
+
+                ] :['contentOptions' => ['class' => 'col-1 opacity-0']],
                 [
                     'attribute' => 'updated_at', 'contentOptions' => ['class' => 'col-1'],
                     // Set the width for this column
@@ -99,10 +125,13 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                                 ['action', 'ID' => $model->ID], [
                                     'class' => 'text-primary edit mx-1', 'data-toggle' => 'tooltip',
                                     'data-placement' => "top", 'title' => 'Action', // Tooltip for the 'Action' action
-                                ]).' '.Html::a('<i class="ti ti-trash fs-7" data-toggle="tooltip" title="Log"></i>',
-                                ['delete', 'id' => $model->ID], [
-                                    'class' => 'text-danger edit mx-1', 'data-toggle' => 'tooltip', 'title' => 'Log',
-                                ]).' '.Html::a('<i class="ti ti-file-database fs-7" data-toggle="tooltip" title="Log"></i>',
+                                ]).' '.Html::a('<i class="ti ti-trash fs-7" data-toggle="tooltip" title="Log"></i>', ['delete', 'ID' => $model->ID], [
+                            'class' => 'text-danger edit mx-1 delete-record', // Add a class to identify the delete action
+                            'data' => [
+
+                                'action' => Url::to(['delete', 'ID' => $model->ID]), // Add the action URL to data attributes
+                            ],
+                        ]).' '.Html::a('<i class="ti ti-file-database fs-7" data-toggle="tooltip" title="Log"></i>',
                                 ['log', 'ID' => $model->ID], [
                                     'class' => 'text-warning edit mx-1', 'data-toggle' => 'tooltip', 'title' => 'Log',
                                     // Tooltip for the 'Log' action
@@ -115,5 +144,31 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                 'options' => ['class' => 'pagination mt-3 justify-content-right pagination-lg'],
             ], 'layout' => "{items}\n{pager}\n",
         ]); ?>
+        <?= Html::submitButton('<i class="ti ti-trash text-danger fs-7"></i>', [
+            'class' => 'btn btn-light-danger', 'id' => 'delete-selected-btn', // Add an ID for easier selection
+            'style' => 'display: none;', // Hide the button initially
+        ]) ?>
+        <?php ActiveForm::end() ?>
 	</div>
 
+	<script>
+        // jQuery script to toggle visibility of Delete Selected button based on checkbox selection
+        $(document).ready(function () {
+            // When any checkbox is changed
+            $('input[name="selection[]"]').change(function () {
+                // If any checkbox is checked, show the Delete Selected button; otherwise, hide it
+                if ($('input[name="selection[]"]:checked').length > 0) {
+                    $('#fake-delete-btn').show();
+                } else {
+                    $('#fake-delete-btn').hide();
+                }
+            });
+        });
+        $(document).ready(function () {
+            // When the fake delete button is clicked
+            $('#fake-delete-btn').click(function () {
+                // Trigger the click event of the hidden submit button
+                $('#delete-selected-btn').click();
+            });
+        });
+	</script>

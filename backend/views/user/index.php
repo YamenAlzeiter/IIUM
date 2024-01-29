@@ -3,6 +3,7 @@
 use yii\bootstrap5\ActiveForm;
 use yii\grid\GridView;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /** @var yii\web\View $this */
 /** @var yii\data\ActiveDataProvider $dataProvider */
@@ -33,14 +34,10 @@ use yii\helpers\Html;
                         'title' => 'View/ Update', // Tooltip for the 'View' action
                     ]);
 
-                    $deleteButton = Html::a('<i class="ti ti-trash fs-7"></i>', ['delete', 'id' => $model->id], [
-                        'class' => 'text-danger edit mx-1',
-                        'data-toggle' => 'tooltip',
-                        'title' => 'Delete', // Tooltip for the 'View' action
+                    $deleteButton = Html::a('<i class="ti ti-trash fs-7" data-toggle="tooltip" title="Log"></i>', ['delete', 'id' => $model->id], [
+                        'class' => 'text-danger edit mx-1 delete-record', // Add a class to identify the delete action
                         'data' => [
-                            'confirm' => 'Are you sure you want to delete this item?',
-                            'method' => 'post',
-
+                            'action' => Url::to(['delete', 'id' => $model->id]), // Add the action URL to data attributes
                         ],
                         'disabled' => $model->id === 1 ? true : false, // Disable the button for ID 1
                     ]);

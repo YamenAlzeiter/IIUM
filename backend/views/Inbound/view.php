@@ -15,20 +15,51 @@ $fileName = $creationYearLastTwoDigits.'_'.$model->ID;
 
 require Yii::getAlias('@common').'/Helpers/helper.php';
 ?>
-<div class = "mb-3">
-	<h1 class = "text-capitalize text-start m-0"><?= $model->Name ?></h1>
-	<div class = "d-flex gap-1 align-items-center">
-        <?php
-        $statusModel = Status::findOne(['ID' => $model->Status]);
-        $iconClass = getStatusIconClass($model->Status); // Implement your own logic to get the icon class based on status
-        $statusClass = getStatusClass($model->Status);
-        echo Html::tag('span', '', [
-            'class' => ''.$iconClass,
-        ]);
-        echo Html::tag('p', ($statusModel = Status::findOne(['ID' => $model->Status])) ? $statusModel->status : '', [
-            'class' => ' fw-semibold m-0  '.$statusClass, 'id' => 'status-badge text-capitalize',
-        ]);
-        ?>
+<div class = "d-flex float-row justify-content-between align-items-center">
+	<div>
+		<div class = "d-flex gap-1 align-items-center">
+        <?= Html::a('<i class="ti ti-arrow-left fs-8"></i>', Yii::$app->request->referrer) ?>
+		<h1 class = "text-capitalize text-start m-0"><?= $model->Name ?></h1>
+		</div>
+		<div class = "d-flex gap-1 align-items-center">
+            <?php
+            $statusModel = Status::findOne(['ID' => $model->Status]);
+            $iconClass = getStatusIconClass($model->Status); // Implement your own logic to get the icon class based on status
+            $statusClass = getStatusClass($model->Status);
+            echo Html::tag('span', '', [
+                'class' => ''.$iconClass,
+            ]);
+            echo Html::tag('p', ($statusModel = Status::findOne(['ID' => $model->Status])) ? $statusModel->status : '', [
+                'class' => ' fw-semibold m-0  '.$statusClass, 'id' => 'status-badge text-capitalize',
+            ]);
+            ?>
+		</div>
+	</div>
+	<div class = "d-flex flex-row justify-content-center">
+        <?= Html::a('<i class="ti ti-circle-check fs-7" data-toggle="tooltip" title="Action"></i>',
+            ['action', 'ID' => $model->ID], [
+                'class' => 'btn btn-lg btn-light-primary text-primary edit mx-1', 'data-toggle' => 'tooltip',
+                'data-placement' => "top", 'title' => 'Action', // Tooltip for the 'Action' action
+            ]) ?>
+
+        <?php if (Yii::$app->user->can('superAdmin')): ?>
+            <?= Html::a('<i class="ti ti-trash fs-7" data-toggle="tooltip" title="delete"></i>', ['delete', 'ID' => $model->ID], [
+                'class' => 'btn btn-lg btn-light-danger text-danger edit mx-1 delete-record', // Add a class to identify the delete action
+                'data' => [
+                    'action' => Url::to(['delete', 'ID' => $model->ID]), // Add the action URL to data attributes
+                ],
+            ])?>
+            <?=  Html::a('<i class="ti ti-edit fs-7" data-toggle="tooltip" title="update"></i>', ['update', 'ID' => $model->ID], [
+                'class' => 'text-secondary btn btn-lg btn-light-secondary edit mx-1', // Add a class to identify the delete action
+                'data' => [
+                    'action' => Url::to(['delete', 'ID' => $model->ID]), // Add the action URL to data attributes
+                ],
+            ])?>
+			<!--            --><?php //= Html::button('Update', [
+//                'class' => 'btn btn-primary',
+//                'onclick' => 'location.href='.Json::encode(Url::to(['update', 'ID' => $model->ID])),
+//            ]) ?>
+        <?php endif; ?>
 	</div>
 </div>
 <div class = "row">
@@ -376,22 +407,4 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
         <?php endif; ?>
 	</div>
 </div>
-<div class = "d-flex flex-row justify-content-center mt-5 gap-2 ">
-    <?= Html::
-    a('<button type="button" class="btn btn-outline-dark">
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
-                                      <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
-                                  </svg>back</button>', Yii::$app->request->referrer) ?>
-    <?= Html::a('Action', ['action', 'ID' => $model->ID], ['class' => 'btn btn-secondary']) ?>
-    <?php if (Yii::$app->user->can('superAdmin')): ?>
-        <?= Html::a('Delete', ['delete', 'ID' => $model->ID], [
-            'class' => 'btn btn-danger', 'data' => [
-                'confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',
-            ],
-        ]) ?>
-        <?= Html::button('Update', [
-            'class' => 'btn btn-primary',
-            'onclick' => 'location.href='.Json::encode(Url::to(['update', 'ID' => $model->ID])),
-        ]) ?>
-    <?php endif; ?>
-</div>
+

@@ -42,11 +42,11 @@
                 ], [
                     'template' => '<a href="{url}" class="sidebar-link">{label}</a>',
                     'label' => '<i class="ti ti-outbound"></i><span class="hide-menu">Outbound</span>',
-                    'url' => ['/outbound/index'], 'options' => ['class' => 'sidebar-item'],
+                    'url' => '/outbound/index?year=' .date('Y'), 'options' => ['class' => 'sidebar-item'],
                 ], [
                     'template' => '<a href="{url}" class="sidebar-link">{label}</a>',
                     'label' => '<i class="ti ti-arrows-exchange"></i><span class="hide-menu">Inbound</span>',
-                    'url' => ['/inbound/index'], 'options' => ['class' => 'sidebar-item'],
+                    'url' => '/inbound/index?year=' .date('Y'), 'options' => ['class' => 'sidebar-item'],
                 ], [
                     'label' => '<i class="ti ti-dots nav-small-cap-icon fs-4"></i><span class="hide-menu">Admin</span>',
                     'options' => ['class' => 'nav-small-cap'], 'template' => '{label}',

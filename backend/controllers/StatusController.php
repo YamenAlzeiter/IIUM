@@ -32,7 +32,7 @@ class StatusController extends Controller
                         'allow' => true,
                         'roles' => ['superAdmin'],
                         'denyCallback' => function ($rule, $action) {
-                            throw new NotFoundHttpException('You are not allowed to perform asdffffadsffadsfdsfds action.');
+                            throw new ForbiddenHttpException('You are not allowed to perform this action.');
                         },
                     ],
                 ],

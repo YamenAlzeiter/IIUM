@@ -3993,6 +3993,11 @@ textarea.form-control-lg {
   right: auto;
   left: 0;
 }
+.dropdown-menu-width {
+  min-width: auto !important;
+  width: 100% !important;
+  max-width: unset !important;
+}
 
 .dropdown-menu-end {
   --bs-position: end;

@@ -33,6 +33,7 @@ use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;
+use function PHPUnit\Framework\throwException;
 
 
 class OutboundController extends Controller
@@ -75,23 +76,22 @@ class OutboundController extends Controller
             // Use Yii2 ActiveRecord to delete the selected records
             Outbound::deleteAll(['ID' => $selectedIds]);
 
-            // Redirect or perform any other action after deletion
-            Yii::$app->session->setFlash('success', 'Deleted successfully');
-            return $this->redirect(['index']);
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return ['success' => true];
         } else {
-            // Handle the case where no records were selected
-            Yii::$app->session->setFlash('error', 'No records selected for deletion.');
-            return $this->redirect(['index']);
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return ['success' => false];
         }
     }
 
-    public function actionIndex()
+    public function actionIndex($year)
     {
+
         $searchModel = new outboundSearch();
         $statusModel = new Status();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        $dataProvider->query->andWhere(['and', ['EXTRACT(YEAR FROM created_at)' => date('Y')],['not', ['Status' => null]]]);
+        $dataProvider->query->andWhere(['and', ['EXTRACT(YEAR FROM created_at)' =>$year],['not', ['Status' => null]]]);
         $dataProvider->sort->defaultOrder = ['updated_at' => SORT_DESC];
 
         $months = $this->getMonthNames();
@@ -374,13 +374,16 @@ class OutboundController extends Controller
 
     public function actionUpdate($ID)
     {
-        $model = $this->findModel($ID);
+        if(Yii::$app->user->can('superAdmin')){
+            $model = $this->findModel($ID);
 
-        if ($model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(["view", "ID" => $model->ID]);
-        }
+            if ($model->load($this->request->post()) && $model->save()) {
+                return $this->redirect(["view", "ID" => $model->ID]);
+            }
 
-        return $this->render("update", ["model" => $model]);
+            return $this->render("update", ["model" => $model]);
+        }else
+            throw new ForbiddenHttpException('You are not allowed to perform this action.');
     }
 
     protected function findModel($ID)
@@ -402,7 +405,7 @@ class OutboundController extends Controller
     {
         if (Yii::$app->user->can('superAdmin')) {
             $this->findModel($ID)->delete();
-            return $this->redirect(["index"]);
+            return $this->redirect(["index", 'year'=> date("Y")]);
         } else {
             throw new ForbiddenHttpException();
         }
@@ -496,7 +499,7 @@ class OutboundController extends Controller
             $model->Status = $status;
             if ($model->save()) {
                 $this->sendEmailWithLink($model, $selectedPersonInChargeName, $email, $token, $template, $reason, $emailCc, $emailCc2);
-                return $this->redirect(["index"]);
+                return $this->redirect(["index", 'year'=> date("Y")]);
             }
         }
     }
@@ -576,7 +579,7 @@ class OutboundController extends Controller
             $model->Status = $status;
             if ($model->save()) {
                 $this->sendEmailToApplicant($name, $email, $reason, $templateId);
-                return $this->redirect(["index"]);
+                return $this->redirect(["index", 'year'=> date("Y")]);
             }
         }
     }
@@ -627,7 +630,7 @@ class OutboundController extends Controller
             $model->Status = $status;
             if ($model->save()) {
                 $this->sendEmailToApplicant($name, $email, $reason, $templateId);
-                return $this->redirect(["index"]);
+                return $this->redirect(["index", 'year'=> date("Y")]);
             }
         }
     }
@@ -661,7 +664,7 @@ class OutboundController extends Controller
         $model->temp = $reason;
 
         if ($model->save()) {
-            return $this->redirect(["index"]);
+            return $this->redirect(["index", 'year'=> date("Y")]);
         }
     }
 

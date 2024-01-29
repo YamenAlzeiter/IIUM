@@ -22,6 +22,7 @@ use yii\db\Expression;
 use yii\db\Query;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
@@ -42,12 +43,33 @@ class InboundController extends Controller
                     [
                         'actions' => [
                             'index', 'view', 'update', 'delete', 'action', 'create', 'search', 'accept', 'reject',
-                            'load-people', 'dean-approval', 'resend', 'download', 'complete', 'log', 'export-excel'
+                            'load-people', 'dean-approval', 'resend', 'download', 'complete', 'log', 'export-excel',
                         ], 'allow' => true, 'roles' => ['@'],
+                    ],
+                    [
+                        'actions' => ['delete-multiple'], // Allow the delete-multiple action
+                        'allow' => true,
+                        'roles' => ['@'],
                     ],
                 ],
             ], 'verbs' => ['class' => VerbFilter::class, 'actions' => ['delete' => ['POST']],],
         ];
+    }
+
+    public function actionDeleteMultiple()
+    {
+        $selectedIds = Yii::$app->request->post('selection'); // Assuming 'selection' is the name of the checkbox column
+
+        if (!empty($selectedIds)) {
+            // Use Yii2 ActiveRecord to delete the selected records
+            Inbound::deleteAll(['ID' => $selectedIds]);
+
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return ['success' => true];
+        } else {
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return ['success' => false];
+        }
     }
 
     /**
@@ -55,7 +77,7 @@ class InboundController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
+    public function actionIndex($year)
     {
         $searchModel = new inboundSearch();
         $statusModel = new Status();
@@ -67,7 +89,7 @@ class InboundController extends Controller
         ];
 
         // Exclude records with null status
-        $dataProvider->query->andWhere(['and', ['EXTRACT(YEAR FROM created_at)' => date('Y')],['not', ['Status' => null]]]);
+        $dataProvider->query->andWhere(['and', ['EXTRACT(YEAR FROM created_at)' => $year],['not', ['Status' => null]]]);
         $dataProvider->sort->defaultOrder = ['updated_at' => SORT_DESC];
 
         return $this->render("index",
@@ -153,15 +175,18 @@ class InboundController extends Controller
      */
     public function actionUpdate($ID)
     {
-        $model = $this->findModel($ID);
+        if(Yii::$app->user->can('superAdmin')) {
+            $model = $this->findModel($ID);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'ID' => $model->ID]);
-        }
+            if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+                return $this->redirect(['view', 'ID' => $model->ID]);
+            }
 
-        return $this->render('update', [
-            'model' => $model,
-        ]);
+            return $this->render('update', [
+                'model' => $model,
+            ]);
+        }else
+            throw new ForbiddenHttpException('You are not allowed to perform this action.');
     }
 
     /**
@@ -191,7 +216,7 @@ class InboundController extends Controller
     {
         $this->findModel($ID)->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['index', 'year' => date('Y')]);
     }
 
     public function actionSearch()
@@ -292,7 +317,7 @@ class InboundController extends Controller
             $model->Status = $status;
             if ($model->save()) {
                 $this->sendEmailWithLink($model, $selectedPersonInChargeName, $email, $token, $template, $reason, $emailCc, $emailCc2);
-                return $this->redirect(["index"]);
+                return $this->redirect(["index", 'year'=> date("Y")]);
             }
         }
     }
@@ -377,7 +402,7 @@ class InboundController extends Controller
             $model->Status = $status;
             if ($model->save()) {
                 $this->sendEmailToApplicant($name, $email, $reason, $templateId);
-                return $this->redirect(["index"]);
+                return $this->redirect(["index", 'year'=> date("Y")]);
             }
         }
     }
@@ -430,7 +455,7 @@ class InboundController extends Controller
             $model->Status = $status;
             if ($model->save()) {
                 $this->sendEmailToApplicant($name, $email, $reason, $templateId);
-                return $this->redirect(["index"]);
+                return $this->redirect(["index", 'year'=> date("Y")]);
             }
         }
     }
@@ -467,7 +492,7 @@ class InboundController extends Controller
 
         $model->temp = $reason;
         if ($model->save()) {
-            return $this->redirect(["index"]);
+            return $this->redirect(["index", 'year'=> date("Y")]);
         }
     }
     
