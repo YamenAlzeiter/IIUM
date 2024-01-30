@@ -2,11 +2,20 @@
 use common\models\Countries;
 use common\models\States;
 use yii\web\Controller;
+
+/**
+ * CountriesController handles AJAX requests related to countries and states.
+ */
 class CountryiesController extends Controller
 {
+
+    /**
+     * Retrieves a list of countries.
+     * @return string the HTML options for countries
+     */
     public function actionGetCountries()
     {
-        $countries = Countries::find()->all(); // Replace YourCountryModel with your actual model class name
+        $countries = Countries::find()->all();
         $options = '<option value="">Select Country</option>';
         foreach ($countries as $country) {
             $options .= '<option value="'.$country->id.'">'.$country->name.'</option>';
@@ -15,10 +24,13 @@ class CountryiesController extends Controller
         Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
         return $options;
     }
-
+    /**
+     * Retrieves a list of nationalities based on countries.
+     * @return string the HTML options for nationalities
+     */
     public function actionGetNationality()
     {
-        $countries = Countries::find()->all(); // Replace YourCountryModel with your actual model class name
+        $countries = Countries::find()->all();
         $options = '<option value="">Select Nationality</option>';
         foreach ($countries as $country) {
             $options .= '<option value="'.$country->nationality.'">'.$country->nationality.'</option>';
@@ -27,7 +39,10 @@ class CountryiesController extends Controller
         Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
         return $options;
     }
-
+    /**
+     * Retrieves a list of states based on the selected country.
+     * @return string the HTML options for states
+     */
     public function actionGetStates()
     {
         $countryId = Yii::$app->request->post('countryId');

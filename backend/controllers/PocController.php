@@ -15,7 +15,7 @@ use yii\filters\VerbFilter;
 use yii\web\Response;
 
 /**
- * PocController implements the CRUD actions for Poc model.
+ * PocController implements the CRUD actions for person in charge model.
  */
 class PocController extends Controller
 {
@@ -24,24 +24,28 @@ class PocController extends Controller
      */
     public function behaviors()
     {
-
         return [
             'access' => [
-                'class' => AccessControl::class, 'rules' => [
+                'class' => AccessControl::class,
+                'rules' => [
                     [
-                        'actions' => [
-                            'index', 'view', 'update', 'delete', 'create','get-record'
-                        ], 'allow' => true, 'roles' => ['@'],
+                        'actions' => ['index', 'view', 'update', 'delete', 'create', 'get-record'],
+                        'allow' => true,
+                        'roles' => ['@'],
                     ],
                 ],
-            ], 'verbs' => ['class' => VerbFilter::class, 'actions' => ['delete' => ['POST']],],
+            ],
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => ['delete' => ['POST']],
+            ],
         ];
     }
 
     /**
-     * Lists all Poc models.
+     * Lists all person in charge models.
      *
-     * @return string
+     * @return string The rendering result.
      */
     public function actionIndex()
     {
@@ -50,12 +54,11 @@ class PocController extends Controller
         $modelKedio = new Kcdio();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-
         if ($this->request->isPost && $model->load($this->request->post())) {
             $selectedValueFromKedio = $this->request->post('Poc')['KCDIO'];
             $model->KCDIO = $selectedValueFromKedio;
             if ($model->save()) {
-                // Redirect to the view page after successful creation
+                // Redirect to the index page after successful creation
                 return $this->redirect(['index']);
             }
         }
@@ -68,12 +71,12 @@ class PocController extends Controller
         ]);
     }
 
-
     /**
-     * Displays a single Poc model.
-     * @param int $id ID
-     * @return string
-     * @throws NotFoundHttpException if the model cannot be found
+     * Displays a single person in charge model record.
+     *
+     * @param int $id The ID of the person in charge model.
+     * @return string The rendering result.
+     * @throws NotFoundHttpException if the model cannot be found.
      */
     public function actionView($id)
     {
@@ -84,6 +87,12 @@ class PocController extends Controller
         ]);
     }
 
+    /**
+     * Updates an existing Person in charge model.
+     *
+     * @param int $id The ID of the person in charge model to be updated.
+     * @return string|\yii\web\Response The rendering result or a redirection response.
+     */
     public function actionUpdate($id)
     {
         $model = Poc::findOne($id);
@@ -97,10 +106,16 @@ class PocController extends Controller
             'model' => $model,
         ]);
     }
+
+    /**
+     * Retrieves a person in charge model record as JSON data.
+     *
+     * @param int $id The ID of the person in charge model.
+     * @return array JSON response containing the person in charge model data.
+     */
     public function actionGetRecord($id)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-
         $model = Poc::findOne($id);
 
         return [
@@ -113,6 +128,12 @@ class PocController extends Controller
             'KCDIO' => $model->KCDIO,
         ];
     }
+
+    /**
+     * Creates a new person in charge record.
+     *
+     * @return string|\yii\web\Response The rendering result or a redirection response.
+     */
     public function actionCreate()
     {
         $model = new Poc();
@@ -127,15 +148,12 @@ class PocController extends Controller
         ]);
     }
 
-
-
-
     /**
-     * Deletes an existing Poc model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $id ID
-     * @return \yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
+     * Deletes an existing person in charge record.
+     *
+     * @param int $id The ID of the Person in charge model to be deleted.
+     * @return \yii\web\Response A redirection response to the 'index' page.
+     * @throws NotFoundHttpException if the model cannot be found.
      */
     public function actionDelete($id)
     {
@@ -145,11 +163,11 @@ class PocController extends Controller
     }
 
     /**
-     * Finds the Poc model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param int $id ID
-     * @return Poc the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
+     * Finds the person in charge model based on its primary key value.
+     *
+     * @param int $id The ID of the person in charge model.
+     * @return Poc The loaded model.
+     * @throws NotFoundHttpException if the model cannot be found.
      */
     protected function findModel($id)
     {

@@ -22,7 +22,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 				</div>
 				<div class = "d-flex gap-2">
                     <?= Html::a('<button class="btn btn-warning p-3 rounded-circle d-flex align-items-center justify-content-center customizer-btn"><i class="ti ti-eye fs-5"></i></button>',
-                        ['view-full', 'ID' => $model->ID, 'token' => $model->token],) ?>
+                        ['view-full', 'ID' => $model->ID, 'token' => $model->Token],) ?>
 					<a href = "javascript:void(0)" class = "btn btn-outline-dark d-flex align-items-center px-3"
 					   id = "add-notes">
 						<!--		                <i class="ti ti-file me-0 me-md-1 fs-4"></i>-->
@@ -195,7 +195,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 
                             <?php ActiveForm::begin([
                                 'action' => [
-                                    'approve', 'ID' => $model->ID, 'token' => $model->token
+                                    'approve', 'ID' => $model->ID, 'token' => $model->Token
                                 ], 'class' => 'form'
                             ]) ?>
                             <?= Html::hiddenInput('status', 11, ['id' => 'status-input-reject']); ?>
@@ -207,7 +207,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 
                             <?php ActiveForm::begin([
                                 'action' => [
-                                    'reject', 'ID' => $model->ID, 'token' => $model->token
+                                    'reject', 'ID' => $model->ID, 'token' => $model->Token
                                 ], 'class' => 'form'
                             ]) ?>
                             <?= Html::hiddenInput('status', 12, ['id' => 'status-input-reject']); ?>

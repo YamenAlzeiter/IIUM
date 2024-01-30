@@ -21,8 +21,13 @@ use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 require Yii::getAlias('@common').'/Helpers/helper.php';
+
 /**
- * Site controller
+ * SiteController is the controller responsible for handling site-related actions.
+ * It includes actions for user authentication, dashboard display, password management,
+ * and data export functionalities.
+ *
+ * @property \common\models\AdminLoginForm|\backend\models\PasswordResetRequestForm|\backend\models\ResetPasswordForm|\backend\models\SignupForm $model The model for the current action.
  */
 class SiteController extends Controller
 {
@@ -37,13 +42,9 @@ class SiteController extends Controller
                 'rules' => [
                     [
                         'actions' => ['signup', 'reset-password', 'request-password-reset','login', 'error','not','out-backup', 'in-backup'],
-                        // Include 'request-password-reset'
                         'allow' => true,
                     ],
-//                    [
-//                        'actions' => ['login', 'error'],
-//                        'allow' => true,
-//                    ],
+
                     [
                         'actions' => ['logout', 'index', 'inbound-dashboard','outbound-dashboard'],
                         'allow' => true,
@@ -74,9 +75,10 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays homepage.
+     * Displays the inbound dashboard for a specific year.
      *
-     * @return string
+     * @param int $year The year for which to display the dashboard.
+     * @return string The rendered view of the inbound dashboard.
      */
     public function actionInboundDashboard($year)
     {
@@ -94,8 +96,18 @@ class SiteController extends Controller
         ]);
     }
 
+    /**
+     * Displays the outbound dashboard for a specific year or the current year if no year is provided.
+     *
+     * @param int|null $year The year for which to display the dashboard. If not provided, the current year is used.
+     * @return string The rendered view of the outbound dashboard.
+     */
     public function actionOutboundDashboard($year = null)
     {
+        if($year === null){
+            $year = date('Y');
+        }
+
         $months = $this->getMonthNames();
         $counts = $this->getMonthlyCounts('outbound', $year);
 
@@ -110,7 +122,11 @@ class SiteController extends Controller
         ]);
     }
 
-// Function to get month names
+    /**
+     * Retrieves an array of month names.
+     *
+     * @return array An array containing the names of all months.
+     */
     private function getMonthNames()
     {
         $months = [];
@@ -120,7 +136,13 @@ class SiteController extends Controller
         return $months;
     }
 
-// Function to get counts for each month
+    /**
+     * Retrieves the monthly counts of records for a given table and year.
+     *
+     * @param string $tableName The name of the database table.
+     * @param int $year The year for which to retrieve counts.
+     * @return array An array containing the counts of records for each month of the year.
+     */
     private function getMonthlyCounts($tableName, $year)
     {
         $data = (new \yii\db\Query())
@@ -150,7 +172,14 @@ class SiteController extends Controller
         return $counts;
     }
 
-// Function to get gender count
+    /**
+     * Retrieves the count of records for a specific gender in a given table and year.
+     *
+     * @param string $gender The gender for which to retrieve the count.
+     * @param string $table The name of the database table.
+     * @param int $year The year for which to retrieve the count.
+     * @return int The count of records matching the specified gender.
+     */
     private function getGenderCount($gender, $table, $year)
     {
         return (new \yii\db\Query())
@@ -163,9 +192,9 @@ class SiteController extends Controller
 
 
     /**
-     * Login action.
+     * Renders the login view or redirects to the home page if the user is already authenticated.(current home page: "outbound-dashboard" can be changed throw backend/config/main.php -> url management )
      *
-     * @return string|Response
+     * @return string|Response The rendered login view or a redirection response to the home page.
      */
     public function actionLogin()
     {
@@ -188,9 +217,9 @@ class SiteController extends Controller
     }
 
     /**
-     * Logout action.
+     * Logs out the current user and redirects to the home page.
      *
-     * @return Response
+     * @return Response A redirection response to the home page.
      */
     public function actionLogout()
     {
@@ -199,6 +228,11 @@ class SiteController extends Controller
         return $this->goHome();
     }
 
+    /**
+     * Initiates the process for requesting a password reset.
+     *
+     * @return string The rendered view for requesting a password reset token.
+     */
     public function actionRequestPasswordReset()
     {
         $this->layout = 'blank';
@@ -219,6 +253,13 @@ class SiteController extends Controller
         ]);
     }
 
+    /**
+     * Resets the user's password using the provided token.
+     *
+     * @param string $token The password reset token.
+     * @return string The rendered view indicating the success or failure of the password reset operation.
+     * @throws BadRequestHttpException If the provided token is invalid.
+     */
     public function actionResetPassword($token)
     {
         $this->layout = 'blank';
@@ -239,6 +280,11 @@ class SiteController extends Controller
         ]);
     }
 
+    /**
+     * Renders the signup view or processes the signup form submission.
+     *
+     * @return string|Response The rendered signup view or a redirection response to the home page upon successful signup.
+     */
     public function actionSignup()
     {
         $model = new SignupForm();
@@ -250,6 +296,11 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
+    /**
+     * Renders the error view based on the type of exception encountered.
+     *
+     * @return string The rendered error view.
+     */
     public function actionError()
     {
         $exception = Yii::$app->errorHandler->exception;
@@ -261,6 +312,10 @@ class SiteController extends Controller
             return $this->render('error', ['exception' => $exception]);
         }
     }
+
+    /**
+     * Exports data from the 'outbound' table to an Excel file.
+     */
     public function actionOutBackup()
     {
         // Get the list of columns for the 'outbound' table
@@ -272,7 +327,7 @@ class SiteController extends Controller
         });
 
         // Columns to exclude from export
-        $columnsToExclude = ['temp', 'ID', 'updated_at', 'created_at', 'token'];
+        $columnsToExclude = ['temp', 'ID', 'updated_at', 'created_at', 'Token'];
 
         // Extract column names
         $columnsToFetch = array_map(function ($column) {
@@ -324,6 +379,9 @@ class SiteController extends Controller
         Yii::$app->response->sendFile($filePath)->send();
     }
 
+    /**
+     * Exports data from the 'inbound' table to an Excel file.
+     */
     public function actionInBackup()
     {
         // Get the list of columns for the 'outbound' table
@@ -390,6 +448,7 @@ class SiteController extends Controller
      * @param array  $columns    Columns to process
      * @param string $methodName Method to apply to column values
      */
+
     private function processColumns(&$data, $columns, $methodName)
     {
         foreach ($data as &$row) {
@@ -405,10 +464,10 @@ class SiteController extends Controller
         }
     }
     /**
-     * Save the Excel file and return the file path
+     * Saves the Excel file and returns the file path.
      *
-     * @param \PhpOffice\PhpSpreadsheet\Spreadsheet $spreadsheet
-     * @return string
+     * @param \PhpOffice\PhpSpreadsheet\Spreadsheet $spreadsheet The spreadsheet instance.
+     * @return string The file path of the saved Excel file.
      */
     private function saveExcelFile($spreadsheet)
     {

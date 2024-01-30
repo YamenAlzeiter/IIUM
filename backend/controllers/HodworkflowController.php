@@ -2,138 +2,130 @@
 
 namespace backend\controllers;
 
+use backend\controllers\commonController\WorkflowCommonController;
 use common\models\Courses;
 use common\models\Iiumcourse;
-use common\models\Kcdio;
 use common\models\Outbound;
-use common\models\Poc;
-use common\models\Status;
 use Yii;
-use yii\base\ActionFilter;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
-
-class HodworkflowController extends Controller
+/**
+ * HodworkflowController implements the controller for managing HOD workflows.
+ * This controller extends WorkflowCommonController to inherit common workflow functionalities.
+ *
+ * @package backend\controllers
+ */
+class HodworkflowController extends WorkflowCommonController
 {
-    public $layout = 'blank';
-
-    public function beforeAction($action)
+    /**
+     * Displays the view for a specific model.
+     * @param  int  $ID  the ID of the model to be displayed
+     * @return string the rendered view
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionView($ID)
     {
-
-        $ID = Yii::$app->getRequest()->get('ID');
-        $token = Yii::$app->getRequest()->get('token');
-
-        if ($action->id !== 'error' && !$this->isValidToken($ID, $token)) {
-
-            $model = $this->findModel($ID);
-            $statusModel = Status::findOne($model->Status);
-
-
-            $this->layout = 'main';
-            throw new NotFoundHttpException("The Applicant $model->Name has already been Processed, Current Applicant Status: $statusModel->status");
-
-        }
-
-        return parent::beforeAction($action);
-    }
-
-
-    protected function isValidToken($ID, $token)
-    {
-        if ($ID === null || $token === null) {
-            return false;
-        }
         $model = $this->findModel($ID);
 
-        return $model->token === $token;
+        // Retrieve courses related to the student
+        $student = Outbound::findOne($ID);
+
+        // Retrieve Host university courses related to the student
+        $courses = Courses::find()->where(['student_id' => $student->ID])->all();
+
+        // Retrieve IIUM courses related to the student
+        $iiumcourses = Iiumcourse::find()->where(['student_id' => $student->ID])->all();
+
+        // Render the view with the model and related data
+        return $this->render('view', [
+            'model' => $model, "courses" => $courses, 'iiumcourses' => $iiumcourses,
+        ]);
     }
 
+    /**
+     * Finds the model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param  int  $ID  the ID of the model to be found
+     * @return Outbound the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
     protected function findModel($ID)
     {
         if (($model = Outbound::findOne(['ID' => $ID])) !== null) {
             return $model;
         }
 
+        // If the model cannot be found, throw a 404 HTTP exception
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    public function actionView($ID)
-    {
-        $model = $this->findModel($ID);
-
-        $student = Outbound::findOne($ID);
-        $courses = Courses::find()->where(['student_id' => $student->ID]) // Assuming 'id' is the primary key of the Ob010 model
-            ->all();
-
-        $iiumcourses = Iiumcourse::find()->where(['student_id' => $student->ID]) // Assuming 'id' is the primary key of the Ob010 model
-            ->all();
-
-        return $this->render('view', [
-            'model' => $model, "courses" => $courses, 'iiumcourses' => $iiumcourses,
-        ]);
-    }
-
+    /**
+     * Displays the full view info of a model.
+     *
+     * @param  int  $ID  The ID of the model to display.
+     * @return string The rendering result.
+     */
     public function actionViewFull($ID)
     {
         return $this->render('viewFull', ['model' => $this->findModel($ID)]);
 
     }
 
+    /**
+     * Approves a specific model.
+     * @param  int  $ID  the ID of the model to be approved
+     * @return Response the response object
+     */
     public function actionApprove($ID)
     {
         $model = $this->findModel($ID);
 
         // Check if the request method is POST
         if ($this->request->isPost) {
-            // Get the value from the radio button (assuming it's in the POST data)
-            $status = intval($this->request->post('status')); // Use 'status' as the input name
+
+            // Get the value from the radio button (in post data)
+            $status = intval($this->request->post('status'));
 
             // Update the Status attribute and save the model
-
             $model->Status = $status;
-            $model->token = null;
-            Yii::debug('Token after updating: '.$model->token);
+
+            //reset the token value
+            $model->Token = null;
+
             if ($model->save()) {
-                return $this->redirect(['view', 'ID' => $model->ID, 'token' => $model->token],);
+                return $this->redirect(['view', 'ID' => $model->ID, 'token' => $model->Token],);
             }
         }
     }
 
-
+    /**
+     * Rejects a specific model.
+     * @param  int  $ID  the ID of the model to be rejected
+     * @return Response the response object
+     */
     public function actionReject($ID)
     {
         $model = $this->findModel($ID);
-        Yii::debug('Token in the model: '.$model->token);
+        Yii::debug('Token in the model: '.$model->Token);
         // Check if the request method is POST
         if ($this->request->isPost) {
-            // Get the value from the radio button (assuming it's in the POST data)
-            $status = intval($this->request->post('status')); // Use 'status' as the input name
+            // Get the value from the radio button (in post data)
+            $status = intval($this->request->post('status'));
             $note = $this->request->post('reason');
 
             // Update the Status attribute and save the model
             $model->Status = $status;
-            $model->Note_hod = $note;
-            $model->token = null;
 
-            Yii::debug('Token after updating: '.$model->token);
+            //save the rejection message into note_hod
+            $model->Note_hod = $note;
+
+            //reset the token value
+            $model->Token = null;
+
             if ($model->save()) {
-                return $this->redirect(['view', 'ID' => $model->ID, 'token' => $model->token],);
+                return $this->redirect(['view', 'ID' => $model->ID, 'token' => $model->Token],);
             }
         }
     }
-
-    public function actionDownload($ID, $file)
-    {
-        $baseUploadPath = Yii::getAlias('@common/uploads');
-        $filePath = $baseUploadPath.'/'.$ID.'/'.$file;
-        Yii::info("File Path: ".$filePath, "fileDownload");
-        if (file_exists($filePath)) {
-            Yii::$app->response->sendFile($filePath);
-        } else {
-            Yii::info("File not found: ".$file, "fileDownload");
-            throw new NotFoundHttpException('The file does not exist.');
-        }
-    }
-
 }

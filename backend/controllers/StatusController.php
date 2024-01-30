@@ -13,13 +13,13 @@ use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 /**
- * StatusController implements the CRUD actions for Ststus model.
+ * StatusController implements the CRUD actions for Status model.
  */
 class StatusController extends Controller
 {
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function behaviors()
     {
@@ -46,12 +46,11 @@ class StatusController extends Controller
         ];
     }
 
-
-
     /**
-     * Lists all Ststus models.
+     * Lists all Status models.
      *
      * @return string
+     * @throws \yii\base\InvalidConfigException
      */
     public function actionIndex()
     {
@@ -71,23 +70,29 @@ class StatusController extends Controller
         $dataProvider->pagination = [
             'pageSize' => 12,
         ];
+
         if ($this->request->isPost && $model->load($this->request->post())) {
-
             if ($model->save()) {
-
                 return $this->redirect(['index']);
             }
         }
+
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'model' => $model,
         ]);
     }
 
-
+    /**
+     * Updates an existing Status model.
+     *
+     * @param $id
+     * @return string|Response
+     * @throws NotFoundHttpException
+     */
     public function actionUpdate($id)
     {
-        $model = Status::findOne($id);
+        $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             // Handle successful update
@@ -98,11 +103,19 @@ class StatusController extends Controller
             'model' => $model,
         ]);
     }
+
+    /**
+     * Retrieves a specific status record in JSON format.
+     *
+     * @param $id
+     * @return array
+     * @throws NotFoundHttpException
+     */
     public function actionGetRecord($id)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
-        $model = Status::findOne($id);
+        $model = $this->findModel($id);
 
         return [
             'status' => $model->status,
@@ -110,15 +123,16 @@ class StatusController extends Controller
     }
 
     /**
-     * Finds the Ststus model based on its primary key value.
+     * Finds the Status model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param int $ID ID
-     * @return Ststus the loaded model
+     *
+     * @param int $id
+     * @return Status the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($ID)
+    protected function findModel($id)
     {
-        if (($model = Status::findOne(['ID' => $ID])) !== null) {
+        if (($model = Status::findOne(['ID' => $id])) !== null) {
             return $model;
         }
 

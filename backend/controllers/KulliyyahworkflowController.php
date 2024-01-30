@@ -2,56 +2,41 @@
 
 namespace backend\controllers;
 
+use backend\controllers\commonController\WorkflowCommonController;
 use common\models\Courses;
 use common\models\Iiumcourse;
-use common\models\Kcdio;
 use common\models\Inbound;
-use common\models\Poc;
-use common\models\Status;
 use Yii;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
-
-class KulliyyahworkflowController extends \yii\web\Controller
+/**
+ * KulliyyahworkflowController implements the controller for managing Kulliyyah workflows.
+ * This controller extends WorkflowCommonController to inherit common workflow functionalities.
+ *
+ * @package backend\controllers
+ */
+class KulliyyahworkflowController extends WorkflowCommonController
 {
-    public $layout = 'blank';
-
-    public function beforeAction($action)
-    {
-
-        $ID = Yii::$app->getRequest()->get('ID');
-        $token = Yii::$app->getRequest()->get('token');
-
-        if ($action->id !== 'error' && !$this->isValidToken($ID, $token)) {
-
-            $model = $this->findModel($ID);
-            $statusModel = Status::findOne($model->Status);
-
-
-            $this->layout = 'main';
-            throw new NotFoundHttpException("The Applicant $model->Name has already been Processed, Current Applicant Status: $statusModel->status");
-        }
-
-        return parent::beforeAction($action);
-    }
-
-    protected function isValidToken($ID, $token)
-    {
-        if ($ID === null || $token === null) {
-            return false;
-        }
-        $model = $this->findModel($ID);
-
-        return $model->Token === $token;
-    }
-
-        public function actionView($ID)
+    /**
+     * Displays the view for a specific model.
+     * @param  int  $ID  the ID of the model to be displayed
+     * @return string the rendered view
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionView($ID)
     {
         $model = $this->findModel($ID);
 
-            return $this->render('view', ['model' => $model]);
+        return $this->render('view', ['model' => $model]);
     }
-
+    /**
+     * Finds the model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param  int  $ID  the ID of the model to be found
+     * @return Inbound the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
     protected function findModel($ID)
     {
         if (($model = Inbound::findOne(['ID' => $ID])) !== null) {
@@ -61,35 +46,33 @@ class KulliyyahworkflowController extends \yii\web\Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-
+    /**
+     * Displays the full view info of a model.
+     *
+     * @param  int  $ID  The ID of the model to display.
+     * @return string The rendering result.
+     */
     public function actionViewFull($ID)
     {
         return $this->render('viewFull', ['model' => $this->findModel($ID)]);
-
     }
 
     public function actionCourseInfo($ID)
     {
         $student = Inbound::findOne($ID);
-        $courses = Courses::find()
-            ->where(['student_id' => $student->ID]) // Assuming 'id' is the primary key of the Ob010 model
-            ->all();
+        $courses = Courses::find()->where(['student_id' => $student->ID])->all();
 
-        $iiumcourses = Iiumcourse::find()
-            ->where(['student_id' => $student->ID]) // Assuming 'id' is the primary key of the Ob010 model
-            ->all();
+        $iiumcourses = Iiumcourse::find()->where(['student_id' => $student->ID])->all();
 
-        return $this->render('courseInfo', ['model' => $this->findModel($ID), "courses" => $courses,
-            'iiumcourses' => $iiumcourses,]);
+        return $this->render('courseInfo', [
+            'model' => $this->findModel($ID), "courses" => $courses, 'iiumcourses' => $iiumcourses,
+        ]);
     }
-
-    public function actionHodApproval($ID)
-    {
-        $modelKedio = new Kcdio();
-        $modelPoc = new Poc();
-        return $this->render('kulliyyahApproval', ['model' => $this->findModel($ID), 'modelKedio' => $modelKedio, 'modelPoc' => $modelPoc,]);
-    }
-
+    /**
+     * Approves a specific model.
+     * @param  int  $ID  the ID of the model to be approved
+     * @return Response the response object
+     */
     public function actionApprove($ID)
     {
         $model = $this->findModel($ID);
@@ -110,15 +93,19 @@ class KulliyyahworkflowController extends \yii\web\Controller
         }
     }
 
-
+    /**
+     * Rejects a specific model.
+     * @param  int  $ID  the ID of the model to be rejected
+     * @return Response the response object
+     */
     public function actionReject($ID)
     {
         $model = $this->findModel($ID);
         Yii::debug('Token in the model: '.$model->Token);
         // Check if the request method is POST
         if ($this->request->isPost) {
-            // Get the value from the radio button (assuming it's in the POST data)
-            $status = intval($this->request->post('status')); // Use 'status' as the input name
+            // Get the value from the radio button (in post data)
+            $status = intval($this->request->post('status'));
             $note = $this->request->post('reason');
 
 
@@ -130,18 +117,6 @@ class KulliyyahworkflowController extends \yii\web\Controller
             if ($model->save()) {
                 return $this->redirect(['view', 'ID' => $model->ID, 'token' => $model->Token],);
             }
-        }
-    }
-    public function actionDownload($ID, $file)
-    {
-        $baseUploadPath = Yii::getAlias('@common/uploads');
-        $filePath = $baseUploadPath.'/'.$ID.'/'.$file;
-        Yii::info("File Path: ".$filePath, "fileDownload");
-        if (file_exists($filePath)) {
-            Yii::$app->response->sendFile($filePath);
-        } else {
-            Yii::info("File not found: ".$file, "fileDownload");
-            throw new NotFoundHttpException('The file does not exist.');
         }
     }
 

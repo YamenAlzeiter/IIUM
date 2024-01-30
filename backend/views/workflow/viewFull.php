@@ -240,18 +240,18 @@ $fileName = $creationYearLastTwoDigits . '_' . $model->ID;
 							</div>
 							<div class = "col-md-6">
 								<p class="fw-semibold"><?= ($model->Offer_letter) ? Html::a('Offer Letter', [
-                                        'download', 'ID' => $model->ID, 'token'=> $model->token, 'file' => $fileName.'_OfferLetter'.'.pdf']) : ''; ?></p>
+                                        'download', 'ID' => $model->ID, 'token'=> $model->Token, 'file' => $fileName.'_OfferLetter'.'.pdf']) : ''; ?></p>
 								<p class="fw-semibold"><?= ($model->Academic_transcript) ? Html::a('Academic Transcript', [
-                                        'download', 'ID' => $model->ID, 'token'=> $model->token,
+                                        'download', 'ID' => $model->ID, 'token'=> $model->Token,
                                         'file' => $fileName.'_AcademicTranscript'.'.pdf']) : ''; ?></p>
 								<p class="fw-semibold"><?= ($model->Program_brochure) ? Html::a('Program Brochure', [
-                                        'download', 'ID' => $model->ID, 'token'=> $model->token,
+                                        'download', 'ID' => $model->ID, 'token'=> $model->Token,
                                         'file' => $fileName.'_ProgramBrochure'.'.pdf']) : ''; ?></p>
 								<p class="fw-semibold"><?= ($model->Latest_pay_slip) ? Html::a('Latest Pay Slip', [
-                                        'download', 'ID' => $model->ID, 'token'=> $model->token,
+                                        'download', 'ID' => $model->ID, 'token'=> $model->Token,
                                         'file' => $fileName.'_LatestPaySlip'.'.pdf']) : ''; ?></p>
 								<p class="fw-semibold"><?= ($model->Other_latest_pay_slip) ? Html::a('Other Latest Pay Slip', [
-                                        'download', 'ID' => $model->ID, 'token'=> $model->token,
+                                        'download', 'ID' => $model->ID, 'token'=> $model->Token,
                                         'file' => $fileName.'_OtherLatestPaySlip'.'.pdf']) : ''; ?></p>
 							</div>
 						</div>

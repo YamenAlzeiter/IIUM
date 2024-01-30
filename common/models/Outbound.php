@@ -86,7 +86,7 @@ use yii\db\Expression;
  * @property int|null $agreement
  * @property string|null $updated_at
  * @property string|null $created_at
- * @property string|null $token
+ * @property string|null $Token
  * @property string|null $Connect_host_email
  * @property Courses[] $courses
  * @property Iiumcourse[] $iiumcourses
@@ -120,7 +120,7 @@ class Outbound extends \yii\db\ActiveRecord
             [['Offer_letter', 'Academic_transcript', 'Program_brochure', 'Latest_pay_slip', 'Other_latest_pay_slip', 'Proof_of_sponsorship', 'Proof_insurance_cover', 'Letter_of_indemnity', 'Flight_ticket'], 'file', 'extensions' => 'pdf, doc, docx'],
             [['Matric_Number', 'Passport_Number', 'Mobile_Number', 'Emergency_phoneNumber'], 'string', 'max' => 15],
             [['Name', 'Permanent_Address', 'Mailing_Address','driveLink'], 'string', 'max' => 255],
-            [['Citizenship', 'Email', 'Emergency_name', 'Emergency_relationship', 'Emergency_email', 'Emergency_homeAddress', 'Academic_kulliyyah', 'Academic_kulliyyah_others', 'Academic_name_of_programme', 'Research', 'Sponsoring_name', 'Sponsoring_name_other', 'Type_mobility_program', 'Type_mobility_program_other', 'Host_university_name', 'Connect_host_address', 'token', 'Connect_host_email'], 'string', 'max' => 512],
+            [['Citizenship', 'Email', 'Emergency_name', 'Emergency_relationship', 'Emergency_email', 'Emergency_homeAddress', 'Academic_kulliyyah', 'Academic_kulliyyah_others', 'Academic_name_of_programme', 'Research', 'Sponsoring_name', 'Sponsoring_name_other', 'Type_mobility_program', 'Type_mobility_program_other', 'Host_university_name', 'Connect_host_address', 'Token', 'Connect_host_email'], 'string', 'max' => 512],
             [['Gender'], 'string', 'max' => 1],
             [['Postcode', 'Mailing_Postcode', 'Emergency_postCode', 'Connect_host_postcode'], 'string', 'max' => 10],
             [['State', 'Country', 'Mailing_State', 'Mailing_Country', 'Emergency_tate', 'Emergency_country', 'Country_host_university', 'Connect_host_name', 'Connect_host_position', 'Connect_host_country'], 'string', 'max' => 100],
@@ -213,7 +213,7 @@ class Outbound extends \yii\db\ActiveRecord
             'agreement' => 'Agreement',
             'updated_at' => 'Updated At',
             'created_at' => 'Created At',
-            'token' => 'Token',
+            'Token' => 'Token',
             'Connect_host_email' => 'Connect Host Email'
         ];
     }

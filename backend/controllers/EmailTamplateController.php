@@ -3,11 +3,11 @@
 namespace backend\controllers;
 
 use common\models\EmailTemplate;
-use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * EmailTamplateController implements the CRUD actions for EmailTemplate model.
@@ -25,7 +25,7 @@ class EmailTamplateController extends Controller
                 'class' => AccessControl::class, 'rules' => [
                     [
                         'actions' => [
-                            'index', 'view', 'update', 'delete', 'create'
+                            'view', 'update'
                         ], 'allow' => true, 'roles' => ['@'],
                     ],
                 ],
@@ -34,34 +34,8 @@ class EmailTamplateController extends Controller
     }
 
     /**
-     * Lists all EmailTemplate models.
-     *
-     * @return string
-     */
-    public function actionIndex()
-    {
-        $dataProvider = new ActiveDataProvider([
-            'query' => EmailTemplate::find(),
-            /*
-            'pagination' => [
-                'pageSize' => 50
-            ],
-            'sort' => [
-                'defaultOrder' => [
-                    'id' => SORT_DESC,
-                ]
-            ],
-            */
-        ]);
-
-        return $this->render('index', [
-            'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
      * Displays a single EmailTemplate model.
-     * @param int $id ID
+     * @param  int  $id  ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -73,32 +47,26 @@ class EmailTamplateController extends Controller
     }
 
     /**
-     * Creates a new EmailTemplate model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return string|\yii\web\Response
+     * Finds the EmailTemplate model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param  int  $id  ID
+     * @return EmailTemplate the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionCreate()
+    protected function findModel($id)
     {
-        $model = new EmailTemplate();
-
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
-        } else {
-            $model->loadDefaultValues();
+        if (($model = EmailTemplate::findOne(['id' => $id])) !== null) {
+            return $model;
         }
 
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+        throw new NotFoundHttpException('The requested page does not exist.');
     }
 
     /**
      * Updates an existing EmailTemplate model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param int $id ID
-     * @return string|\yii\web\Response
+     * @param  int  $id  ID
+     * @return string|Response
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionUpdate($id)
@@ -112,35 +80,5 @@ class EmailTamplateController extends Controller
         return $this->render('update', [
             'model' => $model,
         ]);
-    }
-
-    /**
-     * Deletes an existing EmailTemplate model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $id ID
-     * @return \yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
-    }
-
-    /**
-     * Finds the EmailTemplate model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param int $id ID
-     * @return EmailTemplate the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        if (($model = EmailTemplate::findOne(['id' => $id])) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

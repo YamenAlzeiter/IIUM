@@ -493,7 +493,7 @@ class OutboundController extends Controller
                 $email = $model->Email;
             }
 
-            $model->token = $token;
+            $model->Token = $token;
             $reason = '';
 
             $model->Status = $status;
@@ -644,7 +644,7 @@ class OutboundController extends Controller
         $token = Yii::$app->security->generateRandomString(32);
 
         $model = $this->findModel($ID);
-        $model->token = $token;
+        $model->Token = $token;
         $personInChargeId = $model->Person_in_charge_ID;
         $deanId = $model->Dean_ID;
         if ($this->request->isPost) {
