@@ -21,20 +21,45 @@ use yii\data\ActiveDataProvider;
 use yii\db\Expression;
 use yii\db\Query;
 use yii\filters\AccessControl;
+use yii\helpers\FileHelper;
 use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
+use yii\web\ServerErrorHttpException;
+use ZipArchive;
 
 /**
  * InboundController implements the CRUD actions for Inbound model.
+ * It manages the outbound operations such as viewing, creating, updating, and deleting outbound records.
+ * Additionally, it provides actions for searching, displaying logs, and performing custom actions like accept/ reject/ resend on outbound records.
+ * as well as exporting records to spreadsheets.
  */
 class InboundController extends Controller
 {
-    /**
-     * @inheritDoc
-     */
+    //region CONST variables
+    const inprocess = 10;
+    const redirected_to_kulliyyah = 5;
+    const accepted_kulliyyah = 15;
+    const redirected_to_cps_amad = 25;
+    const accepted_cps_amad = 35;
+    const redirected_to_student = 45;
+    const documents_uploaded_from_student = 55;
+    const application_accepted = 65;
+    const application_not_complete = 7;
+    const application_rejected_kulliyyah = 16;
+    const application_rejected_cps_amad = 36;
+
+
+    const template_approval_process = 3;
+    const template_issue_offer_letter = 4;
+    const template_upload_payment_proof = 5;
+    const template_congrats = 10;
+    const template_reject = 2;
+    const template_incomplete = 1;
+    const template_reconsider = 11;
+    //endregion
     public function behaviors()
     {
         return [
@@ -43,7 +68,7 @@ class InboundController extends Controller
                     [
                         'actions' => [
                             'index', 'view', 'update', 'delete', 'action', 'create', 'search', 'accept', 'reject',
-                            'load-people', 'dean-approval', 'resend', 'download', 'complete', 'log', 'export-excel',
+                            'load-people', 'dean-approval', 'resend', 'download', 'complete', 'log', 'export-excel','actionDeleteMultiple', 'download-all'
                         ], 'allow' => true, 'roles' => ['@'],
                     ],
                     [
@@ -56,72 +81,42 @@ class InboundController extends Controller
         ];
     }
 
-    public function actionDeleteMultiple()
-    {
-        $selectedIds = Yii::$app->request->post('selection'); // Assuming 'selection' is the name of the checkbox column
 
-        if (!empty($selectedIds)) {
-            // Use Yii2 ActiveRecord to delete the selected records
-            Inbound::deleteAll(['ID' => $selectedIds]);
-
-            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-            return ['success' => true];
-        } else {
-            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-            return ['success' => false];
-        }
-    }
-
+    //region CRUD
     /**
-     * Lists all Inbound models.
-     *
-     * @return string
+     * Displays a list of outbound records.
+     * @param  integer  $year  Year for filtering outbound records
+     * @return string The rendering result of the index view
      */
     public function actionIndex($year)
     {
         $searchModel = new inboundSearch();
         $statusModel = new Status();
-
-
         $dataProvider = $searchModel->search($this->request->queryParams);
+
+        // Exclude records with null status
+        $dataProvider->query->andWhere([
+            'and', ['EXTRACT(YEAR FROM created_at)' => $year],['not', ['Status' => null]]
+        ]);
+        $dataProvider->sort->defaultOrder = ['updated_at' => SORT_DESC];
+
         $dataProvider->pagination = [
             'pageSize' => 10,
         ];
-
-        // Exclude records with null status
-        $dataProvider->query->andWhere(['and', ['EXTRACT(YEAR FROM created_at)' => $year],['not', ['Status' => null]]]);
-        $dataProvider->sort->defaultOrder = ['updated_at' => SORT_DESC];
 
         return $this->render("index",
             ['searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'status' => $statusModel,]);
     }
 
-    public function actionLog($ID)
-    {
-        $logsDataProvider = new ActiveDataProvider([
-            'query' => Inlog::find()->where(['outbound_id' => $ID]), 'pagination' => [
-                'pageSize' => 20, // Adjust the page size as needed
-            ], 'sort' => [
-                'defaultOrder' => ['created_at' => SORT_DESC], // Display logs by creation time in descending order
-            ],
-        ]);
-
-        return $this->render('log', [
-            'logsDataProvider' => $logsDataProvider,
-        ]);
-    }
-
-// Function to get counts for each month
-
     /**
-     * Displays a single Inbound model.
-     * @param  int  $ID  ID
-     * @return string
-     * @throws NotFoundHttpException if the model cannot be found
+     * Displays details of a specific outbound record.
+     * @param  integer  $ID  The ID of the outbound record to view
+     * @return string The rendering result of the view
+     * @throws NotFoundHttpException If the specified outbound record does not exist
      */
     public function actionView($ID)
     {
-        // Assuming you pass the student ID to the action
+
         $student = Inbound::findOne($ID); // Retrieve the student based on the ID
 
         if (!$student) {
@@ -135,7 +130,6 @@ class InboundController extends Controller
         $modelPoc2 = Poc::findOne(['id' => $deanId]);
 
         $courses = InCourses::find()->where(['student_id' => $student->ID])->all();
-
 
         return $this->render("view", [
             "model" => $student, "modelPoc1" => $modelPoc1, "modelPoc2" => $modelPoc2, "courses" => $courses,
@@ -167,11 +161,26 @@ class InboundController extends Controller
     }
 
     /**
+     * Displays a search form and search results for outbound records.
+     * @return string The rendering result of the search view
+     */
+    public function actionSearch()
+    {
+        $searchModel = new inboundSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
+        $dataProvider->pagination = [
+            'pageSize' => 5,
+        ];
+        return $this->render("search", ["searchModel" => $searchModel, "dataProvider" => $dataProvider,]);
+    }
+
+    /**
      * Updates an existing Inbound model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param  int  $ID  ID
      * @return string|Response
      * @throws NotFoundHttpException if the model cannot be found
+     * @throws ForbiddenHttpException if the user is not allowed to perform the action
      */
     public function actionUpdate($ID)
     {
@@ -214,21 +223,40 @@ class InboundController extends Controller
      */
     public function actionDelete($ID)
     {
-        $this->findModel($ID)->delete();
-
-        return $this->redirect(['index', 'year' => date('Y')]);
+        if (Yii::$app->user->can('superAdmin')) {
+            $this->findModel($ID)->delete();
+            return $this->redirect(['index', 'year' => date('Y')]);
+        }else{
+            throw new ForbiddenHttpException();
+        }
     }
 
-    public function actionSearch()
+    /**
+     * Deletes multiple outbound records.
+     * @return array JSON response indicating success or failure
+     */
+    public function actionDeleteMultiple()
     {
-        $searchModel = new inboundSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
-        $dataProvider->pagination = [
-            'pageSize' => 5,
-        ];
-        return $this->render("search", ["searchModel" => $searchModel, "dataProvider" => $dataProvider,]);
-    }
+        $selectedIds = Yii::$app->request->post('selection'); // Assuming 'selection' is the name of the checkbox column
 
+        if (!empty($selectedIds)) {
+            // Use Yii2 ActiveRecord to delete the selected records
+            Inbound::deleteAll(['ID' => $selectedIds]);
+
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return ['success' => true];
+        } else {
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return ['success' => false];
+        }
+    }
+    //endregion
+    //region CRUD ACTION
+    /**
+     * Display Action view.
+     * @param  integer  $ID  The ID of the outbound record
+     * @return string The rendering result of the action view
+     */
     public function actionAction($ID)
     {
         $modelKedio = new Kcdio();
@@ -237,13 +265,163 @@ class InboundController extends Controller
             ["model" => $this->findModel($ID), "modelKedio" => $modelKedio, "modelPoc" => $modelPoc,]);
     }
 
+    /**
+     * Displays logs associated with a specific outbound record.
+     * @param  integer  $ID  The ID of the outbound record
+     * @return string The rendering result of the log view
+     */
+    public function actionLog($ID)
+    {
+        $logsDataProvider = new ActiveDataProvider([
+            'query' => Inlog::find()->where(['outbound_id' => $ID]), 'pagination' => [
+                'pageSize' => 20, // Adjust the page size as needed
+            ], 'sort' => [
+                'defaultOrder' => ['created_at' => SORT_DESC], // Display logs by creation time in descending order
+            ],
+        ]);
+
+        return $this->render('log', [
+            'logsDataProvider' => $logsDataProvider,
+        ]);
+    }
+//endregion
+    //region Download Functionality
+    public function actionDownload($id, $file)
+    {
+        $filePath = $this->getFilePath($id, $file);
+
+        if (file_exists($filePath)) {
+            Yii::$app->response->sendFile($filePath);
+        } else {
+            Yii::info("File not found: $file", "fileDownload");
+            throw new NotFoundHttpException('The file does not exist.');
+        }
+    }
+
+    /**
+     * Helper method to get the full path of a specific file.
+     * @param  integer  $id  The ID of the outbound record
+     * @param  string  $file  The name of the file
+     * @return string The full path of the file
+     */
+    private function getFilePath($id, $file)
+    {
+        $baseUploadPath = Yii::getAlias('@common/uploads');
+        return $baseUploadPath."/$id/$file";
+    }
+
+    /**
+     * Downloads all files associated with an outbound record as a zip archive.
+     * @param  integer  $id  The ID of the outbound record
+     * @throws ServerErrorHttpException If an error occurs while creating the zip archive
+     */
+    public function actionDownloadAll($id)
+    {
+        $recordPath = $this->getRecordPath($id);
+        $zipFilePath = $this->createZipArchive($recordPath, $id);
+
+        $this->sendZipFile($zipFilePath);
+    }
+
+    /**
+     * Helper method to get the full path of the record directory.
+     * @param  integer  $id  The ID of the outbound record
+     * @param  string  $subDirectory  Optional subdirectory within the record directory
+     * @return string The full path of the record directory
+     * @throws NotFoundHttpException If the record directory does not exist
+     */
+    private function getRecordPath($id, $subDirectory = '')
+    {
+        $baseUploadPath = Yii::getAlias('@common/uploads');
+        $recordPath = $baseUploadPath.'/'.$id.($subDirectory ? '/'.$subDirectory : '');
+
+        if (!file_exists($recordPath) || !is_dir($recordPath)) {
+            Yii::info("Record path not found: $recordPath", "fileDownloadAll");
+            throw new NotFoundHttpException('The record does not exist.');
+        }
+
+        return $recordPath;
+    }
+
+    /**
+     * Helper method to create a zip archive of files in a directory.
+     * @param  string  $recordPath  The full path of the record directory
+     * @param  integer  $id  The ID of the outbound record
+     * @return string The full path of the created zip archive
+     * @throws ServerErrorHttpException If an error occurs while creating the zip archive
+     */
+    private function createZipArchive($recordPath, $id)
+    {
+        if (!str_contains($recordPath, 'after')) {
+            $name = "full_record_";
+        } else {
+            $name = "record_";
+        }
+        $tempDir = Yii::getAlias('@runtime/temp_zip');
+        FileHelper::createDirectory($tempDir);
+
+        $zipFileName = "$name$id.zip";
+        $zipFilePath = "$tempDir/$zipFileName";
+
+        try {
+            $zip = new ZipArchive();
+            if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
+                $files = FileHelper::findFiles($recordPath);
+                foreach ($files as $file) {
+                    $relativePath = $this->getRelativePath($recordPath, $file);
+                    $zip->addFile($file, $relativePath);
+                }
+                $zip->close();
+            } else {
+                throw new Exception('Unable to create zip archive.');
+            }
+        } catch (Exception $e) {
+            Yii::info("Error creating zip archive: ".$e->getMessage(), "fileDownloadAll");
+            throw new ServerErrorHttpException('An error occurred while creating the zip archive.');
+        }
+
+        return $zipFilePath;
+    }
+
+    private function getRelativePath($basePath, $file)
+    {
+        $basePath = rtrim($basePath, '/');
+        $file = rtrim($file, '/');
+
+        // Find the last occurrence of '/' to get the last folder
+        $lastSlash = strrpos($file, '/');
+        $lastFolder = substr($file, $lastSlash + 1);
+
+        return $lastFolder;
+    }
+
+    /**
+     * Helper method to send a zip file to the user and clean up temporary directory afterward.
+     * @param  string  $zipFilePath  The full path of the zip file
+     */
+    private function sendZipFile($zipFilePath)
+    {
+        if (file_exists($zipFilePath)) {
+            Yii::$app->response->sendFile($zipFilePath, null, ['inline' => false])->on(Response::EVENT_AFTER_SEND,
+                function ($event) use ($zipFilePath) {
+                    // Clean up temporary directory after the file is sent
+                    FileHelper::removeDirectory(dirname($zipFilePath));
+                });
+        } else {
+            Yii::info("Zip file not found: $zipFilePath", "fileDownloadAll");
+            throw new NotFoundHttpException('The zip file does not exist.');
+        }
+    }
+
+    //endregion
+
     public function actionLoadPeople()
     {
         $selectedValueFromKedio = Yii::$app->request->post("kcdio");
         Yii::info("Selected KCDIO: ".$selectedValueFromKedio, "ajax");
 
         $people = Poc::find()->where(["KCDIO" => $selectedValueFromKedio])->select([
-            "id", "name", "email"
+            "id", "name", "email", "email_cc", "name_cc1", "email_cc_additional", "name_cc2"
         ])->asArray()->all();
 
         Yii::info("People Data: ".json_encode($people), "ajax");
@@ -252,170 +430,172 @@ class InboundController extends Controller
         return $people;
     }
 
+    //region Process Actions
+
+    /**
+     * Accepts a request for approval and updates the model's status accordingly.
+     *
+     * @param  int  $ID  The unique identifier of the model to be processed.
+     * @return mixed The response after processing the request.
+     */
     public function actionAccept($ID)
     {
         $model = $this->findModel($ID);
-        $token = Yii::$app->security->generateRandomString(32);
-
-        $subject = '';
-        $emailCc2 = '';
-        $emailCc = '';
-
+        //Check if the request is a POST request
         if ($this->request->isPost) {
-            $status = intval($this->request->post("status"));
-            $email = $this->request->post("emailAddress");
+            //Get the selected person's ID from the POST data
             $selectedPersonId = $this->request->post("selectedPersonId");
-            $selectedPersonInCharge = $this->request->post("personInChargeDropdown");
-            $selectedPersonInChargeName = null;
-
-            if ($selectedPersonInCharge) {
-                $personModel = Poc::findOne($selectedPersonInCharge);
-                if ($personModel) {
-                    $selectedPersonInChargeName = $personModel->name;
-                    if ($personModel->email_cc != null) {
-                        $emailCc = $personModel->email_cc;
-                    }
-                    if ($personModel->email_cc_additional != null) {
-                        $emailCc2 = $personModel->email_cc_additional;
-                    }
-                }
+            //Find the corresponding person model based on the selected ID
+            $personModel = Poc::findOne($selectedPersonId);
+            //Map different statuses to their corresponding next status
+            $statusMappings = [
+                self::inprocess => self::redirected_to_kulliyyah,
+                self::accepted_kulliyyah => self::redirected_to_cps_amad,
+                self::accepted_cps_amad => self::redirected_to_student,
+                self::documents_uploaded_from_student => self::application_accepted
+            ];
+            //Check if the model's status exists in the mappings
+            if(isset($statusMappings[$model->Status])){
+                $model->Status = $statusMappings[$model->Status];
+            }
+            //Update model properties based on the new status
+            switch ($model->Status){
+                case self::redirected_to_kulliyyah:
+                    $model->Token = Yii::$app->security->generateRandomString(32);
+                    $model->setAttribute('Person_in_charge_ID', $selectedPersonId);
+                    $template = self::template_approval_process;
+                    break;
+                case self::redirected_to_cps_amad:
+                    $model->Token = Yii::$app->security->generateRandomString(32);
+                    $model->setAttribute('Dean_ID', $selectedPersonId);
+                    $template = self::template_issue_offer_letter;
+                    break;
+                case self::redirected_to_student:
+                    $personModel = null;
+                    $model->Token = null;
+                    $template = self::template_upload_payment_proof;
+                    break;
+                case self::application_accepted:
+                    $personModel = null;
+                    $model->Token = null;
+                    $template = self::template_congrats;
+                    break;
+                default:
+                    // If $status doesn't match any case, keep the original values
+                    break;
             }
 
-            if ($model->Status === 10) {
-                $status = 5;
-            } elseif ($model->Status === 15) {
-                $status = 25;
-            } elseif ($model->Status === 35) {
-                $status = 45;
-            } elseif ($model->Status === 55) {
-                $status = 65;
-            }
-
-            if ($status === 5) {
-                $token = Yii::$app->security->generateRandomString(32);
-                $model->setAttribute('Kulliyyah', $selectedPersonId);
-                $template = 3;
-            } elseif ($status === 25) {
-                $token = Yii::$app->security->generateRandomString(32);
-                $model->setAttribute('msd_cps', $selectedPersonId);
-                $template = 4;
-            } elseif ($status === 45) {
-                $token = null;
-                $selectedPersonInChargeName = $model->Name;
-                $template = 5;
-                $email = $model->Email_address;
-            } elseif ($status === 65) {
-                $token = null;
-                $selectedPersonInChargeName = $model->Name;
-                $template = 10;
-                $email = $model->Email_address;
-            }
-
-            $model->Token = $token;
-            $reason = '';
-
-            $model->Status = $status;
             if ($model->save()) {
-                $this->sendEmailWithLink($model, $selectedPersonInChargeName, $email, $token, $template, $reason, $emailCc, $emailCc2);
+                $this->sendEmail($model, $personModel, $model->Token, $template, null,);
                 return $this->redirect(["index", 'year'=> date("Y")]);
             }
         }
     }
 
-    public function sendEmailWithLink($model, $name, $email, $token, $templateId, $reason, $emailCc1, $emailCc2)
-    {
-
-        $recipientEmail = $email;
-        $recipientName = $name;
-        $viewLink = '';
-
-
-        $emailTemplate = EmailTemplate::findOne($templateId);
-        if (!$emailTemplate) {
-            // Handle the case where the template is not found
-            return;
-        }
-
-        // Replace placeholders in the template content
-        $body = $emailTemplate->body;
-
-
-        if ($model->Status === 5 || $model->Status === 6) {
-            $viewLink = Yii::$app->urlManager->createAbsoluteUrl([
-                'kulliyyahworkflow/view', 'ID' => $model->ID, 'token' => $token
-            ]);
-            //21for accept and 2 for reject
-        } elseif ($model->Status === 25 || $model->Status === 26) {
-            $viewLink = Yii::$app->urlManager->createAbsoluteUrl([
-                'higherworkflow/view', 'ID' => $model->ID, 'token' => $token
-            ]);
-        } elseif ($model->Status === 45) {
-            $viewLink = null;
-        }
-
-        $body = str_replace('{recipientName}', $recipientName, $body);
-        $body = str_replace('{link}', $viewLink, $body);
-        $body = str_replace('{reason}', $reason, $body);
-
-        $mailer = Yii::$app->mailer->compose([
-            'html' => '@backend/views/email/emailTemplate.php'
-        ], [
-            'subject' => $emailTemplate->subject,
-            'recipientName' => $recipientName,
-            'viewLink' => $viewLink,
-            'reason' => $reason,
-            'body' => $body
-        ])->setFrom(["noreply@example.com" => "My Application"])
-            ->setTo($recipientEmail);
-
-        if (!empty($emailCc1) && filter_var($emailCc1, FILTER_VALIDATE_EMAIL)) {
-            $mailer->setCc($emailCc1);
-        }
-
-        if(!empty($emailCc2) && filter_var($emailCc2, FILTER_VALIDATE_EMAIL)){
-            if(empty($emailCc1) || !filter_var($emailCc1,FILTER_VALIDATE_EMAIL)){
-                $mailer->setCc($emailCc2);
-            }else{
-                $mailer->setCc([$emailCc1, $emailCc2]);
-            }
-        }
-
-        $mailer->setSubject($emailTemplate->subject)->send();
-    }
-
     /**
-     * @throws NotFoundHttpException
+     * Rejects a request and updates the model's status with a reason.
+     *
+     * @param  int  $ID  The unique identifier of the model to be rejected.
+     * @return mixed The response after processing the rejection.
      */
     public function actionReject($ID)
     {
         $model = $this->findModel($ID);
-        $name = $model->Name;
-        $email = $model->Email_address;
-
-        $templateId = 2;
 
         if ($this->request->isPost) {
-            $status = intval($this->request->post("status"));
-            $reason = $this->request->post("reason");
+            //Get the new status and rejection reason from the POST data
+            $model->Status = intval($this->request->post("status"));
+            $model->temp = $this->request->post("reason");
 
-            $model->temp = $reason;
-            $model->Status = $status;
             if ($model->save()) {
-                $this->sendEmailToApplicant($name, $email, $reason, $templateId);
+                $this->sendEmail($model, null, $model->Token, self::template_reject, $model->temp);
                 return $this->redirect(["index", 'year'=> date("Y")]);
             }
         }
     }
 
-
-    //accept, reject, resend, email
-
-    public function sendEmailToApplicant($name, $email, $reason, $templateId)
+    /**
+     * Marks a request as incomplete and updates the model's status with a reason.
+     *
+     * @param  int  $ID  The unique identifier of the model to be marked as incomplete.
+     * @return mixed The response after marking the request as incomplete.
+     */
+    public function actionComplete($ID)
     {
-        $recipientEmail = $email;
-        $recipientName = $name;
+        $model = $this->findModel($ID);
 
+        $statusMapping = [
+          self::inprocess => self::application_not_complete,
+          self::documents_uploaded_from_student => self::redirected_to_student,
+        ];
+
+        if(isset($statusMapping[$model->Status])){
+            $model->Status = $statusMapping[$model->Status];
+        }
+
+        if ($this->request->isPost) {
+            $model->temp = $this->request->post("reason");
+
+            if ($model->save()) {
+                $this->sendEmail($model, null, $model->Token, self::template_incomplete, $model->temp);
+                return $this->redirect(["index", 'year'=> date("Y")]);
+            }
+        }
+    }
+
+    /**
+     * Resends a request for reconsideration with a new token and reason.
+     *
+     * @param  int  $ID  The unique identifier of the model to be resent.
+     * @return mixed The response after resending the request.
+     */
+    public function actionResend($ID)
+    {
+        $model = $this->findModel($ID);
+
+        $model->Token = Yii::$app->security->generateRandomString(32);
+
+        if ($this->request->isPost) {
+            $model->temp = $this->request->post("reason");
+
+            switch ($model->Status){
+                case self::application_rejected_kulliyyah:
+                    $modelPoc = Poc::findOne(['id' => $model->Kulliyyah]);
+                    $model->Status = self::redirected_to_kulliyyah;
+                    break;
+
+//                case self::application_rejected_cps_amad:
+//                    $modelPoc = Poc::findOne(['id' => $model->msd_cps]);
+//                    $model->Status = self::redirected_to_cps_amad;
+//                    break;
+                default:
+                    //If $model->Status doesn't match any case, keep the original values
+                    break;
+            }
+        }
+
+        if ($model->save()) {
+            $this->sendEmail($model, $modelPoc, $model->Token, self::template_reconsider, $model->temp);
+            return $this->redirect(["index", 'year'=> date("Y")]);
+        }
+    }
+
+    //endregion
+    /**
+     * Sends an email based on the provided parameters and template.
+     *
+     * @param mixed $model The application model object representing the data for the email.
+     * @param mixed $personModel The person in charge model object, if available, to personalize the email.
+     * @param string $token The token to be included in the email link.
+     * @param int $templateId The ID of the email template to be used for the email content.
+     * @param string $reason The reason to be included in the email body.
+     *
+     * @return void
+     */
+    public function sendEmail($model, $personModel, $token, $templateId, $reason)
+    {
         $emailTemplate = EmailTemplate::findOne($templateId);
+
         if (!$emailTemplate) {
             // Handle the case where the template is not found
             return;
@@ -424,91 +604,81 @@ class InboundController extends Controller
         // Replace placeholders in the template content
         $body = $emailTemplate->body;
 
-        $body = str_replace('{recipientName}', $recipientName, $body);
-        $body = str_replace('{reason}', $reason, $body);
+        //Initialize $viewLink to nulll as a default value
+        $viewLink = null;
 
+        switch ($model->Status){
+            case self::redirected_to_kulliyyah:
+            case self::application_rejected_kulliyyah:
+                $viewLink = Yii::$app->urlManager->createAbsoluteUrl([
+                    'kulliyyahworkflow/view', 'ID' => $model->ID, 'token' => $token
+                ]);
+                break;
 
-        Yii::$app->mailer->compose([
-            'html' => '@backend/views/email/emailTemplate.php'
-        ], [
-            'subject' => $emailTemplate->subject, 'recipientName' => $recipientName, 'reason' => $reason,
-            'body' => $body
-        ])->setFrom(["noreply@example.com" => "My Application"])->setTo($recipientEmail)->setSubject($emailTemplate->subject)->send();
+            case self::redirected_to_cps_amad:
+                $viewLink = Yii::$app->urlManager->createAbsoluteUrl([
+                   'higherworkflow/view', 'ID' => $model->ID, 'token' => $token
+                ]);
+                break;
 
-    }
+            case self::redirected_to_student:
+                // $viewLink is already set to null as the default value
+                break;
 
-    public function actionComplete($ID)
-    {
-        $model = $this->findModel($ID);
-        $name = $model->Name;
-        $email = $model->Email_address;
-        if ($model->Status === 10) {
-            $status = 7;
-        } elseif ($model->Status === 55) {
-            $status = 45;
+            default:
+                // If $model->Statue doesn't match any case, keep $viewLink as null
         }
-        $templateId = 1;
 
-        if ($this->request->isPost) {
-            $reason = $this->request->post("reason");
-            $model->temp = $reason;
-            $model->Status = $status;
-            if ($model->save()) {
-                $this->sendEmailToApplicant($name, $email, $reason, $templateId);
-                return $this->redirect(["index", 'year'=> date("Y")]);
+        if($personModel != null){
+            $body = str_replace('{recipientName}', $personModel->name, $body);
+            $body = str_replace('{link}', $viewLink, $body);
+            $body = str_replace('{reason}', $reason, $body);
+
+            $mailer = Yii::$app->mailer->compose([
+                'html' => '@backend/views/email/emailTemplate.php'
+            ], [
+                'subject' => $emailTemplate->subject,
+                'recipientName' => $personModel->name,
+                'viewLink' => $viewLink,
+                'reason' => $reason,
+                'body' => $body
+            ])->setFrom(["noreply@example.com" => "My Application"])
+                ->setTo($personModel->email);
+
+            if (!empty($personModel->email_cc) && filter_var($personModel->email_cc, FILTER_VALIDATE_EMAIL)) {
+                $mailer->setCc($personModel->email_cc);
             }
+            // Check if additional CC is available and valid
+            if(!empty($personModel->email_cc_additional) && filter_var($personModel->email_cc_additional, FILTER_VALIDATE_EMAIL)){
+                //Set CC recipients based on the availability of both primary and additional CC
+                $ccRecipients = filiter_var($personModel->email_cc_additional, FILTER_VALIDATE_EMAIL)
+                    ? [$personModel->email_cc, $personModel->email_cc_additional]
+                    : $personModel->email_cc_additional;
+
+                $mailer->setCc($ccRecipients);
+            }
+        }else{
+            $body = str_replace('{recipientName}', $model->Name, $body);
+            $body = str_replace('{reason}', $reason, $body);
+            $mailer = Yii::$app->mailer->compose([
+                'html' => '@backend/views/email/emailTemplate.php'
+            ], [
+                'subject' => $emailTemplate->subject, 'recipientName' => $model->Name, 'viewLink' => $viewLink,
+                'reason' => $reason, 'body' => $body
+            ])->setFrom(["noreply@example.com" => "My Application"])->setTo($model->Email);
         }
+
+        //Set subject and send the email
+        $mailer->setSubject($emailTemplate->subject)->send();
     }
 
     /**
-     * @throws Exception
-     * @throws NotFoundHttpException
+     * Action to export Outbound data to Excel for a specific year.
+     *
+     * @param int $year The year for which data should be exported.
+     *
+     * @return void
      */
-    public function actionResend($ID)
-    {
-        $token = Yii::$app->security->generateRandomString(32);
-
-        $model = $this->findModel($ID);
-        $model->Token = $token;
-        $kulliyyah = $model->getAttribute('Kulliyyah');
-        $msd_cps = $model->getAttribute('msd_cps');
-
-        if ($this->request->isPost) {
-            $reason = $this->request->post("reason");
-            if ($model->Status === 16) {
-                $modelPoc = Poc::findOne(['id' => $kulliyyah]);
-                $model->Status = 5;
-            } else {
-                if ($model->Status === 36) {
-                    $modelPoc = Poc::findOne(['id' => $msd_cps]);
-                    $model->Status = 25;
-                }
-            }
-
-            $templateId = 11;
-
-            $this->sendEmailWithLink($model, $modelPoc->name, $modelPoc->email, $token, $templateId, $reason, $modelPoc->email_cc, $modelPoc->email_cc_additional);
-        }
-
-        $model->temp = $reason;
-        if ($model->save()) {
-            return $this->redirect(["index", 'year'=> date("Y")]);
-        }
-    }
-    
-    public function actionDownload($id, $file)
-    {
-        $baseUploadPath = Yii::getAlias('@common/uploads');
-        $filePath = $baseUploadPath.'/'.$id.'/'.$file;
-        Yii::info("File Path: ".$filePath, "fileDownload");
-        if (file_exists($filePath)) {
-            Yii::$app->response->sendFile($filePath);
-        } else {
-            Yii::info("File not found: ".$file, "fileDownload");
-            throw new NotFoundHttpException('The file does not exist.');
-        }
-    }
-
     public function actionExportExcel($year)
     {
         require Yii::getAlias('@common').'/Helpers/helper.php';

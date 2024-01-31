@@ -232,12 +232,19 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 				<div class = "card shadow-none border bg-light-gray">
 					<div class = "card-body">
 						<div class = "row">
-							<div class = "d-flex align-items-center header-info gap-1 mb-3">
-								<i class = "ti ti-file text-dark"></i>
-								<strong>
-									<h4 class = "fw-semibold m-0">Files</h4>
-								</strong>
-							</div>
+                            <div class = "d-flex justify-content-between align-items-center mb-3">
+                                <div class="d-flex align-items-center  header-info gap-2">
+                                    <i class = "ti ti-file text-dark"></i>
+                                    <strong>
+                                        <h4 class = "fw-semibold m-0">Files</h4>
+                                    </strong>
+                                </div>
+                                <div>
+                                    <?= Html::a('<i class="ti ti-download fs-7"></i>',
+                                        ['download-all', 'id' => $model->ID]) ?>
+                                </div>
+
+                            </div>
 
 							<p class = "fw-semibold"><?= ($model->Passport) ? Html::a('Passport', [
                                     'download', 'id' => $model->ID, 'file' => $fileName.'_Passport'.'.pdf'

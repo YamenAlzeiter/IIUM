@@ -52,7 +52,7 @@ class OutboundController extends Controller
 
     const template_approval_process = 7;
     const template_upload_document_before = 8;
-    const template_congrats = 9;
+    const template_congrats = 10;
     const template_reject = 2;
     const template_incomplete = 1;
     const template_reconsider = 11;
@@ -113,7 +113,7 @@ class OutboundController extends Controller
      */
     public function actionView($ID)
     {
-        // Assuming you pass the student ID to the action
+
         $student = Outbound::findOne($ID); // Retrieve the student based on the ID
 
         if (!$student) {
@@ -592,7 +592,7 @@ class OutboundController extends Controller
         }
     }
 
-    //endregion
+   //endregion
 
     /**
      * Sends an email based on the provided parameters and template.
@@ -621,7 +621,7 @@ class OutboundController extends Controller
 
         switch ($model->Status) {
             case self::redirected_to_hod:
-            case self::template_reject:
+            case self::application_rejected_hod:
                 $viewLink = Yii::$app->urlManager->createAbsoluteUrl([
                     'hodworkflow/view', 'ID' => $model->ID, 'token' => $token
                 ]);
@@ -652,10 +652,14 @@ class OutboundController extends Controller
 
             // Create mailer instance with personModel data
             $mailer = Yii::$app->mailer->compose([
-                    'html' => '@backend/views/email/emailTemplate.php']
-                ,['subject' => $emailTemplate->subject, 'recipientName' => $personModel->name,
-                    'viewLink' => $viewLink, 'reason' => $reason, 'body' => $body])
-                ->setFrom(["noreply@example.com" => "My Application"])
+                    'html' => '@backend/views/email/emailTemplate.php'
+                ],[
+                    'subject' => $emailTemplate->subject,
+                  'recipientName' => $personModel->name,
+                  'viewLink' => $viewLink,
+                  'reason' => $reason,
+                   'body' => $body
+            ])->setFrom(["noreply@example.com" => "My Application"])
                 ->setTo($personModel->email);
 
             // Add CC recipients if available and valid
