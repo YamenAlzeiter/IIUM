@@ -179,6 +179,20 @@ function getStatusIconClass($status)
     }
 }
 
+function getStatusClass2($status)
+{
+
+    if (in_array($status, [2, 12, 22, 32, 42])) {
+        $class = 'badge bg-danger-subtle text-danger fw-semibold fs-9';
+    } elseif ($status == 61 || $status == 81) {
+        $class = 'badge bg-success-subtle text-success-style2 fw-semibold fs-9';
+    } elseif ($status== 1 || $status == 21 || $status == 41 || $status == 71) {
+        $class = 'badge bg-primary-subtle text-primary fw-semibold fs-9';
+    } else {
+        $class = 'badge bg-warning-subtle text-warning fw-bolder fs-9';
+    }
+}
+
 function getStatusClass($status)
 {
     if ($status == 2 || $status == 12 || $status == 22 || $status == 32 || $status == 42) {
@@ -229,15 +243,3 @@ function getState($stateID){
         return 'Invalid state ID';
     }
 }
-
-//function getStatusFilter($type)
-//{
-//    switch ($type){
-//        case 'AcceptedO': return '61';
-//        case 'RejectedO': return '2+12+22+32+42+52';
-//        case 'InProcessO': return '1+10+11+21+31+41+51';
-//        case 'AcceptedI': return '65';
-//        case 'RejectedI': return '6+16+26+36+46+56';
-//        case 'InProcessI': return '5+10+15+25+35+45+55';
-//    }
-//}

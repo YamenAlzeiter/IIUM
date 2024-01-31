@@ -3,14 +3,11 @@
 namespace backend\controllers;
 
 use common\models\EmailTemplate;
-use common\models\Iiumcourse;
 use common\models\Inbound;
 use backend\views\Inbound\inboundSearch;
 use common\models\InCourses;
 use common\models\Inlog;
 use common\models\Kcdio;
-use common\models\Log;
-use common\models\Outbound;
 use common\models\Poc;
 use common\models\Status;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -18,8 +15,6 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Yii;
 use yii\base\Exception;
 use yii\data\ActiveDataProvider;
-use yii\db\Expression;
-use yii\db\Query;
 use yii\filters\AccessControl;
 use yii\helpers\FileHelper;
 use yii\web\Controller;
@@ -398,6 +393,7 @@ class InboundController extends Controller
     /**
      * Helper method to send a zip file to the user and clean up temporary directory afterward.
      * @param  string  $zipFilePath  The full path of the zip file
+     * @throws NotFoundHttpException
      */
     private function sendZipFile($zipFilePath)
     {
@@ -462,12 +458,12 @@ class InboundController extends Controller
             switch ($model->Status){
                 case self::redirected_to_kulliyyah:
                     $model->Token = Yii::$app->security->generateRandomString(32);
-                    $model->setAttribute('Person_in_charge_ID', $selectedPersonId);
+                    $model->setAttribute( 'Kulliyyah', $selectedPersonId);
                     $template = self::template_approval_process;
                     break;
                 case self::redirected_to_cps_amad:
                     $model->Token = Yii::$app->security->generateRandomString(32);
-                    $model->setAttribute('Dean_ID', $selectedPersonId);
+                    $model->setAttribute('msd_cps', $selectedPersonId);
                     $template = self::template_issue_offer_letter;
                     break;
                 case self::redirected_to_student:
@@ -651,7 +647,7 @@ class InboundController extends Controller
             // Check if additional CC is available and valid
             if(!empty($personModel->email_cc_additional) && filter_var($personModel->email_cc_additional, FILTER_VALIDATE_EMAIL)){
                 //Set CC recipients based on the availability of both primary and additional CC
-                $ccRecipients = filiter_var($personModel->email_cc_additional, FILTER_VALIDATE_EMAIL)
+                $ccRecipients = filter_var($personModel->email_cc_additional, FILTER_VALIDATE_EMAIL)
                     ? [$personModel->email_cc, $personModel->email_cc_additional]
                     : $personModel->email_cc_additional;
 
@@ -665,7 +661,7 @@ class InboundController extends Controller
             ], [
                 'subject' => $emailTemplate->subject, 'recipientName' => $model->Name, 'viewLink' => $viewLink,
                 'reason' => $reason, 'body' => $body
-            ])->setFrom(["noreply@example.com" => "My Application"])->setTo($model->Email);
+            ])->setFrom(["noreply@example.com" => "My Application"])->setTo($model->Email_address);
         }
 
         //Set subject and send the email

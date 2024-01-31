@@ -6,6 +6,7 @@ use common\models\Status;
 use Yii;
 use yii\base\Action;
 use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
 
@@ -57,7 +58,21 @@ class WorkflowCommonController extends Controller
             $statusModel = Status::findOne($model->Status);
 
             $this->layout = 'main';
-            throw new NotFoundHttpException("The Applicant $model->Name has already been Processed, Current Applicant Status: $statusModel->status");
+
+            if (in_array($model->Status, [2, 12, 22, 32, 42,
+                                          6, 16, 26, 36])) {
+                $class = 'badge bg-danger-subtle text-danger fw-semibold fs-9';
+            } elseif (in_array($model->Status, [61, 65, 81])) {
+                $class = 'badge bg-success-subtle text-success-style2 fw-semibold fs-9';
+            } elseif (in_array($model->Status, [1, 21, 41, 71,
+                                                5, 25, 45, 75])) {
+                $class = 'badge bg-primary-subtle text-primary fw-semibold fs-9';
+            } else {
+                $class = 'badge bg-warning-subtle text-warning fw-bolder fs-9 ';
+            }
+
+            throw new ForbiddenHttpException("The Applicant  <span class='text-bg-light fw-bolder'>$model->Name</span> has already been Processed.</br> Current Applicant Status: <span class='font-monospace .$class'>$statusModel->status</span>");
+
         }
 
         return parent::beforeAction($action);

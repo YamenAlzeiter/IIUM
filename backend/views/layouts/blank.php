@@ -27,11 +27,11 @@ AppAsset::register($this);
      data-sidebartype = "full"
      data-sidebar-position = "fixed" data-header-position = "fixed">
 	<div class = "">
-		<main role = "main" class = "flex-shrink-0">
-			<div class = "container">
+        <div class="position-relative overflow-hidden min-vh-100 w-100 d-flex align-items-center justify-content-center">
+                <div class = "container">
                 <?= $content ?>
 			</div>
-		</main>
+        </div>
 	</div>
 </div>
 

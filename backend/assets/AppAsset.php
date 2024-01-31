@@ -18,14 +18,10 @@ class AppAsset extends AssetBundle
 // Adjust the JS file paths
     public $js = [
         'js/app.min.js',
-        'js/dashboard.js',
-        'js/sidebarmenu.js',
-        'js/form_validation.js',
-        'js/filter.js',
-        'js/notes.js',
-        'js/insertButtons.js',
         'js/counter.js',
-        'js/charts.js',
+        'js/insertButtons.js',
+        'js/notes.js',
+        'js/sidebarmenu.js',
         'js/sweet-alert.js'
     ];
     public $depends = [
