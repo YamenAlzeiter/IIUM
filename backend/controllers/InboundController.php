@@ -95,12 +95,9 @@ class InboundController extends Controller
         ]);
         $dataProvider->sort->defaultOrder = ['updated_at' => SORT_DESC];
 
-        $dataProvider->pagination = [
-            'pageSize' => 10,
-        ];
+        $dataProvider->pagination = ['pageSize' => 10,];
 
-        return $this->render("index",
-            ['searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'status' => $statusModel,]);
+        return $this->render("index", ['searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'status' => $statusModel,]);
     }
 
     /**
@@ -153,20 +150,6 @@ class InboundController extends Controller
         return $this->render('create', [
             'model' => $model,
         ]);
-    }
-
-    /**
-     * Displays a search form and search results for outbound records.
-     * @return string The rendering result of the search view
-     */
-    public function actionSearch()
-    {
-        $searchModel = new inboundSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
-        $dataProvider->pagination = [
-            'pageSize' => 5,
-        ];
-        return $this->render("search", ["searchModel" => $searchModel, "dataProvider" => $dataProvider,]);
     }
 
     /**

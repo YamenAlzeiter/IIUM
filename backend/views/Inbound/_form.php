@@ -12,6 +12,8 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
+    <?= $form->field($model, 'Status')->textInput() ?>
+
     <?= $form->field($model, 'Name')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'Gender')->textInput(['maxlength' => true]) ?>
@@ -82,8 +84,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'English_other_test_name')->textInput(['maxlength' => true]) ?>
 
-
-
     <?= $form->field($model, 'Propose_type_of_programme')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'Propose_type_of_programme_other')->textInput(['maxlength' => true]) ?>
@@ -124,8 +124,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'Approval_date')->textInput() ?>
 
-    <?= $form->field($model, 'Status')->textInput() ?>
-
     <?= $form->field($model, 'Kulliyyah')->textInput() ?>
 
     <?= $form->field($model, 'msd_cps')->textInput() ?>
@@ -135,8 +133,6 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'note_msd_cps')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'Token')->textInput(['maxlength' => true]) ?>
-
-
 
     <?= $form->field($model, 'reference_number')->textInput(['maxlength' => true]) ?>
 

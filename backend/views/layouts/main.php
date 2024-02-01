@@ -41,6 +41,7 @@ AppAsset::register($this);
 	     data-sidebartype = "full"
 	     data-sidebar-position = "fixed" data-header-position = "fixed">
 		<aside class = "left-sidebar">
+            <!--calling the sidebar layout on to be rendered on main layout-->
             <?php echo $this->render('sideBar') ?>
 		</aside>
 		<header class="app-header">

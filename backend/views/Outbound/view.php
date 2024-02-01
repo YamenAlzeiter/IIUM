@@ -19,26 +19,8 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 ?>
 
 <div class = "d-flex float-row justify-content-between align-items-center">
-	<div>
-		<div class = "d-flex gap-1 align-items-center">
-        <?= Html::a('<i class="ti ti-arrow-left fs-8"></i>', Yii::$app->request->referrer) ?>
-		<h1 class = "text-capitalize text-start m-0"><?= $model->Name ?></h1>
-		</div>
-		<div class = "d-flex gap-1 align-items-center">
-            <?php
-            $statusModel = Status::findOne(['ID' => $model->Status]);
-            $iconClass = getStatusIconClass($model->Status); // Implement your own logic to get the icon class based on status
-            $statusClass = getStatusClass($model->Status);
-            echo Html::tag('span', '', [
-                'class' => ''.$iconClass,
-            ]);
-            echo Html::tag('p', ($statusModel = Status::findOne(['ID' => $model->Status])) ? $statusModel->status : '', [
-                'class' => ' fw-semibold m-0 '.$statusClass, 'id' => 'status-badge',
-            ]);
-            ?>
-		</div>
-	</div>
-	<div class = "d-flex flex-row justify-content-center">
+    <?= $this->render('/reusable/viewHeader', ['model' => $model]) ?>
+    <div class = "d-flex flex-row justify-content-center">
         <?= Html::a('<i class="ti ti-circle-check fs-7" data-toggle="tooltip" title="Action"></i>',
             ['action', 'ID' => $model->ID], [
                 'class' => 'btn btn-lg btn-light-primary text-primary edit mx-1', 'data-toggle' => 'tooltip',
@@ -46,26 +28,29 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
             ]) ?>
 
         <?php if (Yii::$app->user->can('superAdmin')): ?>
-            <?= Html::a('<i class="ti ti-trash fs-7" data-toggle="tooltip" title="delete"></i>', ['delete', 'ID' => $model->ID], [
-                'class' => 'btn btn-lg btn-light-danger text-danger edit mx-1 delete-record', // Add a class to identify the delete action
-                'data' => [
-                    'action' => Url::to(['delete', 'ID' => $model->ID]), // Add the action URL to data attributes
-                ],
-            ])?>
-        <?=  Html::a('<i class="ti ti-edit fs-7" data-toggle="tooltip" title="update"></i>', ['update', 'ID' => $model->ID], [
-                'class' => 'text-secondary btn btn-lg btn-light-secondary edit mx-1', // Add a class to identify the delete action
-                'data' => [
-                    'action' => Url::to(['delete', 'ID' => $model->ID]), // Add the action URL to data attributes
-                ],
-            ])?>
-<!--            --><?php //= Html::button('Update', [
+            <?= Html::a('<i class="ti ti-trash fs-7" data-toggle="tooltip" title="delete"></i>',
+                ['delete', 'ID' => $model->ID], [
+                    'class' => 'btn btn-lg btn-light-danger text-danger edit mx-1 delete-record',
+                    // Add a class to identify the delete action
+                    'data' => [
+                        'action' => Url::to(['delete', 'ID' => $model->ID]), // Add the action URL to data attributes
+                    ],
+                ]) ?>
+            <?= Html::a('<i class="ti ti-edit fs-7" data-toggle="tooltip" title="update"></i>',
+                ['update', 'ID' => $model->ID], [
+                    'class' => 'text-secondary btn btn-lg btn-light-secondary edit mx-1',
+                    // Add a class to identify the delete action
+                    'data' => [
+                        'action' => Url::to(['delete', 'ID' => $model->ID]), // Add the action URL to data attributes
+                    ],
+                ]) ?>
+            <!--            --><?php //= Html::button('Update', [
 //                'class' => 'btn btn-primary',
 //                'onclick' => 'location.href='.Json::encode(Url::to(['update', 'ID' => $model->ID])),
 //            ]) ?>
         <?php endif; ?>
-	</div>
+    </div>
 </div>
-
 <div class = "row">
 	<div class = "col-lg-8">
 		<div class = "card shadow-none border bg-light-subtle">

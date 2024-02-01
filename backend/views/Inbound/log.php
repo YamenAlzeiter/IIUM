@@ -27,23 +27,11 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                     $statusModel = Status::findOne(['ID' => $model->new_status]);
                     $statusMeaning = $statusModel ? $statusModel->status : '';
                     $status = Status::findOne(['ID' => $model->new_status]);
-                    $class = '';
+                    $class = statusHelper($model->new_status);
 
-                    if (in_array($model->new_status, [6, 16, 22, 36, 46])) {
-                        $class = 'badge bg-danger-subtle text-danger fw-semibold fs-3';
-                        $text_color = 'text-danger';
-                    } elseif ($model->new_status == 65) {
-                        $class = 'badge bg-success-subtle text-success-style2 fw-semibold fs-3';
-                        $text_color = 'text-success-style2';
-                    } elseif(in_array($model->new_status, [1,25,45])) {
-                        $class = 'badge bg-primary-subtle text-primary fw-semibold fs-3';
-                        $text_color = 'text-primary';
-                    } else {
-                        $class = 'badge bg-warning-subtle text-warning fw-semibold fs-3';
-                        $text_color = 'text-warning';
-                    }
 
-                    return '<div class="d-flex align-items-center gap-2"><div class="'.$class.'">'.$statusMeaning.'</div><i class="cursor-pointer ti ti-info-circle fs-5 '.$text_color.' " data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true" title="'.htmlspecialchars($status->description).'"></i></div>';
+
+                    return '<div class="d-inline-flex align-items-center gap-1 text-center wrap '.$class[0].'"><p class="mb-0 '.$class[1].'"></p><p class="mb-0">'.$statusMeaning.'</p></div><i class="cursor-pointer ti ti-info-circle fs-5 '.$class[0].' " data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true" title="'.htmlspecialchars($status->description).'"></i></div>';
                 },
                 'contentOptions' => ['class' => 'col-1'],
             ],
@@ -72,8 +60,6 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                     }
                 },
             ],
-
-            // Add more columns as needed
         ],
     ]); ?>
 </div>

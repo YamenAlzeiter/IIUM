@@ -26,15 +26,13 @@ AppAsset::register($this);
 <div class = "page-wrapper" id = "main-wrapper" data-layout = "vertical" data-navbarbg = "skin6"
      data-sidebartype = "full"
      data-sidebar-position = "fixed" data-header-position = "fixed">
-	<div class = "">
-        <div class="position-relative overflow-hidden min-vh-100 w-100 d-flex align-items-center justify-content-center">
-                <div class = "container">
-                <?= $content ?>
-			</div>
-        </div>
-	</div>
-</div>
 
+        <main role = "main" class = "flex-shrink-0">
+
+                 <?= $content ?>
+
+        </main>
+</div>
 
 <?php $this->endBody() ?>
 </body>

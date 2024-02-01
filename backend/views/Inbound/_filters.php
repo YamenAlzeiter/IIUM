@@ -20,9 +20,10 @@ $statusModel = array_merge($statusModels, $statusModelsExceptID10);
 
 ?>
 
+<!--search page for inbound view-->
 
 <?php $form = ActiveForm::begin([
-    'action' => ['index'], // Change the action as needed
+    'action' => ['index', 'year' => $year],
     'method' => 'get']); ?>
 <div class = "d-flex flex-row gap-3 align-items-center">
 

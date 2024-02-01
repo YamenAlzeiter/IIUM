@@ -55,7 +55,6 @@ function getStatusFrom($status)
             return 'Unknown Status';
     }
 }
-
 function getStatusTo($status)
 {
     //to do change into table
@@ -102,15 +101,6 @@ function getStatusTo($status)
             return 'Unknown Status';
     }
 }
-
-function statusFiliter($status){
-    switch ($status){
-        case 12: return 1;
-        case 32: return 21;
-        case 16: return 5;
-        default: return $status;
-    }
-}
 function getAnswer($choice)
 {
     if ($choice !== null) {
@@ -127,7 +117,6 @@ function getAnswer($choice)
     } else
         return 'Not Selected';
 }
-
 function getCredit($choice){
     if($choice!=null){
         switch ($choice){
@@ -137,7 +126,6 @@ function getCredit($choice){
         }
     }
 }
-
 function getMobilityType($mobilityId){
     if ($mobilityId !== null){
         switch ($mobilityId){
@@ -146,7 +134,6 @@ function getMobilityType($mobilityId){
         }
     }
 }
-
 function getGenderMeaning($gender)
 {
     switch ($gender) {
@@ -158,6 +145,32 @@ function getGenderMeaning($gender)
             return 'Not selected';
     }
 }
+
+
+
+function statusFiliter($status){
+    switch ($status){
+        case 12: return 1;
+        case 32: return 21;
+        case 16: return 5;
+        default: return $status;
+    }
+}
+
+function statusHelper($status){
+    if (in_array($status, [2, 12, 22, 32, 42, 6, 16, 26, 36, 46])) {
+        $class = ['badge bg-danger-subtle text-danger fw-semibold fs-3', 'round-8 text-bg-danger rounded-circle d-inline-block me-1'];
+    } elseif (in_array($status, [81, 61, 65])) {
+        $class = ['badge bg-success-subtle text-success-style2 fw-semibold fs-3', 'round-8 text-bg-success-style2 rounded-circle d-inline-block me-1'];
+    } elseif (in_array($status, [1, 21, 41, 71, 5, 25, 45, 75])) {
+        $class = ['badge bg-primary-subtle text-primary fw-semibold fs-3', 'round-8 text-bg-primary rounded-circle d-inline-block'];
+    } else {
+        $class = ['badge bg-warning-subtle text-warning fw-semibold fs-3', 'round-8 text-bg-warning rounded-circle d-inline-block'];
+    }
+    return $class;
+
+}
+
 function getStatusBadgeClass($status)
 {
     if ($status == 2 || $status == 12 || $status == 22 || $status == 32 || $status == 42) {
@@ -170,9 +183,9 @@ function getStatusBadgeClass($status)
 }
 function getStatusIconClass($status)
 {
-    if ($status == 2 || $status == 12 || $status == 22 || $status == 32 || $status == 42) {
+    if (in_array($status, [2, 12, 22, 32, 42, 6, 16, 26, 36, 46])) {
         return 'round-8 text-bg-danger rounded-circle d-inline-block ';
-    } elseif ($status == 61 || $status == 65 || $status == 81) {
+    } elseif (in_array($status, [61, 65, 81])) {
         return 'round-8 text-bg-success-style2 rounded-circle d-inline-block';
     } else {
         return 'round-8 text-bg-warning rounded-circle d-inline-block';
@@ -182,11 +195,11 @@ function getStatusIconClass($status)
 function getStatusClass2($status)
 {
 
-    if (in_array($status, [2, 12, 22, 32, 42])) {
+    if (in_array($status, [2, 12, 22, 32, 42, 6, 16, 26, 36, 46])) {
         $class = 'badge bg-danger-subtle text-danger fw-semibold fs-9';
-    } elseif ($status == 61 || $status == 81) {
+    } elseif (in_array($status, [81, 61])) {
         $class = 'badge bg-success-subtle text-success-style2 fw-semibold fs-9';
-    } elseif ($status== 1 || $status == 21 || $status == 41 || $status == 71) {
+    } elseif (in_array($status, [1, 21, 41, 71])) {
         $class = 'badge bg-primary-subtle text-primary fw-semibold fs-9';
     } else {
         $class = 'badge bg-warning-subtle text-warning fw-bolder fs-9';
@@ -203,6 +216,14 @@ function getStatusClass($status)
         return 'text-warning fw-semibold fs-3';
     }
 }
+
+
+
+
+
+
+
+
 function getCount($countType, $year)
 {
     switch ($countType) {

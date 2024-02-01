@@ -10,42 +10,42 @@ use yii\widgets\ActiveForm;
 ?>
 
 <?php $form = ActiveForm::begin(); ?>
-<div class="row g-3 align-items-center">
-	<div class="col-1">
-		<label for="inputPassword6" class="col-form-label">Subject:</label>
-	</div>
-	<div class="col-11">
+<div class = "row g-3 align-items-center">
+    <div class = "col-1">
+        <label for = "inputPassword6" class = "col-form-label">Subject:</label>
+    </div>
+    <div class = "col-11">
         <?= $form->field($model, 'subject')->textInput(['maxlength' => true])->label(false) ?>
-	</div>
-	<div class="row g-3 align-items-start">
-		<div class="col-1">
-			<label for="inputPassword6" class="col-form-label">Body:</label>
-		</div>
-		<div class="col-11">
+    </div>
+    <div class = "row g-3 align-items-start">
+        <div class = "col-1">
+            <label for = "inputPassword6" class = "col-form-label">Body:</label>
+        </div>
+        <div class = "col-11">
             <?= $form->field($model, 'body')->widget(TinyMce::class, [
-                'options' => ['rows' => 12],
+
+                // Set the language for TinyMCE
                 'language' => 'en',
+
+                // Configure client-side options for TinyMCE
                 'clientOptions' => [
+                    // Specify the plugins to load (empty array in this case)
                     'plugins' => [],
-                    'toolbar' => 'undo redo | formatselect | ' .
-                        'bold italic underline strikethrough | ' .
-                        'forecolor backcolor | fontsizeselect fontselect | ' .
-                        'alignleft aligncenter alignright alignjustify | ' .
-                        'bullist numlist outdent indent | link unlink image | ' .
-                        'removeformat | subscript superscript | blockquote table | ' .
-                        'code fullscreen'
+
+                    // Define the toolbar buttons available in the editor
+                    'toolbar' => 'undo redo | formatselect | '.'bold italic underline strikethrough | '.'forecolor backcolor | fontsizeselect fontselect | '.'alignleft aligncenter alignright alignjustify | '.'bullist numlist outdent indent | link unlink image | '.'removeformat | subscript superscript | blockquote table | '.'code fullscreen'
                 ],
             ])->label(false) ?>
 
-
-			<!-- Buttons for inserting content -->
-			<button class="btn btn-outline-dark" type="button" id="recipientNameButton">Insert Recipient Name</button>
-			<button class="btn btn-outline-dark" type="button" id="reasonButton">Insert Reason</button>
-			<button class="btn btn-outline-dark" type="button" id="linkButton">Insert Link</button>
-		</div>
-		<div class="form-group text-end">
+            <!-- Buttons for inserting content -->
+            <button class = "btn btn-outline-dark" type = "button" id = "recipientNameButton">Insert Recipient Name
+            </button>
+            <button class = "btn btn-outline-dark" type = "button" id = "reasonButton">Insert Reason</button>
+            <button class = "btn btn-outline-dark" type = "button" id = "linkButton">Insert Link</button>
+        </div>
+        <div class = "form-group text-end">
             <?= Html::submitButton('Save', ['class' => 'btn btn-dark']) ?>
-		</div>
-	</div>
+        </div>
+    </div>
 </div>
 <?php ActiveForm::end(); ?>

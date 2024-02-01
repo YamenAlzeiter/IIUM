@@ -22,7 +22,8 @@ class AppAsset extends AssetBundle
         'js/insertButtons.js',
         'js/notes.js',
         'js/sidebarmenu.js',
-        'js/sweet-alert.js'
+        'js/sweet-alert.js',
+        'js/actionManipulationView.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

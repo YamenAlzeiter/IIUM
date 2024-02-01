@@ -26,16 +26,16 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 
 	<div class = "d-flex flex-column flex-md-row gap-3 mt-2 mb-2 justify-content-between align-items-end">
 		<div>
-            <?= $this->render('_filters', ['searchModel' => $searchModel]); ?>
+            <?= $this->render('_filters', ['searchModel' => $searchModel, 'year' => Yii::$app->request->get('year')]); ?>
 		</div>
 		<div class="d-flex flex-row gap-2">
 			<button class="btn btn-light-danger btn-lg mb-0" id="fake-delete-btn" style="display: none;">
 				<i class="ti ti-trash text-danger fs-6"></i>
 			</button>
 			<div class = "btn-group">
-				<button class = "btn btn-light btn-lg dropdown-toggle mb-0 " type = "button" id = "dropdownMenuButton1"
+				<button class = "btn btn-light btn-lg dropdown-toggle mb-0 fw-bolder" type = "button" id = "dropdownMenuButton1"
 				        data-bs-toggle = "dropdown" aria-expanded = "false">
-					<i class = "ti ti-calendar"></i>
+					<i class = "ti ti-calendar fw-bolder"></i> Year <?= Yii::$app->request->get('year');?>
 				</button>
 				<ul class = "dropdown-menu dropdown-menu-end dropdown-menu-width" aria-labelledby = "dropdownMenuButton1">
                     <?php foreach ($distinctYears as $option): ?>
@@ -99,21 +99,24 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                 ], [
                     'label' => 'Status',  'attribute' => 'Status', 'format' => 'raw', 'value' => function ($model) {
                         $statusModel = Status::findOne(['ID' => $model->Status]);
+                        $rejectionReason = null;
                         $statusMeaning = $statusModel ? $statusModel->status : '';
-
-                        $class = '';
-
-                        if (in_array($model->Status, [6, 16, 26, 36, 46])) {
-                            $class = 'badge bg-danger-subtle text-danger fw-semibold fs-3';
-                        } elseif ($model->Status == 65) {
-                            $class = 'badge bg-success-subtle text-success-style2 fw-semibold fs-3';
-                        } elseif ($model->Status == 5 || $model->Status == 25 || $model->Status == 45){
-                            $class = 'badge bg-primary-subtle text-primary fw-semibold fs-3';
-                        } else {
-                            $class = 'badge bg-warning-subtle text-warning fw-semibold fs-3';
+                        if($model->Status == 16){
+                            $rejectionReason = ' <i class="cursor-pointer ti ti-info-circle fs-5 " 
+                                    data-bs-toggle="tooltip"
+                                     data-bs-placement="bottom"
+                                      data-bs-html="true" 
+                                      title="'.htmlspecialchars($model->note_kulliyyah).'"></i>';
+                        }elseif ($model->Status == 36){
+                            $rejectionReason = ' <i class="cursor-pointer ti ti-info-circle fs-5 " 
+                                    data-bs-toggle="tooltip"
+                                     data-bs-placement="bottom"
+                                      data-bs-html="true" 
+                                      title="'.htmlspecialchars($model->note_msd_cps).'"></i>';
                         }
+                        $class = statusHelper($model->Status);
 
-                        return '<div class="'.$class.'">'.$statusMeaning.'</div>';
+                        return '<div class="d-inline-flex align-items-center gap-1 text-center wrap '.$class[0].'"><p class="mb-0 '.$class[1].'"></p><p class="mb-0">'.$statusMeaning.'</p>'.$rejectionReason.'</div>';
                     }, 'contentOptions' => ['class' => 'col-1'],
                 ], [
                     'label' => 'Actions', 'format' => 'raw', 'value' => function ($model) {

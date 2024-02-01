@@ -22,7 +22,11 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 
 <div class = "d-flex flex-column flex-md-row gap-3 mt-2 mb-2 justify-content-between align-items-end">
 	<div>
-        <?= $this->render('_filters', ['searchModel' => $searchModel]); ?>
+        <!-- This line of code renders the filtering section. It includes two variables: -->
+        <!-- - 'searchModel': Represents the search model instance used for filtering data. -->
+        <!-- - 'year': Represents the value of the 'year' parameter obtained from the current request. -->
+        <?= $this->render('_filters', ['searchModel' => $searchModel, 'year' => Yii::$app->request->get('year')]); ?>
+
 	</div>
 
 	<div class="d-flex flex-row gap-2">
@@ -31,9 +35,9 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 		</button>
 		<div>
 			<div class = "btn-group">
-				<button class = "btn btn-light btn-lg dropdown-toggle mb-0 " type = "button" id = "dropdownMenuButton1"
+				<button class = "btn btn-light btn-lg dropdown-toggle mb-0 fw-bolder" type = "button" id = "dropdownMenuButton1"
 				        data-bs-toggle = "dropdown" aria-expanded = "false">
-					<i class = "ti ti-calendar"></i>
+                    <i class = "ti ti-calendar fw-bolder"></i> Year <?= Yii::$app->request->get('year');?>
 				</button>
 				<ul class = "dropdown-menu dropdown-menu-end dropdown-menu-width" aria-labelledby = "dropdownMenuButton1">
                     <?php foreach ($distinctYears as $option): ?>
@@ -89,24 +93,25 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                 'label' => 'Status', 'attribute' => 'Status', 'format' => 'raw', 'value' => function ($model) {
                     $statusModel = Status::findOne(['ID' => $model->Status]);
                     $statusMeaning = $statusModel ? $statusModel->status : '';
+                    $rejectionReason = null;
+                    $class = statusHelper($model->Status);
 
-                    $class = '';
 
-                    if (in_array($model->Status, [2, 12, 22, 32, 42])) {
-                        $class = 'badge bg-danger-subtle text-danger fw-semibold fs-3';
-                        $classSpan = 'round-8 text-bg-danger rounded-circle d-inline-block me-1';
-                    } elseif ($model->Status == 61 || $model->Status == 81) {
-                        $class = 'badge bg-success-subtle text-success-style2 fw-semibold fs-3';
-                        $classSpan = 'round-8 text-bg-success-style2 rounded-circle d-inline-block me-1';
-                    } elseif ($model->Status == 1 || $model->Status == 21 || $model->Status == 41 || $model->Status == 71) {
-                        $class = 'badge bg-primary-subtle text-primary fw-semibold fs-3';
-                        $classSpan = 'round-8 text-bg-primary rounded-circle d-inline-block me-1';
-                    } else {
-                        $class = 'badge bg-warning-subtle text-warning fw-semibold fs-3';
-                        $classSpan = 'round-8 text-bg-warning rounded-circle d-inline-block me-1';
+                    if($model->Status == 12){
+                        $rejectionReason = ' <i class="cursor-pointer ti ti-info-circle fs-5 " 
+                                    data-bs-toggle="tooltip"
+                                     data-bs-placement="bottom"
+                                      data-bs-html="true" 
+                                      title="'.htmlspecialchars($model->Note_hod).'"></i>';
+                    }elseif ($model->Status == 32){
+                        $rejectionReason = ' <i class="cursor-pointer ti ti-info-circle fs-5 " 
+                                    data-bs-toggle="tooltip"
+                                     data-bs-placement="bottom"
+                                      data-bs-html="true" 
+                                      title="'.htmlspecialchars($model->Note_dean).'"></i>';
                     }
 
-                    return '<div class="'.$class.'"><span class="'.$classSpan.'"></span>'.$statusMeaning.'</div>';
+                    return '<div class="d-inline-flex align-items-center gap-1 text-center wrap '.$class[0].'"><p class="mb-0 '.$class[1].'"></p><p class="mb-0">'.$statusMeaning.'</p>'.$rejectionReason.'</div>';
                 }, 'contentOptions' => ['class' => 'col-1'],
             ], [
                 'label' => 'Actions', 'format' => 'raw', 'value' => function ($model) {
@@ -141,4 +146,3 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
     ]) ?>
     <?php ActiveForm::end() ?>
 </div>
-
