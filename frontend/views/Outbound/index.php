@@ -33,55 +33,44 @@ if (!isset($noRecord)) {
 		</p>
 	</div>
 <?php else : ?>
+    <div class = "mb-3 d-flex flex-row justify-content-between align-items-center">
 
+        <div class = "d-flex gap-1 align-items-center">
+            <div class = "d-flex flex-column">
+                <h1 class = "text-capitalize text-start m-0"><?= $model->Name ?></h1>
+                <?php
+                $statusModel = Status::findOne(['ID' => statusFiliter($model->Status)]);
 
-	<div class="mb-3 d-flex flex-row justify-content-between align-items-center">
-		<div>
-			<h1 class="text-capitalize text-start m-0"><?= $model->Name ?></h1>
-			<div class="d-flex gap-1 align-items-center">
-				<?php if ($model->Status !== null) : ?>
-					<?php
-					$statusModel = Status::findOne(['ID' => $model->Status]);
-					$iconClass = getStatusIconClass(statusFiliter($model->Status)); // Implement your own logic to get the icon class based on status
-					$statusClass = getStatusClass(statusFiliter($model->Status));
-					echo Html::tag('span', '', [
-						'class' => '' . $iconClass,
-					]);
-					echo Html::tag(
-						'p',
-						($statusModel = Status::findOne(['ID' => statusFiliter($model->Status)])) ? $statusModel->status : '',
-						[
-							'class' => ' fw-semibold m-0 ' . $statusClass, 'id' => 'status-badge',
-						]
-					);
-					?>
-				<?php endif; ?>
-			</div>
-		</div>
-		<div>
-			<?php if ($model->Status === null || $model->Status === 3) : ?>
-				<?= Html::a(
-					'<i class="ti ti-refresh"></i> Update your Info',
-					['update', 'ID' => $model->ID],
-					[
-						'class' => 'btn btn-danger mb-0',
-						'title' => 'Update your Info', // Tooltip for the link
-					]
-				); ?>
+                $class = statusHelper(statusFiliter($model->Status));
 
-			<?php endif; ?>
-			<?php if ($model->Status === 41 || $model->Status === 71) : ?>
-				<div class="mt-3 px-4 d-flex flex-row gap-2">
-					<a class="update-button btn btn-outline-dark d-flex align-items-center px-3" id="upload" data-toggle="modal" title="View" data-target="#form-upload">
-						<i class="ti ti-upload me-0 me-md-1 fs-4"></i>
-						<span class="d-none d-md-block font-weight-medium fs-3">Upload Required Files</span>
-					</a>
-
-				</div>
-			<?php endif; ?>
-		</div>
-
-	</div>
+                // Creating the <p> element
+                $p = Html::tag('p', // Nesting the <span> inside the <p> element
+                    Html::tag('span', '', [
+                        'class' => ''.$class[1],
+                    ]).($statusModel ? $statusModel->status : ''), // Text content
+                    [
+                        'class' => 'fw-semibold m-0 text-capitalize status-badge d-flex align-items-center gap-1 '.$class[0],
+                    ]);
+                echo $p; ?>
+            </div>
+        </div>
+        <div>
+            <?php if ($model->Status === null || $model->Status === 3) : ?>
+                <?= Html::a('<i class="ti ti-refresh"></i> Update your Info', ['update', 'ID' => $model->ID], [
+                        'class' => 'btn btn-danger mb-0', 'title' => 'Update your Info', // Tooltip for the link
+                    ]); ?>
+            <?php endif; ?>
+            <?php if ($model->Status === 41 || $model->Status === 71) : ?>
+                <div class = "mt-3 px-4 d-flex flex-row gap-2">
+                    <a class = "update-button btn btn-outline-dark d-flex align-items-center px-3" id = "upload"
+                       data-toggle = "modal" title = "View" data-target = "#form-upload">
+                        <i class = "ti ti-upload me-0 me-md-1 fs-4"></i>
+                        <span class = "d-none d-md-block font-weight-medium fs-3">Upload Required Files</span>
+                    </a>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
 
 	<div class = "row">
 		<div class = "col-lg-8">

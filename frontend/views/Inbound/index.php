@@ -33,28 +33,26 @@ if (!isset($noRecord)) {
 
 
 <div class="mb-3 d-flex flex-row justify-content-between align-items-center">
-	<div>
-		<h1 class="text-capitalize text-start m-0"><?= $model->Name ?></h1>
-		<div class="d-flex gap-1 align-items-center">
-            <?php if ($model->Status !== null) : ?>
-                <?php
-                $statusModel = Status::findOne(['ID' => $model->Status]);
-                $iconClass = getStatusIconClass(statusFiliter($model->Status)); // Implement your own logic to get the icon class based on status
-                $statusClass = getStatusClass(statusFiliter($model->Status));
-                echo Html::tag('span', '', [
-                    'class' => '' . $iconClass,
+    <div class = "d-flex gap-1 align-items-center">
+        <div class = "d-flex flex-column">
+            <h1 class = "text-capitalize text-start m-0"><?= $model->Name ?></h1>
+            <?php
+            $statusModel = Status::findOne(['ID' => statusFiliter($model->Status)]);
+
+            $class = statusHelper(statusFiliter($model->Status));
+
+            // Creating the <p> element
+            $p = Html::tag('p', // Nesting the <span> inside the <p> element
+                Html::tag('span', '', [
+                    'class' => ''.$class[1],
+                ]).($statusModel ? $statusModel->status : ''), // Text content
+                [
+                    'class' => 'fw-semibold m-0 text-capitalize status-badge d-flex align-items-center gap-1 '.$class[0],
                 ]);
-                echo Html::tag(
-                    'p',
-                    ($statusModel = Status::findOne(['ID' => statusFiliter($model->Status)])) ? $statusModel->status : '',
-                    [
-                        'class' => ' fw-semibold m-0 ' . $statusClass, 'id' => 'status-badge',
-                    ]
-                );
-                ?>
-            <?php endif; ?>
-		</div>
-	</div>
+            echo $p; ?>
+        </div>
+    </div>
+
 	<div>
         <?php if ($model->Status === null || $model->Status === 7) : ?>
             <?= Html::a(

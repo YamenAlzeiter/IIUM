@@ -38,17 +38,14 @@ class InboundController extends Controller
                         }
                     ],
                 ],
-
             ],
         ];
-
     }
 
-
     /**
-     * Lists all Inbound models.
-     *
-     * @return string
+     * Displays a single Inbound model.
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionIndex()
     {
@@ -69,7 +66,7 @@ class InboundController extends Controller
 
     /**
      * Creates a new Inbound model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
+     * If creation is successful, the browser will be redirected to the 'index' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate()
@@ -120,118 +117,13 @@ class InboundController extends Controller
                     if ($model->validate() && $model->save()) {
                         //-------------------- File Saving --------------------\\
                         $baseUploadPath = Yii::getAlias('@common/uploads');
-                        if ($model->Passport) {
-
-                            $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
-
-                            $fileName = $creationYearLastTwoDigits . '_' . $model->ID . '_Passport.' . $model->Passport->extension;
-
-                            $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->Passport->name);
-
-                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
-
-                            if (!file_exists(dirname($filePath))) {
-                                mkdir(dirname($filePath), 0777, true);
-                            }
-
-                            $model->Passport->saveAs($filePath);
-                        }
-                        if ($model->Latest_passport_photo) {
-
-                            $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
-
-                            $fileName = $creationYearLastTwoDigits . '_' . $model->ID . '_LatestPassportPhoto.' . $model->Latest_passport_photo->extension;
-
-                            $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->Latest_passport_photo->name);
-
-                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
-
-                            if (!file_exists(dirname($filePath))) {
-                                mkdir(dirname($filePath), 0777, true);
-                            }
-
-                            $model->Latest_passport_photo->saveAs($filePath);
-                        }
-                        if ($model->Latest_certified_academic_transcript) {
-
-                            $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
-
-                            $fileName = $creationYearLastTwoDigits . '_' . $model->ID . '_LatestCertifiedAcademicTranscript.' . $model->Latest_certified_academic_transcript->extension;
-
-                            $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->Latest_certified_academic_transcript->name);
-
-                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
-
-                            if (!file_exists(dirname($filePath))) {
-                                mkdir(dirname($filePath), 0777, true);
-                            }
-
-                            $model->Latest_certified_academic_transcript->saveAs($filePath);
-                        }
-                        if ($model->Confirmation_letter) {
-
-                            $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
-
-                            $fileName = $creationYearLastTwoDigits . '_' . $model->ID . '_ConfirmationLetter.' . $model->Confirmation_letter->extension;
-
-                            $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->Confirmation_letter->name);
-
-                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
-
-                            if (!file_exists(dirname($filePath))) {
-                                mkdir(dirname($filePath), 0777, true);
-                            }
-
-                            $model->Confirmation_letter->saveAs($filePath);
-                        }
-                        if ($model->Sponsorship_letter) {
-
-                            $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
-
-                            $fileName = $creationYearLastTwoDigits . '_' . $model->ID . '_SponsorshipLetter.' . $model->Sponsorship_letter->extension;
-
-                            $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->Sponsorship_letter->name);
-
-                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
-
-                            if (!file_exists(dirname($filePath))) {
-                                mkdir(dirname($filePath), 0777, true);
-                            }
-
-                            $model->Sponsorship_letter->saveAs($filePath);
-                        }
-                        if ($model->Recommendation_letter) {
-
-                            $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
-
-                            $fileName = $creationYearLastTwoDigits . '_' . $model->ID . '_RecommendationLetter.' . $model->Recommendation_letter->extension;
-
-                            $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->Recommendation_letter->name);
-
-                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
-
-                            if (!file_exists(dirname($filePath))) {
-                                mkdir(dirname($filePath), 0777, true);
-                            }
-
-                            $model->Recommendation_letter->saveAs($filePath);
-                        }
-                        if ($model->English_certificate) {
-
-                            $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
-
-                            $fileName = $creationYearLastTwoDigits . '_' . $model->ID . '_EnglishCertificate.' . $model->English_certificate->extension;
-
-                            $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->English_certificate->name);
-
-                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
-
-                            if (!file_exists(dirname($filePath))) {
-                                mkdir(dirname($filePath), 0777, true);
-                            }
-
-                            $model->English_certificate->saveAs($filePath);
-                        }
+                        $this->saveUploadedFile($model, 'Passport', $baseUploadPath);
+                        $this->saveUploadedFile($model, 'LatestPassportPhoto', $baseUploadPath);
+                        $this->saveUploadedFile($model, 'LatestCertifiedAcademicTranscript', $baseUploadPath);
+                        $this->saveUploadedFile($model, 'ConfirmationLetter', $baseUploadPath);
+                        $this->saveUploadedFile($model, 'SponsorshipLetter', $baseUploadPath);
+                        $this->saveUploadedFile($model, 'RecommendationLetter', $baseUploadPath);
+                        $this->saveUploadedFile($model, 'EnglishCertificate', $baseUploadPath);
                         //
                         $coursesData = Yii::$app->request->post('CoursesModel', []);
                         foreach ($coursesData as $courseInfo) {
@@ -268,7 +160,21 @@ class InboundController extends Controller
     {
         return Inbound::findOne(['ID' => $id]) !== null;
     }
+    private function saveUploadedFile($model, $attribute, $baseUploadPath)
+    {
+        if ($model->$attribute) {
+            $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
+            $fileName = $creationYearLastTwoDigits . '_' . $model->ID . '_' . ucfirst($attribute) . '.' . $model->$attribute->extension;
+            $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->$attribute->name);
+            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
 
+            if (!file_exists(dirname($filePath))) {
+                mkdir(dirname($filePath), 0777, true);
+            }
+
+            $model->$attribute->saveAs($filePath);
+        }
+    }
     private function createModel($id)
     {
         $model = new Inbound(['ID' => $id]);
@@ -277,8 +183,8 @@ class InboundController extends Controller
 
     /**
      * Updates an existing Inbound model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param int $ID ID
+     * If update is successful, the browser will be redirected to the 'index' page.
+     * @param int $ID
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -368,6 +274,7 @@ class InboundController extends Controller
         ]);
     }
 
+
     public function actionUpload($ID)
     {
         $model = Inbound::findOne($ID);
@@ -452,6 +359,12 @@ class InboundController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
+    /**
+     * Allows downloading a file associated with a specific Inbound model.
+     * @param int $id
+     * @param string $file
+     * @throws NotFoundHttpException if the file does not exist
+     */
     public function actionDownload($id, $file)
     {
         $baseUploadPath = Yii::getAlias('@common/uploads');

@@ -171,59 +171,6 @@ function statusHelper($status){
 
 }
 
-function getStatusBadgeClass($status)
-{
-    if ($status == 2 || $status == 12 || $status == 22 || $status == 32 || $status == 42) {
-        return 'bg-danger';
-    } elseif ($status == 61) {
-        return 'bg-success';
-    } else {
-        return 'bg-warning';
-    }
-}
-function getStatusIconClass($status)
-{
-    if (in_array($status, [2, 12, 22, 32, 42, 6, 16, 26, 36, 46])) {
-        return 'round-8 text-bg-danger rounded-circle d-inline-block ';
-    } elseif (in_array($status, [61, 65, 81])) {
-        return 'round-8 text-bg-success-style2 rounded-circle d-inline-block';
-    } else {
-        return 'round-8 text-bg-warning rounded-circle d-inline-block';
-    }
-}
-
-function getStatusClass2($status)
-{
-
-    if (in_array($status, [2, 12, 22, 32, 42, 6, 16, 26, 36, 46])) {
-        $class = 'badge bg-danger-subtle text-danger fw-semibold fs-9';
-    } elseif (in_array($status, [81, 61])) {
-        $class = 'badge bg-success-subtle text-success-style2 fw-semibold fs-9';
-    } elseif (in_array($status, [1, 21, 41, 71])) {
-        $class = 'badge bg-primary-subtle text-primary fw-semibold fs-9';
-    } else {
-        $class = 'badge bg-warning-subtle text-warning fw-bolder fs-9';
-    }
-}
-
-function getStatusClass($status)
-{
-    if ($status == 2 || $status == 12 || $status == 22 || $status == 32 || $status == 42) {
-        return 'text-danger fw-semibold fs-3';
-    } elseif ($status == 61 || $status == 65 || $status == 81) {
-        return 'text-success-style2 fw-semibold fs-3';
-    } else {
-        return 'text-warning fw-semibold fs-3';
-    }
-}
-
-
-
-
-
-
-
-
 function getCount($countType, $year)
 {
     switch ($countType) {

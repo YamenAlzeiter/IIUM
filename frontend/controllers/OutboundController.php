@@ -10,16 +10,12 @@ use common\models\OutFiles;
 use common\models\Poc;
 use common\models\States;
 use Exception;
-use http\Url;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
-use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii\web\Response;
 use yii\web\UploadedFile;
-use function PHPUnit\Framework\returnArgument;
 
 
 /**
@@ -51,9 +47,9 @@ class OutboundController extends Controller
     }
 
     /**
-     * Lists all Outbound models.
-     *
-     * @return string
+     * Displays a single Inbound model.
+     * @return string|Response
+     * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionIndex()
     {
@@ -78,39 +74,6 @@ class OutboundController extends Controller
             "model" => $student, "modelPoc1" => $modelPoc1, "modelPoc2" => $modelPoc2, "courses" => $courses,
             'iiumcourses' => $iiumcourses, 'outFilesModel' => $outFilesModel,
         ]);
-    }
-
-    /**
-     * Displays a single Outbound model.
-     * @param  int  $ID  ID
-     * @return string
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($ID): string
-    {
-        if ($ID == Yii::$app->user->id) {
-            return $this->render('view', [
-                'model' => $this->findModel($ID),
-            ]);
-        } else {
-            throw new ForbiddenHttpException('Create an application in order to reach this page');
-        }
-    }
-
-    /**
-     * Finds the Outbound model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param  int  $ID  ID
-     * @return Outbound the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($ID)
-    {
-        if (($model = Outbound::findOne(['ID' => $ID])) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
     }
 
     /**
@@ -196,7 +159,7 @@ class OutboundController extends Controller
                                 mkdir(dirname($filePath), 0777, true);
                             }
 
-                            $model->Offer_letter->saveAs($filePath);
+                            $model->Academic_transcript->saveAs($filePath);
 
                         }
                         if ($model->Program_brochure) {
@@ -214,7 +177,7 @@ class OutboundController extends Controller
                                 mkdir(dirname($filePath), 0777, true);
                             }
 
-                            $model->Offer_letter->saveAs($filePath);
+                            $model->Program_brochure->saveAs($filePath);
                         }
                         if ($model->Latest_pay_slip) {
 
@@ -231,7 +194,7 @@ class OutboundController extends Controller
                                 mkdir(dirname($filePath), 0777, true);
                             }
 
-                            $model->Offer_letter->saveAs($filePath);
+                            $model->Latest_pay_slip->saveAs($filePath);
                         }
                         if ($model->Other_latest_pay_slip) {
 
@@ -248,7 +211,7 @@ class OutboundController extends Controller
                                 mkdir(dirname($filePath), 0777, true);
                             }
 
-                            $model->Offer_letter->saveAs($filePath);
+                            $model->Other_latest_pay_slip->saveAs($filePath);
                         }
                         //
                         $coursesData = Yii::$app->request->post('CoursesModel', []);
@@ -395,8 +358,6 @@ class OutboundController extends Controller
         ]);
     }
 
-// Your existing actionUpload method with modifications
-
     public function actionUpload($ID)
     {
         $model = Outbound::findOne($ID);
@@ -458,10 +419,10 @@ class OutboundController extends Controller
                     $outFile->location = $fileName; // Set the location attribute
                     $outFile->save(false);
                 }
-                if ($model->Status === 41){
+                if ($model->Status === 41) {
                     $model->Status = 51;
                 }
-                if ($model->Status === 71){
+                if ($model->Status === 71) {
                     $model->Status = 81;
                 }
 
@@ -482,6 +443,7 @@ class OutboundController extends Controller
         }
     }
 
+// Your existing actionUpload method with modifications
 
     /**
      * Deletes an existing Outbound model.
@@ -495,6 +457,22 @@ class OutboundController extends Controller
         $this->findModel($ID)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    /**
+     * Finds the Outbound model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param  int  $ID  ID
+     * @return Outbound the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($ID)
+    {
+        if (($model = Outbound::findOne(['ID' => $ID])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
     }
 
     public function actionDownload($id, $file)
