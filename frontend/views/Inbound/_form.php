@@ -4,21 +4,23 @@
 /** @var yii\web\View $this */
 /** @var common\models\Inbound $model */
 
-
+use yii\bootstrap5\ActiveForm;
+function isFileRequired($file)
+{
+    return $file === null;
+}
+require Yii::getAlias('@common').'/Helpers/helper.php';
 ?>
 <div>
 	<!-- Step 1 Content -->
-	<form id = "myForm" class = " needs-validation"
-	      method = "post"
-	      enctype = "multipart/form-data" novalidate>
+    <?php $form = ActiveForm::begin(['id' => 'myForm']); ?>
 		<input type = "hidden" name = "<?= Yii::$app->request->csrfParam ?>"
 		       value = "<?= Yii::$app->request->csrfToken ?>"
 		       required>
 		<!-- Step 1 input fields -->
 		<section id = "step-1" class = "form-step">
 
-			<div class = "form-height">
-
+            <div class="container pt-2" style="height: 80vh; overflow-y: auto;">
 				<div class = "form__div">
 					<input type = "text" class = "form__input form-control"
 					       id = "validationCustomName disabledTextInput"
@@ -198,7 +200,7 @@
 		</section>
 		<!-- Step 2 input fields -->
 		<section id = "step-2" class = "form-step d-none">
-			<div class = "form-height">
+            <div class="container pt-2" style="height: 80vh; overflow-y: auto;">
 				<div class = "form__div">
 					<input type = "text" class = "form__input form-control" id = "validationCustomEmName"
 					       name = "Inbound[Emergency_name]"
@@ -283,7 +285,7 @@
 		<!-- Step 3 input fields -->
 		<section id = "step-3" class = "form-step d-none">
 
-			<div class = "form-height">
+            <div class="container pt-2" style="height: 80vh; overflow-y: auto;">
 				<div class = "row mt-3 d-flex flex-row align-items-center">
 					<div class = "col-md-6">
 						<div class = "form__div">
@@ -449,35 +451,7 @@
 						</div>
 					</div>
 				</div>
-                <?php
-                $template = '
-<div class="row mb-3">
-    <div class="col-md-6">
-        <div class="mb-3">
-            <label for="{inputId}" class="form-label">{labelText}</label>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="input-group">
-            <input type="file" class="form-control file-input" id="{inputId}" name="{inputName}" accept=".pdf, .docx" {requiredAttribute}>
-        </div>
-    </div>
-</div>
-';
-
-                // Function to check if the file is required
-                function isFileRequired($file)
-                {
-                    return $file === null;
-                }
-
-                // File input sections
-                echo strtr($template, [
-                    '{inputId}' => 'Englishcertificate', '{labelText}' => 'English certificate',
-                    '{inputName}' => 'Inbound[English_certificate]',
-                    '{requiredAttribute}' => isFileRequired($model->English_certificate) ? 'required' : '',
-                ]);
-                ?>
+                <?php renderFileField($form, $model, 'English_certificate', "EnglishCertificate"); ?>
 			</div>
 			<div class = "d-flex justify-content-between">
 				<div>
@@ -496,7 +470,7 @@
 		<!-- Step 4 input fields-->
 		<section id = "step-4" class = "form-step d-none">
 
-			<div class = "form-height">
+            <div class="container pt-2" style="height: 80vh; overflow-y: auto;">
 				<div class = "row mt-3 d-flex flex-row align-items-center">
 					<div class = "col-md-6">
 						<div class = "form__div">
@@ -681,8 +655,7 @@
 		</section>
 		<!--Step 5 input fields-->
 		<section id = "step-5" class = "form-step d-none">
-
-			<div class = "form-height">
+            <div class="container pt-2" style="height: 80vh; overflow-y: auto;">
 				<div class = "row mt-3 d-flex flex-row align-items-center">
 					<div class = "col-md-6 d-flex flex-row align-items-center">
 						<legend class = "col-4 col-form-label">Accommodation on Campus</legend>
@@ -823,7 +796,7 @@
 		</section>
 		<!-- Step 6 input fields -->
 		<section id = "step-6" class = "form-step d-none">
-			<div class = "form-height">
+            <div class="container pt-2" style="height: 80vh; overflow-y: auto;">
 				<p class = "font-monospace">I hereby certify that my home university has recommended me to join the
 				                            proposed
 				                            study program at
@@ -891,28 +864,7 @@
 						</div>
 					</div>
 				</div>
-                <?php
-                $template = '
-<div class="row mb-3">
-    <div class="col-md-6">
-        <div class="mb-3">
-            <label for="{inputId}" class="form-label">{labelText}</label>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="input-group">
-            <input type="file" class="form-control file-input" id="{inputId}" name="{inputName}" accept=".pdf, .docx" {requiredAttribute}>
-        </div>
-    </div>
-</div>
-';
-                // File input sections
-                echo strtr($template, [
-                    '{inputId}' => 'Recommendationletter', '{labelText}' => 'Recommendation Letter',
-                    '{inputName}' => 'Inbound[Recommendation_letter]',
-                    '{requiredAttribute}' => isFileRequired($model->Recommendation_letter) ? 'required' : '',
-                ]);
-                ?>
+                <?php renderFileField($form, $model, 'Recommendation_letter', "RecommendationLetter"); ?>
 
 				<p class = "font-monospace">I declare that all the information provided in this application from is true
 				                            and
@@ -925,24 +877,10 @@
 				                            admission and agree to pay all
 				                            fees for which I am liable to.</p>
 
-				<div class = "row align-items-center">
-					<div class = "col">
-						<legend class = "col-form-label col-sm-2 pt-0">Do you agree?</legend>
-						<div class = "form-check form-check-inline pl-3">
-							<input type = "radio" class = "form-check-input" id = "model-agreement-1"
-							       name = "Inbound[Student_declaration_agreement]"
-							       value = 1 <?= $model->Student_declaration_agreement === 1 ? 'checked' : '' ?>>
-							<label class = "form-check-label" for = "model-agreement-1">Yes</label>
-						</div>
-						<div class = "form-check form-check-inline">
-							<input type = "radio" class = "form-check-input" id = "model-agreement-0"
-							       name = "Inbound[Student_declaration_agreement]"
-							       value = 0 <?= $model->Student_declaration_agreement === 0 ? 'checked' : '' ?>
-							       required>
-							<label class = "form-check-label" for = "model-agreement-0">No</label>
-						</div>
-					</div>
-				</div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="declaration-checkbox" required>
+                    <label class="form-check-label fw-bolder" for="declaration-checkbox">I agree to the terms stated above.</label>
+                </div>
 			</div>
 
 			<div class = "d-flex justify-content-between">
@@ -950,65 +888,30 @@
 					<button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "5">Back
 					</button>
 					<button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button"
-					        step_number = "7">Next Step
+					        step_number = "7" id="submitButton" disabled>Next Step
 					</button>
 				</div>
 				<button class = "btn btn-outline-dark fs-5" type = "button" name = "saveWithoutValidation"
 				        onclick = "submitForm('noValidate')"><i class = "ti ti-device-floppy"></i> Save
 				</button>
 			</div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    document.getElementById('declaration-checkbox').addEventListener('change', function () {
+                        document.getElementById('submitButton').disabled = !this.checked;
+                    });
+                });
+            </script>
 		</section>
 		<section id = "step-7" class = "form-step d-none">
-			<div class = "form-height">
-                <?php
-                $template = '
-<div class="row mb-3">
-    <div class="col-md-6">
-        <div class="mb-3">
-            <label for="{inputId}" class="form-label">{labelText}</label>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="input-group">
-            <input type="file" class="form-control file-input" id="{inputId}" name="{inputName}" accept=".pdf, .docx" {requiredAttribute}>
-        </div>
-    </div>
-</div>
-';
-                // File input sections
-                echo strtr($template, [
-                    '{inputId}' => 'Passport', '{labelText}' => 'Passport', '{inputName}' => 'Inbound[Passport]',
-                    '{requiredAttribute}' => isFileRequired($model->Passport) ? 'required' : '',
-                ]);
-                echo strtr($template, [
-                    '{inputId}' => 'Latestpassportphoto', '{labelText}' => 'Latest Passport Photo',
-                    '{inputName}' => 'Inbound[Latest_passport_photo]',
-                    '{requiredAttribute}' => isFileRequired($model->Latest_passport_photo) ? 'required' : '',
-                ]);
-                echo strtr($template, [
-                    '{inputId}' => 'Latestcertifiedacademictranscript',
-                    '{labelText}' => 'Latest Certified Academic Transcript',
-                    '{inputName}' => 'Inbound[Latest_certified_academic_transcript]',
-                    '{requiredAttribute}' => isFileRequired($model->Latest_certified_academic_transcript) ? 'required' : '',
-                ]);
-                echo strtr($template, [
-                    '{inputId}' => 'Confirmationletter', '{labelText}' => 'Confirmation Letter',
-                    '{inputName}' => 'Inbound[Confirmation_letter]',
-                    '{requiredAttribute}' => isFileRequired($model->Confirmation_letter) ? 'required' : '',
-                ]);
-                echo strtr($template, [
-                    '{inputId}' => 'Confirmationletter', '{labelText}' => 'Confirmation Letter',
-                    '{inputName}' => 'Inbound[Confirmation_letter]',
-                    '{requiredAttribute}' => isFileRequired($model->Confirmation_letter) ? 'required' : '',
-                ]);
-                echo strtr($template, [
-                    '{inputId}' => 'Sponsorshipletter', '{labelText}' => 'Sponsorship Letter',
-                    '{inputName}' => 'Inbound[Sponsorship_letter]',
-                    '{requiredAttribute}' => isFileRequired($model->Sponsorship_letter) ? 'required' : '',
-                ]);
-
-                ?>
+            <div class="container pt-2" style="height: 80vh; overflow-y: auto;">
+                <?php renderFileField($form, $model, 'Passport', "Passport"); ?>
+                <?php renderFileField($form, $model, 'Latest_passport_photo', "LatestPassportPhoto"); ?>
+                <?php renderFileField($form, $model, 'Latest_certified_academic_transcript', "LatestCertifiedAcademicTranscript"); ?>
+                <?php renderFileField($form, $model, 'Confirmation_letter', "ConfirmationLetter"); ?>
+                <?php renderFileField($form, $model, 'Sponsorship_letter', "SponsorshipLetter"); ?>
 			</div>
+
 
 			<div class = "d-flex justify-content-between">
 				<button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "6">Back
@@ -1026,7 +929,7 @@
 		</section>
 	</form>
 </div>
-
+<?php ActiveForm::end(); ?>
 <script>
 
     var nationalityModelValue = "<?= htmlspecialchars($model->Citizenship) ?>";

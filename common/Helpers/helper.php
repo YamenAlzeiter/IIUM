@@ -3,9 +3,8 @@
 use common\models\Countries;
 use common\models\Inbound;
 use common\models\Outbound;
-use common\models\Poc;
-use common\models\Kcdio;
 use common\models\States;
+use yii\bootstrap5\Html;
 
 function getStatusFrom($status)
 {
@@ -209,5 +208,31 @@ function getState($stateID){
         return $state ? $state->name : 'State not found';
     } else {
         return 'Invalid state ID';
+    }
+
+
+}
+
+function renderFileField($form, $model, $attribute, $fileName)
+{
+
+    if (!isset($noRecord)) {
+        $creationYearLastTwoDigits = date('y', strtotime($model->created_at));
+
+        $fileNameMarker = $creationYearLastTwoDigits . '_' . $model->ID;
+    }
+
+    echo $form->field($model, $attribute, ['options' => ['style' => 'margin: 0;']])->fileInput([
+        'class' => 'form-control mb-2',
+        'required' => isFileRequired($model->$attribute),
+    ]);
+
+    if ($model->$attribute !== null) {
+        $uploadedFile = Html::a($fileNameMarker . "_" . $fileName . ".pdf", [
+            'download',
+            'id' => $model->ID,
+            'file' => $fileNameMarker . '_' . $fileName . '.pdf'
+        ]);
+        echo "<p class='fw-lighterg'><span class='fw-bolder'>File Uploaded: </span>" . ($model->$attribute ? $uploadedFile : '') . "</p>";
     }
 }

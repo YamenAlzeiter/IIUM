@@ -2,6 +2,7 @@
 body{
     font-family: 'Open Sans', sans-serif;
 }
+
 #signUpForm {
     max-width: 500px;
     background-color: #ffffff;
@@ -114,20 +115,7 @@ body{
 }
 
 /*===== GOOGLE FONTS =====*/
-.img-fluid{
-    position: relative;
-    z-index: -19;
-}
-.img-fluid::before{
 
-    content: "";
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    background-color: rgba(0, 0, 0, 0.5);
-}
 
 /*===== VARIABLES CSS =====*/
 :root {
@@ -323,7 +311,7 @@ h2 {
     display: none;
 }
 .form-step {
-    
+
     border-radius: 20px;
     padding-top: 1rem;
 }
@@ -345,7 +333,7 @@ ul.form-stepper .form-stepper-circle span {
    min-height: 41rem;
 }
 .form-stepper-horizontal {
-    
+
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;

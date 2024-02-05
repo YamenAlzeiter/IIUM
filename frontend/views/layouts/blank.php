@@ -34,40 +34,31 @@ AppAsset::register($this);
             ['class' => 'btn btn-light logout fs-3', 'type' => 'submit', 'title' => 'Log Out']) ?>
         <?= Html::endForm() ?>
     <?php endif; ?>
-	<div id = "main-wrapper">
-		<div class = "position-relative overflow-hidden radial-gradient min-vh-100 w-100">
+	<div id = "main-wrapper ">
+		<div class = "position-relative overflow-hidden radial-gradient min-vh-100 w-100 ">
 			<div class = "position-relative z-index-5">
-				<div class = "row">
+				<div class = "row ">
 
 					<div class = "d-flex justify-content-center"><?= Alert::widget([
                             'options' => [
                                 'class' => 'position-fixed mw-50',
                             ],
                         ]) ?></div>
-					<div class = "col-xl-7 col-xxl-8 p-0">
-						<div class = "w-auto">
-							<a href = "/site/index" class = "brand-logo d-flex align-items-center gap-2">
-								<img src = "/images/iiumLogo.svg" alt = "IIUM Logo" class = "iiumlogo">
-								<h4 class = "mb-0 fw-semibold">Inbound/ Outbound Application</h4>
-							</a>
-						</div>
-						<div class = "d-none d-xl-flex align-items-center justify-content-center"
-						     style = "height: calc(100vh - 80PX);">
-							<h1 class = "mb-0 fw-semibold text-capitalize text-success-emphasis">an image should be
-							                                                                     here </h1>
-						</div>
-					</div>
-					<div class="col-xl-5 col-xxl-4">
+                    <div class="col-xl-7 col-xxl-8 p-0">
+                        <div class="d-none d-xl-flex align-items-center justify-content-center" style="height: calc(100vh - 80px);">
+                            <div class="image-container">
+                                <img src="/images/IIUMrectorysmall.png" alt="" class="min-vw-100">
+                            </div>
+                        </div>
+                    </div>
 
-						<div class="authentication-login min-vh-100 bg-body row justify-content-center align-items-center p-4">
-
-
-							<div class="auth-max-width col-sm-8 col-md-6 col-xl-7 px-4 ">
-								<div class = "d-flex gap-1 align-items-center mb-4">
+                    <div class="col-xl-5 col-xxl-4 ">
+						<div class="authentication-login min-vh-100 bg-body row justify-content-center align-items-center p-4 min ">
+							<div class="auth-max-width h-auto px-4">
+								<div class = "d-flex gap-1 align-items-center mb-4  min-vw-100">
                                     <?= Html::a('<i class="ti ti-arrow-left fs-7"></i>',
                                         Yii::$app->request->referrer) ?>
 									<h2 class = "fs-7 fw-bolder"><?= Html::encode($this->title) ?></h2>
-
 								</div>
                                 <?= $content ?>
 							</div>
@@ -76,7 +67,8 @@ AppAsset::register($this);
 				</div>
 			</div>
 		</div>
-	</div>
+    </div>
+
 
 
     <?php $this->endBody() ?>

@@ -14,7 +14,8 @@ function isFileRequired($file)
 {
     return $file === null;
 }
-
+require Yii::getAlias('@common').'/Helpers/helper.php';
+//require_once(Yii::$app->basePath . '/common/Helpers/helper.php');
 ?>
 
 
@@ -25,7 +26,7 @@ function isFileRequired($file)
        value = "<?= Yii::$app->request->csrfToken ?>">
 
 <section id = "step-1" class = "form-step">
-	<div class="form-height">
+    <div class="container pt-2" style="height: 50vh; overflow-y: auto;">
 		<div class = "row mb-2">
 			<div class = "col-md-6">
 				<div class = "form__div">
@@ -187,7 +188,7 @@ function isFileRequired($file)
 
 <section id = "step-2" class = "form-step d-none">
 
-	<div class="form-height">
+           <div class="container pt-2" style="height: 50vh; overflow-y: auto;">
 		<div class = "row mb-2">
 			<div class = "col-md-6">
 				<div class = "form__div">
@@ -271,7 +272,7 @@ function isFileRequired($file)
 </section>
 <section id = "step-3" class = "form-step d-none">
 
-	<div class="form-height">
+           <div class="container pt-2" style="height: 50vh; overflow-y: auto;">
 		<div class = "row d-flex flex-row align-items-center">
 			<div class = "col-md-4">
 				<div class = "form__div">
@@ -465,7 +466,7 @@ function isFileRequired($file)
 
 <section id = "step-4" class = "form-step d-none">
 
-	<div class="form-height">
+           <div class="container pt-2" style="height: 50vh; overflow-y: auto;">
 		<div class = "row d-flex flex-row align-items-center">
 			<div class = "row">
 				<legend class = "col-2 col-form-label">Type of Mobility</legend>
@@ -703,7 +704,7 @@ function isFileRequired($file)
 
 <section id = "step-5" class = "form-step d-none">
 
-	<div class="form-height">
+           <div class="container pt-2" style="height: 50vh; overflow-y: auto;">
 
 		<div class = "container">
 			<div class = "row" id = "tableContainer">
@@ -826,48 +827,20 @@ function isFileRequired($file)
 
 	<p class = "font-monospace"><strong>I hereby submit this application for the IIUM Student Program (outbound) and attached all the following compulsory documents in support of the information provided</strong></p>
 
+    <?php renderFileField($form, $model, 'Offer_letter', "offerLetter"); ?>
+    <?php renderFileField($form, $model, 'Academic_transcript', "AcademicTranscript"); ?>
+    <?php renderFileField($form, $model, 'Program_brochure', "ProgramBrochure"); ?>
+    <?php renderFileField($form, $model, 'Latest_pay_slip', "LatestPaySlip"); ?>
+    <?php renderFileField($form, $model, 'Other_latest_pay_slip', "OtherLatestPaySlip"); ?>
 
-    <?= $form->field($model, 'Offer_letter')->fileInput([
-        'class' => 'form-control mb-2',
-        'required' => isFileRequired($model->Offer_letter),
-    ])?>
+    <div>
+        <p class="font-monospace">I declare that all the information provided in this application form is true and complete in every detail. I acknowledge that International Islamic University Malaysia (IIUM) reserves the right to approve or reject applications made on the basis of incorrect or incomplete information. I am aware of the conditions relating to my application and agree to pay IIUM fees for which I am liable while joining the above programme.</p>
+    </div>
 
-    <?= $form->field($model, 'Academic_transcript')->fileInput([
-        'class' => 'form-control mb-2',
-        'required' => isFileRequired($model->Academic_transcript),
-    ])?>
-    <?= $form->field($model, 'Program_brochure')->fileInput([
-        'class' => 'form-control mb-2',
-        'required' => isFileRequired($model->Program_brochure),
-    ])?>
-    <?= $form->field($model, 'Latest_pay_slip')->fileInput([
-        'class' => 'form-control mb-2',
-        'required' => isFileRequired($model->Latest_pay_slip),
-    ])?>
-    <?= $form->field($model, 'Other_latest_pay_slip')->fileInput([
-        'class' => 'form-control mb-2',
-        'required' => isFileRequired($model->Other_latest_pay_slip),
-    ])?>
-
-	<div>
-		<p class = "font-monospace">I declare that all the information provided in this application from is true and complete in every detail. I acknowledge that International Islamic University Malaysia (IIUM) reserves the right to approve or reject made on the basis of incorrect or incomplete information. I am aware of the conditions relating to my application and agree to pay IIUM fees for which I am liable for while joining the above programme </p>
-	</div>
-
-	<div class = "row align-items-center">
-		<div class = "col">
-			<legend class = "col-form-label col-sm-2 pt-0">Do you agree?</legend>
-			<div class = "form-check form-check-inline">
-				<input type = "radio" class = "form-check-input" id = "model-agreement-0"
-				       name = "Outbound[agreement]" value = "0"  <?= $model->agreement === 0 ? 'checked' : '' ?> required>
-				<label class = "form-check-label" for = "model-agreement-0" required >No</label>
-			</div>
-			<div class = "form-check form-check-inline pl-3">
-				<input type = "radio" class = "form-check-input" id = "model-agreement-1"
-				       name = "Outbound[agreement]" value = "1"  <?= $model->agreement === 1 ? 'checked' : '' ?>>
-				<label class = "form-check-label" for = "model-agreement-1">Yes</label>
-			</div>
-		</div>
-	</div>
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="declaration-checkbox" required>
+        <label class="form-check-label fw-bolder" for="declaration-checkbox">I agree to the terms stated above.</label>
+    </div>
 </div>
 
 		<input type="hidden" name="Outbound[Status]" id="statusInput" value="<?= $model->Status?>">
@@ -875,13 +848,24 @@ function isFileRequired($file)
 			<button class="btn btn-navigate-form-step btn-next fs-5" type="button" step_number="5">Back</button>
 		<div>
 		<button class="btn btn-outline-dark fs-5" type="button" name="saveWithoutValidation" onclick="submitForm('noValidate')"><i class="ti ti-device-floppy"></i> Save</button>
-		<button class="btn btn-dark submit-btn px-3 fs-5" type="button" name="saveWithoutValidation" value="validate" onclick = "submitForm('validate')"><i class="ti ti-send"></i> Submit</button>
-		</div>
+
+            <button class="btn btn-dark submit-btn px-3 fs-5" type="button" name="saveWithoutValidation" value="validate" onclick="submitForm('validate')" id="submitButton" disabled><i class="ti ti-send"></i> Submit</button>
+
+        </div>
 	</div>
 </section>
 
 
 <?php ActiveForm::end(); ?>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('declaration-checkbox').addEventListener('change', function () {
+            document.getElementById('submitButton').disabled = !this.checked;
+        });
+    });
+</script>
+
 
 
 <script>

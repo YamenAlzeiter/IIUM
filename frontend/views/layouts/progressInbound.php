@@ -32,8 +32,13 @@ AppAsset::register($this);
 			<div class = "position-relative z-index-5">
 				<div class = "row">
 					<div class = "col-xl-5 col-xxl-3">
+                        <div class=" m-4">
+                            <?= Html::a('<i class="ti ti-chevron-left fs-8 fw-bolder" ></i>', Yii::$app->request->referrer) ?>
+                        </div>
+
 						<!--						<div class = "d-xl-flex align-items-center justify-content-center"-->
 						<ul class = "d-none d-xl-flex form-stepper form-stepper-horizontal text-center mb-0 vh-100 justify-content-center gap-5">
+
 							<!-- Step 1: Personal Information -->
 							<li class = "form-stepper-active text-center form-stepper-list" step = "1">
 								<a class = "mx-2">

@@ -117,13 +117,13 @@ class InboundController extends Controller
                     if ($model->validate() && $model->save()) {
                         //-------------------- File Saving --------------------\\
                         $baseUploadPath = Yii::getAlias('@common/uploads');
-                        $this->saveUploadedFile($model, 'Passport', $baseUploadPath);
-                        $this->saveUploadedFile($model, 'LatestPassportPhoto', $baseUploadPath);
-                        $this->saveUploadedFile($model, 'LatestCertifiedAcademicTranscript', $baseUploadPath);
-                        $this->saveUploadedFile($model, 'ConfirmationLetter', $baseUploadPath);
-                        $this->saveUploadedFile($model, 'SponsorshipLetter', $baseUploadPath);
-                        $this->saveUploadedFile($model, 'RecommendationLetter', $baseUploadPath);
-                        $this->saveUploadedFile($model, 'EnglishCertificate', $baseUploadPath);
+                        $this->saveUploadedFile($model, 'Passport', $baseUploadPath, 'Passport');
+                        $this->saveUploadedFile($model, 'Latest_passport_photo', $baseUploadPath, 'LatestPassportPhoto');
+                        $this->saveUploadedFile($model, 'Latest_certified_academic_transcript', $baseUploadPath, 'LatestCertifiedAcademicTranscript');
+                        $this->saveUploadedFile($model, 'Confirmation_letter', $baseUploadPath, 'ConfirmationLetter');
+                        $this->saveUploadedFile($model, 'Sponsorship_letter', $baseUploadPath, 'SponsorshipLetter');
+                        $this->saveUploadedFile($model, 'Recommendation_letter', $baseUploadPath, 'RecommendationLetter');
+                        $this->saveUploadedFile($model, 'English_certificate', $baseUploadPath, 'EnglishCertificate');
                         //
                         $coursesData = Yii::$app->request->post('CoursesModel', []);
                         foreach ($coursesData as $courseInfo) {
@@ -160,13 +160,13 @@ class InboundController extends Controller
     {
         return Inbound::findOne(['ID' => $id]) !== null;
     }
-    private function saveUploadedFile($model, $attribute, $baseUploadPath)
+    private function saveUploadedFile($model, $attribute, $baseUploadPath, $fileName)
     {
         if ($model->$attribute) {
             $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
-            $fileName = $creationYearLastTwoDigits . '_' . $model->ID . '_' . ucfirst($attribute) . '.' . $model->$attribute->extension;
+            $fileNameHeader = $creationYearLastTwoDigits . '_' . $model->ID . '_' . $fileName . '.' . $model->$attribute->extension;
             $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->$attribute->name);
-            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
+            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileNameHeader;
 
             if (!file_exists(dirname($filePath))) {
                 mkdir(dirname($filePath), 0777, true);
@@ -204,37 +204,19 @@ class InboundController extends Controller
 
 
         if (Yii::$app->request->isPost) {
-            $transaction = Yii::$app->db->beginTransaction();
+
 
             try {
-
+                $transaction = Yii::$app->db->beginTransaction();
                 if ($model->load(Yii::$app->request->post())) {
                     // Helper function for updating file
-                    $updateFile = function ($attribute, $fileNamePrefix) use ($model) {
-                        $file = UploadedFile::getInstance($model, $attribute);
-                        if ($file) {
-                            $baseUploadPath = Yii::getAlias('@common/uploads');
-                            $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $file->name);
-                            $creationYearLastTwoDigits = date('y', strtotime($model->created_at));
-                            $fileName = $creationYearLastTwoDigits . '_' . $model->ID . '_' . $fileNamePrefix . '.' . $file->extension;
-                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
-                            if (!file_exists(dirname($filePath))) {
-                                mkdir(dirname($filePath), 0777, true);
-                            }
-
-                            $file->saveAs($filePath);
-                            $model->$attribute = $fileName; // Update the model attribute with the new file name
-                        }
-                    };
-
-                    // Update each file
-                    $updateFile('Passport', 'Passport');
-                    $updateFile('Latest_passport_photo', 'LatestPassportPhoto');
-                    $updateFile('Latest_certified_academic_transcript', 'LatestCertifiedAcademicTranscript');
-                    $updateFile('Confirmation_letter', 'ConfirmationLetter');
-                    $updateFile('Sponsorship_letter', 'SponsorshipLetter');
-                    $updateFile('Recommendation_letter', 'RecommendationLetter');
-                    $updateFile('English_certificate', 'EnglishCertificate');
+                    $model->Passport = UploadedFile::getInstance($model, 'Passport');
+                    $model->Latest_passport_photo = UploadedFile::getInstance($model, 'Latest_passport_photo');
+                    $model->Latest_certified_academic_transcript = UploadedFile::getInstance($model, 'Latest_certified_academic_transcript');
+                    $model->Confirmation_letter = UploadedFile::getInstance($model, 'Confirmation_letter');
+                    $model->Sponsorship_letter = UploadedFile::getInstance($model, 'Sponsorship_letter');
+                    $model->Recommendation_letter = UploadedFile::getInstance($model, 'Recommendation_Letter');
+                    $model->English_certificate = UploadedFile::getInstance($model, 'English_certificate');
 
                     if ($this->request->post('saveWithoutValidation') === 'validate') {
                         // Set status to 10 only when the 'submit' button is clicked
@@ -242,6 +224,14 @@ class InboundController extends Controller
                     }
 
                     if ($model->validate() && $model->save()) {
+                        $baseUploadPath = Yii::getAlias('@common/uploads');
+                        $this->saveUploadedFile($model, 'Passport', $baseUploadPath, 'Passport');
+                        $this->saveUploadedFile($model, 'Latest_passport_photo', $baseUploadPath, 'LatestPassportPhoto');
+                        $this->saveUploadedFile($model, 'Latest_certified_academic_transcript', $baseUploadPath, 'LatestCertifiedAcademicTranscript');
+                        $this->saveUploadedFile($model, 'Confirmation_letter', $baseUploadPath, 'ConfirmationLetter');
+                        $this->saveUploadedFile($model, 'Sponsorship_letter', $baseUploadPath, 'SponsorshipLetter');
+                        $this->saveUploadedFile($model, 'Recommendation_letter', $baseUploadPath, 'RecommendationLetter');
+                        $this->saveUploadedFile($model, 'English_certificate', $baseUploadPath, 'EnglishCertificate');
                         // Update Courses records
                         foreach ($_POST['CoursesModel'] as $courseData) {
                             $courseModel = InCourses::findOne($courseData['id']);
