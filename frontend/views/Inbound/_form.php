@@ -912,7 +912,6 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                 <?php renderFileField($form, $model, 'Sponsorship_letter', "SponsorshipLetter"); ?>
 			</div>
 
-
 			<div class = "d-flex justify-content-between">
 				<button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "6">Back
 				</button>

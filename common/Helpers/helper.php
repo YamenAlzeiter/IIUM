@@ -172,6 +172,9 @@ function statusHelper($status){
 
 function getCount($countType, $year)
 {
+    if($year === null){
+        $year = date('Y');
+    }
     switch ($countType) {
         case 'Total':
             return Outbound::find()->where(['and', ['EXTRACT(YEAR FROM created_at)' => $year], ['not', ['Status' => null]]])->count();

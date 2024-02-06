@@ -57,10 +57,11 @@ class SiteController extends Controller
      */
     public function actions()
     {
-        $this->layout= 'blank';
+        $this->layout= 'sign';
         return [
             'error' => [
                 'class' => \yii\web\ErrorAction::class,
+                'layout' => 'blank'
             ],
             'captcha' => [
                 'class' => \yii\captcha\CaptchaAction::class,
@@ -169,7 +170,7 @@ class SiteController extends Controller
      */
     public function actionSignup()
     {
-        $this->layout= 'blank';
+        $this->layout= 'sign';
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post()) && $model->signup()) {
             Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');

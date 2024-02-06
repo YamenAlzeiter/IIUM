@@ -64,6 +64,10 @@ $(function () {
     $("#formpoc").modal("show");
     $("#formpoc form").attr("action", "/poc/create");
   });
+  $("#add-kcdio").on("click", function () {
+    $("#formpoc").modal("show");
+    $("#formpoc form").attr("action", "/kcdio/create");
+  });
 
   $("#add-user").on("click", function () {
     $("#formpoc").modal("show");
@@ -153,6 +157,28 @@ $(function () {
       "/status/get-record",
       function (data) {
         $("#status-status").val(data.status);
+        //... populate other fields for update status action if available
+      },
+    );
+  });
+
+  $(".updateKcdio-button").on("click", function () {
+    $("#formpoc").modal("show");
+    $("#formpoc form").attr("action", "/kcdio/update?id=" + recordId); // Adjust the action URL
+    $("#btn-n-save").show();
+    $("#btn-n-add").hide();
+    $("#formpoc-header").html(
+      '<i class="ti ti-eye text-dark me-2 text-dark"></i>Update Record',
+    );
+    $("#submit-button").html('<i class = "ti ti-pencil"></i> Update');
+    var recordId = $(this).data("id");
+    setUpdateForm(
+      "#formpoc",
+      "/kcdio/update?id=",
+      recordId,
+      "/kcdio/get-record",
+      function (data) {
+        $("#kcdio-kcdio").val(data.kcdio);
         //... populate other fields for update status action if available
       },
     );

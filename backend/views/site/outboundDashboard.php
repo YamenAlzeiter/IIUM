@@ -1,7 +1,11 @@
 <?php
 
 use common\models\Outbound;
+use common\models\Status;
 use yii\bootstrap5\Html;
+use yii\bootstrap5\LinkPager;
+use yii\grid\GridView;
+use yii\helpers\Url;
 
 
 $this->title = 'Dashboard';
@@ -34,7 +38,7 @@ $distinctYears = Outbound::find()->select(['EXTRACT(YEAR FROM created_at) as yea
 
         </ul>
     </div>
-</div>.
+</div>
 
 <?=
 
@@ -53,5 +57,5 @@ $distinctYears = Outbound::find()->select(['EXTRACT(YEAR FROM created_at) as yea
 
 $this->render('/reusable/dashboard_reused', [
     'year' => $year, 'months' => $months, 'counts' => $counts, 'maleCount' => $maleCount, 'femaleCount' => $femaleCount,
-    'inbound' => "",//null for outbound
+    'inbound' => "", 'dataProvider' => $dataProvider//null for outbound
 ]) ?>

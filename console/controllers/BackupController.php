@@ -47,7 +47,7 @@ class BackupController extends Controller
 
         putenv("PGPASSWORD=$password");
         // Build the pg_dump command
-        $command = "pg_dump -h localhost -d IIUM_Inbound_Outbound -Fp -f $backupPath/$backupFileName -w";
+        $command = "pg_dump -h localhost -d IIUM_Inbound_Outbound -Fd -f $backupPath/$backupFileName -w";
 
         // Execute the pg_dump command
         exec($command);

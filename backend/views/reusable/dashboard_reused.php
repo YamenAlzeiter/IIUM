@@ -1,71 +1,160 @@
 <?php
-?>
-<div class="row">
-    <div class="col-lg-3">
+
+use common\models\Status;
+use yii\bootstrap5\LinkPager;
+use yii\grid\GridView;
+use yii\helpers\Html; ?>
+
+<div class = "row">
+    <div class = "col-lg-3">
         <div class = "card rounded-2 overflow-hidden hover-img">
             <div class = "card-body">
-                <h4 class="text-center fw-semibold text-dark">Total</h4>
-                <p class="value text-center fw-bolder fs-8" akhi="<?=getCount('Total'.$inbound, $year)?>">0</p>
+                <h4 class = "text-center fw-semibold text-dark">Total</h4>
+                <p class = "value text-center fw-bolder fs-8" akhi = "<?= getCount('Total'.$inbound, $year) ?>">0</p>
 
             </div>
         </div>
     </div>
-    <div class="col-lg-3">
+    <div class = "col-lg-3">
         <a href = "">
             <div class = "card rounded-2 overflow-hidden hover-img bg-light-green">
 
                 <div class = "card-body">
-                    <h4 class="text-center fw-semibold text-success-style2">Accepted</h4>
-                    <p class="value text-center fw-bolder fs-8 text-success-style2" akhi="<?=getCount('AcceptedI', $year)?>">0</p>
+                    <h4 class = "text-center fw-semibold text-success-style2">Accepted</h4>
+                    <p class = "value text-center fw-bolder fs-8 text-success-style2"
+                       akhi = "<?= getCount('AcceptedI', $year) ?>">0</p>
                 </div>
             </div>
         </a>
     </div>
-    <div class="col-lg-3">
+    <div class = "col-lg-3">
         <a href = "">
             <div class = "card bg-light-danger rounded-2 overflow-hidden hover-img">
                 <div class = "card-body">
-                    <h4 class="text-center fw-semibold text-danger">Rejected</h4>
-                    <p class="value text-center fw-bolder fs-8 text-danger" akhi="<?=getCount('RejectedI', $year)?>">0</p>
+                    <h4 class = "text-center fw-semibold text-danger">Rejected</h4>
+                    <p class = "value text-center fw-bolder fs-8 text-danger"
+                       akhi = "<?= getCount('RejectedI', $year) ?>">0</p>
                 </div>
             </div>
         </a>
     </div>
-    <div class="col-lg-3">
+    <div class = "col-lg-3">
         <a href = "">
             <div class = "card bg-light-autom rounded-2 overflow-hidden hover-img">
                 <div class = "card-body">
-                    <h4 class="text-center fw-semibold text-warning">In Process</h4>
-                    <p class="value text-center fw-bolder fs-8 text-warning" akhi="<?=getCount('ProcessI', $year)?>">0</p>
+                    <h4 class = "text-center fw-semibold text-warning">In Process</h4>
+                    <p class = "value text-center fw-bolder fs-8 text-warning"
+                       akhi = "<?= getCount('ProcessI', $year) ?>">0</p>
                 </div>
             </div>
         </a>
     </div>
 </div>
 <div class="row">
-    <div class="col-lg-8">
-        <div class="card flex-fill">
-            <div class="card-body">
-                <h4 class="fw-bolder text-center">number of student registered per month Line Chart</h4>
-                <div id="chart-line-gradient"></div>
+    <div class="col-lg-4">
+        <div class="row">
+            <div class="col-lg-12 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title fw-semibold">Male/ Female</h5>
+                        <div id = "chart-pie-donut"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-lg-4  d-flex flex-column align-items-center justify-content-center">
-        <div class="card flex-fill">
+    <div class="col-lg-8 d-flex align-items-strech">
+        <div class="card w-100">
             <div class="card-body">
-                <h4 class="fw-bolder text-center mb-4">male/ female Donut Pie Chart</h4>
-                <div id="chart-pie-donut"></div>
+                <div class="d-sm-flex d-block align-items-center justify-content-between mb-7">
+                    <div class="mb-3 mb-sm-0">
+                        <h5 class="card-title fw-semibold">Latest Update</h5>
+                    </div>
+
+                </div>
+                <div class="table-responsive">
+                    <?= GridView::widget([
+                        'dataProvider' => $dataProvider,
+                        'tableOptions' => ['class' => 'table text-nowrap customize-table mb-0 text-center'], 'summary' => '',
+                        'columns' => [
+
+                            [
+                                'attribute' => 'Matric_Number', 'contentOptions' => ['class' => 'col-1'],
+                            ], [
+                                'attribute' => 'Name', 'contentOptions' => ['class' => 'col-1'],
+                            ], [
+                                'label' => 'Status', 'attribute' => 'Status', 'format' => 'raw', 'value' => function ($model) {
+                                    $statusModel = Status::findOne(['ID' => $model->Status]);
+                                    $statusMeaning = $statusModel ? $statusModel->status : '';
+                                    $rejectionReason = null;
+                                    $class = statusHelper($model->Status);
+
+
+                                    if ($model->Status == 12) {
+                                        $rejectionReason = ' <i class="cursor-pointer ti ti-info-circle fs-5 " 
+                                    data-bs-toggle="tooltip"
+                                     data-bs-placement="bottom"
+                                      data-bs-html="true" 
+                                      title="'.htmlspecialchars($model->Note_hod).'"></i>';
+                                    } elseif ($model->Status == 32) {
+                                        $rejectionReason = ' <i class="cursor-pointer ti ti-info-circle fs-5 " 
+                                    data-bs-toggle="tooltip"
+                                     data-bs-placement="bottom"
+                                      data-bs-html="true" 
+                                      title="'.htmlspecialchars($model->Note_dean).'"></i>';
+                                    }
+
+                                    return '<div class="d-inline-flex align-items-center gap-1 text-center wrap '.$class[0].'"><p class="mb-0 '.$class[1].'"></p><p class="mb-0">'.$statusMeaning.'</p>'.$rejectionReason.'</div>';
+                                }, 'contentOptions' => ['class' => 'col-1'],
+                            ], [
+                                'label' => 'Actions', 'format' => 'raw', 'value' => function ($model) {
+                                    return '<div class="">'.Html::a('<i class="ti ti-eye fs-7" data-toggle="tooltip" title="View"></i>',
+                                            ['outbound/view', 'ID' => $model->ID], [
+                                                'class' => 'text-dark edit update-button mx-1', 'data-toggle' => 'tooltip',
+                                                'title' => 'View', // Tooltip for the 'View' action
+                                            ]).' '.Html::a('<i class="ti ti-circle-check fs-7" data-toggle="tooltip" title="Action"></i>',
+                                            ['outbound/action', 'ID' => $model->ID], [
+                                                'class' => 'text-primary edit mx-1', 'data-toggle' => 'tooltip',
+                                                'data-placement' => "top", 'title' => 'Action',
+                                                // Tooltip for the 'Action' action
+                                            ]).'</div>';
+                                }, 'contentOptions' => ['class' => 'col-1'],
+                            ],
+                        ], 'pager' => [
+                            'class' => LinkPager::class, 'options' => ['class' => 'pagination justify-content-end mt-2'],
+                            // Align pager to the right
+                        ], 'layout' => "{items}\n{pager}",
+                    ]) ?>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+<div class="row">
+    <div class="col-lg-7">
+        <div class="row">
+            <div class="col-lg-12 col-md-6">
+                <div class="card w-100">
+                    <div class="card-body">
+                        <h5 class="card-title fw-semibold">Student Registered</h5>
+                            <div id = "chart-line-gradient"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+
+    </div>
+</div>
+
+
 
 <?php
 $this->registerJs("
-    var months = " . $months . ";
-    var counts = " . $counts . ";
+    var months = ".$months.";
+    var counts = ".$counts.";
 
     var options_gradient = {
         series: [{
@@ -132,8 +221,8 @@ $this->registerJs("
     chart_line_gradient.render();
     
     
-     var maleCount = " . $maleCount . ";
-    var femaleCount = " . $femaleCount . ";
+     var maleCount = ".$maleCount.";
+    var femaleCount = ".$femaleCount.";
 
     var options_donut = {
       series: [maleCount, femaleCount],

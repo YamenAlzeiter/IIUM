@@ -1,9 +1,8 @@
-    <?php
+<?php
 date_default_timezone_set('UTC');
 
 use common\models\Status;
 use yii\grid\GridView;
-use yii\web\JqueryAsset;
 
 $this->title = 'Status Change Logs';
 
@@ -11,11 +10,11 @@ $this->title = 'Status Change Logs';
 require Yii::getAlias('@common').'/Helpers/helper.php';
 ?>
 
-	<div class = "outbound-log">
-
+<div class = "card w-100">
+    <div class = "card-body">
         <?= GridView::widget([
             'dataProvider' => $logsDataProvider,
-            'tableOptions' => ['class' => 'table border text-nowrap customize-table mb-0 text-center'], 'summary' => '',
+            'tableOptions' => ['class' => 'table text-nowrap customize-table mb-0 text-center'], 'summary' => '',
             // Show the current page and total pages
             'columns' => [
 
@@ -58,4 +57,5 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 
             ],
         ]); ?>
-	</div>
+    </div>
+</div>

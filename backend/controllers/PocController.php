@@ -54,6 +54,11 @@ class PocController extends Controller
         $modelKedio = new Kcdio();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
+        $dataProvider->pagination = [
+            'pageSize' => 9,
+        ];
+
+
         if ($this->request->isPost && $model->load($this->request->post())) {
             $selectedValueFromKedio = $this->request->post('Poc')['KCDIO'];
             $model->KCDIO = $selectedValueFromKedio;

@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\models\PasswordResetRequestForm;
 use backend\models\ResetPasswordForm;
 use backend\models\SignupForm;
+use backend\views\Outbound\outboundSearch;
 use common\models\AdminLoginForm;
 use common\models\Outbound;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -104,6 +105,22 @@ class SiteController extends Controller
      */
     public function actionOutboundDashboard($year = null)
     {
+        $searchModel = new outboundSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
+
+// Filter for recent updates and specific status numbers
+        $dataProvider->query->andWhere([
+            'and',
+            ['EXTRACT(YEAR FROM created_at)' => $year], // Filter by year of creation
+            ['in', 'Status', [10, 11, 12, 22, 31, 51]],  // Filter by specific status numbers
+        ]);
+
+        $dataProvider->sort->defaultOrder = ['updated_at' => SORT_DESC];
+
+        $dataProvider->pagination = [
+            'pageSize' => 3,
+        ];
+
         if($year === null){
             $year = date('Y');
         }
@@ -119,6 +136,7 @@ class SiteController extends Controller
             'counts' => json_encode($counts),
             'maleCount' => $maleCount,
             'femaleCount' => $femaleCount,
+            'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -295,22 +313,6 @@ class SiteController extends Controller
         return $this->render('signup', [
             'model' => $model,
         ]);
-    }
-    /**
-     * Renders the error view based on the type of exception encountered.
-     *
-     * @return string The rendered error view.
-     */
-    public function actionError()
-    {
-        $exception = Yii::$app->errorHandler->exception;
-        if ($exception instanceof \yii\web\NotFoundHttpException) {
-            return $this->render('error404', ['exception' => $exception]);
-        } elseif ($exception instanceof \yii\web\BadRequestHttpException) {
-            return $this->render('error400', ['exception' => $exception]);
-        } else {
-            return $this->render('error', ['exception' => $exception]);
-        }
     }
 
     /**

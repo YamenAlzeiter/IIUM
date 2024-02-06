@@ -2,25 +2,26 @@
 
 namespace backend\controllers;
 
+use backend\views\Inbound\inboundSearch;
 use common\models\EmailTemplate;
 use common\models\Inbound;
-use backend\views\Inbound\inboundSearch;
 use common\models\InCourses;
 use common\models\Inlog;
 use common\models\Kcdio;
 use common\models\Poc;
 use common\models\Status;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Yii;
 use yii\base\Exception;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\helpers\FileHelper;
 use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;
 use ZipArchive;
@@ -54,6 +55,7 @@ class InboundController extends Controller
     const template_reject = 2;
     const template_incomplete = 1;
     const template_reconsider = 11;
+
     //endregion
     public function behaviors()
     {
@@ -63,13 +65,12 @@ class InboundController extends Controller
                     [
                         'actions' => [
                             'index', 'view', 'update', 'delete', 'action', 'create', 'search', 'accept', 'reject',
-                            'load-people', 'dean-approval', 'resend', 'download', 'complete', 'log', 'export-excel','actionDeleteMultiple', 'download-all'
+                            'load-people', 'dean-approval', 'resend', 'download', 'complete', 'log', 'export-excel',
+                            'actionDeleteMultiple', 'download-all'
                         ], 'allow' => true, 'roles' => ['@'],
-                    ],
-                    [
+                    ], [
                         'actions' => ['delete-multiple'], // Allow the delete-multiple action
-                        'allow' => true,
-                        'roles' => ['@'],
+                        'allow' => true, 'roles' => ['@'],
                     ],
                 ],
             ], 'verbs' => ['class' => VerbFilter::class, 'actions' => ['delete' => ['POST']],],
@@ -78,6 +79,7 @@ class InboundController extends Controller
 
 
     //region CRUD
+
     /**
      * Displays a list of outbound records.
      * @param  integer  $year  Year for filtering outbound records
@@ -91,13 +93,14 @@ class InboundController extends Controller
 
         // Exclude records with null status
         $dataProvider->query->andWhere([
-            'and', ['EXTRACT(YEAR FROM created_at)' => $year],['not', ['Status' => null]]
+            'and', ['EXTRACT(YEAR FROM created_at)' => $year], ['not', ['Status' => null]]
         ]);
         $dataProvider->sort->defaultOrder = ['updated_at' => SORT_DESC];
 
         $dataProvider->pagination = ['pageSize' => 10,];
 
-        return $this->render("index", ['searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'status' => $statusModel,]);
+        return $this->render("index",
+            ['searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'status' => $statusModel,]);
     }
 
     /**
@@ -162,7 +165,7 @@ class InboundController extends Controller
      */
     public function actionUpdate($ID)
     {
-        if(Yii::$app->user->can('superAdmin')) {
+        if (Yii::$app->user->can('superAdmin')) {
             $model = $this->findModel($ID);
 
             if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
@@ -172,8 +175,9 @@ class InboundController extends Controller
             return $this->render('update', [
                 'model' => $model,
             ]);
-        }else
+        } else {
             throw new ForbiddenHttpException('You are not allowed to perform this action.');
+        }
     }
 
     /**
@@ -204,7 +208,7 @@ class InboundController extends Controller
         if (Yii::$app->user->can('superAdmin')) {
             $this->findModel($ID)->delete();
             return $this->redirect(['index', 'year' => date('Y')]);
-        }else{
+        } else {
             throw new ForbiddenHttpException();
         }
     }
@@ -221,10 +225,10 @@ class InboundController extends Controller
             // Use Yii2 ActiveRecord to delete the selected records
             Inbound::deleteAll(['ID' => $selectedIds]);
 
-            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            Yii::$app->response->format = Response::FORMAT_JSON;
             return ['success' => true];
         } else {
-            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            Yii::$app->response->format = Response::FORMAT_JSON;
             return ['success' => false];
         }
     }
@@ -434,14 +438,14 @@ class InboundController extends Controller
                 self::documents_uploaded_from_student => self::application_accepted
             ];
             //Check if the model's status exists in the mappings
-            if(isset($statusMappings[$model->Status])){
+            if (isset($statusMappings[$model->Status])) {
                 $model->Status = $statusMappings[$model->Status];
             }
             //Update model properties based on the new status
-            switch ($model->Status){
+            switch ($model->Status) {
                 case self::redirected_to_kulliyyah:
                     $model->Token = Yii::$app->security->generateRandomString(32);
-                    $model->setAttribute( 'Kulliyyah', $selectedPersonId);
+                    $model->setAttribute('Kulliyyah', $selectedPersonId);
                     $template = self::template_approval_process;
                     break;
                 case self::redirected_to_cps_amad:
@@ -466,9 +470,97 @@ class InboundController extends Controller
 
             if ($model->save()) {
                 $this->sendEmail($model, $personModel, $model->Token, $template, null,);
-                return $this->redirect(["index", 'year'=> date("Y")]);
+                return $this->redirect(["index", 'year' => date("Y")]);
             }
         }
+    }
+
+    /**
+     * Sends an email based on the provided parameters and template.
+     *
+     * @param  mixed  $model  The application model object representing the data for the email.
+     * @param  mixed  $personModel  The person in charge model object, if available, to personalize the email.
+     * @param  string  $token  The token to be included in the email link.
+     * @param  int  $templateId  The ID of the email template to be used for the email content.
+     * @param  string  $reason  The reason to be included in the email body.
+     *
+     * @return void
+     */
+    public function sendEmail($model, $personModel, $token, $templateId, $reason)
+    {
+        $emailTemplate = EmailTemplate::findOne($templateId);
+
+        if (!$emailTemplate) {
+            // Handle the case where the template is not found
+            return;
+        }
+
+        // Replace placeholders in the template content
+        $body = $emailTemplate->body;
+
+        //Initialize $viewLink to nulll as a default value
+        $viewLink = null;
+
+        switch ($model->Status) {
+            case self::redirected_to_kulliyyah:
+            case self::application_rejected_kulliyyah:
+                $viewLink = Yii::$app->urlManager->createAbsoluteUrl([
+                    'kulliyyahworkflow/view', 'ID' => $model->ID, 'token' => $token
+                ]);
+                break;
+
+            case self::redirected_to_cps_amad:
+                $viewLink = Yii::$app->urlManager->createAbsoluteUrl([
+                    'higherworkflow/view', 'ID' => $model->ID, 'token' => $token
+                ]);
+                break;
+
+            case self::redirected_to_student:
+                // $viewLink is already set to null as the default value
+                break;
+
+            default:
+                // If $model->Statue doesn't match any case, keep $viewLink as null
+        }
+
+        if ($personModel != null) {
+            $body = str_replace('{recipientName}', $personModel->name, $body);
+            $body = str_replace('{link}', $viewLink, $body);
+            $body = str_replace('{reason}', $reason, $body);
+
+            $mailer = Yii::$app->mailer->compose([
+                'html' => '@backend/views/email/emailTemplate.php'
+            ], [
+                'subject' => $emailTemplate->subject, 'recipientName' => $personModel->name, 'viewLink' => $viewLink,
+                'reason' => $reason, 'body' => $body
+            ])->setFrom(["noreply@example.com" => "My Application"])->setTo($personModel->email);
+
+            if (!empty($personModel->email_cc) && filter_var($personModel->email_cc, FILTER_VALIDATE_EMAIL)) {
+                $mailer->setCc($personModel->email_cc);
+            }
+            // Check if additional CC is available and valid
+            if (!empty($personModel->email_cc_additional) && filter_var($personModel->email_cc_additional,
+                    FILTER_VALIDATE_EMAIL)) {
+                //Set CC recipients based on the availability of both primary and additional CC
+                $ccRecipients = filter_var($personModel->email_cc_additional, FILTER_VALIDATE_EMAIL) ? [
+                    $personModel->email_cc, $personModel->email_cc_additional
+                ] : $personModel->email_cc_additional;
+
+                $mailer->setCc($ccRecipients);
+            }
+        } else {
+            $body = str_replace('{recipientName}', $model->Name, $body);
+            $body = str_replace('{reason}', $reason, $body);
+            $mailer = Yii::$app->mailer->compose([
+                'html' => '@backend/views/email/emailTemplate.php'
+            ], [
+                'subject' => $emailTemplate->subject, 'recipientName' => $model->Name, 'viewLink' => $viewLink,
+                'reason' => $reason, 'body' => $body
+            ])->setFrom(["noreply@example.com" => "My Application"])->setTo($model->Email_address);
+        }
+
+        //Set subject and send the email
+        $mailer->setSubject($emailTemplate->subject)->send();
     }
 
     /**
@@ -488,7 +580,7 @@ class InboundController extends Controller
 
             if ($model->save()) {
                 $this->sendEmail($model, null, $model->Token, self::template_reject, $model->temp);
-                return $this->redirect(["index", 'year'=> date("Y")]);
+                return $this->redirect(["index", 'year' => date("Y")]);
             }
         }
     }
@@ -504,11 +596,11 @@ class InboundController extends Controller
         $model = $this->findModel($ID);
 
         $statusMapping = [
-          self::inprocess => self::application_not_complete,
-          self::documents_uploaded_from_student => self::redirected_to_student,
+            self::inprocess => self::application_not_complete,
+            self::documents_uploaded_from_student => self::redirected_to_student,
         ];
 
-        if(isset($statusMapping[$model->Status])){
+        if (isset($statusMapping[$model->Status])) {
             $model->Status = $statusMapping[$model->Status];
         }
 
@@ -517,10 +609,12 @@ class InboundController extends Controller
 
             if ($model->save()) {
                 $this->sendEmail($model, null, $model->Token, self::template_incomplete, $model->temp);
-                return $this->redirect(["index", 'year'=> date("Y")]);
+                return $this->redirect(["index", 'year' => date("Y")]);
             }
         }
     }
+
+    //endregion
 
     /**
      * Resends a request for reconsideration with a new token and reason.
@@ -537,7 +631,7 @@ class InboundController extends Controller
         if ($this->request->isPost) {
             $model->temp = $this->request->post("reason");
 
-            switch ($model->Status){
+            switch ($model->Status) {
                 case self::application_rejected_kulliyyah:
                     $modelPoc = Poc::findOne(['id' => $model->Kulliyyah]);
                     $model->Status = self::redirected_to_kulliyyah;
@@ -555,106 +649,14 @@ class InboundController extends Controller
 
         if ($model->save()) {
             $this->sendEmail($model, $modelPoc, $model->Token, self::template_reconsider, $model->temp);
-            return $this->redirect(["index", 'year'=> date("Y")]);
+            return $this->redirect(["index", 'year' => date("Y")]);
         }
-    }
-
-    //endregion
-    /**
-     * Sends an email based on the provided parameters and template.
-     *
-     * @param mixed $model The application model object representing the data for the email.
-     * @param mixed $personModel The person in charge model object, if available, to personalize the email.
-     * @param string $token The token to be included in the email link.
-     * @param int $templateId The ID of the email template to be used for the email content.
-     * @param string $reason The reason to be included in the email body.
-     *
-     * @return void
-     */
-    public function sendEmail($model, $personModel, $token, $templateId, $reason)
-    {
-        $emailTemplate = EmailTemplate::findOne($templateId);
-
-        if (!$emailTemplate) {
-            // Handle the case where the template is not found
-            return;
-        }
-
-        // Replace placeholders in the template content
-        $body = $emailTemplate->body;
-
-        //Initialize $viewLink to nulll as a default value
-        $viewLink = null;
-
-        switch ($model->Status){
-            case self::redirected_to_kulliyyah:
-            case self::application_rejected_kulliyyah:
-                $viewLink = Yii::$app->urlManager->createAbsoluteUrl([
-                    'kulliyyahworkflow/view', 'ID' => $model->ID, 'token' => $token
-                ]);
-                break;
-
-            case self::redirected_to_cps_amad:
-                $viewLink = Yii::$app->urlManager->createAbsoluteUrl([
-                   'higherworkflow/view', 'ID' => $model->ID, 'token' => $token
-                ]);
-                break;
-
-            case self::redirected_to_student:
-                // $viewLink is already set to null as the default value
-                break;
-
-            default:
-                // If $model->Statue doesn't match any case, keep $viewLink as null
-        }
-
-        if($personModel != null){
-            $body = str_replace('{recipientName}', $personModel->name, $body);
-            $body = str_replace('{link}', $viewLink, $body);
-            $body = str_replace('{reason}', $reason, $body);
-
-            $mailer = Yii::$app->mailer->compose([
-                'html' => '@backend/views/email/emailTemplate.php'
-            ], [
-                'subject' => $emailTemplate->subject,
-                'recipientName' => $personModel->name,
-                'viewLink' => $viewLink,
-                'reason' => $reason,
-                'body' => $body
-            ])->setFrom(["noreply@example.com" => "My Application"])
-                ->setTo($personModel->email);
-
-            if (!empty($personModel->email_cc) && filter_var($personModel->email_cc, FILTER_VALIDATE_EMAIL)) {
-                $mailer->setCc($personModel->email_cc);
-            }
-            // Check if additional CC is available and valid
-            if(!empty($personModel->email_cc_additional) && filter_var($personModel->email_cc_additional, FILTER_VALIDATE_EMAIL)){
-                //Set CC recipients based on the availability of both primary and additional CC
-                $ccRecipients = filter_var($personModel->email_cc_additional, FILTER_VALIDATE_EMAIL)
-                    ? [$personModel->email_cc, $personModel->email_cc_additional]
-                    : $personModel->email_cc_additional;
-
-                $mailer->setCc($ccRecipients);
-            }
-        }else{
-            $body = str_replace('{recipientName}', $model->Name, $body);
-            $body = str_replace('{reason}', $reason, $body);
-            $mailer = Yii::$app->mailer->compose([
-                'html' => '@backend/views/email/emailTemplate.php'
-            ], [
-                'subject' => $emailTemplate->subject, 'recipientName' => $model->Name, 'viewLink' => $viewLink,
-                'reason' => $reason, 'body' => $body
-            ])->setFrom(["noreply@example.com" => "My Application"])->setTo($model->Email_address);
-        }
-
-        //Set subject and send the email
-        $mailer->setSubject($emailTemplate->subject)->send();
     }
 
     /**
      * Action to export Outbound data to Excel for a specific year.
      *
-     * @param int $year The year for which data should be exported.
+     * @param  int  $year  The year for which data should be exported.
      *
      * @return void
      */
@@ -663,74 +665,85 @@ class InboundController extends Controller
         require Yii::getAlias('@common').'/Helpers/helper.php';
         // Set up data provider with your query
         $dataProvider = new ActiveDataProvider([
-            'query' => Inbound::find()->where(['and',['EXTRACT(YEAR FROM created_at)' => $year],['not',['Status'=> 6]]]),
-            'pagination' => false,
+            'query' => Inbound::find()->where([
+                'and', [
+                    'or', ['EXTRACT(YEAR FROM "Propose_duration_start")' => $year],
+                    ['EXTRACT(YEAR FROM "Propose_duration_end")' => $year],
+                ], ['not', ['Status' => 6]]
+            ]), 'pagination' => false,
         ]);
 
         // Create a new PhpSpreadsheet object
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        $sheet->setCellValue('B1', 'Internationalisation of Academic Program: (Inbound)')
-            ->getStyle('B1')
-            ->getFont()
-            ->setBold(true);
+        $sheet->setCellValue('B1',
+            'Internationalisation of Academic Program: (Inbound)')->getStyle('B1')->getFont()->setBold(true);
 
         // Set column headers
-        $sheet->setCellValue('A3', 'No')
-            ->setCellValue('B3', 'Student Name')
-            ->setCellValue('C3', 'Program')
-            ->setCellValue('D3','Type of Programme')
-            ->setCellValue('E3', 'Name of Outbound University')
-            ->setCellValue('F3', 'Country')
-            ->setCellValue('G3', 'From')
-            ->setCellValue('H3', "To")
-            ->setCellValue('I3', 'K/C/D/I/O');
+        $sheet->setCellValue('A3', 'No')->setCellValue('B3', 'Student Name')->setCellValue('C3',
+                'Program')->setCellValue('D3', 'Type of Programme')->setCellValue('E3',
+                'Name of Outbound University')->setCellValue('F3', 'Country')->setCellValue('G3',
+                'From')->setCellValue('H3', "To")->setCellValue('I3', 'K/C/D/I/O');
 
         for ($col = 'A'; $col !== 'K'; $col++) {
-            $sheet->getStyle($col . '3')->applyFromArray([
+            $sheet->getStyle($col.'3')->applyFromArray([
                 'font' => [
                     'bold' => true,
-                ],
-                'alignment' => [
-                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                ], 'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
                 ],
             ]);
             $sheet->getRowDimension('3')->setRowHeight(33);
-            $sheet->getStyle($col . '3')->getAlignment()->setWrapText(true); ;
+            $sheet->getStyle($col.'3')->getAlignment()->setWrapText(true);
 
-            switch ($col){
-                case 'A':$sheet->getColumnDimension($col)->setWidth(5); break;
-                case 'B':$sheet->getColumnDimension($col)->setWidth(50); break;
-                case 'C':$sheet->getColumnDimension($col)->setWidth(35); break;
-                case 'D':$sheet->getColumnDimension($col)->setWidth(13); break;
-                case 'E':$sheet->getColumnDimension($col)->setWidth(50); break;
-                case 'F':$sheet->getColumnDimension($col)->setWidth(17); break;
-                case 'G':$sheet->getColumnDimension($col)->setWidth(15); break;
-                case 'H':$sheet->getColumnDimension($col)->setWidth(15); break;
-                case 'I':$sheet->getColumnDimension($col)->setWidth(12); break;
+            switch ($col) {
+                case 'A':
+                    $sheet->getColumnDimension($col)->setWidth(5);
+                    break;
+                case 'B':
+                    $sheet->getColumnDimension($col)->setWidth(50);
+                    break;
+                case 'C':
+                    $sheet->getColumnDimension($col)->setWidth(35);
+                    break;
+                case 'D':
+                    $sheet->getColumnDimension($col)->setWidth(13);
+                    break;
+                case 'E':
+                    $sheet->getColumnDimension($col)->setWidth(50);
+                    break;
+                case 'F':
+                    $sheet->getColumnDimension($col)->setWidth(17);
+                    break;
+                case 'G':
+                    $sheet->getColumnDimension($col)->setWidth(15);
+                    break;
+                case 'H':
+                    $sheet->getColumnDimension($col)->setWidth(15);
+                    break;
+                case 'I':
+                    $sheet->getColumnDimension($col)->setWidth(12);
+                    break;
 
             }
         }
         // Populate data
         $row = 4;
         foreach ($dataProvider->getModels() as $model) {
-            $sheet->setCellValue('A' . $row, $row - 3)
-                ->setCellValue('B' . $row, $model->Name)
-                ->setCellValue('C' . $row, $model->Propose_type_of_programme)
-                ->setCellValue('D' . $row, getCredit($model->Propose_transfer_credit_hours))
-                ->setCellValue('E' . $row, $model->Academic_home_university)
-                ->setCellValue('F' .$row, getCountry($model->Country_of_origin))
-                ->setCellValue('G' . $row, $model->Propose_duration_start)
-                ->setCellValue('H' . $row, $model->Propose_duration_end)
-                ->setCellValue('I' . $row, $model-> Propose_kulliyyah_applied)
-            ;
+            $sheet->setCellValue('A'.$row, $row - 3)->setCellValue('B'.$row, $model->Name)->setCellValue('C'.$row,
+                    $model->Propose_type_of_programme)->setCellValue('D'.$row,
+                    getCredit($model->Propose_transfer_credit_hours))->setCellValue('E'.$row,
+                    $model->Academic_home_university)->setCellValue('F'.$row,
+                    getCountry($model->Country_of_origin))->setCellValue('G'.$row,
+                    $model->Propose_duration_start)->setCellValue('H'.$row,
+                    $model->Propose_duration_end)->setCellValue('I'.$row, $model->Propose_kulliyyah_applied);
             for ($col = 'A'; $col !== 'K'; $col++) {
                 if ($col != 'B' || $row != 1) {
                     $style = $sheet->getStyle($col.$row);
-                    $style->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-                    $style->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+                    $style->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                    $style->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
                 }
             }
             $row++;
@@ -739,10 +752,9 @@ class InboundController extends Controller
         $row += 4;
 
         $dataCountry = new ActiveDataProvider([
-            'query' => Inbound::find()
-                ->select(['Country_of_origin AS country', 'COUNT(*) AS count'])
-                ->groupBy('country'),
-            'pagination' => false,
+            'query' => Inbound::find()->select([
+                    'Country_of_origin AS country', 'COUNT(*) AS count'
+                ])->groupBy('country'), 'pagination' => false,
         ]);
 
         $countryCounts = [];
@@ -756,28 +768,25 @@ class InboundController extends Controller
 
 // Display country counts
         foreach ($countryCounts as $country => $count) {
-            $sheet->setCellValue('B' . $row, $country)
-                ->setCellValue('C' . $row, $count);
+            $sheet->setCellValue('B'.$row, $country)->setCellValue('C'.$row, $count);
             $row++;
         }
 
 // Display total
-        $sheet->setCellValue('B' . $row, 'Total')
-            ->setCellValue('C' . $row, array_sum($countryCounts));
-
+        $sheet->setCellValue('B'.$row, 'Total')->setCellValue('C'.$row, array_sum($countryCounts));
 
 
         // Create a writer
         $writer = new Xlsx($spreadsheet);
 
         // Set file path
-        $filePath = Yii::getAlias('@runtime') . '/Outbound_Export_' . date('YmdHis') . '.xlsx';
+        $filePath = Yii::getAlias('@runtime').'/Outbound_Export_'.date('YmdHis').'.xlsx';
 
         // Save the file
         $writer->save($filePath);
 
         // Provide download link
-        Yii::$app->response->sendFile($filePath, 'Outbound_Export_' . date('YmdHis') . '.xlsx')->send();
+        Yii::$app->response->sendFile($filePath, 'Outbound_Export_'.date('YmdHis').'.xlsx')->send();
         unlink($filePath); // Optionally, you can delete the file after sending it
 
 

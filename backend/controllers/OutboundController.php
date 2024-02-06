@@ -706,8 +706,14 @@ class OutboundController extends Controller
         // Set up data provider with your query
         $dataProvider = new ActiveDataProvider([
             'query' => Outbound::find()->where([
-                'and', ['EXTRACT(YEAR FROM created_at)' => $year], ['not', ['Status' => 2]]
-            ]), 'pagination' => false,
+                'and',
+                ['or',
+                    ['EXTRACT(YEAR FROM "Mobility_from")' => $year],
+                    ['EXTRACT(YEAR FROM "Mobility_until")' => $year],
+                ],
+                ['not', ['Status' => 2]]
+            ]),
+            'pagination' => false,
         ]);
 
         // Create a new PhpSpreadsheet object

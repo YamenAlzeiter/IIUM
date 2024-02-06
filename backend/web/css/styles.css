@@ -752,6 +752,7 @@ progress {
   color: var(--bs-secondary-color);
 }
 
+
 .container,
 .container-fluid,
 .container-xxl,
@@ -790,7 +791,7 @@ progress {
 }
 @media (min-width: 1400px) {
   .container-xxl, .container-xl, .container-lg, .container-md, .container-sm, .container {
-    max-width: 1320px;
+    max-width: 1500px;
   }
 }
 .row {
@@ -2568,6 +2569,7 @@ textarea.form-control-lg {
 }
 .form-check-input[type=checkbox] {
   border-radius: 0.25em;
+
 }
 .form-check-input[type=radio] {
   border-radius: 50%;
@@ -15339,6 +15341,20 @@ textarea.form-control-lg {
 .left-sidebar .scroll-sidebar .simplebar-track.simplebar-horizontal {
   visibility: hidden !important;
 }
+.left-sidebar .sidebartoggler {
+  color: var(--bs-dark-text-emphasis);
+}
+
+.show-sidebar + .dark-transparent {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: red;
+  z-index: 10;
+}
+
 
 .brand-logo {
   min-height: 70px;

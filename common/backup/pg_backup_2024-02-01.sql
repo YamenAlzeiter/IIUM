@@ -1079,29 +1079,29 @@ ALTER TABLE ONLY public.user_admin ALTER COLUMN id SET DEFAULT nextval('public.u
 --
 
 COPY public."Status" ("ID", description, status, type) FROM stdin;
-65	Application is approved with complete upload documents, inform student.	Application Accepted	I  
-16	Application rejected by Kulliyyah, return back to IO	Rejected (Kulliyyah)	I  
-21	In progress, from IO, application submitted to Dean	Redirected (IO -> Dean)	O  
-25	In progress, pass by IO to AMAD/CPS\n	Redirected (IO -> AMAD/CPS)	I  
-31	Application approved by Dean, return to IO	Accepted (Dean)	O  
-32	Application rejected by Dean, return to IO	Rejected (Dean)	O  
-35	Application Complete by AMAD/CPS Return back to IO	AMAD/CPS Accepted	I  
-41	Application return to student, upload documents 	Redirected (IO -> Student)	O  
-45	Redirect to student, Upload proof of Payment/ Update Status	Redirect (IO -> Student)	I  
-51	Student upload documents, return to IO for verification	Documents Upload	O  
-55	Student upload documents, return to IO for verification	Document uploaded	I  
-61	Application is approved with complete upload documents, inform student.	Application Accepted	O  
-1	In progress, from IO, application submitted to HOD	Redirected (IO -> HOD)1	O  
-2	Application rejected by IO, return back to student	Rejected (IO)	O  
-3	Incomplete application, return back to student 	Not Complete	O  
-5	In progress, from Io, application submitted to Kulliyyah or other institutions	Redirected (IO -> Kulliyyah)	I  
-6	Application rejected by IO, return back to student	Rejected IO	I  
-7	Incomplete application, return back to student	Not Complete	I  
-11	Application approved by HOD, return to IO	Accepted (HOD)	O  
-12	Application rejected by HOD, return back to IO	Rejected (HOD)	O  
-15	Application approved by Kulliyyah, return back to IO	Accepted (Kulliyyah)	I  
-71	Email send to applicant to upload images and videos 	Upload Documents 2(IO -> Student)	O  
-81	Documents Uploaded before coming back to IIUM	completed	O  
+65	Application is approved with complete upload documents, inform student.	Application Accepted	I
+16	Application rejected by Kulliyyah, return back to IO	Rejected (Kulliyyah)	I
+21	In progress, from IO, application submitted to Dean	Redirected (IO -> Dean)	O
+25	In progress, pass by IO to AMAD/CPS\n	Redirected (IO -> AMAD/CPS)	I
+31	Application approved by Dean, return to IO	Accepted (Dean)	O
+32	Application rejected by Dean, return to IO	Rejected (Dean)	O
+35	Application Complete by AMAD/CPS Return back to IO	AMAD/CPS Accepted	I
+41	Application return to student, upload documents 	Redirected (IO -> Student)	O
+45	Redirect to student, Upload proof of Payment/ Update Status	Redirect (IO -> Student)	I
+51	Student upload documents, return to IO for verification	Documents Upload	O
+55	Student upload documents, return to IO for verification	Document uploaded	I
+61	Application is approved with complete upload documents, inform student.	Application Accepted	O
+1	In progress, from IO, application submitted to HOD	Redirected (IO -> HOD)1	O
+2	Application rejected by IO, return back to student	Rejected (IO)	O
+3	Incomplete application, return back to student 	Not Complete	O
+5	In progress, from Io, application submitted to Kulliyyah or other institutions	Redirected (IO -> Kulliyyah)	I
+6	Application rejected by IO, return back to student	Rejected IO	I
+7	Incomplete application, return back to student	Not Complete	I
+11	Application approved by HOD, return to IO	Accepted (HOD)	O
+12	Application rejected by HOD, return back to IO	Rejected (HOD)	O
+15	Application approved by Kulliyyah, return back to IO	Accepted (Kulliyyah)	I
+71	Email send to applicant to upload images and videos 	Upload Documents 2(IO -> Student)	O
+81	Documents Uploaded before coming back to IIUM	completed	O
 10	In progress, application submitted by student to IO	In process	I/O
 \.
 

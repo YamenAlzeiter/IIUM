@@ -5,13 +5,21 @@ use yii\helpers\Url;
 use yii\widgets\Menu;
 
 ?>
-<a href = "">
-    <div class = "mt-4 brand-logo d-flex align-items-center gap-2">
-        <img src = "/images/iiumLogo.png" alt = "IIUM Logo" class = "w-25 h-25">
-        <h4 class = "mb-0 fw-semibold">IO Dashboard</h4>
-    </div>
-</a>
 
+<div class="brand-logo d-flex align-items-center justify-content-between">
+    <a href = "">
+        <div class = "mt-4 brand-logo d-flex align-items-center gap-2">
+            <img src = "/images/iiumLogo.png" alt = "IIUM Logo" class = "w-25 h-25">
+            <h4 class = "mb-0 fw-semibold">IO Dashboard</h4>
+        </div>
+    </a>
+    <a
+        href="javascript:void(0)"
+        class="sidebartoggler ms-auto text-decoration-none fs-5 d-block d-xl-none mt-4"
+    >
+        <i class="ti ti-x"></i>
+    </a>
+</div>
 <nav class = "sidebar-nav scroll-sidebar" data-simplebar = "">
     <!--this layout is only responsible for the sidebar part-->
     <?php
@@ -61,6 +69,10 @@ use yii\widgets\Menu;
                 'template' => '<a href="{url}" class="sidebar-link">{label}</a>',
                 'label' => '<i class="ti ti-user"></i><span class="hide-menu">Person In Charge</span>',
                 'url' => ['/poc/index'], 'options' => ['class' => 'sidebar-item'],
+            ], [
+                'template' => '<a href="{url}" class="sidebar-link">{label}</a>',
+                'label' => '<i class="ti ti-building"></i><span class="hide-menu">K / C / D / I / O</span>',
+                'url' => ['/kcdio/index'], 'options' => ['class' => 'sidebar-item'],
             ], [
                 'template' => '<a href="{url}" class="sidebar-link" >{label}</a>',
                 'label' => '<i class="ti ti-status-change"></i><span class="hide-menu">Status</span>',
