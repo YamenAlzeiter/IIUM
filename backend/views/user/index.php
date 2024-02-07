@@ -21,6 +21,7 @@ use yii\helpers\Url;
                     <span class = "d-none d-md-block font-weight-medium fs-3">Create New Record</span>
                 </a>
             </div>
+            <div class="table-responsive">
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
                 'tableOptions' => ['class' => 'table text-nowrap mb-0 align-middle table-hover'], 'summary' => '',
@@ -54,7 +55,7 @@ use yii\helpers\Url;
                     ],
                 ],
             ]); ?>
-
+            </div>
         </div>
     </div>
 

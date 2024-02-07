@@ -13,6 +13,7 @@ $this->title = 'Status';
 
 <div class = "card w-100 mt-4">
     <div class = "card-body">
+        <div class="table-responsive">
         <?= GridView::widget([
             'dataProvider' => $dataProvider,
             'tableOptions' => ['class' => 'table text-nowrap mb-0 align-middle table-hover'], 'summary' => '',
@@ -36,6 +37,7 @@ $this->title = 'Status';
                 'options' => ['class' => 'pagination mt-3 justify-content-right pagination-lg'],
             ],
         ]); ?>
+        </div>
     </div>
 </div>
 

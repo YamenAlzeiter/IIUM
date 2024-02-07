@@ -113,7 +113,10 @@ body{
 .tox-promotion{
     display: none;
 }
-
+.back{
+    top: 50px;
+    left: 50px;
+}
 /*===== GOOGLE FONTS =====*/
 
 
@@ -330,7 +333,7 @@ ul.form-stepper .form-stepper-circle span {
     transform: translateY(-50%) translateX(-50%);
 }
 .form-height{
-   min-height: 41rem;
+   min-height: 40rem;
 }
 .form-stepper-horizontal {
 

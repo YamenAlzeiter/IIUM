@@ -31,8 +31,8 @@ AppAsset::register($this);
 		<div class = "position-relative overflow-hidden radial-gradient min-vh-100 w-100">
 			<div class = "position-relative z-index-5">
 				<div class = "row">
-					<div class = "col-xl-5 col-xxl-3">
-                        <div class=" m-4">
+					<div class = "col-xl-5 col-xxl-3 position-relative">
+                        <div class="position-absolute back">
                             <?= Html::a('<i class="ti ti-chevron-left fs-8 fw-bolder" ></i>', Yii::$app->request->referrer) ?>
                         </div>
 

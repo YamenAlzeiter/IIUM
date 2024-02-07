@@ -12,6 +12,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 
 <div class = "card w-100">
     <div class = "card-body">
+        <div class="table-responsive">
         <?= GridView::widget([
             'dataProvider' => $logsDataProvider,
             'tableOptions' => ['class' => 'table text-nowrap customize-table mb-0 text-center'], 'summary' => '',
@@ -57,5 +58,6 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 
             ],
         ]); ?>
+        </div>
     </div>
 </div>

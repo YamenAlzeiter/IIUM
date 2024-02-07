@@ -178,13 +178,12 @@ function getCount($countType, $year)
     switch ($countType) {
         case 'Total':
             return Outbound::find()->where(['and', ['EXTRACT(YEAR FROM created_at)' => $year], ['not', ['Status' => null]]])->count();
-
         case 'Accepted':
-            return Outbound::find()->where(['and', ['EXTRACT(YEAR FROM created_at)' => $year],['Status' => [61,81]]])->count();
+            return Outbound::find()->where(['and', ['EXTRACT(YEAR FROM created_at)' => $year],['Status' => [61,71,81]]])->count();
         case 'Rejected':
             return Outbound::find()->where(['and', ['EXTRACT(YEAR FROM created_at)' => $year],['Status' => [2, 12, 22, 32, 42, 52, 6, 16, 26, 36, 46, 56]]])->count();
         case 'Process':
-            return Outbound::find()->where(['and', ['EXTRACT(YEAR FROM created_at)' => $year],['Status' => [1, 10, 11, 21, 31, 41, 51,61,71]]])->count();
+            return Outbound::find()->where(['and', ['EXTRACT(YEAR FROM created_at)' => $year],['Status' => [3, 1, 10, 11, 21, 31, 41, 51,61,71]]])->count();
         case 'TotalI':
             return Inbound::find()->where(['and', ['EXTRACT(YEAR FROM created_at)' => $year],['not', ['Status' => null]]])->count();
         case 'AcceptedI':
@@ -192,7 +191,7 @@ function getCount($countType, $year)
         case 'RejectedI':
             return Inbound::find()->where(['and', ['EXTRACT(YEAR FROM created_at)' => $year],['Status' => [6, 16, 26, 36, 46, 56]]])->count();
         case 'ProcessI':
-            return Inbound::find()->where(['and', ['EXTRACT(YEAR FROM created_at)' => $year],['Status' => [10, 5, 15, 25, 35, 45, 55]]])->count();
+            return Inbound::find()->where(['and', ['EXTRACT(YEAR FROM created_at)' => $year],['Status' => [7, 10, 5, 15, 25, 35, 45, 55]]])->count();
         default:
             return 0; // Or handle other cases accordingly
     }

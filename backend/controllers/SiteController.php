@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\models\PasswordResetRequestForm;
 use backend\models\ResetPasswordForm;
 use backend\models\SignupForm;
+use backend\views\Inbound\inboundSearch;
 use backend\views\Outbound\outboundSearch;
 use common\models\AdminLoginForm;
 use common\models\Outbound;
@@ -20,6 +21,7 @@ use yii\helpers\FileHelper;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 require Yii::getAlias('@common').'/Helpers/helper.php';
 
@@ -74,6 +76,13 @@ class SiteController extends Controller
             ],
         ];
     }
+    public function actionError()
+    {
+        $exception = Yii::$app->errorHandler->exception;
+        if ($exception !== null) {
+            return $this->render('dash', ['exception' => $exception]);
+        }
+    }
 
     /**
      * Displays the inbound dashboard for a specific year.
@@ -83,17 +92,40 @@ class SiteController extends Controller
      */
     public function actionInboundDashboard($year)
     {
+        $searchModel = new inboundSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
+
+// Filter for recent updates and specific status numbers
+        $dataProvider->query->andWhere([
+            'and',
+            ['EXTRACT(YEAR FROM created_at)' => $year], // Filter by year of creation
+            ['in', 'Status', [10, 11, 12, 22, 31, 51]],  // Filter by specific status numbers
+        ]);
+
+        $dataProvider->sort->defaultOrder = ['updated_at' => SORT_DESC];
+
+        $dataProvider->pagination = [
+            'pageSize' => 3,
+        ];
         $months = $this->getMonthNames();
         $counts = $this->getMonthlyCounts('inbound', $year);
 
         $maleCount = $this->getGenderCount('M', 'inbound', $year);
         $femaleCount = $this->getGenderCount('F', 'inbound', $year);
 
+
+        $rejectionCount = $this->getApproveCount([6], 'inbound', $year);
+        $approvalCount = $this->getApproveCount([65], 'inbound', $year);
+
+
         return $this->render('inboundDashboard', [
             'months' => json_encode($months),
             'counts' => json_encode($counts),
             'maleCount' => $maleCount,
             'femaleCount' => $femaleCount,
+            'dataProvider' => $dataProvider,
+            'rejectionCount' => $rejectionCount,
+            'approvalCount' => $approvalCount,
         ]);
     }
 
@@ -105,6 +137,10 @@ class SiteController extends Controller
      */
     public function actionOutboundDashboard($year = null)
     {
+
+        if($year === null){
+            $year = date('Y');
+        }
         $searchModel = new outboundSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
@@ -121,9 +157,6 @@ class SiteController extends Controller
             'pageSize' => 3,
         ];
 
-        if($year === null){
-            $year = date('Y');
-        }
 
         $months = $this->getMonthNames();
         $counts = $this->getMonthlyCounts('outbound', $year);
@@ -131,12 +164,16 @@ class SiteController extends Controller
         $maleCount = $this->getGenderCount('M', 'outbound', $year);
         $femaleCount = $this->getGenderCount('F', 'outbound', $year);
 
+        $rejectionCount = $this->getApproveCount([2], 'outbound', $year);
+        $approvalCount = $this->getApproveCount([61, 71, 81], 'outbound', $year);
         return $this->render('outboundDashboard', [
             'months' => json_encode($months),
             'counts' => json_encode($counts),
             'maleCount' => $maleCount,
             'femaleCount' => $femaleCount,
             'dataProvider' => $dataProvider,
+            'rejectionCount' => $rejectionCount,
+            'approvalCount' => $approvalCount,
         ]);
     }
 
@@ -206,6 +243,33 @@ class SiteController extends Controller
             ->count();
     }
 
+    private function getApproveCount($statuses, $table, $year){
+        $data = (new \yii\db\Query())
+            ->select([
+                new \yii\db\Expression('EXTRACT(MONTH FROM created_at) AS month'),
+                new \yii\db\Expression('COUNT(*) AS count')
+            ])
+            ->from($table)
+            ->where(['and',['in', 'Status', $statuses],['EXTRACT(YEAR FROM created_at)' => $year],['not', ['Status' => null]]])
+            ->groupBy([new \yii\db\Expression('EXTRACT(MONTH FROM created_at)')])
+            ->all();
+
+        $counts = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $found = false;
+            foreach ($data as $entry) {
+                if ((int)$entry['month'] === $i) {
+                    $counts[] = (int)$entry['count'];
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) {
+                $counts[] = 0;
+            }
+        }
+        return $counts;
+    }
 
 
 
@@ -216,11 +280,12 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
+
+        $this->layout = 'blank';
+
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
-
-        $this->layout = 'blank';
 
         $model = new AdminLoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
@@ -297,24 +362,6 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
-
-    /**
-     * Renders the signup view or processes the signup form submission.
-     *
-     * @return string|Response The rendered signup view or a redirection response to the home page upon successful signup.
-     */
-    public function actionSignup()
-    {
-        $model = new SignupForm();
-        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
-            return $this->goHome();
-        }
-
-        return $this->render('signup', [
-            'model' => $model,
-        ]);
-    }
-
     /**
      * Exports data from the 'outbound' table to an Excel file.
      */
