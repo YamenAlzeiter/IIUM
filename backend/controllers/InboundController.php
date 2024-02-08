@@ -28,7 +28,7 @@ use ZipArchive;
 
 /**
  * InboundController implements the CRUD actions for Inbound model.
- * It manages the outbound operations such as viewing, creating, updating, and deleting outbound records.
+ * It manages the inbound operations such as viewing, creating, updating, and deleting inbound records.
  * Additionally, it provides actions for searching, displaying logs, and performing custom actions like accept/ reject/ resend on outbound records.
  * as well as exporting records to spreadsheets.
  */
