@@ -117,3 +117,4 @@ environments/                    (contains environment-based overrides)
 |      |                                                            | 71   | Email send to applicant to upload images and videos.     |
 |      |                                                            | 81   | Documents Uploaded before coming back to IIUM.          |
 
+<p>you can visit <a href = "https://github.com/YamenAlzeiter/IIUM/tree/master/IIUM%20docs">this link </a> for more documentation</p>
