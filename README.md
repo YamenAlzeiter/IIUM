@@ -1,4 +1,4 @@
-[Inbound_Outbound_Diagram.pdf](https://github.com/YamenAlzeiter/IIUM/files/14203728/Inbound_Outbound_Diagram.pdf)<p align="center">
+<p align="center">
 <!--     <a href="https://github.com/yiisoft" target="_blank"> -->
         <img src="backend/web/images/iiumLogo.png" height="100px">
 <!--     </a> -->
