@@ -590,7 +590,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                         </div>
                         <div class = "col-md-3">
                             <div class = "form__div">
-                                <input type = "date" class = "form__input form-control" id = "Propose_duration_start"
+                                <input type = "date" class = "form__input form-control" id = "Propose_duration_start start"
                                        name = "Inbound[Propose_duration_start]" required
                                        value = "<?= htmlspecialchars($model->Propose_duration_start ?? '') ?>"
                                        min = "<?= date('Y-m-d') ?>">
@@ -600,7 +600,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                         </div>
                         <div class = "col-md-3">
                             <div class = "form__div">
-                                <input type = date class = "form__input form-control" id = "Propose_duration_end"
+                                <input type = "date" class = "form__input form-control" id = "Propose_duration_end end"
                                        name = "Inbound[Propose_duration_end]" required
                                        value = "<?= htmlspecialchars($model->Propose_duration_end ?? '') ?>"
                                        min = "<?= date('Y-m-d') ?>">
@@ -608,6 +608,34 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                             </div>
                         </div>
                     </div>
+
+
+                    <script>
+                        // Get the start date input element
+                        const startDateInput = document.getElementById('Propose_duration_start');
+                        // Get the end date input element
+                        const endDateInput = document.getElementById('Propose_duration_end');
+
+                        // Function to set minimum value for end date based on start date
+                        function setEndDateMinValue() {
+                            endDateInput.min = startDateInput.value;
+
+                            // If the current value of end date is less than start date, reset it
+                            if (endDateInput.value < startDateInput.value) {
+                                endDateInput.value = startDateInput.value;
+                            }
+                        }
+
+                        // Add event listener to the start date input
+                        startDateInput.addEventListener('change', setEndDateMinValue);
+
+                        // Check if start date has a value on page load
+                        window.addEventListener('load', function() {
+                            if (startDateInput.value) {
+                                setEndDateMinValue();
+                            }
+                        });
+                    </script>
 
                     <!--	table location-->
                     <div class = "container mt-lg-5">
@@ -698,7 +726,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                             </div>
                         </div>
                     </div>
-                    <div class="row mt-2">
+                    <div class = "row mt-2">
                         <div class = "col-md-6">
                             <div class = "form__div">
                                 <select class = "form__input form-control" id = "campus_location"
@@ -740,7 +768,6 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                             </div>
                         </div>
                     </div>
-
 
 
                     <h4 class = "text-capitalize mt-4">Financial Details</h4>

@@ -610,6 +610,33 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                     </div>
                 </div>
 
+                <script>
+                    // Get the start date input element
+                    const startDateInput = document.getElementById('validationCustomMobilityFrom');
+                    // Get the end date input element
+                    const endDateInput = document.getElementById('validationCustomMobilityUntil');
+
+                    // Function to set minimum value for end date based on start date
+                    function setEndDateMinValue() {
+                        endDateInput.min = startDateInput.value;
+
+                        // If the current value of end date is less than start date, reset it
+                        if (endDateInput.value < startDateInput.value) {
+                            endDateInput.value = startDateInput.value;
+                        }
+                    }
+
+                    // Add event listener to the start date input
+                    startDateInput.addEventListener('change', setEndDateMinValue);
+
+                    // Check if start date has a value on page load
+                    window.addEventListener('load', function() {
+                        if (startDateInput.value) {
+                            setEndDateMinValue();
+                        }
+                    });
+                </script>
+
 
                 <div class = "row mt-2">
                     <div class = "col-md-6">
