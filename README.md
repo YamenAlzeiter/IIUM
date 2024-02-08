@@ -95,4 +95,25 @@ frontend
 vendor/                          (contains dependent 3rd-party packages)
 environments/                    (contains environment-based overrides)
 ```
+# Diagram
+  <img src="https://github.com/YamenAlzeiter/IIUM/blob/master/IIUM%20docs/inbound%20diagram.jpg">
+  <img src="https://github.com/YamenAlzeiter/IIUM/blob/master/IIUM%20docs/outbound%20diagram.jpg">
+
+# Status Table
+| Code | Inbound Application Status                                  | Code | Outbound Application Status                                |
+|------|------------------------------------------------------------|------|------------------------------------------------------------|
+| 5    | In progress, from Io, application submitted to Kulliyyah or other institutions. | 1    | In progress, from IO, application submitted to HOD.       |
+| 6    | Application rejected by IO, return back to student.        | 2    | Application rejected by IO, return back to student.       |
+| 7    | Incomplete application, return back to student.            | 3    | Incomplete application, return back to student.           |
+| 15   | Application approved by Kulliyyah, return back to IO.      | 10   | In progress, application submitted by student to IO.      |
+| 16   | Application rejected by Kulliyyah, return back to IO.      | 11   | Application approved by HOD, return to IO.                |
+| 25   | In progress, pass by IO to AMAD/CPS.                      | 12   | Application rejected by HOD, return back to IO.           |
+| 35   | Application Complete by AMAD/CPS Return back to IO.         | 21   | In progress, from IO, application submitted to Dean.      |
+| 45   | Redirect to student, Upload proof of Payment/ Update Status. | 31   | Application approved by Dean, return to IO.               |
+| 55   | Student upload documents, return to IO for verification.   | 32   | Application rejected by Dean, return to IO.               |
+| 65   | Application is approved with complete upload documents, inform student. | 41   | Application return to student, upload documents.          |
+|      |                                                            | 51   | Student upload documents, return to IO for verification. |
+|      |                                                            | 61   | Application is approved with complete upload documents, inform student. |
+|      |                                                            | 71   | Email send to applicant to upload images and videos.     |
+|      |                                                            | 81   | Documents Uploaded before coming back to IIUM.          |
 
