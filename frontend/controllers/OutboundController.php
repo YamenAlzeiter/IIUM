@@ -480,13 +480,25 @@ class OutboundController extends Controller
         $baseUploadPath = Yii::getAlias('@common/uploads');
         $filePath = $baseUploadPath.'/'.$id.'/'.$file;
         Yii::info("File Path: ".$filePath, "fileDownload");
+
         if (file_exists($filePath)) {
-            Yii::$app->response->sendFile($filePath);
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+
+            return ['success' => true];
         } else {
-            Yii::info("File not found: ".$file, "fileDownload");
-            throw new NotFoundHttpException('The file does not exist.');
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ['success' => false];
         }
     }
+
+    public function actionDownloader($id, $file)
+    {
+        $baseUploadPath = Yii::getAlias('@common/uploads');
+        $filePath = $baseUploadPath.'/'.$id.'/'.$file;
+        Yii::$app->response->sendFile($filePath);
+    }
+
 
     public function actionGetStates()
     {

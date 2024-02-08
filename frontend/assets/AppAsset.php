@@ -21,7 +21,8 @@ class AppAsset extends AssetBundle
         'js/region.js',
         'js/notes.js',
         'js/password-toggler.js',
-        'js/form-logic.js'
+        'js/form-logic.js',
+        'js/sweet-alert.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

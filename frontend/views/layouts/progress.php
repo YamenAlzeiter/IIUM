@@ -21,7 +21,7 @@ AppAsset::register($this);
 
 	<head>
 		<script src = "https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
+        <script src = "https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 		<meta charset = "<?= Yii::$app->charset ?>">
 		<meta name = "viewport" content = "width=device-width, initial-scale=1, shrink-to-fit=no">
         <?php $this->registerCsrfMetaTags() ?>

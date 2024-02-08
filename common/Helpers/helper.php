@@ -230,11 +230,11 @@ function renderFileField($form, $model, $attribute, $fileName)
     ]);
 
     if ($model->$attribute !== null) {
-        $uploadedFile = Html::a($fileNameMarker . "_" . $fileName . ".pdf", [
-            'download',
-            'id' => $model->ID,
-            'file' => $fileNameMarker . '_' . $fileName . '.pdf'
-        ]);
+        $uploadedFile = Html::a(
+            $fileNameMarker . "_" . $fileName . ".pdf",
+            ['download', 'id' => $model->ID, 'file' => $fileNameMarker . '_' . $fileName . '.pdf'],
+            ['class' => 'download', 'id' => 'download']
+        );
         echo "<p class='fw-lighterg'><span class='fw-bolder'>File Uploaded: </span>" . ($model->$attribute ? $uploadedFile : '') . "</p>";
     }
 }

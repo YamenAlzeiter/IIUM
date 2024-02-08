@@ -164,24 +164,5 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
             </div>
         </div>
     </div>
-    <script>
-        // jQuery script to toggle visibility of Delete Selected button based on checkbox selection
-        $(document).ready(function () {
-            // When any checkbox is changed
-            $('input[name="selection[]"]').change(function () {
-                // If any checkbox is checked, show the Delete Selected button; otherwise, hide it
-                if ($('input[name="selection[]"]:checked').length > 0) {
-                    $('#fake-delete-btn').show();
-                } else {
-                    $('#fake-delete-btn').hide();
-                }
-            });
-        });
-        $(document).ready(function () {
-            // When the fake delete button is clicked
-            $('#fake-delete-btn').click(function () {
-                // Trigger the click event of the hidden submit button
-                $('#delete-selected-btn').click();
-            });
-        });
-    </script>
+
+
