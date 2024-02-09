@@ -66,7 +66,7 @@ class InboundController extends Controller
                         'actions' => [
                             'index', 'view', 'update', 'delete', 'action', 'create', 'search', 'accept', 'reject',
                             'load-people', 'dean-approval', 'resend', 'download', 'complete', 'log', 'export-excel',
-                            'actionDeleteMultiple', 'download-all'
+                            'actionDeleteMultiple', 'download-all','downloader'
                         ], 'allow' => true, 'roles' => ['@'],
                     ], [
                         'actions' => ['delete-multiple'], // Allow the delete-multiple action
@@ -270,16 +270,27 @@ class InboundController extends Controller
     //region Download Functionality
     public function actionDownload($id, $file)
     {
-        $filePath = $this->getFilePath($id, $file);
+        $baseUploadPath = Yii::getAlias('@common/uploads');
+        $filePath = $baseUploadPath.'/'.$id.'/'.$file;
+        Yii::info("File Path: ".$filePath, "fileDownload");
 
         if (file_exists($filePath)) {
-            Yii::$app->response->sendFile($filePath);
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+
+            return ['success' => true];
         } else {
-            Yii::info("File not found: $file", "fileDownload");
-            throw new NotFoundHttpException('The file does not exist.');
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ['success' => false];
         }
     }
 
+    public function actionDownloader($id, $file)
+    {
+        $baseUploadPath = Yii::getAlias('@common/uploads');
+        $filePath = $baseUploadPath.'/'.$id.'/'.$file;
+        Yii::$app->response->sendFile($filePath);
+    }
     /**
      * Helper method to get the full path of a specific file.
      * @param  integer  $id  The ID of the outbound record

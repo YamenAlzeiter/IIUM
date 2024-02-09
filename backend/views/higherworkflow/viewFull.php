@@ -1,6 +1,7 @@
 <?php
 
 use common\models\Status;
+use common\widgets\DownloadLinkWidget;
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
@@ -9,9 +10,6 @@ use yii\helpers\Html;
 
 require Yii::getAlias('@common').'/Helpers/helper.php';
 
-$creationYearLastTwoDigits = date('y', strtotime($model->created_at));
-
-$fileName = $creationYearLastTwoDigits.'_'.$model->ID;
 ?>
 <div class = "container">
     <div class = "d-flex float-row justify-content-between align-items-center">
@@ -193,12 +191,10 @@ $fileName = $creationYearLastTwoDigits.'_'.$model->ID;
                                                                         Number: </strong> <?= $model->Approval_person_mobile_number ?>
                                 </p>
                                 <p class = "mb-2 fw-light mb-1"><strong>Date: </strong> <?= $model->Approval_date ?></p>
-                                <p class = "fw-semibold"><?= ($model->Recommendation_letter) ? Html::a('RecommendationLetter',
-                                        [
-                                            'download', 'ID' => $model->ID, 'token' => $model->Token,
-                                            'file' => $fileName.'_RecommendationLetter'.'.pdf'
-                                        ]) : ''; ?></p>
-
+                                <?= DownloadLinkWidget::widget([
+                                    'model' => $model, 'attribute' => 'Recommendation_letter', 'fileName' => 'RecommendationLetter',
+                                    'text' => 'Recommendation Letter'
+                                ]) ?>
                             </div>
                         </div>
                     </div>
@@ -264,13 +260,12 @@ $fileName = $creationYearLastTwoDigits.'_'.$model->ID;
                             <h4 class = "fw-semibold m-0">English Proficiency</h4>
                         </strong>
                     </div>
-                    <p class = "mb-2 fw-light mb-1"><strong>English
-                                                            Proficiency: </strong> <?= getAnswer($model->English_native) ?>
+                    <p class = "mb-2 fw-light mb-1"><strong>English Proficiency: </strong> <?= getAnswer($model->English_native) ?>
                     </p>
-                    <p class = "fw-semibold"><?= ($model->English_certificate) ? Html::a('English Certificate', [
-                            'download', 'ID' => $model->ID, 'token' => $model->Token,
-                            'file' => $fileName.'_EnglishCertificate'.'.pdf'
-                        ]) : ''; ?></p>
+                    <?= DownloadLinkWidget::widget([
+                        'model' => $model, 'attribute' => 'English_certificate', 'fileName' => 'EnglishCertificate',
+                        'text' => 'English Certificate'
+                    ]) ?>
                 </div>
             </div>
             <div class = "card shadow-none border bg-light-gray">
@@ -282,33 +277,27 @@ $fileName = $creationYearLastTwoDigits.'_'.$model->ID;
                                 <h4 class = "fw-semibold m-0">Files</h4>
                             </strong>
                         </div>
-
-                        <p class = "fw-semibold"><?= ($model->Passport) ? Html::a('Passport', [
-                                'download', 'ID' => $model->ID, 'token' => $model->Token,
-                                'file' => $fileName.'_Passport'.'.pdf'
-                            ]) : ''; ?></p>
-
-                        <p class = "fw-semibold"><?= ($model->Latest_passport_photo) ? Html::a('Latest Passport Photo',
-                                [
-                                    'download', 'ID' => $model->ID, 'token' => $model->Token,
-                                    'file' => $fileName.'_LatestPassportPhoto'.'.pdf'
-                                ]) : ''; ?></p>
-
-                        <p class = "fw-semibold"><?= ($model->Latest_certified_academic_transcript) ? Html::a('Latest Certified Academic Transcript',
-                                [
-                                    'download', 'ID' => $model->ID, 'token' => $model->Token,
-                                    'file' => $fileName.'_LatestCertifiedAcademicTranscript'.'.pdf'
-                                ]) : ''; ?></p>
-
-                        <p class = "fw-semibold"><?= ($model->Confirmation_letter) ? Html::a('Confirmation Letter', [
-                                'download', 'ID' => $model->ID, 'token' => $model->Token,
-                                'file' => $fileName.'_ConfirmationLetter'.'.pdf'
-                            ]) : ''; ?></p>
-
-                        <p class = "fw-semibold"><?= ($model->Sponsorship_letter) ? Html::a('Sponsorship Letter', [
-                                'download', 'ID' => $model->ID, 'token' => $model->Token,
-                                'file' => $fileName.'_SponsorshipLetter'.'.pdf'
-                            ]) : ''; ?></p>
+                        <?= DownloadLinkWidget::widget([
+                            'model' => $model, 'attribute' => 'Passport', 'fileName' => 'Passport',
+                            'text' => 'Passport'
+                        ]) ?>
+                        <?= DownloadLinkWidget::widget([
+                            'model' => $model, 'attribute' => 'Latest_passport_photo',
+                            'fileName' => 'LatestPassportPhoto', 'text' => 'Latest Passport Photo'
+                        ]) ?>
+                        <?= DownloadLinkWidget::widget([
+                            'model' => $model, 'attribute' => 'Latest_certified_academic_transcript',
+                            'fileName' => 'LatestCertifiedAcademicTranscript',
+                            'text' => 'Latest Certified Academic Transcript'
+                        ]) ?>
+                        <?= DownloadLinkWidget::widget([
+                            'model' => $model, 'attribute' => 'Confirmation_letter',
+                            'fileName' => 'ConfirmationLetter', 'text' => 'Confirmation Letter'
+                        ]) ?>
+                        <?= DownloadLinkWidget::widget([
+                            'model' => $model, 'attribute' => 'Sponsorship_letter',
+                            'fileName' => 'SponsorshipLetter', 'text' => 'Sponsorship Letter'
+                        ]) ?>
                     </div>
                 </div>
             </div>

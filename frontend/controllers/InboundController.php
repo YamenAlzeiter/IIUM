@@ -12,6 +12,7 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 use yii\web\UploadedFile;
 
 /**
@@ -359,11 +360,24 @@ class InboundController extends Controller
     {
         $baseUploadPath = Yii::getAlias('@common/uploads');
         $filePath = $baseUploadPath.'/'.$id.'/'.$file;
+        Yii::info("File Path: ".$filePath, "fileDownload");
+
         if (file_exists($filePath)) {
-            Yii::$app->response->sendFile($filePath);
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+
+            return ['success' => true];
         } else {
-            throw new NotFoundHttpException('The file does not exist.');
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ['success' => false];
         }
+    }
+
+    public function actionDownloader($id, $file)
+    {
+        $baseUploadPath = Yii::getAlias('@common/uploads');
+        $filePath = $baseUploadPath.'/'.$id.'/'.$file;
+        Yii::$app->response->sendFile($filePath);
     }
 
 

@@ -888,16 +888,16 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                     </div>
                     <div class = "col" id = "textareaContainer">
                         <div class = "form__div">
-						<textarea class = "form__input form-control" id = "model-Research" name = "Outbound[Research]"
-                                  maxlength = "255">
-							<?= htmlspecialchars($model->Research ?? '') ?></textarea>
+
+                            <textarea class = "form__input form-control" id = "validationCustomConnectHostAddress"
+                                      name = "Outbound[Research]" maxlength = "255" placeholder = " "
+                                      required><?= htmlspecialchars($model->Research ?? '') ?></textarea>
                             <label for = "model-Research" class = "form__label">Write your research</label>
                         </div>
                     </div>
                     <div class = "col" id = "noneContainer">
                         <div id = "approval-message-hod" class = "alert alert-danger">
-                            <h5 class = "p-0 m-0 text-capitalize alert fw-semibold">Please pick Level of Education in
-                                                                                    order to view in step</h5>
+                            <h5 class = "p-0 m-0 text-capitalize alert fw-semibold">Please pick Level of Education in order to view in step</h5>
                         </div>
                     </div>
 

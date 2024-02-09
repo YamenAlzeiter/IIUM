@@ -1,6 +1,7 @@
 <?php
 
 use common\models\Status;
+use common\widgets\DownloadLinkWidget;
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
@@ -275,30 +276,26 @@ $fileName = $creationYearLastTwoDigits.'_'.$model->ID;
                                     </strong>
                                 </div>
                                 <div class = "col-md-6">
-                                    <p class = "fw-semibold"><?= ($model->Offer_letter) ? Html::a('Offer Letter', [
-                                            'download', 'ID' => $model->ID, 'token' => $model->Token,
-                                            'file' => $fileName.'_OfferLetter'.'.pdf'
-                                        ]) : ''; ?></p>
-                                    <p class = "fw-semibold"><?= ($model->Academic_transcript) ? Html::a('Academic Transcript',
-                                            [
-                                                'download', 'ID' => $model->ID, 'token' => $model->Token,
-                                                'file' => $fileName.'_AcademicTranscript'.'.pdf'
-                                            ]) : ''; ?></p>
-                                    <p class = "fw-semibold"><?= ($model->Program_brochure) ? Html::a('Program Brochure',
-                                            [
-                                                'download', 'ID' => $model->ID, 'token' => $model->Token,
-                                                'file' => $fileName.'_ProgramBrochure'.'.pdf'
-                                            ]) : ''; ?></p>
-                                    <p class = "fw-semibold"><?= ($model->Latest_pay_slip) ? Html::a('Latest Pay Slip',
-                                            [
-                                                'download', 'ID' => $model->ID, 'token' => $model->Token,
-                                                'file' => $fileName.'_LatestPaySlip'.'.pdf'
-                                            ]) : ''; ?></p>
-                                    <p class = "fw-semibold"><?= ($model->Other_latest_pay_slip) ? Html::a('Other Latest Pay Slip',
-                                            [
-                                                'download', 'ID' => $model->ID, 'token' => $model->Token,
-                                                'file' => $fileName.'_OtherLatestPaySlip'.'.pdf'
-                                            ]) : ''; ?></p>
+                                    <?= DownloadLinkWidget::widget([
+                                        'model' => $model, 'attribute' => 'Offer_letter', 'fileName' => 'offerLetter',
+                                        'text' => 'Offer Letter'
+                                    ]) ?>
+                                    <?= DownloadLinkWidget::widget([
+                                        'model' => $model, 'attribute' => 'Academic_transcript',
+                                        'fileName' => 'AcademicTranscript', 'text' => 'Academic Transcript'
+                                    ]) ?>
+                                    <?= DownloadLinkWidget::widget([
+                                        'model' => $model, 'attribute' => 'Program_brochure',
+                                        'fileName' => 'ProgramBrochure', 'text' => 'Program Brochure'
+                                    ]) ?>
+                                    <?= DownloadLinkWidget::widget([
+                                        'model' => $model, 'attribute' => 'Latest_pay_slip', 'fileName' => 'LatestPaySlip',
+                                        'text' => 'Latest Pay Slip'
+                                    ]) ?>
+                                    <?= DownloadLinkWidget::widget([
+                                        'model' => $model, 'attribute' => 'Other_latest_pay_slip',
+                                        'fileName' => 'OtherLatestPaySlip', 'text' => 'Other Latest Pay Slip'
+                                    ]) ?>
                                 </div>
                             </div>
                         </div>

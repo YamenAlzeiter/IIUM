@@ -2,6 +2,7 @@
 
 
 use common\models\Status;
+use common\widgets\DownloadLinkWidget;
 use yii\bootstrap5\ActiveForm;
 use yii\helpers\Html;
 
@@ -12,12 +13,6 @@ use yii\helpers\Html;
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 require Yii::getAlias('@common').'/Helpers/helper.php';
-
-if (!isset($noRecord)) {
-    $creationYearLastTwoDigits = date('y', strtotime($model->created_at));
-
-    $fileName = $creationYearLastTwoDigits.'_'.$model->ID;
-}
 
 ?>
 
@@ -233,11 +228,10 @@ if (!isset($noRecord)) {
 							                                        Number: </strong> <?= $model->Approval_person_mobile_number ?>
 							</p>
 							<p class = "mb-2 fw-light mb-1"><strong>Date: </strong> <?= $model->Approval_date ?></p>
-							<p class = "fw-semibold"><?= ($model->Recommendation_letter) ? Html::a('RecommendationLetter',
-                                    [
-                                        'download', 'id' => $model->ID,
-                                        'file' => $fileName.'_RecommendationLetter'.'.pdf'
-                                    ]) : ''; ?></p>
+                            <?= DownloadLinkWidget::widget([
+                                'model' => $model, 'attribute' => 'Recommendation_letter', 'fileName' => 'RecommendationLetter',
+                                'text' => 'Recommendation Letter'
+                            ]) ?>
 						</div>
 					</div>
 				</div>
@@ -252,34 +246,31 @@ if (!isset($noRecord)) {
 									<h4 class = "fw-semibold m-0">Files</h4>
 								</strong>
 							</div>
-
-							<p class = "fw-semibold"><?= ($model->Passport) ? Html::a('Passport', [
-                                    'download', 'id' => $model->ID, 'file' => $fileName.'_Passport'.'.pdf'
-                                ]) : ''; ?></p>
-
-							<p class = "fw-semibold"><?= ($model->Latest_passport_photo) ? Html::a('Latest Passport Photo',
-                                    [
-                                        'download', 'id' => $model->ID,
-                                        'file' => $fileName.'_LatestPassportPhoto'.'.pdf'
-                                    ]) : ''; ?></p>
-
-							<p class = "fw-semibold"><?= ($model->Latest_certified_academic_transcript) ? Html::a('Latest Certified Academic Transcript',
-                                    [
-                                        'download', 'id' => $model->ID,
-                                        'file' => $fileName.'_LatestCertifiedAcademicTranscript'.'.pdf'
-                                    ]) : ''; ?></p>
-
-							<p class = "fw-semibold"><?= ($model->Confirmation_letter) ? Html::a('Confirmation Letter',
-                                    [
-                                        'download', 'id' => $model->ID, 'file' => $fileName.'_ConfirmationLetter'.'.pdf'
-                                    ]) : ''; ?></p>
-
-							<p class = "fw-semibold"><?= ($model->Sponsorship_letter) ? Html::a('Sponsorship Letter', [
-                                    'download', 'id' => $model->ID, 'file' => $fileName.'_SponsorshipLetter'.'.pdf'
-                                ]) : ''; ?></p>
-							<p class = "fw-semibold"><?= ($model->offer_letter) ? Html::a('Offer Letter', [
-                                    'download', 'id' => $model->ID, 'file' => $fileName.'_offerLetter'.'.pdf'
-                                ]) : ''; ?></p>
+                            <?= DownloadLinkWidget::widget([
+                                'model' => $model, 'attribute' => 'Passport', 'fileName' => 'Passport',
+                                'text' => 'Passport'
+                            ]) ?>
+                            <?= DownloadLinkWidget::widget([
+                                'model' => $model, 'attribute' => 'Latest_passport_photo',
+                                'fileName' => 'LatestPassportPhoto', 'text' => 'Latest Passport Photo'
+                            ]) ?>
+                            <?= DownloadLinkWidget::widget([
+                                'model' => $model, 'attribute' => 'Latest_certified_academic_transcript',
+                                'fileName' => 'LatestCertifiedAcademicTranscript',
+                                'text' => 'Latest Certified Academic Transcript'
+                            ]) ?>
+                            <?= DownloadLinkWidget::widget([
+                                'model' => $model, 'attribute' => 'Confirmation_letter',
+                                'fileName' => 'ConfirmationLetter', 'text' => 'Confirmation Letter'
+                            ]) ?>
+                            <?= DownloadLinkWidget::widget([
+                                'model' => $model, 'attribute' => 'Sponsorship_letter',
+                                'fileName' => 'SponsorshipLetter', 'text' => 'Sponsorship Letter'
+                            ]) ?>
+                            <?= DownloadLinkWidget::widget([
+                                'model' => $model, 'attribute' => 'offer_letter', 'fileName' => 'offerLetter',
+                                'text' => 'Offer Letter'
+                            ]) ?>
 						</div>
 					</div>
 				</div>
@@ -348,9 +339,10 @@ if (!isset($noRecord)) {
 				                                        Proficiency: </strong> <?= getAnswer($model->English_native) ?>
 				</p>
 				<p class = "mb-2 fw-light mb-1"><strong>Result: </strong> <?= $model->English_test_name ?></p>
-				<p class = "fw-semibold"><?= ($model->English_certificate) ? Html::a('English Certificate', [
-                        'download', 'id' => $model->ID, 'file' => $fileName.'_EnglishCertificate'.'.pdf'
-                    ]) : ''; ?></p>
+                <?= DownloadLinkWidget::widget([
+                    'model' => $model, 'attribute' => 'English_certificate', 'fileName' => 'EnglishCertificate',
+                    'text' => 'English Certificate'
+                ]) ?>
 			</div>
 		</div>
 </div>
