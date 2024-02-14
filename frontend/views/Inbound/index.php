@@ -13,7 +13,7 @@ use yii\helpers\Html;
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 require Yii::getAlias('@common').'/Helpers/helper.php';
-
+$this->title = 'Inbound';
 ?>
 
 <?php if (isset($noRecord) && $noRecord === true) : ?>

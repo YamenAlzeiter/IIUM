@@ -12,19 +12,22 @@ $(function () {
     $(this).addClass("active");
   });
 
-  $("#add-user ,#add-pos, #add-notes").on("click", function (event) {
-    // Set the form for creating a new record
-    $("#formpoc").modal("show");
-    $("#btn-n-save").hide();
-    $("#btn-n-add").show();
-    $("#formpoc-header").html(
-      '<i class="ti ti-file text-dark me-2 text-dark"></i>Create New Record',
-    );
-    $("#submit-button").html('<i class = "ti ti-plus"></i> Add');
-    // Reset the updateModelId
-    updateModelId = null;
-    $("#add-notes").data("update-model-id", updateModelId); // Update data attribute
-  });
+  $("#add-user ,#add-pos, #add-notes, #add-kcdio").on(
+    "click",
+    function (event) {
+      // Set the form for creating a new record
+      $("#formpoc").modal("show");
+      $("#btn-n-save").hide();
+      $("#btn-n-add").show();
+      $("#formpoc-header").html(
+        '<i class="ti ti-file text-dark me-2 text-dark"></i>Create New Record',
+      );
+      $("#submit-button").html('<i class = "ti ti-plus"></i> Add');
+      // Reset the updateModelId
+      updateModelId = null;
+      $("#add-notes").data("update-model-id", updateModelId); // Update data attribute
+    },
+  );
 
   function showModal(
     modalId,

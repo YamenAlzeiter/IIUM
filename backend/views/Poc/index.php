@@ -91,12 +91,12 @@ $this->title = 'Person In Charge';
 
                             <div class = "col-md-6 mb-3">
                                 <?= $form->field($model, 'name')->textInput([
-                                    'maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'Name'
+                                    'maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'Name', 'required' => true,
                                 ])->label(false) ?>
                             </div>
                             <div class = "col-md-6 mb-3">
                                 <?= $form->field($model, 'email')->textInput([
-                                    'maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'Email'
+                                    'maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'Email', 'required' => true,
                                 ])->label(false) ?>
                             </div>
 
@@ -105,13 +105,13 @@ $this->title = 'Person In Charge';
                         <div class = "row align-items-center">
                             <div class = "col-md-6 mb-3">
                                 <?= $form->field($model, 'name_cc1')->textInput([
-                                    'maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'Email'
+                                    'maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => '1# Name CC (Optional)'
                                 ])->label(false) ?>
                             </div>
                             <div class = "col-md-6 mb-3">
                                 <?= $form->field($model, 'email_cc')->textInput([
                                     'maxlength' => true, 'class' => 'form__input form-control',
-                                    'placeholder' => 'Email CC'
+                                    'placeholder' => '1# Email CC'
                                 ])->label(false) ?>
                             </div>
                         </div>
@@ -119,13 +119,13 @@ $this->title = 'Person In Charge';
                         <div class = "row align-items-center">
                             <div class = "col-md-6 mb-3">
                                 <?= $form->field($model, 'name_cc2')->textInput([
-                                    'maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'Email'
+                                    'maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => '2# Name CC (Optional)'
                                 ])->label(false) ?>
                             </div>
                             <div class = "col-md-6 mb-3">
                                 <?= $form->field($model, 'email_cc_additional')->textInput([
                                     'maxlength' => true, 'class' => 'form__input form-control',
-                                    'placeholder' => 'Email CC'
+                                    'placeholder' => '2# Email CC',
                                 ])->label(false) ?>
                             </div>
                         </div>

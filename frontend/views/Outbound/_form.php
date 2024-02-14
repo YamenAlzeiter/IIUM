@@ -49,6 +49,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                         </div>
                     </div>
                 </div>
+                <p id="validationCustomCitizenship">hello </p>
                 <div class = "form__div">
                     <input type = "text" class = "form__input form-control" id = "validationCustomName"
                            name = "Outbound[Name]"
@@ -889,10 +890,9 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                     <div class = "col" id = "textareaContainer">
                         <div class = "form__div">
 
-                            <textarea class = "form__input form-control" id = "validationCustomConnectHostAddress"
-                                      name = "Outbound[Research]" maxlength = "255" placeholder = " "
-                                      required><?= htmlspecialchars($model->Research ?? '') ?></textarea>
-                            <label for = "model-Research" class = "form__label">Write your research</label>
+                            <textarea class="form__input form-control" id="model-Research" name="Outbound[Research]" maxlength="255" placeholder="" required><?= htmlspecialchars($model->Research ?? '') ?></textarea>
+                            <label for="model-Research" class="form__label">Write your research</label>
+
                         </div>
                     </div>
                     <div class = "col" id = "noneContainer">

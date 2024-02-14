@@ -103,27 +103,30 @@ document.addEventListener("DOMContentLoaded", function () {
   function toggleVisibility() {
     var selectedValue = lvlEduSelect.value;
 
-    if (selectedValue === "Diploma" || selectedValue === "Degree") {
-      academicNameInput.closest(".form__div").style.display = "block";
-      researchTitleTextarea.closest(".form__div").style.display = "none";
-      researchTitleTextarea.removeAttribute("required");
-      academicNameInput.setAttribute("required", true);
-    } else if (selectedValue === "Master" || selectedValue === "PhD") {
-      researchTitleTextarea.closest(".form__div").style.display = "block";
-      academicNameInput.closest(".form__div").style.display = "none";
-      researchTitleTextarea.setAttribute("required", true);
-      academicNameInput.removeAttribute("required");
+    if (academicNameInput && researchTitleTextarea) {
+      if (selectedValue === "Diploma" || selectedValue === "Degree") {
+        academicNameInput.closest(".form__div").style.display = "block";
+        researchTitleTextarea.closest(".form__div").style.display = "none";
+        researchTitleTextarea.removeAttribute("required");
+        academicNameInput.setAttribute("required", true);
+      } else if (selectedValue === "Master" || selectedValue === "PhD") {
+        researchTitleTextarea.closest(".form__div").style.display = "block";
+        academicNameInput.closest(".form__div").style.display = "none";
+        researchTitleTextarea.setAttribute("required", true);
+        academicNameInput.removeAttribute("required");
+      } else {
+        academicNameInput.closest(".form__div").style.display = "block";
+        researchTitleTextarea.closest(".form__div").style.display = "none";
+        researchTitleTextarea.removeAttribute("required");
+        academicNameInput.setAttribute("required", true);
+      }
     } else {
-      academicNameInput.closest(".form__div").style.display = "block";
-      researchTitleTextarea.closest(".form__div").style.display = "none";
-      researchTitleTextarea.removeAttribute("required");
-      academicNameInput.setAttribute("required", true);
     }
   }
 
-  // Initial visibility setup
+  // Initial call to toggle visibility based on the initial select value
   toggleVisibility();
 
-  // Add event listener to the lvl_edu select element
+  // Event listener to call toggleVisibility when the select value changes
   lvlEduSelect.addEventListener("change", toggleVisibility);
 });

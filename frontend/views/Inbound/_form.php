@@ -119,11 +119,12 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                             <div class = "form__div">
                                 <select class = "form__input form-control countries" id = "validationCustomCitizenship"
                                         name = "Inbound[Citizenship]" required>
-                                    <option value = "">Select Nationality</option>
+                                    <option value = "">Select Citizenship</option>
                                 </select>
                                 <label for = "validationCustomCitizenship" class = "form__label">Citizenship</label>
                             </div>
                         </div>
+
                         <div class = "col-md-3">
                             <div class = "form__div">
                                 <select class = "form__input form-control countries" id = "countryId5"
@@ -142,10 +143,10 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                                         required>
                                     <option value = "">Select Country</option>
                                 </select>
-                                <label for = "validationCustomCounryOfResidence" class = "form__label">Country of
-                                                                                                       Residence</label>
+                                <label for = "validationCustomCounryOfResidence" class = "form__label">Country of Residence</label>
                             </div>
                         </div>
+
                     </div>
                     <div class = "row mt-2">
                         <div class = "col-md-6">
@@ -996,8 +997,6 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 <script>
 
     var nationalityModelValue = "<?= htmlspecialchars($model->Citizenship) ?>";
-
-    console.log(nationalityModelValue)
     var dropdownData = [
         {
             countryId: '#countryId5',
@@ -1090,7 +1089,6 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
         var dropdown = document.getElementById("campus_location");
         var secondDropdown = document.getElementById("secondDropdown");
         var room_type = document.getElementById("Room_type")
-        console.log(dropdown.value);
         if (dropdown.value === "Off Campus") {
             secondDropdown.style.display = "none";
             room_type.removeAttribute('required');

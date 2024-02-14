@@ -92,7 +92,7 @@ $this->title = 'Kcdios';
                         <?php $form = ActiveForm::begin(['options' => ['id' => 'myForm']]); ?>
 
                         <div class="mb-3">
-                            <?= $form->field($model, 'kcdio')->textInput(['maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'Username', 'required' => true])->label(false) ?>
+                            <?= $form->field($model, 'kcdio')->textInput(['maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'K / C / D / I / O', 'required' => true])->label(false) ?>
                         </div>
                     </div>
                 </div>

@@ -529,7 +529,7 @@ class OutboundController extends Controller
     public function actionGetNationality()
     {
         $countries = Countries::find()->all(); // Replace YourCountryModel with your actual model class name
-        $options = '<option value="">Select Country</option>';
+        $options = '<option value="">Select Citizenship</option>';
         foreach ($countries as $country) {
             $options .= '<option value="'.$country->nationality.'">'.$country->nationality.'</option>';
         }

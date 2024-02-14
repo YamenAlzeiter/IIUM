@@ -23,7 +23,6 @@ $(document).ready(function () {
             .attr("href")
             .replace("/outbound/download", "/outbound/downloader");
 
-          console.log(downloadLink);
           downloadLink.download = "filename_to_save_as";
           downloadLink.click();
         }
