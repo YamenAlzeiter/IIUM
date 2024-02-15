@@ -192,7 +192,7 @@ $this->title = 'Inbound';
 						                                        Applied: </strong> <?= $model->Propose_kulliyyah_applied ?>
 						</p>
 						<p class = "mb-2 fw-light mb-1">
-							<strong>Duration:</strong><?= $model->Propose_duration_of_study ?></p>
+							<strong>Duration of Study:</strong></p>
 						<div class = "d-flex gap-3 ">
 							<p class = "mb-2 fw-light mb-1">
 								<strong>From: </strong> <?= $model->Propose_duration_start ?></p>

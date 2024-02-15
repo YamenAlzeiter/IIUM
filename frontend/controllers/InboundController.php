@@ -27,12 +27,11 @@ class InboundController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::class,
-                'only' => ['index', 'create', 'upload','update'],
+                'class' => AccessControl::class, 'only' => ['index', 'create', 'upload', 'update','downloader'],
+                // Define the actions that require access control
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'upload', 'update'],
-                        'allow' => true,
+                        'actions' => ['index', 'create', 'upload', 'update', 'downloader'], 'allow' => true, 'roles' => ['@'],
                         'matchCallback' => function ($rule, $action) {
                             $user = Yii::$app->user->identity->type;
                             return ($user === "I");
@@ -41,6 +40,7 @@ class InboundController extends Controller
                 ],
             ],
         ];
+
     }
 
     /**
@@ -211,13 +211,34 @@ class InboundController extends Controller
                 $transaction = Yii::$app->db->beginTransaction();
                 if ($model->load(Yii::$app->request->post())) {
                     // Helper function for updating file
-                    $model->Passport = UploadedFile::getInstance($model, 'Passport');
-                    $model->Latest_passport_photo = UploadedFile::getInstance($model, 'Latest_passport_photo');
-                    $model->Latest_certified_academic_transcript = UploadedFile::getInstance($model, 'Latest_certified_academic_transcript');
-                    $model->Confirmation_letter = UploadedFile::getInstance($model, 'Confirmation_letter');
-                    $model->Sponsorship_letter = UploadedFile::getInstance($model, 'Sponsorship_letter');
-                    $model->Recommendation_letter = UploadedFile::getInstance($model, 'Recommendation_Letter');
-                    $model->English_certificate = UploadedFile::getInstance($model, 'English_certificate');
+
+                    $updateFile = function ($attribute, $fileNamePrefix) use ($model) {
+                        $file = UploadedFile::getInstance($model, $attribute);
+                        if ($file) {
+                            $baseUploadPath = Yii::getAlias('@common/uploads');
+                            $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $file->name);
+                            $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
+                            $fileName = $creationYearLastTwoDigits.'_'.$model->ID.'_'.$fileNamePrefix.'.'.$file->extension;
+                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
+
+                            // Create directory if not exists
+                            if (!file_exists(dirname($filePath))) {
+                                mkdir(dirname($filePath), 0777, true);
+                            }
+
+                            $file->saveAs($filePath);
+                            $model->$attribute = $fileName;
+                        }
+                    };
+
+                    $updateFile('Passport', 'Passport');
+                    $updateFile('Latest_passport_photo', 'LatestPassportPhoto');
+                    $updateFile('Latest_certified_academic_transcript', 'LatestCertifiedAcademicTranscript');
+                    $updateFile('Confirmation_letter', 'ConfirmationLetter');
+                    $updateFile('Sponsorship_letter', 'SponsorshipLetter');
+                    $updateFile('Recommendation_letter', 'RecommendationLetter');
+                    $updateFile('English_certificate', 'EnglishCertificate');
+
 
                     if ($this->request->post('saveWithoutValidation') === 'validate') {
                         // Set status to 10 only when the 'submit' button is clicked
@@ -225,14 +246,7 @@ class InboundController extends Controller
                     }
 
                     if ($model->validate() && $model->save()) {
-                        $baseUploadPath = Yii::getAlias('@common/uploads');
-                        $this->saveUploadedFile($model, 'Passport', $baseUploadPath, 'Passport');
-                        $this->saveUploadedFile($model, 'Latest_passport_photo', $baseUploadPath, 'LatestPassportPhoto');
-                        $this->saveUploadedFile($model, 'Latest_certified_academic_transcript', $baseUploadPath, 'LatestCertifiedAcademicTranscript');
-                        $this->saveUploadedFile($model, 'Confirmation_letter', $baseUploadPath, 'ConfirmationLetter');
-                        $this->saveUploadedFile($model, 'Sponsorship_letter', $baseUploadPath, 'SponsorshipLetter');
-                        $this->saveUploadedFile($model, 'Recommendation_letter', $baseUploadPath, 'RecommendationLetter');
-                        $this->saveUploadedFile($model, 'English_certificate', $baseUploadPath, 'EnglishCertificate');
+
                         // Update Courses records
                         foreach ($_POST['CoursesModel'] as $courseData) {
                             $courseModel = InCourses::findOne($courseData['id']);
@@ -364,8 +378,6 @@ class InboundController extends Controller
 
         if (file_exists($filePath)) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-
-
             return ['success' => true];
         } else {
             Yii::$app->response->format = Response::FORMAT_JSON;

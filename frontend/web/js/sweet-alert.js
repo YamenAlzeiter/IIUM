@@ -21,9 +21,8 @@ $(document).ready(function () {
           var downloadLink = document.createElement("a");
           downloadLink.href = link
             .attr("href")
-            .replace("/outbound/download", "/outbound/downloader");
+            .replace("/download", "/downloader");
 
-          downloadLink.download = "filename_to_save_as";
           downloadLink.click();
         }
       },

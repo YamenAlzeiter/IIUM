@@ -483,8 +483,6 @@ class OutboundController extends Controller
 
         if (file_exists($filePath)) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-
-
             return ['success' => true];
         } else {
             Yii::$app->response->format = Response::FORMAT_JSON;

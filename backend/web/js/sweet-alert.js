@@ -119,9 +119,7 @@ $(document).ready(function () {
           downloadLink.href = link
             .attr("href")
             .replace("/download", "/downloader");
-
           console.log(downloadLink);
-          downloadLink.download = "filename_to_save_as";
           downloadLink.click();
         }
       },
