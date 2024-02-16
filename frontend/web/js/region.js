@@ -9,13 +9,23 @@ $(document).ready(function () {
       );
     });
     $.ajax({
-      url: "/outbound/get-nationality",
+      url: "/inbound/get-nationality",
       method: "GET",
       success: function (response) {
         $("#validationCustomCitizenship").html(response);
         if (nationalityModelValue !== "") {
-          $("#validationCustomCitizenship").val(nationalityModelValue).change();
-          console.log("Selected citizenship:", nationalityModelValue);
+          const $select = document.querySelector(
+            "#validationCustomCitizenship",
+          );
+          const $options = Array.from($select.options);
+          const optionToSelect = $options.find(
+            (item) => item.value === nationalityModelValue,
+          );
+          if (optionToSelect) {
+            optionToSelect.selected = true;
+          }
+        } else {
+          console.log("nationalityModelValue is empty or not defined");
         }
       },
       error: function (xhr, status, error) {
@@ -33,7 +43,7 @@ function setupCountryStateDropdown(
 ) {
   // AJAX call for populating countries
   $.ajax({
-    url: "/outbound/get-countries",
+    url: "/inbound/get-countries",
     method: "GET",
     success: function (response) {
       $(countryIdSelector).html(response);
@@ -49,7 +59,7 @@ function setupCountryStateDropdown(
     if (countryId !== "") {
       // AJAX call for populating states based on selected country
       $.ajax({
-        url: "/outbound/get-states",
+        url: "/inbound/get-states",
         method: "POST",
         data: { countryId: countryId },
         success: function (response) {

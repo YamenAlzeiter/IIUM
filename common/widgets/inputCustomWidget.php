@@ -15,8 +15,10 @@ class inputCustomWidget extends Widget
     public $legend;
     public $length;
     public $required;
+    public $disabled;
     public  $minDate;
     public $type;
+
     public $selectOption;
     public function run()
     {
@@ -36,7 +38,7 @@ class inputCustomWidget extends Widget
     <input type="{$this->inputType}" class="form__input form-control"
            id="{$this->id}"
            name="{$this->name}"
-           maxlength="{$this->length}" placeholder=" " value="{$this->value}" {$this->required} {$currentDateAttribute}>
+           maxlength="{$this->length}" placeholder=" " value="{$this->value}" {$this->required} {$this->disabled} {$currentDateAttribute}>
     <label for="{$this->id}" class="form__label">{$this->label}</label>
 </div>
 HTML;

@@ -7,6 +7,7 @@
 
 
 use common\widgets\inputCustomWidget;
+use common\widgets\tableMakerWidget;
 use yii\bootstrap5\ActiveForm;
 
 function isFileRequired($file)
@@ -38,8 +39,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                                 'value' => $model->Gender, 'name' => 'Inbound[Gender]', 'inputType' => 'radio',
                                 'required' => 'required', 'legend' => 'Gender:', 'options' => [
                                     'M' => 'Male', 'F' => 'Female',
-                                ],
-                            ]) ?>
+                                ],]) ?>
                             <?= inputCustomWidget::widget([
                                 'id' => 'relation', 'value' => $model->Relation_ship,
                                 'name' => 'Inbound[Relation_ship]', 'inputType' => 'radio', 'required' => 'required',
@@ -70,7 +70,6 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                             ]) ?>
                         </div>
                     </div>
-
                     <div class = "row mt-2">
                         <div class = "col-md-6">
                             <?= inputCustomWidget::widget([
@@ -88,15 +87,14 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                     <div class = "row mb-2">
                         <div class = "col-md-6">
                             <?= inputCustomWidget::widget([
-                                'value' => $model->Citizenship, 'id' => 'validationCustomCitizenship',
+                                'id' => 'validationCustomCitizenship', 'value' => $model->Citizenship,
                                 'name' => 'Inbound[Citizenship]', 'required' => 'required', 'label' => 'Citizenship',
-                                'inputType' => 'dropdown', 'selectOption' => 'Select your Nationality'
+                                'inputType' => 'dropdown', 'selectOption' => 'Select your Nationality',
                             ]) ?>
                         </div>
-
                         <div class = "col-md-3">
                             <?= inputCustomWidget::widget([
-                                'value' => $model->Country_of_origin, 'id' => 'countryId5',
+                                'id' => 'countryId5',
                                 'name' => 'Inbound[Country_of_origin]', 'required' => 'required',
                                 'label' => 'Country of Origin', 'inputType' => 'dropdown',
                                 'selectOption' => 'Select Country'
@@ -104,13 +102,12 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                         </div>
                         <div class = "col-md-3">
                             <?= inputCustomWidget::widget([
-                                'value' => $model->Country_of_residence, 'id' => 'countryId4',
+                                'id' => 'countryId4',
                                 'name' => 'Inbound[Country_of_residence]', 'required' => 'required',
                                 'label' => 'Country of Residence', 'inputType' => 'dropdown',
                                 'selectOption' => 'Select Country'
                             ]) ?>
                         </div>
-
                     </div>
                     <div class = "row mt-2">
                         <div class = "col-md-6">
@@ -127,20 +124,11 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                         </div>
                     </div>
                     <div class = "form__div">
-			        	<textarea class = "form__input form-control" id = "validationCustomAddress"
-                                  name = "Inbound[Permanent_Address]" maxlength = "255" required
-                                  placeholder = ""><?= $model->Permanent_Address ?></textarea>
+			        	<textarea class = "form__input form-control" id = "validationCustomAddress" name = "Inbound[Permanent_Address]" maxlength = "255" required placeholder = ""><?= $model->Permanent_Address ?></textarea>
                         <label for = "validationCustomAddress" class = "form__label">Permanent Address</label>
                     </div>
                     <div class = "row mt-2">
                         <div class = "col-md-6">
-                            <div class = "form__div">
-                                <input class = "form__input form-control" id = "validationCustomPostcode"
-                                       name = "Inbound[Postcode]"
-                                       value = "<?= $model->Postcode ?>"
-                                       required placeholder = " ">
-                                <label for = "validationCustomPostcode" class = "form__label">Postal Code</label>
-                            </div>
                             <?= inputCustomWidget::widget([
                                 'value' => $model->Postcode, 'name' => 'Inbound[Postcode]', 'length' => '10',
                                 'required' => 'required', 'label' => 'Post Code', 'inputType' => 'text',
@@ -156,12 +144,8 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                     </div>
                 </div>
                 <div class = "d-flex justify-content-between">
-                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button"
-                            step_number = "2">Next Step
-                    </button>
-                    <button class = "btn btn-outline-dark fs-5" type = "button" name = "saveWithoutValidation"
-                            onclick = "submitForm('noValidate')"><i class = "ti ti-device-floppy"></i> Save
-                    </button>
+                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "2">Next Step</button>
+                    <button class = "btn btn-outline-dark fs-5" type = "button" name = "saveWithoutValidation" onclick = "submitForm('noValidate')"><i class = "ti ti-device-floppy"></i> Save</button>
                 </div>
             </div>
         </div>
@@ -201,9 +185,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                     <div class = "row mt-2">
                         <div class = "col-md-6">
                             <div class = "form__div">
-                                <textarea class = "form__input form-control" id = "validationCustomEmHomeAddress"
-                                          name = "Inbound[Emergency_homeAddress]" maxlength = "255" required
-                                          placeholder = " "><?= $model->Emergency_homeAddress ?></textarea>
+                                <textarea class = "form__input form-control" id = "validationCustomEmHomeAddress" name = "Inbound[Emergency_homeAddress]" maxlength = "255" required placeholder = " "><?= $model->Emergency_homeAddress ?></textarea>
                                 <label for = "validationCustomEmHomeAddress" class = "form__label">Home Address</label>
                             </div>
                         </div>
@@ -216,9 +198,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                         </div>
                         <div class = "col-md-3">
                             <div class = "form__div">
-                                <select class = "form__input form-control countries" id = "countryId2"
-                                        name = "Inbound[Emergency_country]"
-                                        required>
+                                <select class = "form__input form-control countries" id = "countryId2" name = "Inbound[Emergency_country]" required>
                                     <option value = "">Select Country</option>
                                 </select>
                                 <label for = "validationCustomEmergencyCountry" class = "form__label">Country</label>
@@ -228,16 +208,10 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                 </div>
                 <div class = "d-flex justify-content-between">
                     <div>
-                        <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "1">
-                            Back
-                        </button>
-                        <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button"
-                                step_number = "3">Next Step
-                        </button>
+                        <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "1">Back</button>
+                        <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "3">Next Step</button>
                     </div>
-                    <button class = "btn btn-outline-dark fs-5" type = "button" name = "saveWithoutValidation"
-                            onclick = "submitForm('noValidate')"><i class = "ti ti-device-floppy"></i> Save
-                    </button>
+                        <button class = "btn btn-outline-dark fs-5" type = "button" name = "saveWithoutValidation" onclick = "submitForm('noValidate')"><i class = "ti ti-device-floppy"></i> Save</button>
                 </div>
             </div>
         </div>
@@ -375,16 +349,10 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                 </div>
                 <div class = "d-flex justify-content-between">
                     <div>
-                        <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "2">
-                            Back
-                        </button>
-                        <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button"
-                                step_number = "4">Next Step
-                        </button>
+                        <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "2">Back</button>
+                        <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "4">Next Step</button>
                     </div>
-                    <button class = "btn btn-outline-dark fs-5" type = "button" name = "saveWithoutValidation"
-                            onclick = "submitForm('noValidate')"><i class = "ti ti-device-floppy"></i> Save
-                    </button>
+                        <button class = "btn btn-outline-dark fs-5" type = "button" name = "saveWithoutValidation" onclick = "submitForm('noValidate')"><i class = "ti ti-device-floppy"></i> Save</button>
                 </div>
             </div>
         </div>
@@ -468,61 +436,21 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                         <div class = "row" id = "tableContainer">
                             <div class = "col">
                                 <h4 class = "text-center mb-4">Courses offered by host University</h4>
-                                <table class = "table">
-                                    <thead>
-                                    <tr>
-                                        <th style = "width: 30%">Course Code</th>
-                                        <th style = "width: 50%">Course Name</th>
-                                        <th style = "width: 20%">Credit Hours</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <?php for ($i = 0; $i < 7; $i++) : ?>
-                                        <tr>
-                                            <td class = "py-2 px-1">
-                                                <input type = "hidden" name = "CoursesModel[<?= $i ?>][id]"
-                                                       value = "<?= isset($coursesData[$i]['id']) ? $coursesData[$i]['id'] : '' ?>">
-                                                <input type = "text" class = "form-control"
-                                                       name = "CoursesModel[<?= $i ?>][course_code]"
-                                                       placeholder = "Course Code"
-                                                       value = "<?= isset($coursesData[$i]['course_code']) ? $coursesData[$i]['course_code'] : '' ?>"
-                                                >
-                                            </td>
-                                            <td class = "py-2 px-1">
-                                                <input type = "text" class = "form-control"
-                                                       name = "CoursesModel[<?= $i ?>][course_name]"
-                                                       placeholder = "Course Name"
-                                                       value = "<?= isset($coursesData[$i]['course_name']) ? $coursesData[$i]['course_name'] : '' ?>"
-                                                >
-                                            </td>
-                                            <td class = "py-2 px-1">
-                                                <input type = "text" class = "form-control"
-                                                       name = "CoursesModel[<?= $i ?>][credit_hours]"
-                                                       placeholder = "Credit Hours"
-                                                       value = "<?= isset($coursesData[$i]['credit_hours']) ? $coursesData[$i]['credit_hours'] : '' ?>"
-                                                >
-                                            </td>
-                                        </tr>
-                                    <?php endfor; ?>
-
-                                    </tbody>
-                                </table>
+                                <?= tableMakerWidget::widget([
+                                    'tableId' => 'your_table_id',
+                                    'tableData' => $coursesData, // Pass your data array here
+                                    'modelName' => 'CoursesModel', // Pass your model name here
+                                ]) ?>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class = "d-flex justify-content-between">
                     <div>
-                        <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "3">
-                            Back
-                        </button>
-                        <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button"
-                                step_number = "5">Next Step
-                        </button>
+                        <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "3">Back</button>
+                        <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "5">Next Step</button>
                     </div>
-                    <button class = "btn btn-outline-dark fs-5" type = "button" name = "saveWithoutValidation"
-                            onclick = "submitForm('noValidate')"><i class = "ti ti-device-floppy"></i> Save
-                    </button>
+                        <button class = "btn btn-outline-dark fs-5" type = "button" name = "saveWithoutValidation" onclick = "submitForm('noValidate')"><i class = "ti ti-device-floppy"></i> Save</button>
                 </div>
             </div>
         </div>
@@ -568,34 +496,33 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                     </div>
                     <h4 class = "text-capitalize mt-4">Financial Details</h4>
                     <?= inputCustomWidget::widget([
-                        'value' => $model->Financial_funding,
-                        'name' => 'Inbound[Financial_funding]', 'inputType' => 'radio',
-                        'required' => 'required', 'legend' => 'Accommodation on Campus', 'options' => [
+                        'value' => $model->Financial_funding, 'name' => 'Inbound[Financial_funding]',
+                        'inputType' => 'radio', 'required' => 'required', 'legend' => 'Accommodation on Campus',
+                        'options' => [
                             'Self-sponsor' => 'Self-sponsor', 'Scholarship' => 'Scholarship',
                         ],
                     ]) ?>
                     <div class = "row mt-2" id = "ScholarshipSponser">
                         <div class = "col-md-6">
                             <?= inputCustomWidget::widget([
-                                'value' => $model->Sponsor_name,
-                                'name' => 'Inbound[Sponsor_name]', 'length' => '100', 'id' => 'validationCustomSponsor_name',
-                                'label' => 'Sponsor Name', 'inputType' => 'text', 'required' => 'required'
+                                'value' => $model->Sponsor_name, 'name' => 'Inbound[Sponsor_name]', 'length' => '100',
+                                'id' => 'validationCustomSponsor_name', 'label' => 'Sponsor Name',
+                                'inputType' => 'text', 'required' => 'required'
                             ]) ?>
                         </div>
                         <div class = "col-md-6">
                             <?= inputCustomWidget::widget([
                                 'value' => $model->Financial_funding_sponsor_amount,
-                                'name' => 'Inbound[Financial_funding_sponsor_amount]', 'length' => '100', 'id' => 'validationCustomFinancial_funding_sponsor_amount',
-                                'label' => 'Amount', 'inputType' => 'text', 'required' => 'required'
+                                'name' => 'Inbound[Financial_funding_sponsor_amount]', 'length' => '100',
+                                'id' => 'validationCustomFinancial_funding_sponsor_amount', 'label' => 'Amount',
+                                'inputType' => 'text', 'required' => 'required'
                             ]) ?>
                         </div>
                     </div>
                     <div class = "row mt-2" id = "otherFunding">
                         <div class = "col">
                             <div class = "form__div">
-    <textarea class = "form__input form-control" id = "Financial_funding_other"
-              name = "Inbound[Financial_funding_other]"
-              maxlength = "255" required placeholder = " "><?= $model->Financial_funding_other ?></textarea>
+                                <textarea class = "form__input form-control" id = "Financial_funding_other" name = "Inbound[Financial_funding_other]" maxlength = "255" required placeholder = " "><?= $model->Financial_funding_other ?></textarea>
                                 <label for = "Financial_funding_other" class = "form__label">Please Specify</label>
                             </div>
                         </div>
@@ -605,16 +532,10 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                 <input type = "hidden" name = "Inbound[Status]" id = "statusInput" value = "<?= $model->Status ?>">
                 <div class = "d-flex justify-content-between">
                     <div>
-                        <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "4">
-                            Back
-                        </button>
-                        <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button"
-                                step_number = "6">Next Step
-                        </button>
+                        <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "4">Back</button>
+                        <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "6">Next Step</button>
                     </div>
-                    <button class = "btn btn-outline-dark fs-5" type = "button" name = "saveWithoutValidation"
-                            onclick = "submitForm('noValidate')"><i class = "ti ti-device-floppy"></i> Save
-                    </button>
+                        <button class = "btn btn-outline-dark fs-5" type = "button" name = "saveWithoutValidation" onclick = "submitForm('noValidate')"><i class = "ti ti-device-floppy"></i> Save</button>
                 </div>
     </section>
     <!-- Step 6 input fields -->
@@ -622,121 +543,58 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
         <div class = "card w-100">
             <div class = "card-body">
                 <div class = "container pt-2" style = "height: 80vh; overflow-y: auto;">
-                    <p class = "font-monospace">I hereby certify that my home university has recommended me to join the
-                                                proposed
-                                                study program at
-                                                International Islamic University Malaysia (IIUM) as per duration stated.
-                                                The
-                                                following is the officer
-                                                that approved my application from my home university.</p>
-
+                    <p class = "font-monospace">I hereby certify that my home university has recommended me to join the proposed study program at International Islamic University Malaysia (IIUM) as per duration stated. The following is the officer that approved my application from my home university.</p>
                     <div class = "row align-items-center mb-2">
                         <div class = "col-md-6">
-                            <div class = "form__div">
-                                <input type = "text" class = "form__input form-control"
-                                       id = "validationCustomApproval_university_person_name"
-                                       name = "Inbound[Approval_university_person_name]"
-                                       maxlength = "255" placeholder = " "
-                                       value = "<?= $model->Approval_university_person_name ?>" required>
-                                <label for = "validationCustomApproval_university_person_name"
-                                       class = "form__label">Name</label>
-                            </div>
+                            <?= inputCustomWidget::widget([
+                                'value' => $model->Approval_university_person_name,
+                                'name' => 'Inbound[Approval_university_person_name]', 'length' => '512',
+                                'label' => 'Name', 'inputType' => 'text', 'required' => 'required'
+                            ]) ?>
                         </div>
                         <div class = "col-md-6">
-                            <div class = "form__div">
-                                <input type = "text" class = "form__input form-control"
-                                       id = "validationCustomApproval_person_position"
-                                       name = "Inbound[Approval_person_position]"
-                                       maxlength = "255" placeholder = " "
-                                       value = "<?= $model->Approval_person_position ?>"
-                                       required>
-                                <label for = "validationCustomApproval_person_position"
-                                       class = "form__label">Position</label>
-                            </div>
+                            <?= inputCustomWidget::widget([
+                                'value' => $model->Approval_person_position,
+                                'name' => 'Inbound[Approval_person_position]', 'length' => '512', 'label' => 'Position',
+                                'inputType' => 'text', 'required' => 'required'
+                            ]) ?>
                         </div>
                     </div>
 
                     <div class = "row mt-2">
                         <div class = "col-md-6">
-                            <div class = "form__div">
-                                <input type = "tel" class = "form__input form-control"
-                                       id = "validationCustomApproval_person_mobile_number"
-                                       name = "Inbound[Approval_person_mobile_number]"
-                                       maxlength = "255" placeholder = " "
-                                       value = "<?= $model->Approval_person_mobile_number ?>" required>
-                                <label for = "validationCustomApproval_person_mobile_number" class = "form__label">Mobile
-                                                                                                                   Number</label>
-                            </div>
+                            <?= inputCustomWidget::widget([
+                                'value' => $model->Approval_person_mobile_number,
+                                'name' => 'Inbound[Approval_person_mobile_number]', 'length' => '16',
+                                'label' => 'Mobile Number', 'inputType' => 'text', 'required' => 'required'
+                            ]) ?>
                         </div>
                         <div class = "col-md-6">
-                            <div class = "form__div">
-                                <input type = "email" class = "form__input form-control"
-                                       id = "validationCustomApproval_person_email"
-                                       name = "Inbound[Approval_person_email]"
-                                       maxlength = "100" placeholder = " "
-                                       value = "<?= $model->Approval_person_email ?>"
-                                       required>
-                                <label for = "validationCustomApproval_person_email" class = "form__label">Email
-                                                                                                           Address</label>
-                            </div>
+                            <?= inputCustomWidget::widget([
+                                'value' => $model->Approval_person_email, 'name' => 'Inbound[Approval_person_email]',
+                                'length' => '512', 'label' => 'Email Address', 'inputType' => 'email',
+                                'required' => 'required'
+                            ]) ?>
                         </div>
                     </div>
                     <div class = "row">
                         <div class = "col">
-                            <div class = "form__div">
-                                <input type = "date" class = "form__input form-control" name = "Inbound[Approval_date]"
-                                       id = "Approval_date"
-                                       placeholder = " "
-                                       value = "<?= $model->Approval_date ?>" required>
-                                <label for = "Approval_date" class = "form__label">Approval Date</label>
-                            </div>
+                            <?= inputCustomWidget::widget([
+                                'value' => $model->Approval_date, 'name' => 'Inbound[Approval_date]',
+                                'label' => 'Approval Date', 'inputType' => 'date', 'required' => 'required'
+                            ]) ?>
                         </div>
                     </div>
                     <?php renderFileField($form, $model, 'Recommendation_letter', "RecommendationLetter"); ?>
-
-
-                    <p class = "font-monospace">I declare that all the information provided in this application from is
-                                                true
-                                                and
-                                                complete in every
-                                                detail. I acknowledge that International Islamic University Malaysia
-                                                (IIUM)
-                                                reserves the right to vary or
-                                                reverse any decision regarding admission or enrolment made on the basis
-                                                of
-                                                incorrect or incomplete
-                                                information. I am aware of the conditions relating to my application and
-                                                admission and agree to pay all
-                                                fees for which I am liable to.</p>
-
-                    <div class = "form-check">
-                        <input type = "checkbox" class = "form-check-input" id = "declaration-checkbox" required>
-                        <label class = "form-check-label fw-bolder" for = "declaration-checkbox">I agree to the terms
-                                                                                                 stated
-                                                                                                 above.</label>
-                    </div>
                 </div>
 
                 <div class = "d-flex justify-content-between">
                     <div>
-                        <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "5">
-                            Back
-                        </button>
-                        <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button"
-                                step_number = "7" id = "submitButton" disabled>Next Step
-                        </button>
+                        <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "5">Back</button>
+                        <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "7">Next Step</button>
                     </div>
-                    <button class = "btn btn-outline-dark fs-5" type = "button" name = "saveWithoutValidation"
-                            onclick = "submitForm('noValidate')"><i class = "ti ti-device-floppy"></i> Save
-                    </button>
+                        <button class = "btn btn-outline-dark fs-5" type = "button" name = "saveWithoutValidation" onclick = "submitForm('noValidate')"><i class = "ti ti-device-floppy"></i> Save</button>
                 </div>
-                <script>
-                    document.addEventListener('DOMContentLoaded', function () {
-                        document.getElementById('declaration-checkbox').addEventListener('change', function () {
-                            document.getElementById('submitButton').disabled = !this.checked;
-                        });
-                    });
-                </script>
             </div>
         </div>
     </section>
@@ -746,24 +604,20 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                 <div class = "container pt-2" style = "height: 80vh; overflow-y: auto;">
                     <?php renderFileField($form, $model, 'Passport', "Passport"); ?>
                     <?php renderFileField($form, $model, 'Latest_passport_photo', "LatestPassportPhoto"); ?>
-                    <?php renderFileField($form, $model, 'Latest_certified_academic_transcript',
-                        "LatestCertifiedAcademicTranscript"); ?>
+                    <?php renderFileField($form, $model, 'Latest_certified_academic_transcript', "LatestCertifiedAcademicTranscript"); ?>
                     <?php renderFileField($form, $model, 'Confirmation_letter', "ConfirmationLetter"); ?>
                     <?php renderFileField($form, $model, 'Sponsorship_letter', "SponsorshipLetter"); ?>
+                    <p class = "font-monospace">I declare that all the information provided in this application from is true and complete in every detail. I acknowledge that International Islamic University Malaysia (IIUM) reserves the right to vary or reverse any decision regarding admission or enrolment made on the basis of incorrect or incomplete information. I am aware of the conditions relating to my application and admission and agree to pay all fees for which I am liable to.</p>
+                    <div class = "form-check">
+                        <input type = "checkbox" class = "form-check-input" id = "declaration-checkbox" required>
+                        <label class = "form-check-label fw-bolder" for = "declaration-checkbox">I agree to the terms stated above.</label>
+                    </div>
                 </div>
-
                 <div class = "d-flex justify-content-between">
-                    <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "6">Back
-                    </button>
+                    <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "6">Back</button>
                     <div>
-                        <button class = "btn btn-outline-dark fs-5" type = "button" name = "saveWithoutValidation"
-                                onclick = "submitForm('noValidate')"><i class = "ti ti-device-floppy"></i> Save
-                        </button>
-                        <button class = "btn btn-dark submit-btn px-3 fs-5" type = "button"
-                                name = "saveWithoutValidation"
-                                value = "validate" onclick = "submitForm('validate')"><i class = "ti ti-send"></i>
-                            Submit
-                        </button>
+                        <button class = "btn btn-outline-dark fs-5" type = "button" name = "saveWithoutValidation" onclick = "submitForm('noValidate')"><i class = "ti ti-device-floppy"></i> Save</button>
+                        <button class = "btn btn-dark submit-btn px-3 fs-5" type = "button" name = "saveWithoutValidation" value = "validate" onclick = "submitForm('validate')" id = "submitButton" disabled><i class = "ti ti-send"></i>Submit</button>
                     </div>
                 </div>
             </div>
@@ -771,8 +625,15 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
     </section>
 </div>
 <?php ActiveForm::end(); ?>
-<script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('declaration-checkbox').addEventListener('change', function () {
+            document.getElementById('submitButton').disabled = !this.checked;
+        });
+    });
+</script>
+<script>
     var nationalityModelValue = "<?= htmlspecialchars($model->Citizenship) ?>";
     var dropdownData = [
         {

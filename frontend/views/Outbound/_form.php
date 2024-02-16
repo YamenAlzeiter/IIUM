@@ -1,5 +1,7 @@
 <?php
 
+use common\widgets\inputCustomWidget;
+use common\widgets\tableMakerWidget;
 use yii\bootstrap5\ActiveForm;
 
 
@@ -10,6 +12,9 @@ function isFileRequired($file)
 {
     return $file === null;
 }
+
+$kcdio = \yii\helpers\ArrayHelper::map(\common\models\Kcdio::find()->all(), 'kcdio', 'kcdio');
+$kcdio['OTHERS'] = 'OTHERS';
 
 require Yii::getAlias('@common').'/Helpers/helper.php';
 //require_once(Yii::$app->basePath . '/common/Helpers/helper.php');
@@ -29,167 +34,120 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                 <div class = "row mb-2">
                     <div class = "col-md-6">
                         <div class = "form__div">
-                            <input type = "text" class = "form__input form-control" id = "validationCustom01"
-                                   name = "Outbound[Matric_Number]"
-                                   maxlength = "255" placeholder = " "
-                                   value = "<?= Yii::$app->user->identity->matric_number ?>" disabled>
+                            <?= inputCustomWidget::widget([
+                                'value' => $model->Matric_Number, 'name' => 'Outbound[Matric_Number]', 'label' => 'Matric Number', 'inputType' => 'text',
+                                'length' => '255', 'required' => 'required', 'disabled' => 'disabled'
+                            ]) ?>
                             <input type = "hidden" name = "Outbound[Matric_Number]"
                                    value = "<?= Yii::$app->user->identity->matric_number ?>">
-                            <label for = "validationCustomMatric" class = "form__label">Matric Number</label>
                         </div>
                     </div>
                     <div class = "col-md-6">
-                        <div class = "form__div">
-
-                            <select class = "form__input form-control countries" id = "validationCustomCitizenship"
-                                    name = "Outbound[Citizenship]" required>
-                                <option value = "">Select Nationality</option>
-                            </select>
-                            <label for = "validationCustomCitizenship" class = "form__label">Citizenship</label>
-                        </div>
+                        <?= inputCustomWidget::widget([
+                            'id' => 'validationCustomCitizenship', 'value' => $model->Citizenship,
+                            'name' => 'Outbound[Citizenship]', 'required' => 'required', 'label' => 'Citizenship',
+                            'inputType' => 'dropdown', 'selectOption' => 'Select your Nationality',
+                        ]) ?>
                     </div>
                 </div>
-                <p id="validationCustomCitizenship">hello </p>
                 <div class = "form__div">
-                    <input type = "text" class = "form__input form-control" id = "validationCustomName"
-                           name = "Outbound[Name]"
-                           maxlength = "255" placeholder = " "
-                           value = "<?= $model->Name ? $model->Name : Yii::$app->user->identity->username ?>" required>
-                    <label for = "validationCustomName" class = "form__label">Name</label>
+                    <?= inputCustomWidget::widget([
+                        'value' => $model->Name, 'name' => 'Outbound[Name]', 'label' => 'Name', 'inputType' => 'text',
+                        'length' => '255', 'required' => 'required',
+                    ]) ?>
                 </div>
                 <div class = "row align-items-center">
-
-
-                    <div class = "row-md-6 mb-2">
-                        <legend class = "col-form-label col-sm-1 pt-0">Gender</legend>
-                        <div class = "form-check form-check-inline">
-                            <input id = "gender_male" type = "radio" name = "Outbound[Gender]" value = "M"
-                                   class = "form-check-input" <?= $model->Gender === 'M' ? 'checked' : '' ?> required>
-                            <label for = "gender_male" class = "form-check-label">Male</label>
-                        </div>
-                        <div class = "form-check form-check-inline pl-3">
-                            <input id = "gender_female" type = "radio" name = "Outbound[Gender]" value = "F"
-                                   class = "form-check-input" <?= $model->Gender === 'F' ? 'checked' : '' ?>>
-                            <label for = "gender_female" class = "form-check-label">Female</label>
-                        </div>
-                    </div>
-
+                    <?= inputCustomWidget::widget([
+                        'value' => $model->Gender, 'name' => 'Outbound[Gender]', 'inputType' => 'radio',
+                        'required' => 'required', 'legend' => 'Gender:', 'options' => [
+                            'M' => 'Male', 'F' => 'Female',
+                        ],]) ?>
                     <div class = "col">
-                        <div class = "form__div">
-                            <input type = "date" class = "form__input form-control" name = "Outbound[Date_of_Birth]"
-                                   placeholder = " "
-                                   value = "<?= $model->Date_of_Birth ?>" required>
-                            <label for = "validationCustomPassport" class = "form__label">Date of Birth</label>
-                        </div>
+                        <?= inputCustomWidget::widget([
+                            'value' => $model->Date_of_Birth, 'name' => 'Outbound[Date_of_Birth]', 'label' => 'Date of Birth', 'inputType' => 'date',
+                            'required' => 'required',
+                        ]) ?>
                     </div>
                 </div>
                 <div class = "row">
                     <div class = "col">
-                        <div class = "form__div">
-                            <input type = "text" class = "form__input form-control" id = "validationCustomPassport"
-                                   name = "Outbound[Passport_Number]"
-                                   maxlength = "255" placeholder = " "
-                                   value = "<?= $model->Passport_Number ?>" required>
-                            <label for = "validationCustomPassport" class = "form__label">Passport Number</label>
-                        </div>
+                        <?= inputCustomWidget::widget([
+                            'value' => $model->Passport_Number, 'name' => 'Outbound[Passport_Number]', 'label' => 'Passport Number', 'inputType' => 'text',
+                            'length' => '15', 'required' => 'required',
+                        ]) ?>
                     </div>
                     <div class = "col">
-                        <div class = "form__div">
-                            <input type = "date" class = "form__input form-control"
-                                   name = "Outbound[Passport_Expiration]"
-                                   placeholder = " "
-                                   value = "<?= $model->Passport_Expiration ?>" required>
-                            <label for = "validationCustomPassport" class = "form__label">Expiration Date</label>
-                        </div>
+                        <?= inputCustomWidget::widget([
+                            'value' => $model->Passport_Expiration, 'name' => 'Outbound[Passport_Expiration]', 'label' => 'Expiration Date', 'inputType' => 'date',
+                            'required' => 'required',
+                        ]) ?>
                     </div>
                 </div>
                 <div class = "row mt-2">
                     <div class = "col-md-6">
-                        <div class = "form__div">
-                            <input type = "tel" class = "form__input form-control" id = "validationCustomMobile"
-                                   name = "Outbound[Mobile_Number]"
-                                   maxlength = "255" placeholder = " " value = "<?= $model->Mobile_Number ?>" required>
-                            <label for = "validationCustomMobile" class = "form__label">Mobile Number</label>
-                        </div>
+                        <?= inputCustomWidget::widget([
+                            'value' => $model->Mobile_Number, 'name' => 'Outbound[Mobile_Number]', 'label' => 'Mobile Number', 'inputType' => 'text',
+                            'length' => '15', 'required' => 'required',
+                        ]) ?>
                     </div>
                     <div class = "col-md-6">
-                        <div class = "form__div">
-                            <input type = "email" class = "form__input form-control" id = "validationCustomEmail"
-                                   name = "Outbound[Email]"
-                                   maxlength = "100" placeholder = " " value = "<?= $model->Email ?>" required>
-                            <label for = "validationCustomEmail" class = "form__label">Email</label>
-                        </div>
+                        <?= inputCustomWidget::widget([
+                            'value' => $model->Email, 'name' => 'Outbound[Email]', 'label' => 'Email', 'inputType' => 'email',
+                            'length' => '512', 'required' => 'required',
+                        ]) ?>
                     </div>
                 </div>
-
                 <div class = "form__div">
-    <textarea class = "form__input form-control" id = "validationCustomAddress" name = "Outbound[Permanent_Address]"
-              maxlength = "255" placeholder = " " required><?= $model->Permanent_Address ?></textarea>
+                    <textarea class = "form__input form-control" id = "validationCustomAddress" name = "Outbound[Permanent_Address]" maxlength = "255" placeholder = " " required><?= $model->Permanent_Address ?></textarea>
                     <label for = "validationCustomAddress" class = "form__label">Permanent Address</label>
                 </div>
-
                 <div class = "row mt-2">
                     <div class = "col-md-4">
-                        <div class = "form__div">
-                            <input class = "form__input form-control" id = "validationCustomPostcode"
-                                   name = "Outbound[Postcode]"
-                                   value = "<?= $model->Postcode ?>"
-                                   placeholder = " " required>
-                            <label for = "validationCustomPostcode" class = "form__label">Post Code</label>
-                        </div>
+                        <?= inputCustomWidget::widget([
+                            'value' => $model->Postcode, 'name' => 'Outbound[Postcode]', 'label' => 'Post Code', 'inputType' => 'text',
+                            'length' => '10', 'required' => 'required',
+                        ]) ?>
                     </div>
                     <div class = "col-md-4">
-                        <div class = "form__div">
-                            <select class = "form__input form-control countries" id = "countryId5"
-                                    name = "Outbound[Country]"
-                            >
-                                <option value = "">Select Country</option>
-                            </select>
-                        </div>
+                        <?= inputCustomWidget::widget([
+                            'id' => 'countryId5', 'value' => $model->Country,
+                            'name' => 'Outbound[Country]', 'required' => 'required', 'label' => 'Country',
+                            'inputType' => 'dropdown', 'selectOption' => 'Select Country',
+                        ]) ?>
                     </div>
                     <div class = "col-md-4">
-                        <div class = "form__div">
-                            <select class = "form__input form-control states" id = "stateId1" name = "Outbound[State]"
-                                    value = "<?= $model->State ?>" required>
-                                <option value = "">Select State</option>
-                            </select>
-                        </div>
+                        <?= inputCustomWidget::widget([
+                            'id' => 'stateId1', 'value' => $model->State,
+                            'name' => 'Outbound[State]', 'required' => 'required', 'label' => 'State',
+                            'inputType' => 'dropdown', 'selectOption' => 'Select State',
+                        ]) ?>
                     </div>
-
                 </div>
                 <div class = "form__div">
-    <textarea class = "form__input form-control" id = "validationCustomMailingAddress"
-              name = "Outbound[Mailing_Address]"
-              maxlength = "255" placeholder = " " required><?= $model->Mailing_Address ?></textarea>
+                    <textarea class = "form__input form-control" id = "validationCustomMailingAddress" name = "Outbound[Mailing_Address]" maxlength = "255" placeholder = " " required><?= $model->Mailing_Address ?></textarea>
                     <label for = "validationCustomMailingAddress" class = "form__label">Mailing Address</label>
                 </div>
 
                 <div class = "row mt-2">
                     <div class = "col-md-4">
-                        <div class = "form__div">
-                            <input class = "form__input form-control" id = "validationCustomMailingPostcode"
-                                   value = '<?= $model->Mailing_Postcode ?>' name = "Outbound[Mailing_Postcode]"
-                                   maxlength = "255"
-                                   placeholder = " " required>
-                            <label for = "validationCustomMailingPostcode" class = "form__label">Mailing Post
-                                                                                                 Code</label>
-                        </div>
+                        <?= inputCustomWidget::widget([
+                            'value' => $model->Mailing_Postcode, 'name' => 'Outbound[Mailing_Postcode]', 'label' => 'Mailing Post Code', 'inputType' => 'text',
+                            'length' => '10', 'required' => 'required',
+                        ]) ?>
                     </div>
                     <div class = "col-md-4">
-                        <div class = "form__div">
-                            <select class = "form__input form-control countries" id = "countryId4"
-                                    name = "Outbound[Mailing_Country]" required>
-                                <option value = "">Select Country</option>
-                            </select>
-                        </div>
+                        <?= inputCustomWidget::widget([
+                            'id' => 'countryId4', 'value' => $model->Mailing_Country,
+                            'name' => 'Outbound[Mailing_Country]', 'required' => 'required', 'label' => 'Mailing Country',
+                            'inputType' => 'dropdown', 'selectOption' => 'Select Country',
+                        ]) ?>
                     </div>
                     <div class = "col-md-4">
-                        <div class = "form__div">
-                            <select class = "form__input form-control states" id = "stateId2"
-                                    name = "Outbound[Mailing_State]" required>
-                                <option value = "">Select State</option>
-                            </select>
-                        </div>
+                        <?= inputCustomWidget::widget([
+                            'id' => 'stateId2', 'value' => $model->Mailing_State,
+                            'name' => 'Outbound[Mailing_State]', 'required' => 'required', 'label' => 'Mailing State',
+                            'inputType' => 'dropdown', 'selectOption' => 'Select State',
+                        ]) ?>
                     </div>
                 </div>
             </div>
@@ -209,81 +167,63 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
     <div class = "card w-100">
         <div class = "card-body">
             <div class = "container pt-2" style = "height: 80vh; overflow-y: auto;">
-                <div class = "row mb-2">
-                    <div class = "col-md-6">
-                        <div class = "form__div">
-                            <input type = "text" class = "form__input form-control" id = "validationCustomEmName"
-                                   name = "Outbound[Emergency_name]"
-                                   maxlength = "255" placeholder = " " value = "<?= $model->Emergency_name ?>" required>
-                            <label for = "validationCustomEmName" class = "form__label">Name</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class = "row mb-2">
-                    <div class = "col-md-6">
-                        <div class = "form__div">
-                            <input type = "text" class = "form__input form-control"
-                                   id = "validationCustomEmRelationship"
-                                   name = "Outbound[Emergency_relationship]"
-                                   maxlength = "255" placeholder = " " value = "<?= $model->Emergency_relationship ?>"
-                                   required>
-                            <label for = "validationCustomEmRelationship" class = "form__label">Relationship</label>
-                        </div>
-                    </div>
-                    <div class = "col-md-6">
-                        <div class = "form__div">
-                            <input type = "text" class = "form__input form-control" id = "validationCustomEmPhoneNumber"
-                                   name = "Outbound[Emergency_phoneNumber]"
-                                   maxlength = "255" placeholder = " " value = "<?= $model->Emergency_phoneNumber ?>"
-                                   required>
-                            <label for = "validationCustomEmPhoneNumber" class = "form__label">Phone Number</label>
-                        </div>
-                    </div>
-                    <div class = "col-md-6">
-                        <div class = "form__div">
-
-                            <input type = "email" class = "form__input form-control" id = "validationCustomEmEmail"
-                                   name = "Outbound[Emergency_email]"
-                                   maxlength = "255" placeholder = " " value = "<?= $model->Emergency_email ?>"
-                                   required>
-                            <label for = "validationCustomEmEmail" class = "form__label">Email</label>
-                        </div>
-                    </div>
-                </div>
-
                 <div class = "form__div">
-    <textarea class = "form__input form-control" id = "validationCustomEmHomeAddress"
-              name = "Outbound[Emergency_homeAddress]"
-              maxlength = "255" placeholder = " " required><?= $model->Emergency_homeAddress ?></textarea>
-                    <label for = "validationCustomEmHomeAddress" class = "form__label">Home Address</label>
+                    <?= inputCustomWidget::widget([
+                        'value' => $model->Emergency_name, 'name' => 'Outbound[Emergency_name]', 'label' => 'Name', 'inputType' => 'text',
+                        'length' => '512', 'required' => 'required',
+                    ]) ?>
                 </div>
+                <div class = "row mb-2">
+                    <div class = "col-md-6">
+                        <?= inputCustomWidget::widget([
+                            'value' => $model->Emergency_relationship, 'name' => 'Outbound[Emergency_relationship]', 'label' => 'Relationship', 'inputType' => 'text',
+                            'length' => '512', 'required' => 'required',
+                        ]) ?>
+                    </div>
+                    <div class = "col-md-6">
+                        <?= inputCustomWidget::widget([
+                            'value' => $model->Emergency_phoneNumber, 'name' => 'Outbound[Emergency_phoneNumber]', 'label' => 'Phone Number', 'inputType' => 'text',
+                            'length' => '15', 'required' => 'required',
+                        ]) ?>
+                    </div>
+                    <div class = "col-md-6">
+                        <div class = "form__div">
+                        <?= inputCustomWidget::widget([
+                            'value' => $model->Emergency_email, 'name' => 'Outbound[Emergency_email]', 'label' => 'Email', 'inputType' => 'email',
+                            'length' => '512', 'required' => 'required',
+                        ]) ?>
+                    </div>
+                </div
 
+                    <div class="col">
+                        <div class = "form__div">
+                            <textarea class = "form__input form-control" id = "validationCustomEmHomeAddress"
+                                      name = "Outbound[Emergency_homeAddress]" maxlength = "255" placeholder = " "
+                                      required><?= $model->Emergency_homeAddress ?></textarea>
+                            <label for = "validationCustomEmHomeAddress" class = "form__label">Home Address</label>
+                        </div>
+                    </div>
+                    
                 <div class = "row mt-2">
                     <div class = "col-md-3">
-                        <div class = "form__div">
-                            <input class = "form__input form-control" id = "validationCustomEmPostCode"
-                                   name = "Outbound[Emergency_postCode]"
-                                   maxlength = "255" placeholder = " " value = "<?= $model->Emergency_postCode ?>"
-                                   required>
-                            <label for = "validationCustomEmPostCode" class = "form__label">Post Code</label>
-                        </div>
+                        <?= inputCustomWidget::widget([
+                            'value' => $model->Emergency_postCode, 'name' => 'Outbound[Emergency_postCode]', 'label' => 'Post Code', 'inputType' => 'text',
+                            'length' => '10', 'required' => 'required',
+                        ]) ?>
                     </div>
                     <div class = "col-md-3">
-                        <div class = "form__div">
-                            <select class = "form__input form-control countries" id = "countryId3"
-                                    name = "Outbound[Emergency_country]" required>
-                                <option value = "">Select Country</option>
-                            </select>
-                        </div>
+                        <?= inputCustomWidget::widget([
+                            'id' => 'countryId3', 'value' => $model->Emergency_country,
+                            'name' => 'Outbound[Emergency_country]', 'required' => 'required', 'label' => 'Country',
+                            'inputType' => 'dropdown', 'selectOption' => 'Select Country',
+                        ]) ?>
                     </div>
                     <div class = "col-md-3">
-                        <div class = "form__div">
-                            <select class = "form__input form-control states" id = "stateId3"
-                                    name = "Outbound[Emergency_tate]" required>
-                                <option value = "">Select State</option>
-                            </select>
-                        </div>
+                        <?= inputCustomWidget::widget([
+                            'id' => 'stateId3', 'value' => $model->Emergency_tate,
+                            'name' => 'Outbound[Emergency_tate]', 'required' => 'required', 'label' => 'State',
+                            'inputType' => 'dropdown', 'selectOption' => 'Select State',
+                        ]) ?>
                     </div>
                 </div>
             </div>
@@ -309,68 +249,40 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
             <div class = "container pt-2" style = "height: 80vh; overflow-y: auto;">
                 <div class = "row d-flex flex-row align-items-center">
                     <div class = "col-md-4">
-                        <div class = "form__div">
-                            <select class = "form__input form-control" id = "lvl_edu"
-                                    name = "Outbound[Academic_lvl_edu]" required>
-                                <option value = "">Select your Level of Education</option>
-                                <option
-                                    value = "UG" <?php echo ($model->Academic_lvl_edu === 'UG') ? 'selected' : ''; ?>>
-                                    Under
-                                    Graduate
-                                </option>
-                                <option
-                                    value = "PG" <?php echo ($model->Academic_lvl_edu === 'PG') ? 'selected' : ''; ?>>
-                                    Post
-                                    Graduate
-                                </option>
-                            </select>
-                        </div>
+                        <?= inputCustomWidget::widget([
+                            'value' => $model->Academic_lvl_edu,
+                            'name' => 'Outbound[Academic_lvl_edu]', 'required' => 'required', 'label' => 'Level of Education',
+                            'inputType' => 'dropdown', 'selectOption' => 'Select Level of Education', 'options' =>[
+                                'UG' => 'Under Graduate', 'PG' => 'Post Graduate'
+                            ]
+                        ]) ?>
                     </div>
                     <div class = "col-md-4">
-                        <div class = "form__div">
-                            <select class = "form__input form-control" id = "kulliyyah"
-                                    name = "Outbound[Academic_kulliyyah]" required>
-                                <option value = "">Select Kulliyyah</option>
-                                <?php
-                                $kulliyyahOptions = [
-                                    "KICT", "KIRKHS", "KENMS", "AIKOL", "KOE", "KOM", "KAED", "KOS", "KOP", "KAHS",
-                                    "ISTAC", "KOED", "KON", "KOD", "IIiBF", "KLM", "OTHERS"
-                                ];
+                        <?= inputCustomWidget::widget([
+                            'id' => 'kulliyyah', 'value' => $model->Academic_kulliyyah,
+                            'name' => 'Outbound[Academic_kulliyyah]', 'required' => 'required', 'label' => 'Kulliyyah',
+                            'inputType' => 'dropdown', 'selectOption' => 'Select Kulliyyah', 'options' => $kcdio
+                        ]) ?>
+                    </div>
+                    <div class = "col-md-4">
 
-                                foreach ($kulliyyahOptions as $option) {
-                                    $selected = ($model->Academic_kulliyyah === $option) ? 'selected' : '';
-                                    echo "<option value=\"$option\" $selected>$option</option>";
-                                }
-                                ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class = "col-md-4">
-                        <div class = "form__div">
-                            <input type = "text" class = "form__input form-control" id = "validationCustomOthers"
-                                   name = "Outbound[Academic_kulliyyah_others]"
-                                   value = "<?= $model->Academic_kulliyyah_others ?>"
-                                   maxlength = "255" placeholder = " ">
-                            <label for = "validationCustomOthers" class = "form__label">Others (Please specify)</label>
-                        </div>
+                        <?= inputCustomWidget::widget([
+                            'id' => 'validationCustomOthers','value' => $model->Academic_kulliyyah_others, 'name' => 'Outbound[Academic_kulliyyah_others]', 'label' => 'Others (Please specify)', 'inputType' => 'text',
+                            'length' => '512', 'required' => 'required',
+                        ]) ?>
                     </div>
                     <div class = "row d-flex flex-row align-items-center">
                         <div class = "col-md-6">
-                            <div class = "form__div">
-                                <input type = "text" class = "form__input form-control" id = "validationCustomProgram"
-                                       name = "Outbound[Academic_name_of_programme]"
-                                       value = "<?= $model->Academic_name_of_programme ?>"
-                                       maxlength = "255" placeholder = " " required>
-                                <label for = "validationCustomProgram" class = "form__label">Programme</label>
-                            </div>
+                            <?= inputCustomWidget::widget([
+                                'value' => $model->Academic_name_of_programme, 'name' => 'Outbound[Academic_name_of_programme]', 'label' => 'Programme', 'inputType' => 'text',
+                                'length' => '512', 'required' => 'required',
+                            ]) ?>
                         </div>
                         <div class = "col-md-2">
-                            <div class = "form__div">
-                                <input type = "text" class = "form__input form-control" id = "validationCustomCGPA"
-                                       name = "Outbound[Academic_cgpa]" value = "<?= $model->Academic_cgpa ?>"
-                                       maxlength = "255" placeholder = " " required>
-                                <label for = "validationCustomCGPA" class = "form__label">Current CGPA</label>
-                            </div>
+                            <?= inputCustomWidget::widget([
+                                'value' => $model->Academic_cgpa, 'name' => 'Outbound[Academic_cgpa]', 'label' => 'Current CGPA', 'inputType' => 'text',
+                                'required' => 'required',
+                            ]) ?>
                         </div>
                         <div class = "col-md-2">
                             <div class = "form__div">
@@ -800,90 +712,20 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                     <div class = "row" id = "tableContainer">
                         <div class = "col">
                             <h4 class = "text-center mb-4">Courses offered by host University</h4>
-                            <table class = "table">
-                                <thead>
-                                <tr>
-                                    <th style = "width: 30%">Course Code</th>
-                                    <th style = "width: 50%">Course Name</th>
-                                    <th style = "width: 20%">Credit Hours</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <?php for ($i = 0; $i < 7; $i++) : ?>
-                                    <tr>
-                                        <td class = "py-2 px-1">
-                                            <input type = "hidden" name = "CoursesModel[<?= $i ?>][id]"
-                                                   value = "<?= isset($coursesData[$i]['id']) ? $coursesData[$i]['id'] : '' ?>">
-                                            <input type = "text" class = "form-control"
-                                                   name = "CoursesModel[<?= $i ?>][course_code]"
-                                                   placeholder = "Course Code"
-                                                   value = "<?= isset($coursesData[$i]['course_code']) ? $coursesData[$i]['course_code'] : '' ?>"
-                                            >
-                                        </td>
-                                        <td class = "py-2 px-1">
-                                            <input type = "text" class = "form-control"
-                                                   name = "CoursesModel[<?= $i ?>][course_name]"
-                                                   placeholder = "Course Name"
-                                                   value = "<?= isset($coursesData[$i]['course_name']) ? $coursesData[$i]['course_name'] : '' ?>"
-                                            >
-                                        </td>
-                                        <td class = "py-2 px-1">
-                                            <input type = "text" class = "form-control"
-                                                   name = "CoursesModel[<?= $i ?>][credit_hours]"
-                                                   placeholder = "Credit Hours"
-                                                   value = "<?= isset($coursesData[$i]['credit_hours']) ? $coursesData[$i]['credit_hours'] : '' ?>"
-                                            >
-                                        </td>
-                                    </tr>
-                                <?php endfor; ?>
-
-                                </tbody>
-                            </table>
+                            <?= tableMakerWidget::widget([
+                                'tableId' => 'your_table_id',
+                                'tableData' => $coursesData, // Pass your data array here
+                                'modelName' => 'CoursesModel', // Pass your model name here
+                            ]) ?>
                         </div>
 
                         <div class = "col">
                             <h4 class = "text-center mb-4">IIUM Courses</h4>
-                            <table class = "table table-hover">
-                                <thead>
-                                <tr>
-                                    <th style = "width: 30%">Course Code</th>
-                                    <th style = "width: 50%">Course Name</th>
-                                    <th style = "width: 20%">Credit Hours</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <?php for ($i = 0; $i < 7; $i++) : ?>
-                                    <tr>
-                                        <td class = "py-2 px-1">
-
-                                            <input type = "hidden" name = "IiumcoursesModel[<?= $i ?>][id]"
-                                                   value = "<?= isset($iiumcourseData[$i]['id']) ? $iiumcourseData[$i]['id'] : '' ?>">
-
-                                            <input type = "text" class = "form-control"
-                                                   name = "IiumcoursesModel[<?= $i ?>][course_code]"
-                                                   placeholder = "Course Code"
-                                                   value = "<?= isset($iiumcourseData[$i]['course_code']) ? $iiumcourseData[$i]['course_code'] : '' ?>"
-                                            >
-                                        </td>
-                                        <td class = "py-2 px-1">
-                                            <input type = "text" class = "form-control"
-                                                   name = "IiumcoursesModel[<?= $i ?>][course_name]"
-                                                   placeholder = "Course Name"
-                                                   value = "<?= isset($iiumcourseData[$i]['course_name']) ? $iiumcourseData[$i]['course_name'] : '' ?>"
-                                            >
-                                        </td>
-                                        <td class = "py-2 px-1">
-                                            <input type = "text" class = "form-control"
-                                                   name = "IiumcoursesModel[<?= $i ?>][credit_hours]"
-                                                   placeholder = "Credit Hours"
-                                                   value = "<?= isset($iiumcourseData[$i]['credit_hours']) ? $iiumcourseData[$i]['credit_hours'] : '' ?>"
-                                            >
-                                        </td>
-                                    </tr>
-                                <?php endfor; ?>
-
-                                </tbody>
-                            </table>
+                            <?= tableMakerWidget::widget([
+                                'tableId' => 'your_table_id',
+                                'tableData' => $iiumcourseData, // Pass your data array here
+                                'modelName' => 'IiumcoursesModel', // Pass your model name here
+                            ]) ?>
                         </div>
 
                     </div>
