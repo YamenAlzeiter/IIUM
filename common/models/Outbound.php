@@ -92,9 +92,11 @@ use yii\db\Expression;
  * @property Iiumcourse[] $iiumcourses
  * @property string|null $temp
  * @property string|null $driveLink
+ *
  */
 class Outbound extends \yii\db\ActiveRecord
 {
+    public $agree; // Boolean attribute for terms and conditions
     public $files;
     /**
      * {@inheritdoc}
@@ -113,13 +115,54 @@ class Outbound extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['Status', 'Dean_ID', 'Person_in_charge_ID', 'Academic_current_semester', 'Academic_current_year', 'Financial_funded_accept', 'Type_mobility', 'credit_transfer_availability', 'host_scholarship', 'agreement'], 'default', 'value' => null],
-            [['Status', 'Dean_ID', 'Person_in_charge_ID', 'Academic_current_semester', 'Academic_current_year', 'Financial_funded_accept', 'Type_mobility', 'credit_transfer_availability', 'host_scholarship', 'agreement'], 'integer'],
-            [['Date_of_Birth', 'Passport_Expiration', 'Mobility_from', 'Mobility_until', 'agreement_data', 'updated_at', 'created_at'], 'safe'],
+            [
+                [
+                     'Name', 'Citizenship', 'Gender', 'Date_of_Birth', 'Passport_Number',
+                    'Passport_Expiration', 'Mobile_Number', 'Email', 'Permanent_Address', 'Country', 'State',
+                    'Postcode', 'Emergency_name', 'Emergency_relationship', 'Emergency_phoneNumber', 'Emergency_email',
+                    'Emergency_homeAddress', 'Emergency_country', 'Emergency_tate', 'Emergency_postCode',
+                    'Academic_lvl_edu', 'Academic_kulliyyah', 'Academic_current_semester', 'Academic_current_year',
+                    'Academic_name_of_programme', 'Academic_cgpa', 'English_language_proficiency', 'English_result',
+                    'Financial_funded_accept', 'Sponsoring_name', 'Sponsoring_funding', 'Type_mobility',
+                    'Type_mobility_program', 'Country_host_university', 'Host_university_name', 'Mobility_from',
+                    'Mobility_until', 'credit_transfer_availability', 'Connect_host_name', 'Connect_host_position',
+                    'Connect_host_mobile_number', 'Connect_host_email', 'Connect_host_address', 'Connect_host_country',
+                    'Connect_host_postcode'
+
+                ], 'required', 'on' => 'requiredValidate'
+            ], [
+                'Academic_kulliyyah_others', 'required', 'when' => function ($model) {
+                    return $model->Academic_kulliyyah === 'Other';
+                }
+            ], [
+                'Third_language', 'required', 'when' => function ($model) {
+                    return $model->English_language_proficiency === 'Other';
+                }
+            ], [
+                'Sponsoring_name_other', 'required', 'when' => function ($model) {
+                    return $model->Sponsoring_name === 'Other';
+                }
+            ], [
+                'Type_mobility_program_other', 'required', 'when' => function ($model) {
+                    return $model->Type_mobility_program === 'Other';
+                }
+            ],[
+                ['agreement'], 'required', 'requiredValue' => 1, 'message' => 'You must agree to the terms and conditions'
+            ],
+            [['Offer_letter', 'Academic_transcript', 'Program_brochure', 'Latest_pay_slip', 'Other_latest_pay_slip'], 'required', 'on'=>'create'],
+
+            [['Email', 'Emergency_email'], 'email'],
             [['Academic_cgpa', 'English_result', 'Sponsoring_funding'], 'number'],
-            [['Offer_letter', 'Academic_transcript', 'Program_brochure', 'Latest_pay_slip', 'Other_latest_pay_slip', 'Proof_of_sponsorship', 'Proof_insurance_cover', 'Letter_of_indemnity', 'Flight_ticket'], 'file', 'extensions' => 'pdf, doc, docx'],
+            ['Mobility_until', 'compare', 'compareAttribute' => 'Mobility_from', 'operator' => '>', 'enableClientValidation' => false],
+            [['Status', 'Dean_ID', 'Person_in_charge_ID', 'Academic_current_semester', 'Academic_current_year', 'Financial_funded_accept', 'Type_mobility', 'credit_transfer_availability', 'host_scholarship', 'agreement'], 'default', 'value' => null],
+            [['Status', 'Dean_ID', 'Person_in_charge_ID', 'Academic_current_semester', 'Academic_current_year', 'Financial_funded_accept', 'Type_mobility', 'credit_transfer_availability', 'host_scholarship'], 'integer'],
+            [['Date_of_Birth', 'Passport_Expiration', 'Mobility_from', 'Mobility_until', 'agreement_data', 'updated_at', 'created_at'], 'safe'],
+
+            [['Offer_letter', 'Academic_transcript', 'Program_brochure', 'Latest_pay_slip', 'Other_latest_pay_slip', 'Proof_of_sponsorship', 'Proof_insurance_cover', 'Letter_of_indemnity', 'Flight_ticket'], 'file', 'extensions' => 'pdf'],
+
             [['Matric_Number', 'Passport_Number', 'Mobile_Number', 'Emergency_phoneNumber'], 'string', 'max' => 15],
-            [['Name', 'Permanent_Address', 'Mailing_Address','driveLink'], 'string', 'max' => 255, ],
+
+            [['Name', 'Permanent_Address', 'Mailing_Address','driveLink'], 'string', 'max' => 255],
 
             [['Citizenship', 'Email', 'Emergency_name', 'Emergency_relationship', 'Emergency_email', 'Emergency_homeAddress', 'Academic_kulliyyah', 'Academic_kulliyyah_others', 'Academic_name_of_programme', 'Research', 'Sponsoring_name', 'Sponsoring_name_other', 'Type_mobility_program', 'Type_mobility_program_other', 'Host_university_name', 'Connect_host_address', 'Token', 'Connect_host_email'], 'string', 'max' => 512],
             [['Gender'], 'string', 'max' => 1],
@@ -162,50 +205,50 @@ class Outbound extends \yii\db\ActiveRecord
             'Person_in_charge_ID' => 'Person In Charge ID',
             'Note_dean' => 'Note Dean',
             'Note_hod' => 'Note Hod',
-            'Emergency_name' => 'Emergency Name',
-            'Emergency_relationship' => 'Emergency Relationship',
-            'Emergency_phoneNumber' => 'Emergency Phone Number',
-            'Emergency_email' => 'Emergency Email',
-            'Emergency_homeAddress' => 'Emergency Home Address',
-            'Emergency_postCode' => 'Emergency Post Code',
-            'Emergency_tate' => 'Emergency Tate',
-            'Emergency_country' => 'Emergency Country',
-            'Academic_lvl_edu' => 'Academic Lvl Edu',
-            'Academic_kulliyyah' => 'Academic Kulliyyah',
-            'Academic_kulliyyah_others' => 'Academic Kulliyyah Others',
-            'Academic_current_semester' => 'Academic Current Semester',
-            'Academic_current_year' => 'Academic Current Year',
-            'Academic_name_of_programme' => 'Academic Name Of Programme',
+            'Emergency_name' => 'Name',
+            'Emergency_relationship' => 'Relationship',
+            'Emergency_phoneNumber' => 'Phone Number',
+            'Emergency_email' => 'Email',
+            'Emergency_homeAddress' => 'Home Address',
+            'Emergency_postCode' => 'Post Code',
+            'Emergency_tate' => 'State',
+            'Emergency_country' => 'Country',
+            'Academic_lvl_edu' => 'Academic Level of Education',
+            'Academic_kulliyyah' => 'Kulliyyah',
+            'Academic_kulliyyah_others' => 'Others (Please Specify)',
+            'Academic_current_semester' => 'Current Semester',
+            'Academic_current_year' => 'Current Year',
+            'Academic_name_of_programme' => 'Name of Programme',
             'Academic_cgpa' => 'Academic Cgpa',
             'Research' => 'Research',
             'English_language_proficiency' => 'English Language Proficiency',
             'English_result' => 'English Result',
-            'Third_language' => 'Third Language',
+            'Third_language' => 'Third Language (Please Specify)',
             'Financial_funded_accept' => 'Financial Funded Accept',
-            'Sponsoring_name' => 'Sponsoring Name',
-            'Sponsoring_name_other' => 'Sponsoring Name Other',
+            'Sponsoring_name' => 'Name of Sponsoring Body',
+            'Sponsoring_name_other' => 'Other (Please Specify)',
             'Sponsoring_funding' => 'Sponsoring Funding',
-            'Type_mobility' => 'Type Mobility',
-            'Type_mobility_program' => 'Type Mobility Program',
-            'Type_mobility_program_other' => 'Type Mobility Program Other',
-            'Host_university_name' => 'Host University Name',
+            'Type_mobility' => 'Type of  Mobility',
+            'Type_mobility_program' => 'Mobility of Program',
+            'Type_mobility_program_other' => 'Other (Please Specify)',
+            'Host_university_name' => 'Name of Host University',
             'Mobility_from' => 'Mobility From',
             'Mobility_until' => 'Mobility Until',
             'Country_host_university' => 'Country Host University',
             'credit_transfer_availability' => 'Credit Transfer Availability',
-            'Connect_host_name' => 'Connect Host Name',
-            'Connect_host_position' => 'Connect Host Position',
-            'Connect_host_mobile_number' => 'Connect Host Mobile Number',
-            'Connect_host_address' => 'Connect Host Address',
-            'Connect_host_postcode' => 'Connect Host Postcode',
-            'Connect_host_country' => 'Connect Host Country',
+            'Connect_host_name' => 'Name',
+            'Connect_host_position' => 'Position',
+            'Connect_host_mobile_number' => 'Mobile Number',
+            'Connect_host_address' => 'Address',
+            'Connect_host_postcode' => 'Postcode',
+            'Connect_host_country' => 'Country',
             'host_scholarship' => 'Host Scholarship',
             'host_scholarship_amount' => 'Host Scholarship Amount',
-            'Offer_letter' => 'Offer Letter',
-            'Academic_transcript' => 'Academic Transcript',
-            'Program_brochure' => 'Program Brochure',
-            'Latest_pay_slip' => 'Latest Pay Slip',
-            'Other_latest_pay_slip' => 'Other Latest Pay Slip',
+            'Offer_letter' => 'Offer Letter:',
+            'Academic_transcript' => 'Academic Transcript: ',
+            'Program_brochure' => 'Program Brochure: ',
+            'Latest_pay_slip' => 'Latest Payment Slip: ',
+            'Other_latest_pay_slip' => 'Other Latest Payment Slip:',
             'Proof_of_sponsorship' => 'Proof Of Sponsorship',
             'Proof_insurance_cover' => 'Proof Insurance Cover',
             'Letter_of_indemnity' => 'Letter Of Indemnity',
@@ -215,35 +258,21 @@ class Outbound extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
             'created_at' => 'Created At',
             'Token' => 'Token',
-            'Connect_host_email' => 'Connect Host Email'
+            'Connect_host_email' => 'Email Address'
         ];
     }
 
-    /**
-     * Gets query for [[Courses]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCourses()
-    {
-        return $this->hasMany(Courses::class, ['student_id' => 'ID']);
-    }
 
-    /**
-     * Gets query for [[Iiumcourses]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getIiumcourses()
-    {
-        return $this->hasMany(Iiumcourse::class, ['student_id' => 'ID']);
-    }
+
     public function getOutboundFiles()
     {
         return $this->hasMany(OutFiles::class, ['Student_ID' => 'ID']);
     }
     public function beforeSave($insert)
     {
+        if($this->Matric_Number == null || $this->Matric_Number == ""){
+            $this->Matric_Number = Yii::$app->user->identity->matric_number;
+        }
         if($this->isAttributeChanged('Status') || $this->isNewRecord){
             $this->updated_at = new Expression('NOW()');
 
@@ -252,7 +281,6 @@ class Outbound extends \yii\db\ActiveRecord
     }
     public function afterSave($insert, $changedAttributes)
     {
-
         parent::afterSave($insert, $changedAttributes);
         $newStatus = $this->Status;
         if ($this->Status == 10){

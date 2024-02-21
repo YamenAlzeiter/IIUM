@@ -216,25 +216,29 @@ function getState($stateID){
 }
 function renderFileField($form, $model, $attribute, $fileName)
 {
-
+    $baseUploadPath = Yii::getAlias('@common/uploads');
     if (!isset($noRecord)) {
         $creationYearLastTwoDigits = date('y', strtotime($model->created_at));
 
         $fileNameMarker = $creationYearLastTwoDigits . '_' . $model->ID;
     }
 
-    echo $form->field($model, $attribute, ['options' => ['style' => 'margin: 0;']])->fileInput([
-        'class' => 'form-control mb-2',
-        'required' => isFileRequired($model->$attribute),
-    ]);
-
-    if ($model->$attribute !== null) {
+    // Check if the uploaded file exists on the server
+    $uploadedFilePath = $baseUploadPath . '/' . $model->ID . '/' . $fileNameMarker . '_' . $fileName . '.pdf';
+    if (file_exists($uploadedFilePath)) {
         $uploadedFile = Html::a(
             $fileNameMarker . "_" . $fileName . ".pdf",
             ['download', 'id' => $model->ID, 'file' => $fileNameMarker . '_' . $fileName . '.pdf'],
             ['class' => 'download', 'id' => 'download']
         );
-        echo "<p class='fw-lighterg'><span class='fw-bolder'>File Uploaded: </span>" . ($model->$attribute ? $uploadedFile : '') . "</p>";
+        $uploaded = "<div class='col-md'><p class='fw-lighterg m-0'><span class='fw-bolder'>File Uploaded: </span>" . $uploadedFile . "</p></div>";
+        $templateFileInput = "<div class='row align-items-start'><div class='col-md-2'>{label}</div><div class='col-md'>{input}$uploaded</div>{error}</div>";
+    } else {
+        $templateFileInput = "<div class='row align-items-start'><div class='col-md-2'>{label}</div><div class='col-md'>{input}</div>{error}</div>";
     }
+
+    echo $form->field($model, $attribute, ['template' => $templateFileInput])->fileInput([
+        'class' => 'form-control'
+    ]);
 }
 

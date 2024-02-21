@@ -165,6 +165,10 @@ body{
     position: relative;
     margin-bottom: 1rem;
 }
+option{
+    padding: 3rem;
+    margin: 1rem;
+}
 
 
 .form__input {

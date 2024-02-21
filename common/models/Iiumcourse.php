@@ -13,7 +13,7 @@ use Yii;
  * @property int $credit_hours
  * @property int|null $student_id
  *
- * @property Outbound $student
+ * @property User $student
  */
 class Iiumcourse extends \yii\db\ActiveRecord
 {
@@ -31,10 +31,11 @@ class Iiumcourse extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['credit_hours', 'course_name', 'course_code'], 'required', 'on' => 'requiredValidate'],
             [['credit_hours', 'student_id'], 'integer'],
             [['course_code'], 'string', 'max' => 20],
             [['course_name'], 'string', 'max' => 255],
-            [['student_id'], 'exist', 'skipOnError' => true, 'targetClass' => Outbound::class, 'targetAttribute' => ['student_id' => 'ID']],
+            [['student_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['student_id' => 'id']],
         ];
     }
 
@@ -59,6 +60,6 @@ class Iiumcourse extends \yii\db\ActiveRecord
      */
     public function getStudent()
     {
-        return $this->hasOne(Outbound::class, ['ID' => 'student_id']);
+        return $this->hasOne(User::class, ['id' => 'student_id']);
     }
 }

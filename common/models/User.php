@@ -60,7 +60,31 @@ class User extends ActiveRecord implements IdentityInterface
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
         ];
     }
+    public function getIiumcourses()
+    {
+        return $this->hasMany(Iiumcourse::class, ['student_id' => 'id']);
+    }
+    public function getCourses()
+    {
+        return $this->hasMany(Courses::class, ['student_id' => 'id']);
+    }
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
 
+        if ($insert && $this->type === 'O') {
+            // Create 7 Iiumcourse records for the newly registered user
+            for ($i = 0; $i < 7; $i++) {
+                $iiumCourse = new Iiumcourse();
+                $course = new Courses();
+                $iiumCourse->student_id = $this->id;
+                $course->student_id = $this->id;
+                // You can set other attributes of the Iiumcourse record here if needed
+                $iiumCourse->save(false); // Save without validation
+                $course->save(false); // Save without validation
+            }
+        }
+    }
     /**
      * {@inheritdoc}
      */
@@ -212,4 +236,5 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $this->password_reset_token = null;
     }
+
 }

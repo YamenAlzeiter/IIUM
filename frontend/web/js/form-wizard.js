@@ -61,13 +61,6 @@ const validateFormStep = (stepNumber) => {
     input.addEventListener("input", () => {
       input.classList.remove("is-invalid");
     });
-
-    if (!input.checkValidity()) {
-      isValid = false;
-      input.classList.add("is-invalid");
-    } else {
-      input.classList.remove("is-invalid");
-    }
   });
 
   // Highlight the step in the form-stepper when it's not valid

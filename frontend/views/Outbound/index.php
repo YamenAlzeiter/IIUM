@@ -1,16 +1,9 @@
 <?php
 
-use common\models\Kcdio;
-use common\models\Outbound;
 use common\models\Status;
 use common\widgets\DownloadLinkWidget;
 use yii\bootstrap5\ActiveForm;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\helpers\Json;
-use yii\helpers\Url;
-use yii\grid\ActionColumn;
-use yii\grid\GridView;
 
 /** @var yii\web\View $this */
 /** @var yii\data\ActiveDataProvider $dataProvider */
@@ -155,7 +148,7 @@ if (!isset($noRecord)) {
                             </p>
                             <p class = "mb-2 fw-light mb-1">
                                 <strong>Kulliyyah: </strong> <?= $model->Academic_kulliyyah ?></p>
-                            <?php if ($model->Academic_kulliyyah === 'OTHERS'): ?>
+                            <?php if ($model->Academic_kulliyyah === 'Other'): ?>
                                 <p class = "mb-2 fw-light mb-1">
                                     <strong>Other Kulliyyah:</strong> <?= $model->Academic_kulliyyah_others ?>
                                 </p>
@@ -462,89 +455,23 @@ if (!isset($noRecord)) {
         <div class = "form-box">
             <div class = "form-content">
                 <?php if ($model->Status === 41): ?>
-                    <?php $form = ActiveForm::begin([
-                        'options' => ['enctype' => 'multipart/form-data'],
-                        'action' => ['outbound/upload', 'ID' => $model->ID], // Pass the ID to the action
-                    ]); ?>
-                    <?= Html::hiddenInput('ID', $model->ID) ?>
-                    <div class = "row d-flex align-items-center justify-content-center">
-                        <div class = "col-md-6">
-                            <div class = "mb-3">
-                                <label for = "formFile" class = "form-label">Proof of sponsorship/ Funding/
-                                                                             Grant(Official Letter)</label>
-                            </div>
-                        </div>
-                        <div class = "col-md-6">
-                            <div class = "mb-3">
-                                <?= $form->field($model, 'Proof_of_sponsorship')->fileInput([
-                                    'class' => 'form-control', 'id' => 'Proof_of_sponsorship'
-                                ])->label(false) ?>
-                            </div>
-                        </div>
-                    </div>
-                    <div class = "row d-flex align-items-center justify-content-center">
-                        <div class = "col-md-6">
-                            <div class = "mb-3">
-                                <label for = "formFile" class = "form-label">Proof of purchased insurance
-                                                                             coverage</label>
-                            </div>
-                        </div>
-                        <div class = "col-md-6">
-                            <div class = "mb-3">
-                                <?= $form->field($model, 'Proof_insurance_cover')->fileInput([
-                                    'class' => 'form-control', 'id' => 'Proof_insurance_cover'
-                                ])->label(false) ?>
-                            </div>
-                        </div>
-                    </div>
-                    <div class = "row d-flex align-items-center justify-content-center">
-                        <div class = "col-md-6">
-                            <div class = "mb-3">
-                                <label for = "formFile" class = "form-label">Letter of indemnity (Download the tamplate
-                                                                             from International Office website)</label>
-                            </div>
-                        </div>
-                        <div class = "col-md-6">
-                            <div class = "mb-3">
-                                <?= $form->field($model, 'Letter_of_indemnity')->fileInput([
-                                    'class' => 'form-control', 'id' => 'Letter_of_indemnity'
-                                ])->label(false) ?>
-                            </div>
-                        </div>
-                    </div>
-                    <div class = "row d-flex align-items-center justify-content-center">
-                        <div class = "col-md-6">
-                            <div class = "mb-3">
-                                <label for = "formFile" class = "form-label">Copy of flight ticket</label>
-                            </div>
-                        </div>
-                        <div class = "col-md-6">
-                            <div class = "mb-3">
-                                <?= $form->field($model, 'Flight_ticket')->fileInput([
-                                    'class' => 'form-control', 'id' => 'Flight_ticket',
-                                ])->label(false) ?>
-                            </div>
-                        </div>
+                    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data'], 'action' => ['outbound/upload', 'ID' => $model->ID],]); ?>
+                    <?php renderFileField($form, $model, 'Proof_of_sponsorship', "ProofOfSponsorship"); ?>
+                    <?php renderFileField($form, $model, 'Proof_insurance_cover', "ProofInsuranceCover"); ?>
+                    <?php renderFileField($form, $model, 'Letter_of_indemnity', "LetterOfIndemnity"); ?>
+                    <?php renderFileField($form, $model, 'Flight_ticket', "FlightTicket"); ?>
+                    <div class="text-end">
+                        <?= Html::submitButton('', ['class' => 'btn btn-outline-dark px-4 py-2', 'name' => 'save-button', 'id' => 'form-upload-button']) ?>
                     </div>
 
-                    <div class = "form-group mt-2">
-                        <div class = "form-group">
-                            <?= Html::submitButton('', [
-                                'class' => 'btn btn-outline-dark px-4 py-2', 'name' => 'save-button',
-                                'id' => 'form-upload-button'
-                            ]) ?>
-                        </div>
-                    </div>
+
                     <?php ActiveForm::end(); ?>
-
                 <?php elseif ($model->Status === 71): ?>
                     <?php $form = ActiveForm::begin([
                         'options' => ['enctype' => 'multipart/form-data'],
                         'action' => ['outbound/upload', 'ID' => $model->ID], // Pass the ID to the action
                     ]); ?>
                     <?= Html::hiddenInput('ID', $model->ID) ?>
-
-
                     <?= $form->field($outFilesModel, 'location[]')->fileInput(['multiple' => true]) ?>
                     <div class = "form-group mt-2">
                         <div class = "form-group">
@@ -555,9 +482,7 @@ if (!isset($noRecord)) {
                         </div>
                     </div>
                     <?php ActiveForm::end(); ?>
-
                 <?php endif; ?>
-
             </div>
         </div>
     </div>

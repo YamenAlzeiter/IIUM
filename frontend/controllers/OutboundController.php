@@ -17,7 +17,7 @@ use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\UploadedFile;
 
-
+require Yii::getAlias('@common').'/Helpers/controllerFunctions.php';
 /**
  * OutboundController implements the CRUD actions for Outbound model.
  */
@@ -99,12 +99,8 @@ class OutboundController extends Controller
         $model = new Outbound(['ID' => Yii::$app->user->id]);
 
         //-------------- Create new instances for related course models --------------\\
-        $coursesModel = new Courses();
-        $iiumcoursesModel = new Iiumcourse();
-        //-------------- Define arrays to store data related to courses --------------\\
-        $coursesData = [];
-        $iiumcourseData = [];
-
+        $coursesData = Courses::find()->where(['student_id' => $id])->all();
+        $iiumCoursesData = Iiumcourse::find()->where(['student_id' => $id])->all();
 
         if (Yii::$app->request->isPost) {
             try {
@@ -113,123 +109,20 @@ class OutboundController extends Controller
 
                 if ($model->load(Yii::$app->request->post())) {
 
-                    $model->Offer_letter = UploadedFile::getInstance($model, 'Offer_letter');
-                    $model->Academic_transcript = UploadedFile::getInstance($model, 'Academic_transcript');
-                    $model->Program_brochure = UploadedFile::getInstance($model, 'Program_brochure');
-                    $model->Latest_pay_slip = UploadedFile::getInstance($model, 'Latest_pay_slip');
-                    $model->Other_latest_pay_slip = UploadedFile::getInstance($model, 'Other_latest_pay_slip');
+                    $scenarioValue = $this->request->post('saveWithoutValidation') === 'validate' ? 'requiredValidate': 'default';
+                    $model->scenario = $scenarioValue;
 
 
-                    if ($this->request->post('saveWithoutValidation') === 'validate') {
-                        // Set status to 10 only when the 'submit' button is clicked
-                        $model->Status = 10;
-                    }
+                    if ($model->save($this->request->post('saveWithoutValidation') === 'validate')) {
+                        fileHandler($model,'Offer_letter', 'OfferLetter');
+                        fileHandler($model,'Academic_transcript', 'AcademicTranscript');
+                        fileHandler($model,'Program_brochure', 'ProgramBrochure');
+                        fileHandler($model,'Latest_pay_slip', 'LatestPaySlip');
+                        fileHandler($model,'Other_latest_pay_slip', 'OtherLatestPaySlip');
 
-                    if ($model->validate() && $model->save()) {
-                        //-------------------- File Saving --------------------\\
-                        $baseUploadPath = Yii::getAlias('@common/uploads');
-                        if ($model->Offer_letter) {
-
-                            $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
-
-                            $fileName = $creationYearLastTwoDigits.'_'.$model->ID.'_OfferLetter.'.$model->Offer_letter->extension;
-
-                            $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->Offer_letter->name);
-
-                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
-
-                            if (!file_exists(dirname($filePath))) {
-                                mkdir(dirname($filePath), 0777, true);
-                            }
-
-                            $model->Offer_letter->saveAs($filePath);
-                        }
-                        if ($model->Academic_transcript) {
-
-                            $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
-
-                            $fileName = $creationYearLastTwoDigits.'_'.$model->ID.'_AcademicTranscript.'.$model->Academic_transcript->extension;
-
-                            $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->Academic_transcript->name);
-
-
-                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
-
-                            if (!file_exists(dirname($filePath))) {
-                                mkdir(dirname($filePath), 0777, true);
-                            }
-
-                            $model->Academic_transcript->saveAs($filePath);
-
-                        }
-                        if ($model->Program_brochure) {
-
-                            $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
-
-                            $fileName = $creationYearLastTwoDigits.'_'.$model->ID.'_ProgramBrochure.'.$model->Program_brochure->extension;
-
-                            $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->Program_brochure->name);
-
-
-                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
-
-                            if (!file_exists(dirname($filePath))) {
-                                mkdir(dirname($filePath), 0777, true);
-                            }
-
-                            $model->Program_brochure->saveAs($filePath);
-                        }
-                        if ($model->Latest_pay_slip) {
-
-                            $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
-
-                            $fileName = $creationYearLastTwoDigits.'_'.$model->ID.'_LatestPaySlip.'.$model->Latest_pay_slip->extension;
-
-                            $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->Latest_pay_slip->name);
-
-
-                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
-
-                            if (!file_exists(dirname($filePath))) {
-                                mkdir(dirname($filePath), 0777, true);
-                            }
-
-                            $model->Latest_pay_slip->saveAs($filePath);
-                        }
-                        if ($model->Other_latest_pay_slip) {
-
-                            $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
-
-                            $fileName = $creationYearLastTwoDigits.'_'.$model->ID.'_OtherLatestPaySlip.'.$model->Other_latest_pay_slip->extension;
-
-                            $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $model->Other_latest_pay_slip->name);
-
-
-                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
-
-                            if (!file_exists(dirname($filePath))) {
-                                mkdir(dirname($filePath), 0777, true);
-                            }
-
-                            $model->Other_latest_pay_slip->saveAs($filePath);
-                        }
-                        //
-                        $coursesData = Yii::$app->request->post('CoursesModel', []);
-                        foreach ($coursesData as $courseInfo) {
-                            $coursesModel = new Courses();
-                            $coursesModel->attributes = $courseInfo;
-                            $coursesModel->student_id = $model->ID;
-                            $coursesModel->save();
-                        }
-
-                        //                            // Load and save IIUM Courses data
-                        $iiumcourseData = Yii::$app->request->post('IiumcoursesModel', []);
-                        foreach ($iiumcourseData as $iiumcourseInfo) {
-                            $iiumcoursesModel = new Iiumcourse();
-                            $iiumcoursesModel->attributes = $iiumcourseInfo;
-                            $iiumcoursesModel->student_id = $model->ID;
-                            $iiumcoursesModel->save();
-                        }
+                        // Load and save Host University Courses data
+                        courseSavor($coursesData, 'CoursesModel');
+                        courseSavor($iiumCoursesData, 'IiumCoursesModel');
 
                         $transaction->commit();
 
@@ -247,10 +140,10 @@ class OutboundController extends Controller
         } else {
             $model->loadDefaultValues();
         }
-
-
         return $this->render('create', [
             'model' => $model,
+            'coursesData' => $coursesData,
+            'iiumCoursesData' => $iiumCoursesData
         ]);
     }
 
@@ -261,12 +154,11 @@ class OutboundController extends Controller
      * @return string|Response
      * @throws NotFoundHttpException if the model cannot be found
      */
+    // In your controller actionUpdate method
     public function actionUpdate($ID)
     {
         $this->layout = 'progress';
         $model = Outbound::findOne($ID);
-
-        // Retrieve courses data
 
         if ($model->Status !== 3 && $model->Status !== null) {
             Yii::$app->session->setFlash('error',
@@ -274,86 +166,49 @@ class OutboundController extends Controller
             // Redirect to a different page or reload the current page
             return $this->redirect(['outbound/index']); // Replace 'controller/action' with the appropriate route
         }
+
         $coursesData = Courses::find()->where(['student_id' => $ID])->all();
 
-        $iiumcourseData = Iiumcourse::find()->where(['student_id' => $ID])->all();
+        $iiumCoursesData = Iiumcourse::find()->where(['student_id' => $ID])->all();
 
-        if (Yii::$app->request->isPost) {
+        if ($model->load($this->request->post())) {
+            // Set the scenario based on the request
+            $scenario = $model->scenario = $this->request->post('saveWithoutValidation') === 'validate' ? 'requiredValidate' : 'default';
+
+            courseSavor($coursesData, 'CoursesModel', $scenario, $model);
+            courseSavor($iiumCoursesData, 'IiumCoursesModel', $scenario, $model);
+
+            fileHandler($model,'Offer_letter', 'OfferLetter');
+            fileHandler($model,'Academic_transcript', 'AcademicTranscript');
+            fileHandler($model,'Program_brochure', 'ProgramBrochure');
+            fileHandler($model,'Latest_pay_slip', 'LatestPaySlip');
+            fileHandler($model,'Other_latest_pay_slip', 'OtherLatestPaySlip');
+
             $transaction = Yii::$app->db->beginTransaction();
-
-            try {
-                // Load data into the outbound model
-                if ($model->load(Yii::$app->request->post())) {
-                    // Helper function for updating file
-                    $updateFile = function ($attribute, $fileNamePrefix) use ($model) {
-                        $file = UploadedFile::getInstance($model, $attribute);
-                        if ($file) {
-                            $baseUploadPath = Yii::getAlias('@common/uploads');
-                            $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $file->name);
-                            $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
-                            $fileName = $creationYearLastTwoDigits.'_'.$model->ID.'_'.$fileNamePrefix.'.'.$file->extension;
-                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
-
-                            // Create directory if not exists
-                            if (!file_exists(dirname($filePath))) {
-                                mkdir(dirname($filePath), 0777, true);
-                            }
-
-                            $file->saveAs($filePath);
-                            $model->$attribute = $fileName;
-                        }
-                    };
-
-                    // Update each file
-                    $updateFile('Offer_letter', 'OfferLetter');
-                    $updateFile('Academic_transcript', 'AcademicTranscript');
-                    $updateFile('Program_brochure', 'ProgramBrochure');
-                    $updateFile('Latest_pay_slip', 'LatestPaySlip');
-                    $updateFile('Other_latest_pay_slip', 'OtherLatestPaySlip');
-
-                    if ($this->request->post('saveWithoutValidation') === 'validate') {
-                        $model->Status = 10;
+            $allValid = courseSavor($coursesData, 'CoursesModel', $scenario) && courseSavor($iiumCoursesData, 'IiumCoursesModel', $scenario);
+            $model->Status = 10;
+            if ($allValid) {
+                try {
+                    if (!$model->save($this->request->post('saveWithoutValidation') === 'validate')) {
+                        throw new Exception('Failed to save the main model.');
                     }
-                    // Save the main model and update Courses/Iiumcourse records
-                    if ($model->validate() && $model->save()) {
-                        // Update Courses records
-                        foreach ($_POST['CoursesModel'] as $courseData) {
-                            $courseModel = Courses::findOne($courseData['id']);
-                            $courseModel->attributes = $courseData;
-
-                            if (!$courseModel->validate() || !$courseModel->save()) {
-                                Yii::error("Error saving Courses record: ".print_r($courseModel->errors, true));
-                                // Handle the error case, you might want to render the update view again with an error message
-                            }
-                        }
-
-                        // Update Iiumcourse records
-                        foreach ($_POST['IiumcoursesModel'] as $iiumcourseData) {
-                            $iiumcourseModel = Iiumcourse::findOne($iiumcourseData['id']);
-                            $iiumcourseModel->attributes = $iiumcourseData;
-
-                            if (!$iiumcourseModel->validate() || !$iiumcourseModel->save()) {
-                                Yii::error("Error saving Iiumcourse record: ".print_r($iiumcourseModel->errors, true));
-                                // Handle the error case, you might want to render the update view again with an error message
-                            }
-                        }
-
-                        $transaction->commit();
-                        Yii::$app->session->setFlash('success', 'Application updated successfully.');
-                        return $this->redirect(['index']);
-                    }
+                    $transaction->commit();
+                    Yii::$app->session->setFlash('success', 'Data has been updated successfully!');
+                    return $this->redirect(['index', 'ID' => $model->ID]);
+                } catch (Exception $e) {
+                    $transaction->rollBack();
+                    Yii::error($e->getMessage());
+                    Yii::$app->session->setFlash('error', 'An error occurred while updating data.');
                 }
-            } catch (Exception $e) {
-                // If any exception occurs, roll back the transaction
-                $transaction->rollBack();
-
-                Yii::$app->session->setFlash('error', 'An error occurred while updating the application.');
-                Yii::error($e->getMessage());
             }
+
+
         }
 
         return $this->render('update', [
-            'model' => $model, 'coursesData' => $coursesData, 'iiumcourseData' => $iiumcourseData,
+            'model' => $model,
+            'coursesData' => $coursesData,
+            'iiumCoursesData' => $iiumCoursesData
         ]);
     }
 
@@ -394,6 +249,11 @@ class OutboundController extends Controller
                         $model->$attribute = $fileName; // Update the model attribute with the new file name
                     }
                 }
+                fileHandler($model,'Proof_of_sponsorship', 'ProofOfSponsorship');
+                fileHandler($model,'Proof_insurance_cover', 'ProofInsuranceCover');
+                fileHandler($model,'Letter_of_indemnity', 'LetterOfIndemnity');
+                fileHandler($model,'Flight_ticket', 'FlightTicket');
+
                 $outFilesModel = new OutFiles();
                 $outFilesModel->location = UploadedFile::getInstances($outFilesModel, 'location');
                 OutFiles::deleteAll(['Student_ID' => $model->ID]);

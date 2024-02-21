@@ -24,7 +24,7 @@ $(function () {
     resetFormAndModal();
     showModal(
       '<i class="ti ti-file text-dark me-2 text-white"></i>Upload Your Documnets',
-      '<i class = "ti ti-plus"></i> Add',
+      '<i class = "ti ti-send"></i> Submit',
     );
   });
 

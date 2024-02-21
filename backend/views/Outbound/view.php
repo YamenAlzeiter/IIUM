@@ -231,7 +231,6 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                                         ['download-all', 'id' => $model->ID],
                                         ['class' => 'download', 'id' => 'download']) ?>
                                 </div>
-
                             </div>
                             <div class = "col-md-6">
                                 <?= DownloadLinkWidget::widget([
@@ -257,36 +256,30 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                             </div>
                             <div class = "col-md-6">
                                 <?php if ($model->Status >= 41): ?>
-                                <?= DownloadLinkWidget::widget([
-                                    'model' => $model, 'attribute' => 'Proof_of_sponsorship',
-                                    'fileName' => 'ProofOfSponsorship', 'text' => 'Proof of sponsorship'
-                                ]) ?>
-                                <?= DownloadLinkWidget::widget([
-                                    'model' => $model, 'attribute' => 'Proof_insurance_cover',
-                                    'fileName' => 'ProofInsuranceCover', 'text' => 'Other Latest Pay Slip'
-                                ]) ?>
-                                <?= DownloadLinkWidget::widget([
-                                    'model' => $model, 'attribute' => 'Letter_of_indemnity',
-                                    'fileName' => 'LetterOfIndemnity', 'text' => 'Letter of Indemnity'
-                                ]) ?>
-                                <?= DownloadLinkWidget::widget([
-                                    'model' => $model, 'attribute' => 'Flight_ticket', 'fileName' => 'FlightTicket',
-                                    'text' => 'Flight Ticket'
-                                ]) ?>
-                                <?php if ($model->Status >= 71): ?>
-                                    <p class = "fw-semibold text-decoration-underline">
-                                        <?= Html::a('Download Imgs and videos only',
-                                            ['download-after', 'id' => $model->ID],
-                                            ['class' => 'download', 'id' => 'download']) ?></p>
+                                    <?= DownloadLinkWidget::widget([
+                                        'model' => $model, 'attribute' => 'Proof_of_sponsorship',
+                                        'fileName' => 'ProofOfSponsorship', 'text' => 'Proof of sponsorship'
+                                    ]) ?>
+                                    <?= DownloadLinkWidget::widget([
+                                        'model' => $model, 'attribute' => 'Proof_insurance_cover',
+                                        'fileName' => 'ProofInsuranceCover', 'text' => 'Other Latest Pay Slip'
+                                    ]) ?>
+                                    <?= DownloadLinkWidget::widget([
+                                        'model' => $model, 'attribute' => 'Letter_of_indemnity',
+                                        'fileName' => 'LetterOfIndemnity', 'text' => 'Letter of Indemnity'
+                                    ]) ?>
+                                    <?= DownloadLinkWidget::widget([
+                                        'model' => $model, 'attribute' => 'Flight_ticket', 'fileName' => 'FlightTicket',
+                                        'text' => 'Flight Ticket'
+                                    ]) ?>
+                                    <?php if ($model->Status >= 71): ?><p class = "fw-semibold text-decoration-underline"><?= Html::a('Download Imgs and videos only', ['download-after', 'id' => $model->ID], ['class' => 'download', 'id' => 'download']) ?></p><?php endif; ?>
                                 <?php endif; ?>
                             </div>
-                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
     <div class = "col-lg-4">
         <div class = "card shadow-none border bg-light-secondary">
