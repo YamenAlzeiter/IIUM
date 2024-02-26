@@ -82,6 +82,7 @@ class OutboundController extends Controller
      * @return string|Response
      * @throws \yii\db\Exception
      */
+    //refactor
     public function actionCreate()
     {
         //---layout progress---\\
@@ -109,26 +110,31 @@ class OutboundController extends Controller
 
                 if ($model->load(Yii::$app->request->post())) {
 
-                    $scenarioValue = $this->request->post('saveWithoutValidation') === 'validate' ? 'requiredValidate': 'default';
-                    $model->scenario = $scenarioValue;
+                    $scenario = $model->scenario = $this->request->post('saveWithoutValidation') === 'validate' ? 'requiredValidate' : 'default';
+                    $isUndergraduate = $model->Academic_lvl_edu === 'UG'? true : false;
+                    $course =  courseSavor($coursesData, 'CoursesModel', $scenario, $isUndergraduate);
+                    $iiumCourse = courseSavor($iiumCoursesData, 'IiumCoursesModel', $scenario, $isUndergraduate);
 
+                    fileHandler($model,'Offer_letter', 'OfferLetter');
+                    fileHandler($model,'Academic_transcript', 'AcademicTranscript');
+                    fileHandler($model,'Program_brochure', 'ProgramBrochure');
+                    fileHandler($model,'Latest_pay_slip', 'LatestPaySlip');
+                    fileHandler($model,'Other_latest_pay_slip', 'OtherLatestPaySlip');
 
-                    if ($model->save($this->request->post('saveWithoutValidation') === 'validate')) {
-                        fileHandler($model,'Offer_letter', 'OfferLetter');
-                        fileHandler($model,'Academic_transcript', 'AcademicTranscript');
-                        fileHandler($model,'Program_brochure', 'ProgramBrochure');
-                        fileHandler($model,'Latest_pay_slip', 'LatestPaySlip');
-                        fileHandler($model,'Other_latest_pay_slip', 'OtherLatestPaySlip');
-
-                        // Load and save Host University Courses data
-                        courseSavor($coursesData, 'CoursesModel');
-                        courseSavor($iiumCoursesData, 'IiumCoursesModel');
-
-                        $transaction->commit();
-
-                        Yii::$app->session->setFlash('success', 'Application created successfully.');
-                        return $this->redirect(['index']);
+                    $allValid =$course && $iiumCourse;
+                    if ($scenario === 'requiredValidate') {
+                        $model->Status = 10;
                     }
+
+                        if($model->save($this->request->post('saveWithoutValidation') === 'validate')&& $allValid){
+                            $transaction->commit();
+                            Yii::$app->session->setFlash('success', 'Application created successfully.');
+                            return $this->redirect(['index', 'ID' => $model->ID]);
+                        }
+                        else{
+                            throw new Exception('Failed to save the main model.');
+                        }
+
                 }
             } catch (Exception $e) {
                 // If any exception occurs, roll back the transaction
@@ -154,7 +160,7 @@ class OutboundController extends Controller
      * @return string|Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    // In your controller actionUpdate method
+
     public function actionUpdate($ID)
     {
         $this->layout = 'progress';
@@ -174,9 +180,9 @@ class OutboundController extends Controller
         if ($model->load($this->request->post())) {
             // Set the scenario based on the request
             $scenario = $model->scenario = $this->request->post('saveWithoutValidation') === 'validate' ? 'requiredValidate' : 'default';
-
-            courseSavor($coursesData, 'CoursesModel', $scenario, $model);
-            courseSavor($iiumCoursesData, 'IiumCoursesModel', $scenario, $model);
+            $isUndergraduate = $model->Academic_lvl_edu === 'UG'? true : false;
+            $course =  courseSavor($coursesData, 'CoursesModel', $scenario, $isUndergraduate);
+            $iiumCourse = courseSavor($iiumCoursesData, 'IiumCoursesModel', $scenario, $isUndergraduate);
 
             fileHandler($model,'Offer_letter', 'OfferLetter');
             fileHandler($model,'Academic_transcript', 'AcademicTranscript');
@@ -185,22 +191,26 @@ class OutboundController extends Controller
             fileHandler($model,'Other_latest_pay_slip', 'OtherLatestPaySlip');
 
             $transaction = Yii::$app->db->beginTransaction();
-            $allValid = courseSavor($coursesData, 'CoursesModel', $scenario) && courseSavor($iiumCoursesData, 'IiumCoursesModel', $scenario);
-            $model->Status = 10;
-            if ($allValid) {
+            $allValid =$course && $iiumCourse;
+            if ($scenario === 'requiredValidate') {
+                $model->Status = 10;
+            }
+
                 try {
-                    if (!$model->save($this->request->post('saveWithoutValidation') === 'validate')) {
+                    if($model->save($this->request->post('saveWithoutValidation') === 'validate')&& $allValid){
+                        $transaction->commit();
+                        Yii::$app->session->setFlash('success', 'Application created successfully.');
+                        return $this->redirect(['index', 'ID' => $model->ID]);
+                    }
+                    else{
                         throw new Exception('Failed to save the main model.');
                     }
-                    $transaction->commit();
-                    Yii::$app->session->setFlash('success', 'Data has been updated successfully!');
-                    return $this->redirect(['index', 'ID' => $model->ID]);
                 } catch (Exception $e) {
                     $transaction->rollBack();
                     Yii::error($e->getMessage());
-                    Yii::$app->session->setFlash('error', 'An error occurred while updating data.');
                 }
-            }
+
+
 
 
         }
@@ -288,8 +298,6 @@ class OutboundController extends Controller
                 // Save the changes in the Outbound model
                 if ($model->validate() && $model->save()) {
                     // Handle uploads associated with the OutFiles model
-
-
                     $transaction->commit();
                     Yii::$app->session->setFlash('success', 'Application updated successfully.');
                     return $this->redirect(['index']);
@@ -301,6 +309,8 @@ class OutboundController extends Controller
             }
         }
     }
+
+
 
 // Your existing actionUpload method with modifications
 

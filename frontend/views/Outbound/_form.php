@@ -16,7 +16,7 @@ use yii\helpers\Html;
 
 $citizenship = Countries::find()->all();
 $templateFileInput = '<div class="row align-items-center"><div class="col-md-2">{label}</div><div class="col-md">{input}</div>{error}</div>';
-$templateRadio = '{label}{input}{error}';
+$templateRadio = '<legend class="col-form-label col-sm-6 pt-0">{label}</legend>{input}{error}';
 require Yii::getAlias('@common').'/Helpers/helper.php';
 
 ?>
@@ -42,12 +42,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                         <?= $form->field($model, 'Matric_Number')->textInput(['value' => Yii::$app->user->identity->matric_number ,'maxlength' => true, 'placeholder' => '', 'disabled' => true]) ?>
                     </div>
                     <div class = "col-md-6">
-                        <?= $form->field($model, 'Citizenship')->dropDownList(
-                            ArrayHelper::map(Countries::find()->all(), 'nationality', 'nationality'),
-                            ['prompt' => 'Select Nationality', 'unselect' => null]
-                        ) ?>
-
-
+                        <?= $form->field($model, 'Citizenship')->dropDownList(ArrayHelper::map(Countries::find()->all(), 'nationality', 'nationality'), ['prompt' => 'Select Nationality', 'unselect' => null]) ?>
                     </div>
                 </div>
                 <div class = "row align-items-center">
@@ -87,10 +82,11 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 
             </div>
             <div class = "d-flex justify-content-between">
-                <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "2">Next Step</button>
                 <?= Html::submitButton('Save',
                     ['class' => 'btn btn-outline-dark btn-navigate-form-step btn-next fs-5']) ?>
-<!--                , 'name' => 'saveWithoutValidation', 'value' => 'validate'?-->
+                <div>
+                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "2">Next Step</button>
+                </div>
             </div>
         </div>
     </div>
@@ -131,10 +127,13 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                 </div>
             </div>
             <div class = "d-flex justify-content-between">
-                <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "3">Next Step</button>
                 <?= Html::submitButton('Save',
                     ['class' => 'btn btn-outline-dark btn-navigate-form-step btn-next fs-5']) ?>
                 <!--                'name' => 'saveWithoutValidation', 'value' => 'validate'-->
+                <div>
+                    <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "1">Back</button>
+                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "3">Next Step</button>
+                </div>
             </div>
         </div>
     </div>
@@ -144,7 +143,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
         <div class = "card-body">
             <div class = "container pt-2" style = "height: 80vh; overflow-y: auto;">
                 <div class = "row">
-                    <div class = "col-md-4"><?= $form->field($model, 'Academic_lvl_edu')->dropDownList(['UG' => 'Undergraduate', 'PG' => 'Postgraduate'],['prompt' => 'Select Level of Education']) ?></div>
+                    <div class = "col-md-4"><?= $form->field($model, 'Academic_lvl_edu')->dropDownList(['UG' => 'Undergraduate', 'PG' => 'Postgraduate'],['prompt' => 'Select Level of Education', 'id' => 'edu-lvl']) ?></div>
                     <div class = "col-md-4"><?= $form->field($model, 'Academic_kulliyyah')->dropDownList(ArrayHelper::map(\common\models\Kcdio::find()->all(), 'kcdio', 'kcdio') + ['Other' => 'Other'], ['prompt' => 'Select Kulliyyah','id' => 'kulliyyah']) ?></div>
                     <div class="col-md-4"><?= $form->field($model, 'Academic_kulliyyah_others')->textInput(['maxlength' => true, 'placeholder' => '', 'disabled' => $model->Academic_kulliyyah !== 'Other', 'id' => 'kulliyyah_other',])?></div>
                 </div>
@@ -172,10 +171,13 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                 </div>
             </div>
             <div class = "d-flex justify-content-between">
-                <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "4">Next Step</button>
                 <?= Html::submitButton('Save',
                     ['class' => 'btn btn-outline-dark btn-navigate-form-step btn-next fs-5']) ?>
                 <!--                'name' => 'saveWithoutValidation', 'value' => 'validate'-->
+                <div>
+                    <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "2">Back</button>
+                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "4">Next Step</button>
+                </div>
             </div>
         </div>
     </div>
@@ -216,10 +218,13 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                 </div>
             </div>
             <div class = "d-flex justify-content-between">
-                <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "5">Next Step</button>
                 <?= Html::submitButton('Save',
                     ['class' => 'btn btn-outline-dark btn-navigate-form-step btn-next fs-5']) ?>
                 <!--                'name' => 'saveWithoutValidation', 'value' => 'validate'-->
+                <div>
+                    <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "3">Back</button>
+                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "5">Next Step</button>
+                </div>
             </div>
         </div>
     </div>
@@ -228,62 +233,64 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
     <div class = "card w-100">
         <div class = "card-body">
             <div class = "container pt-2" style = "height: 80vh; overflow-y: auto;">
-                <h4 class=" text-decoration-underline">Course Offered by Host University</h4>
-                <table class="table table-borderless">
-                    <thead>
-                    <tr>
-                        <th scope="col" class="col-2 text-center">Course Code</th>
-                        <th scope="col" class="col-6 text-center">Course Name</th>
-                        <th scope="col" class="col-2 text-center">Credit Hours</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php for ($i = 0; $i < 7; $i++) : ?>
+                <div id = "ugTable" class="d-none">
+                    <h4 class = " text-decoration-underline">Course Offered by Host University</h4>
+                    <table class = "table table-borderless">
+                        <thead>
                         <tr>
-                            <td class="py-0 px-2">
-                                <?= $form->field($coursesData[$i], "[$i]course_code")->textInput(['name' => "CoursesModel[$i][course_code]", 'placeholder' => 'sub', 'class' => 'form-control']) ?>
-                            </td>
-                            <td class="py-0 px-2">
-                                <?= $form->field($coursesData[$i], "[$i]course_name")->textInput(['name' => "CoursesModel[$i][course_name]", 'class' => 'form-control']) ?>
-                            </td>
-                            <td class="py-0 px-2">
-                                <?= $form->field($coursesData[$i], "[$i]credit_hours")->textInput(['name' => "CoursesModel[$i][credit_hours]", 'class' => 'form-control']) ?>
-                            </td>
+                            <th scope = "col" class = "col-2 text-center">Course Code</th>
+                            <th scope = "col" class = "col-6 text-center">Course Name</th>
+                            <th scope = "col" class = "col-2 text-center">Credit Hours</th>
                         </tr>
-                    <?php endfor; ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                        <?php for ($i = 0; $i < 7; $i++) : ?>
+                            <tr>
+                                <td class = "py-0 px-2"><?= $form->field($coursesData[$i], "[$i]course_code")->textInput(['name' => "CoursesModel[$i][course_code]", 'placeholder' => 'sub', 'class' => 'form-control']) ?></td>
+                                <td class = "py-0 px-2"><?= $form->field($coursesData[$i], "[$i]course_name")->textInput(['name' => "CoursesModel[$i][course_name]", 'class' => 'form-control']) ?></td>
+                                <td class = "py-0 px-2"><?= $form->field($coursesData[$i], "[$i]credit_hours")->textInput(['name' => "CoursesModel[$i][credit_hours]", 'class' => 'form-control']) ?></td>
+                            </tr>
+                        <?php endfor; ?>
+                        </tbody>
+                    </table>
 
-                <h4 class=" text-decoration-underline">Course Offered by IIUM</h4>
-                <table class="table table-borderless">
-                    <thead>
-                    <tr>
-                        <th scope="col" class="col-2 text-center">Course Code</th>
-                        <th scope="col" class="col-6 text-center">Course Name</th>
-                        <th scope="col" class="col-2 text-center">Credit Hours</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php for ($i = 0; $i < 7; $i++) : ?>
+                    <h4 class = " text-decoration-underline">Course Offered by IIUM</h4>
+                    <table class = "table table-borderless">
+                        <thead>
                         <tr>
-                            <td class="py-0 px-2">
-                                <?= $form->field($iiumCoursesData[$i], "[$i]course_code")->textInput(['name' => "IiumCoursesModel[$i][course_code]", 'placeholder' => 'sub', 'class' => 'form-control']) ?>
-                            </td>
-                            <td class="py-0 px-2">
-                                <?= $form->field($iiumCoursesData[$i], "[$i]course_name")->textInput(['name' => "IiumCoursesModel[$i][course_name]", 'class' => 'form-control']) ?>
-                            </td>
-                            <td class="py-0 px-2">
-                                <?= $form->field($iiumCoursesData[$i], "[$i]credit_hours")->textInput(['name' => "IiumCoursesModel[$i][credit_hours]", 'class' => 'form-control']) ?>
-                            </td>
+                            <th scope = "col" class = "col-2 text-center">Course Code</th>
+                            <th scope = "col" class = "col-6 text-center">Course Name</th>
+                            <th scope = "col" class = "col-2 text-center">Credit Hours</th>
                         </tr>
-                    <?php endfor; ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                        <?php for ($i = 0; $i < 7; $i++) : ?>
+                            <tr>
+                                <td class = "py-0 px-2"><?= $form->field($iiumCoursesData[$i], "[$i]course_code")->textInput(['name' => "IiumCoursesModel[$i][course_code]", 'placeholder' => 'sub', 'class' => 'form-control']) ?></td>
+                                <td class = "py-0 px-2"><?= $form->field($iiumCoursesData[$i], "[$i]course_name")->textInput(['name' => "IiumCoursesModel[$i][course_name]", 'class' => 'form-control']) ?></td>
+                                <td class = "py-0 px-2"><?= $form->field($iiumCoursesData[$i], "[$i]credit_hours")->textInput(['name' => "IiumCoursesModel[$i][credit_hours]", 'class' => 'form-control']) ?></td>
+                            </tr>
+                        <?php endfor; ?>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="d-none" id="PG">
+                    <?= $form->field($model, 'Research')->textarea(['maxlength' => true, 'placeholder' => null])?>
+                </div>
+                    <div id = "error">
+                    <div class = "d-flex align-items-center justify-content-center w-100">
+                        <div class = "row justify-content-center w-100">
+                            <p class="fs-8 text-center text-danger fw-bolder">Please Pick Level of Education</p>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class = "d-flex justify-content-between mt-4">
-                <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "6">Next Step</button>
-                <?= Html::submitButton('Save',
-                    ['class' => 'btn btn-outline-dark btn-navigate-form-step btn-next fs-5']) ?>
+                <?= Html::submitButton('Save', ['class' => 'btn btn-outline-dark btn-navigate-form-step btn-next fs-5']) ?>
+                <div>
+                    <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "4">Back</button>
+                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "6">Next Step</button>
+                </div>
             </div>
         </div>
     </div>
@@ -302,9 +309,9 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 
             </div>
             <div class = "d-flex justify-content-between mt-4">
-                <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "6">Next Step</button>
                 <?= Html::submitButton('Save',
-                    ['class' => 'btn btn-outline-dark btn-navigate-form-step btn-next fs-5', 'name' => 'saveWithoutValidation', 'value' => 'validate']) ?>
+                    ['class' => 'btn btn-outline-dark btn-navigate-form-step btn-next fs-5', 'name' => 'saveWithoutValidation', 'value' => 'validate', 'onClick' => 'submitForm()']) ?>
+                <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "5">Back</button>
             </div>
         </div>
     </div>
@@ -327,102 +334,3 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
     </div>
 </div>
 <?php ActiveForm::end(); ?>
-
-<script>
-    // Get the start date input element
-    const startDateInput = document.getElementById('Propose_duration_start');
-    // Get the end date input element
-    const endDateInput = document.getElementById('Propose_duration_end');
-
-    // Function to set minimum value for end date based on start date
-    function setEndDateMinValue() {
-        endDateInput.min = startDateInput.value;
-        console.log(startDateInput.value);
-        // If the current value of end date is less than start date, reset it
-        if (endDateInput.value < startDateInput.value) {
-            endDateInput.value = startDateInput.value;
-        }
-    }
-    // Add event listener to the start date input
-    startDateInput.addEventListener('change', setEndDateMinValue);
-    // Check if start date has a value on page load
-    window.addEventListener('load', function () {
-        if (startDateInput.value) {
-            setEndDateMinValue();
-        }
-    });
-</script>
-
-<script>
-    $(document).ready(function() {
-        // Function to toggle the disabled property of the "other" dropdowns
-        function toggleOtherDropdown(value, otherdropdown) {
-            if (value === 'Other') {
-                otherdropdown.prop('disabled', false);
-            } else {
-                otherdropdown.prop('disabled', true);
-            }
-        }
-
-        // Event handlers for each dropdown
-        $('#kulliyyah').change(function () {
-            var value = $(this).val();
-            var otherdropdown = $('#kulliyyah_other');
-            toggleOtherDropdown(value, otherdropdown);
-        });
-
-        $('#english').change(function () {
-            var value = $(this).val();
-            var otherdropdown = $('#english_other');
-            toggleOtherDropdown(value, otherdropdown);
-        });
-
-        $('#sponsor_name').change(function () {
-            var value = $(this).val();
-            var otherdropdown = $('#sponsor_other');
-            toggleOtherDropdown(value, otherdropdown);
-        });
-
-        $('#mobility_programme').change(function () {
-            var value = $(this).val();
-            var otherdropdown = $('#mobility_other');
-            toggleOtherDropdown(value, otherdropdown);
-        });
-    });
-</script>
-
-<script>
-    $(document).ready(function () {
-        function updateState(countryDropdown) {
-            var countryId = countryDropdown.val();
-            console.log(countryId)
-            var stateDropdown = countryDropdown.closest('.row').find('#state-dropdown');
-            if (countryId) {
-                $.ajax({
-                    url: '/inbound/get-states',
-                    type: 'post',
-                    data: {countryId: countryId},
-                    success: function (response) {
-                        stateDropdown.html(response);
-                    }
-                });
-            } else {
-                $('#state-dropdown').html('<option value="0">Select State</option>');
-            }
-        }
-
-        $('#country-dropdown').change(function () {
-            updateState($(this))
-        })
-        $('#emergency-country-dropdown').change(function () {
-            updateState($(this))
-        })
-        $('#host-country-dropdown').change(function () {
-            updateState($(this))
-        })
-        $('#host-country-dropdown').change(function () {
-            updateState($(this))
-        })
-    });
-</script>
-

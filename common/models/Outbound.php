@@ -96,8 +96,6 @@ use yii\db\Expression;
  */
 class Outbound extends \yii\db\ActiveRecord
 {
-    public $agree; // Boolean attribute for terms and conditions
-    public $files;
     /**
      * {@inheritdoc}
      */
@@ -145,6 +143,10 @@ class Outbound extends \yii\db\ActiveRecord
             ], [
                 'Type_mobility_program_other', 'required', 'when' => function ($model) {
                     return $model->Type_mobility_program === 'Other';
+                }
+            ],[
+                'Research', 'required', 'when' => function ($model) {
+                    return $model->Academic_lvl_edu === 'PG';
                 }
             ],[
                 ['agreement'], 'required', 'requiredValue' => 1, 'message' => 'You must agree to the terms and conditions'
@@ -224,7 +226,7 @@ class Outbound extends \yii\db\ActiveRecord
             'English_language_proficiency' => 'English Language Proficiency',
             'English_result' => 'English Result',
             'Third_language' => 'Third Language (Please Specify)',
-            'Financial_funded_accept' => 'Financial Funded Accept',
+            'Financial_funded_accept' => 'Financial Funded',
             'Sponsoring_name' => 'Name of Sponsoring Body',
             'Sponsoring_name_other' => 'Other (Please Specify)',
             'Sponsoring_funding' => 'Sponsoring Funding',
@@ -235,7 +237,7 @@ class Outbound extends \yii\db\ActiveRecord
             'Mobility_from' => 'Mobility From',
             'Mobility_until' => 'Mobility Until',
             'Country_host_university' => 'Country Host University',
-            'credit_transfer_availability' => 'Credit Transfer Availability',
+            'credit_transfer_availability' => 'Credit Transfer',
             'Connect_host_name' => 'Name',
             'Connect_host_position' => 'Position',
             'Connect_host_mobile_number' => 'Mobile Number',

@@ -66,8 +66,14 @@ class User extends ActiveRecord implements IdentityInterface
     }
     public function getCourses()
     {
-        return $this->hasMany(Courses::class, ['student_id' => 'id']);
+        if($this->type === 'O'){
+            return $this->hasMany(Courses::class, ['student_id' => 'id']);
+        }
+        else {
+            return $this->hasMany(InCourses::class, ['student_id' => 'ID']);
+        }
     }
+
     public function afterSave($insert, $changedAttributes)
     {
         parent::afterSave($insert, $changedAttributes);
@@ -81,6 +87,14 @@ class User extends ActiveRecord implements IdentityInterface
                 $course->student_id = $this->id;
                 // You can set other attributes of the Iiumcourse record here if needed
                 $iiumCourse->save(false); // Save without validation
+                $course->save(false); // Save without validation
+            }
+        }
+        elseif($insert && $this->type === 'I'){
+            for ($i = 0; $i < 7; $i++) {
+                $course = new InCourses();
+                $course->student_id = $this->id;
+                // You can set other attributes of the Iiumcourse record here if needed
                 $course->save(false); // Save without validation
             }
         }

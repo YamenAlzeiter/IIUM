@@ -22,7 +22,7 @@ function fileHandler($model, $attribute, $fileNamePrefix)
         $model->$attribute = $fileName;
     }
 }
-function courseSavor($attributes, $name, $scenario)
+function courseSavor($attributes, $name, $scenario, $isUG)
 {
     $allValid = true; // Flag to track if all attributes are valid
     foreach ($attributes as $index => $attribute) {
@@ -30,7 +30,10 @@ function courseSavor($attributes, $name, $scenario)
         if (!empty($postData)) {
             $attribute->attributes = $postData;
             // Set the scenario for the model
-            $attribute->scenario = $scenario;
+            if ($isUG) {
+                $attribute->scenario = $scenario;
+            }
+
             if (!$attribute->validate()) {
                 // Handle validation errors here
                 Yii::$app->session->setFlash('error', 'Validation failed for ' . $name);
@@ -39,6 +42,7 @@ function courseSavor($attributes, $name, $scenario)
                 Yii::$app->session->setFlash('error', 'Failed to save ' . $name);
                 $allValid = false; // Set flag to false if any attribute fails to save
             }
+
         }
     }
     return $allValid; // Return whether all attributes are valid and saved successfully

@@ -5,6 +5,8 @@
 /** @var string $content */
 
 use frontend\assets\AppAsset;
+use yii\bootstrap5\Alert;
+use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
 
 AppAsset::register($this);
@@ -15,6 +17,7 @@ AppAsset::register($this);
     <head>
         <script src = "https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script src = "https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
         <meta charset = "<?= Yii::$app->charset ?>">
         <meta name = "viewport" content = "width=device-width, initial-scale=1, shrink-to-fit=no">
         <?php $this->registerCsrfMetaTags() ?>

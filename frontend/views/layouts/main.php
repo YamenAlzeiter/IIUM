@@ -79,7 +79,11 @@ AppAsset::register($this);
             <?= $content ?>
 		</div>
 	</main>
-
+    <script>
+        setTimeout(function () {
+            $('.alert').fadeOut('slow');
+        }, 2500);
+    </script>
     <?php $this->endBody() ?>
 	</body>
 	</html>

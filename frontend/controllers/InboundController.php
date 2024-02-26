@@ -20,6 +20,7 @@ use yii\web\UploadedFile;
 /**
  * InboundController implements the CRUD actions for Inbound model.
  */
+require Yii::getAlias('@common').'/Helpers/controllerFunctions.php';
 class InboundController extends Controller
 {
     /**
@@ -89,11 +90,8 @@ class InboundController extends Controller
         $model = new Inbound(['ID' => Yii::$app->user->id]);
 
         //-------------- Create new instances for related course models --------------\\
-        $coursesModel = new InCourses();
-        //-------------- Define arrays to store data related to courses --------------\\
-        $coursesData = [];
 
-
+        $coursesData = InCourses::find()->where(['student_id' => $id])->all();
 
         if (Yii::$app->request->isPost) {
             try {
@@ -102,44 +100,29 @@ class InboundController extends Controller
 
                 if ($model->load(Yii::$app->request->post())) {
 
-                    $model->Passport = UploadedFile::getInstance($model, 'Passport');
-                    $model->Latest_passport_photo = UploadedFile::getInstance($model, 'Latest_passport_photo');
-                    $model->Latest_certified_academic_transcript = UploadedFile::getInstance($model, 'Latest_certified_academic_transcript');
-                    $model->Confirmation_letter = UploadedFile::getInstance($model, 'Confirmation_letter');
-                    $model->Sponsorship_letter = UploadedFile::getInstance($model, 'Sponsorship_letter');
-                    $model->Recommendation_letter = UploadedFile::getInstance($model, 'Recommendation_Letter');
-                    $model->English_certificate = UploadedFile::getInstance($model, 'English_certificate');
+                    $scenario = $model->scenario = $this->request->post('saveWithoutValidation') === 'validate' ? 'requiredValidate' : 'default';
 
-                    if ($this->request->post('saveWithoutValidation') === 'validate') {
-                        // Set status to 10 only when the 'submit' button is clicked
+                    $course =  courseSavor($coursesData, 'CoursesModel', $scenario, true);
+
+                    fileHandler($model,'Passport', 'Passport');
+                    fileHandler($model,'Latest_passport_photo', 'LatestPassportPhoto');
+                    fileHandler($model,'Latest_certified_academic_transcript', 'LatestCertifiedAcademicTranscript');
+                    fileHandler($model,'Confirmation_letter', 'ConfirmationLetter');
+                    fileHandler($model,'Sponsorship_letter', 'Sponsorship_letter');
+                    fileHandler($model,'Recommendation_letter', 'Recommendation_letter');
+                    fileHandler($model,'English_certificate', 'English_certificate');
+
+                    $allValid =$course;
+                    if ($scenario === 'requiredValidate') {
                         $model->Status = 10;
                     }
-    //                    $model->Name = Yii::$app->user->identity->username;
-    //                    $model->Email_address = Yii::$app->user->identity->email;
-
-                    if ($model->validate() && $model->save()) {
-                        //-------------------- File Saving --------------------\\
-                        $baseUploadPath = Yii::getAlias('@common/uploads');
-                        $this->saveUploadedFile($model, 'Passport', $baseUploadPath, 'Passport');
-                        $this->saveUploadedFile($model, 'Latest_passport_photo', $baseUploadPath, 'LatestPassportPhoto');
-                        $this->saveUploadedFile($model, 'Latest_certified_academic_transcript', $baseUploadPath, 'LatestCertifiedAcademicTranscript');
-                        $this->saveUploadedFile($model, 'Confirmation_letter', $baseUploadPath, 'ConfirmationLetter');
-                        $this->saveUploadedFile($model, 'Sponsorship_letter', $baseUploadPath, 'SponsorshipLetter');
-                        $this->saveUploadedFile($model, 'Recommendation_letter', $baseUploadPath, 'RecommendationLetter');
-                        $this->saveUploadedFile($model, 'English_certificate', $baseUploadPath, 'EnglishCertificate');
-                        //
-                        $coursesData = Yii::$app->request->post('CoursesModel', []);
-                        foreach ($coursesData as $courseInfo) {
-                            $coursesModel = new InCourses();
-                            $coursesModel->attributes = $courseInfo;
-                            $coursesModel->student_id = $model->ID;
-                            $coursesModel->save();
-                        }
-
+                    if($model->save($this->request->post('saveWithoutValidation') === 'validate')&& $allValid){
                         $transaction->commit();
-
                         Yii::$app->session->setFlash('success', 'Application created successfully.');
-                        return $this->redirect(['index']);
+                        return $this->redirect(['index', 'ID' => $model->ID]);
+                    }
+                    else{
+                        throw new Exception('Failed to save the main model.');
                     }
                 }
             } catch (Exception $e) {
@@ -152,12 +135,12 @@ class InboundController extends Controller
         } else {
             $model->loadDefaultValues();
         }
-
-
         return $this->render('create', [
             'model' => $model,
+            'coursesData' => $coursesData,
         ]);
     }
+
 
     private function idExists($id)
     {
@@ -203,81 +186,44 @@ class InboundController extends Controller
             // Redirect to a different page or reload the current page
             return $this->redirect(['inbound/index']); // Replace 'controller/action' with the appropriate route
         }
+
         $coursesData = InCourses::find()->where(['student_id' => $ID])->all();
 
+        if ($model->load($this->request->post())) {
 
-        if (Yii::$app->request->isPost) {
+            $scenario = $model->scenario = $this->request->post('saveWithoutValidation') === 'validate' ? 'requiredValidate' : 'default';
+            $course =  courseSavor($coursesData, 'CoursesModel', $scenario, true);
 
+            fileHandler($model,'Passport', 'Passport');
+            fileHandler($model,'Latest_passport_photo', 'LatestPassportPhoto');
+            fileHandler($model,'Latest_certified_academic_transcript', 'LatestCertifiedAcademicTranscript');
+            fileHandler($model,'Confirmation_letter', 'ConfirmationLetter');
+            fileHandler($model,'Sponsorship_letter', 'Sponsorship_letter');
+            fileHandler($model,'Recommendation_letter', 'Recommendation_letter');
+            fileHandler($model,'English_certificate', 'English_certificate');
 
+            $transaction = Yii::$app->db->beginTransaction();
+            $allValid =$course;
+            if ($scenario === 'requiredValidate') {
+                $model->Status = 10;
+            }
             try {
-                $transaction = Yii::$app->db->beginTransaction();
-                if ($model->load(Yii::$app->request->post())) {
-                    // Helper function for updating file
-
-                    $updateFile = function ($attribute, $fileNamePrefix) use ($model) {
-                        $file = UploadedFile::getInstance($model, $attribute);
-                        if ($file) {
-                            $baseUploadPath = Yii::getAlias('@common/uploads');
-                            $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $file->name);
-                            $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));
-                            $fileName = $creationYearLastTwoDigits.'_'.$model->ID.'_'.$fileNamePrefix.'.'.$file->extension;
-                            $filePath = $baseUploadPath.'/'.$model->ID.'/'.$fileName;
-
-                            // Create directory if not exists
-                            if (!file_exists(dirname($filePath))) {
-                                mkdir(dirname($filePath), 0777, true);
-                            }
-
-                            $file->saveAs($filePath);
-                            $model->$attribute = $fileName;
-                        }
-                    };
-
-                    $updateFile('Passport', 'Passport');
-                    $updateFile('Latest_passport_photo', 'LatestPassportPhoto');
-                    $updateFile('Latest_certified_academic_transcript', 'LatestCertifiedAcademicTranscript');
-                    $updateFile('Confirmation_letter', 'ConfirmationLetter');
-                    $updateFile('Sponsorship_letter', 'SponsorshipLetter');
-                    $updateFile('Recommendation_letter', 'RecommendationLetter');
-                    $updateFile('English_certificate', 'EnglishCertificate');
-
-
-                    if ($this->request->post('saveWithoutValidation') === 'validate') {
-                        // Set status to 10 only when the 'submit' button is clicked
-                        $model->Status = 10;
-                    }
-
-                    if ($model->validate() && $model->save()) {
-
-                        // Update Courses records
-                        foreach ($_POST['CoursesModel'] as $courseData) {
-                            $courseModel = InCourses::findOne($courseData['id']);
-                            $courseModel->attributes = $courseData;
-
-                            if (!$courseModel->validate() || !$courseModel->save()) {
-                                Yii::error("Error saving Courses record: " . print_r($courseModel->errors, true));
-                                // Handle the error case, you might want to render the update view again with an error message
-                            }
-                        }
-
-                        // If everything is successful, commit the transaction
-                        $transaction->commit();
-
-                        Yii::$app->session->setFlash('success', 'Application updated successfully.');
-                        return $this->redirect(['index']);
-                    }
+                if($model->save($this->request->post('saveWithoutValidation') === 'validate')&& $allValid){
+                    $transaction->commit();
+                    Yii::$app->session->setFlash('success', 'Application created successfully.');
+                    return $this->redirect(['index', 'ID' => $model->ID]);
+                }
+                else{
+                    throw new Exception('Failed to save the main model.');
                 }
             } catch (Exception $e) {
-                // If any exception occurs, roll back the transaction
                 $transaction->rollBack();
-
-                Yii::$app->session->setFlash('error', 'An error occurred while updating the application.');
                 Yii::error($e->getMessage());
             }
         }
-
         return $this->render('update', [
-            'model' => $model, 'coursesData' => $coursesData,
+            'model' => $model,
+            'coursesData' => $coursesData,
         ]);
     }
 

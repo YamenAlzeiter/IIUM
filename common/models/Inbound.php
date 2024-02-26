@@ -105,6 +105,43 @@ class Inbound extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['Name','Gender','Relation_ship','Date_of_Birth', 'Passport_Number','Passport_Expiration','Religion','Mazhab','Citizenship','Country_of_origin','Country_of_residence','Mobile_Number','Email_address','Permanent_Address','Postcode', 'Country',
+              'Emergency_name', 'Emergency_relationship', 'Emergency_phoneNumber', 'Emergency_email', 'Emergency_homeAddress', 'Emergency_postCode', 'Emergency_country',
+              'Academic_home_university','Academic_lvl_edu', 'Academic_name_of_programme', 'Academic_current_semester', 'Academic_current_year', 'Academic_name_of_faculty', 'Academic_current_result', 'Research_title', 'Mou_or_Moa',
+              'English_native', 'English_test_name',
+              'Propose_type_of_programme', 'Propose_type_of_mobility', 'Propose_kulliyyah_applied', 'Propose_duration_start','Propose_duration_end', 'Propose_transfer_credit_hours',
+              'Financial_accommodation_on_campus', 'Financial_funding',
+              'Approval_university_person_name', 'Approval_person_position', 'Approval_person_email', 'Approval_person_mobile_number', 'Approval_date'
+            ],'required', 'on' => 'requiredValidate'
+            ], [
+                'English_other_test_name', 'required', 'when' => function ($model) {
+                    return $model->English_test_name === 'Other';
+                }
+            ], [
+                'Propose_type_of_programme_other', 'required', 'when' => function ($model) {
+                    return $model->Propose_type_of_programme === 'Other';
+                }
+            ],
+            [
+                'Financial_funding_other', 'required', 'when' => function ($model) {
+                return $model->Financial_funding_sponsor_amount === 'Other';
+            }
+            ],[
+                'Room_type', 'required', 'when'=>function ($model) {
+                    return $model->Financial_accommodation_on_campus === 1;
+                }
+            ],
+            [
+              ['Sponsor_name', 'Financial_funding_sponsor_amount'], 'required', 'when' => function ($model) {
+               return $model->Financial_funding ===  'Scholarship';
+            }
+            ], [
+                'Passport_Expiration', 'validatePassportExpiration'
+            ],
+            ['Propose_duration_end' , 'compare', 'compareAttribute' => 'Propose_duration_start', 'operator' => '>=', 'message' => 'Proposal duration end must be greater than or equal to proposal duration start.'],
+            ['Propose_duration_start', 'validateDate'],
+
+
             [['Date_of_Birth', 'Passport_Expiration', 'Propose_duration_start', 'Propose_duration_end', 'Approval_date', 'Student_declaration_date', 'updated_at', 'created_at'], 'safe'],
             [['Academic_current_semester', 'Academic_current_year', 'Academic_current_result', 'Mou_or_Moa', 'English_native', 'Propose_type_of_mobility', 'Propose_transfer_credit_hours', 'Financial_accommodation_on_campus', 'Financial_funding_sponsor_amount', 'Student_declaration_agreement', 'Status', 'Kulliyyah', 'msd_cps'], 'default', 'value' => null],
             [['Academic_current_semester', 'Academic_current_year', 'Mou_or_Moa', 'English_native', 'Propose_type_of_mobility', 'Propose_transfer_credit_hours', 'Financial_accommodation_on_campus', 'Financial_funding_sponsor_amount', 'Student_declaration_agreement', 'Status', 'Kulliyyah', 'msd_cps'], 'integer'],
@@ -120,8 +157,28 @@ class Inbound extends \yii\db\ActiveRecord
             [['Academic_lvl_edu'], 'string', 'max' => 20],
             [['Propose_duration_of_study', 'Financial_funding'], 'string', 'max' => 30],
             [['Approval_person_mobile_number'], 'string', 'max' => 16],
-            [[ 'Academic_current_result'], 'double']
+            [[ 'Academic_current_result'], 'double'],
+            [['Email_address', 'Emergency_email', 'Approval_person_email'], 'email']
         ];
+    }
+
+    public function validatePassportExpiration($attribute, $params)
+    {
+        $expirationDate = strtotime($this->$attribute);
+        $sixMonthsLater = strtotime("+6 months");
+
+        if ($expirationDate < $sixMonthsLater) {
+            $this->addError($attribute, 'Passport expiration date must be at least 6 months after the current date.');
+        }
+    }
+    public function validateDate($attribute, $params)
+    {
+        $date = strtotime($this->$attribute);
+        $currentDate = strtotime(date('Y-m-d'));
+
+        if ($date < $currentDate) {
+            $this->addError($attribute, 'Date must be greater than or equal to the current date.');
+        }
     }
 
     /**
@@ -133,7 +190,7 @@ class Inbound extends \yii\db\ActiveRecord
             'ID' => 'ID',
             'Name' => 'Name',
             'Gender' => 'Gender',
-            'Relation_ship' => 'Relation Ship',
+            'Relation_ship' => 'Relationship',
             'Date_of_Birth' => 'Date Of Birth',
             'Passport_Number' => 'Passport Number',
             'Passport_Expiration' => 'Passport Expiration',
@@ -147,34 +204,34 @@ class Inbound extends \yii\db\ActiveRecord
             'Permanent_Address' => 'Permanent Address',
             'Postcode' => 'Postcode',
             'Country' => 'Country',
-            'Emergency_name' => 'Emergency Name',
-            'Emergency_relationship' => 'Emergency Relationship',
-            'Emergency_phoneNumber' => 'Emergency Phone Number',
-            'Emergency_email' => 'Emergency Email',
-            'Emergency_homeAddress' => 'Emergency Home Address',
-            'Emergency_postCode' => 'Emergency Post Code',
-            'Emergency_country' => 'Emergency Country',
-            'Academic_home_university' => 'Academic Home University',
-            'Academic_lvl_edu' => 'Academic Lvl Edu',
-            'Academic_name_of_programme' => 'Academic Name Of Programme',
-            'Academic_current_semester' => 'Academic Current Semester',
-            'Academic_current_year' => 'Academic Current Year',
-            'Academic_name_of_faculty' => 'Academic Name Of Faculty',
-            'Academic_current_result' => 'Academic Current Result',
+            'Emergency_name' => 'Name',
+            'Emergency_relationship' => 'Relationship',
+            'Emergency_phoneNumber' => 'Phone Number',
+            'Emergency_email' => 'Email',
+            'Emergency_homeAddress' => 'Home Address',
+            'Emergency_postCode' => 'Post Code',
+            'Emergency_country' => 'Country',
+            'Academic_home_university' => 'Home University',
+            'Academic_lvl_edu' => 'Level of Education',
+            'Academic_name_of_programme' => 'Name of Programme',
+            'Academic_current_semester' => 'Current Semester',
+            'Academic_current_year' => 'Current Year',
+            'Academic_name_of_faculty' => 'Name of Faculty',
+            'Academic_current_result' => 'Current Result',
             'Research_title' => 'Research Title',
-            'Mou_or_Moa' => 'Mou Or Moa',
-            'English_native' => 'English Native',
+            'Mou_or_Moa' => 'Does your university have MoU/MoA with IIUM?',
+            'English_native' => 'Is English your first/main language?',
             'English_test_name' => 'English Test Name',
             'English_other_test_name' => 'English Other Test Name',
             'English_certificate' => 'English Certificate',
-            'Propose_type_of_programme' => 'Propose Type Of Programme',
-            'Propose_type_of_programme_other' => 'Propose Type Of Programme Other',
-            'Propose_type_of_mobility' => 'Propose Type Of Mobility',
-            'Propose_kulliyyah_applied' => 'Propose Kulliyyah Applied',
-            'Propose_duration_of_study' => 'Propose Duration Of Study',
-            'Propose_duration_start' => 'Propose Duration Start',
-            'Propose_duration_end' => 'Propose Duration End',
-            'Propose_transfer_credit_hours' => 'Propose Transfer Credit Hours',
+            'Propose_type_of_programme' => 'Type of Programme',
+            'Propose_type_of_programme_other' => 'Other (please specify)',
+            'Propose_type_of_mobility' => 'Type of Mobility',
+            'Propose_kulliyyah_applied' => 'Kulliyyah Applied',
+            'Propose_duration_of_study' => 'Duration of Study',
+            'Propose_duration_start' => 'Duration Start',
+            'Propose_duration_end' => 'Duration End',
+            'Propose_transfer_credit_hours' => 'Transfer Credit Hours',
             'Financial_accommodation_on_campus' => 'Financial Accommodation On Campus',
             'campus_location' => 'Campus Location',
             'Financial_funding' => 'Financial Funding',
@@ -207,11 +264,6 @@ class Inbound extends \yii\db\ActiveRecord
             'offer_letter' => 'Offer Letter',
             'reference_number' => 'Reference Number',
         ];
-    }
-
-    public function getCourses()
-    {
-        return $this->hasMany(InCourses::class, ['student_id' => 'ID']);
     }
 
     public function beforeSave($insert)

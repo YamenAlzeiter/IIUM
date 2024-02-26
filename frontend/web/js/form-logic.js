@@ -1,132 +1,133 @@
+// Get the start date input element
+const startDateInput = document.getElementById("Propose_duration_start");
+// Get the end date input element
+const endDateInput = document.getElementById("Propose_duration_end");
+
 $(document).ready(function () {
-  // Define a function to toggle the "Others" input field based on the selected option
-  function toggleOthersField(dropdownId, othersInputId, otherOptionValue) {
-    var dropdown = $("#" + dropdownId);
-    var othersInput = $("#" + othersInputId).closest(".form__div");
-
-    // Initially hide or show the "Others" input field based on the selected option
-    toggle();
-
-    // Add change event listener to the dropdown
-    dropdown.change(function () {
-      // Toggle the "Others" input field based on the selected option
-      toggle();
-    });
-
-    // Function to toggle the "Others" input field based on the selected option
-    function toggle() {
-      var selectedOption = dropdown.val();
-
-      // Check if the selected option is the specified "OTHERS" value
-      if (selectedOption === otherOptionValue) {
-        // Show and make the "Others" input field required
-        $("#" + othersInputId).prop("disabled", false);
-      } else {
-        // Hide and remove the required attribute
-        $("#" + othersInputId).prop("disabled", true);
-
-        // Clear the value in the "Others" input field
-        $("#" + othersInputId).val("");
-      }
+  // Function to toggle the disabled property of the "other" dropdowns
+  function toggleLvlEdu(value) {
+    switch (value) {
+      case "PG":
+        showElement("PG");
+        hideElement("ugTable");
+        hideElement("error");
+        break;
+      case "UG":
+        showElement("ugTable");
+        hideElement("PG");
+        hideElement("error");
+        break;
+      default:
+        hideElement("ugTable");
+        hideElement("PG");
+        showElement("error");
     }
   }
 
-  // Example usage for the first dropdown
-  toggleOthersField("kulliyyah", "validationCustomOthers", "OTHERS");
-
-  // Example usage for the second dropdown
-  toggleOthersField(
-    "sponsoring_name",
-    "validationCustomSponsoringNameOther",
-    "OTHERS",
-  );
-
-  // Example usage for the third dropdown and input field
-  toggleOthersField(
-    "type_program",
-    "validationCustomTypeProgramOther",
-    "Other",
-  );
-
-  toggleOthersField("English_test_name", "English_other_test_name", "OTHERs");
-  toggleOthersField(
-    "Propose_type_of_programme",
-    "validationTypeProgramOther",
-    "Other",
-  );
+  // Event handlers for each dropdown
+  $("#edu-lvl").change(function () {
+    var value = $(this).val();
+    console.log(value);
+    toggleLvlEdu(value);
+  });
+  $("#edu-lvl").trigger("change");
 });
+
+function showElement(id) {
+  document.getElementById(id).classList.remove("d-none");
+}
+
+function hideElement(id) {
+  document.getElementById(id).classList.add("d-none");
+}
 
 $(document).ready(function () {
-  // Define a function to toggle the "Amount of Scholarship/grant (RM)" input field based on the selected radio button
-  function toggleHostScholarshipAmountField() {
-    var hostScholarshipYes = $("#host_scholarship_1");
-    var scholarshipAmountInput = $(
-      "#validationCustomHostScholarshipAmount",
-    ).closest(".form__div");
-
-    // Initially hide or show the "Amount of Scholarship/grant (RM)" input field based on the selected radio button
-    toggle();
-
-    // Add change event listener to the radio buttons
-    $("input[name='Outbound[host_scholarship]']").change(function () {
-      // Toggle the "Amount of Scholarship/grant (RM)" input field based on the selected radio button
-      toggle();
-    });
-
-    // Function to toggle the "Amount of Scholarship/grant (RM)" input field based on the selected radio button
-    function toggle() {
-      // Check if the "Yes" radio button is checked
-      if (hostScholarshipYes.is(":checked")) {
-        // Show and make the "Amount of Scholarship/grant (RM)" input field required
-
-        $("#validationCustomHostScholarshipAmount").prop("disabled", false);
-      } else {
-        // Hide and remove the required attribute
-
-        $("#validationCustomHostScholarshipAmount").prop("disabled", true);
-
-        // Clear the value in the "Amount of Scholarship/grant (RM)" input field
-        $("#validationCustomHostScholarshipAmount").val("");
-      }
-    }
-  }
-
-  // Example usage for the new set of radio buttons and input field
-  toggleHostScholarshipAmountField();
-});
-document.addEventListener("DOMContentLoaded", function () {
-  var lvlEduSelect = document.getElementById("lvl_edu");
-  var academicNameInput = document.getElementById("Academic_name_of_programme");
-  var researchTitleTextarea = document.getElementById("Research_title");
-
-  // Function to toggle visibility and set required attribute based on the selected value
-  function toggleVisibility() {
-    var selectedValue = lvlEduSelect.value;
-
-    if (academicNameInput && researchTitleTextarea) {
-      if (selectedValue === "Diploma" || selectedValue === "Degree") {
-        academicNameInput.closest(".form__div").style.display = "block";
-        researchTitleTextarea.closest(".form__div").style.display = "none";
-        researchTitleTextarea.removeAttribute("required");
-        academicNameInput.setAttribute("required", true);
-      } else if (selectedValue === "Master" || selectedValue === "PhD") {
-        researchTitleTextarea.closest(".form__div").style.display = "block";
-        academicNameInput.closest(".form__div").style.display = "none";
-        researchTitleTextarea.setAttribute("required", true);
-        academicNameInput.removeAttribute("required");
-      } else {
-        academicNameInput.closest(".form__div").style.display = "block";
-        researchTitleTextarea.closest(".form__div").style.display = "none";
-        researchTitleTextarea.removeAttribute("required");
-        academicNameInput.setAttribute("required", true);
-      }
+  // Function to toggle the disabled property of the "other" dropdowns
+  function toggleOtherDropdown(value, otherdropdown) {
+    if (value === "Other") {
+      otherdropdown.prop("disabled", false);
+    } else if (value === "1") {
+      otherdropdown.prop("disabled", false);
     } else {
+      otherdropdown.prop("disabled", true);
     }
   }
 
-  // Initial call to toggle visibility based on the initial select value
-  toggleVisibility();
+  // Event handlers for each dropdown
+  $("#kulliyyah").change(function () {
+    var value = $(this).val();
+    var otherdropdown = $("#kulliyyah_other");
+    toggleOtherDropdown(value, otherdropdown);
+  });
 
-  // Event listener to call toggleVisibility when the select value changes
-  lvlEduSelect.addEventListener("change", toggleVisibility);
+  $("#english").change(function () {
+    var value = $(this).val();
+    var otherdropdown = $("#english_other");
+    toggleOtherDropdown(value, otherdropdown);
+  });
+
+  $("#sponsor_name").change(function () {
+    var value = $(this).val();
+    var otherdropdown = $("#sponsor_other");
+    toggleOtherDropdown(value, otherdropdown);
+  });
+
+  $("#mobility_programme").change(function () {
+    var value = $(this).val();
+    var otherdropdown = $("#mobility_other");
+    toggleOtherDropdown(value, otherdropdown);
+  });
+  $("#programme").change(function () {
+    var value = $(this).val();
+    var otherdropdown = $("#programme_other");
+    toggleOtherDropdown(value, otherdropdown);
+  });
+  $("#accommodation").change(function () {
+    var value = $("#i12").prop("checked") ? "1" : "0";
+    var otherdropdown = $("#campus");
+    toggleOtherDropdown(value, otherdropdown);
+    toggleOtherDropdown(value, $("#room"));
+  });
+});
+
+$(document).ready(function () {
+  function updateState(countryDropdown) {
+    var countryId = countryDropdown.val();
+    console.log(countryId);
+    var stateDropdown = countryDropdown.closest(".row").find("#state-dropdown");
+    if (countryId) {
+      $.ajax({
+        url: "/inbound/get-states",
+        type: "post",
+        data: { countryId: countryId },
+        success: function (response) {
+          stateDropdown.html(response);
+        },
+      });
+    } else {
+      $("#state-dropdown").html('<option value="0">Select State</option>');
+    }
+  }
+
+  $("#country-dropdown").change(function () {
+    updateState($(this));
+  });
+  $("#emergency-country-dropdown").change(function () {
+    updateState($(this));
+  });
+  $("#host-country-dropdown").change(function () {
+    updateState($(this));
+  });
+  $("#host-country-dropdown").change(function () {
+    updateState($(this));
+  });
+});
+$(document).ready(function () {
+  function showOptions(countryDropdown) {
+    console.log("showOptions");
+  }
+
+  $("#country-dropdown").change(function () {
+    showOptions($(this));
+  });
 });
