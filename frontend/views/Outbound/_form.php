@@ -42,7 +42,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                         <?= $form->field($model, 'Matric_Number')->textInput(['value' => Yii::$app->user->identity->matric_number ,'maxlength' => true, 'placeholder' => '', 'disabled' => true]) ?>
                     </div>
                     <div class = "col-md-6">
-                        <?= $form->field($model, 'Citizenship')->dropDownList(ArrayHelper::map(Countries::find()->all(), 'nationality', 'nationality'), ['prompt' => 'Select Nationality', 'unselect' => null]) ?>
+                        <?= $form->field($model, 'Citizenship')->dropDownList(ArrayHelper::map(Countries::find()->where(['nationality' => 'Malaysian'])->all(), 'nationality', 'nationality'), ['prompt' => 'Select Nationality', 'unselect' => null]) ?>
                     </div>
                 </div>
                 <div class = "row align-items-center">
@@ -70,7 +70,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                 </div>
                 <div class = "row">
                     <div class = "col-md-4">
-                        <?= $form->field($model, 'Country')->dropDownList(ArrayHelper::map(Countries::find()->all(), 'id', 'name'), ['prompt' => 'Select Country', 'id' => 'country-dropdown']) ?>
+                        <?= $form->field($model, 'Country')->dropDownList(ArrayHelper::map(Countries::find()->where([ 'name' => 'Malaysia'])->all(), 'id', 'name'), ['prompt' => 'Select Country', 'id' => 'country-dropdown']) ?>
                     </div>
                     <div class = "col-md-4">
                         <?= $form->field($model, 'State')->dropDownList($model->Country != '' ? ArrayHelper::map(States::find()->where(['country_id' => $model->Country])->all(), 'id', 'name') : [] , ['prompt' => 'Select State', 'id' => 'state-dropdown']) ?>
@@ -85,7 +85,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                 <?= Html::submitButton('Save',
                     ['class' => 'btn btn-outline-dark btn-navigate-form-step btn-next fs-5']) ?>
                 <div>
-                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "2">Next Step</button>
+                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" onclick= updateFormStepper(2)>Next Step</button>
                 </div>
             </div>
         </div>
@@ -131,8 +131,8 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                     ['class' => 'btn btn-outline-dark btn-navigate-form-step btn-next fs-5']) ?>
                 <!--                'name' => 'saveWithoutValidation', 'value' => 'validate'-->
                 <div>
-                    <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "1">Back</button>
-                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "3">Next Step</button>
+                    <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" onclick=updateFormStepper(1)>Back</button>
+                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" onclick= updateFormStepper(3)>Next Step</button>
                 </div>
             </div>
         </div>
@@ -175,8 +175,8 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                     ['class' => 'btn btn-outline-dark btn-navigate-form-step btn-next fs-5']) ?>
                 <!--                'name' => 'saveWithoutValidation', 'value' => 'validate'-->
                 <div>
-                    <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "2">Back</button>
-                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "4">Next Step</button>
+                    <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" onclick=updateFormStepper(2)>Back</button>
+                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" onclick= updateFormStepper(4)>Next Step</button>
                 </div>
             </div>
         </div>
@@ -196,8 +196,8 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                 </div>
                 <div class = "row">
                     <div class = "col-md"><?= $form->field($model, 'Host_university_name')->textInput(['maxlength' => true, 'placeholder' => ''])?></div>
-                    <div class = "col-md"><?= $form->field($model, 'Mobility_from')->input('date', ['min' => date('Y-m-d'), 'id' => 'Propose_duration_start', 'onkeydown' => 'return false'])?></div>
-                    <div class = "col-md"><?= $form->field($model, 'Mobility_until')->input('date', ['min' => date('Y-m-d'), 'id' =>'Propose_duration_end', 'onkeydown' => 'return false'])?></div>
+                    <div class = "col-md"><?= $form->field($model, 'Mobility_from')->input('date', ['id' => 'Propose_duration_start', 'onkeydown' => 'return false'])?></div>
+                    <div class = "col-md"><?= $form->field($model, 'Mobility_until')->input('date', ['id' =>'Propose_duration_end', 'onkeydown' => 'return false'])?></div>
                     <div class = "col-md"><?= $form->field($model, 'credit_transfer_availability', ['template' =>$templateRadio,   'labelOptions' => ['class' => 'form-label']])->inline(true)->radioList(['1' => 'Yes', '2' => 'No'],['unselect' => null])?></div>
                 </div>
 
@@ -222,8 +222,8 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                     ['class' => 'btn btn-outline-dark btn-navigate-form-step btn-next fs-5']) ?>
                 <!--                'name' => 'saveWithoutValidation', 'value' => 'validate'-->
                 <div>
-                    <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "3">Back</button>
-                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "5">Next Step</button>
+                    <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" onclick=updateFormStepper(3)>Back</button>
+                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" onclick= updateFormStepper(5)>Next Step</button>
                 </div>
             </div>
         </div>
@@ -288,8 +288,8 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
             <div class = "d-flex justify-content-between mt-4">
                 <?= Html::submitButton('Save', ['class' => 'btn btn-outline-dark btn-navigate-form-step btn-next fs-5']) ?>
                 <div>
-                    <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "4">Back</button>
-                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "6">Next Step</button>
+                    <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" onclick=updateFormStepper(4)>Back</button>
+                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" onclick= updateFormStepper(6)>Next Step</button>
                 </div>
             </div>
         </div>
@@ -311,7 +311,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
             <div class = "d-flex justify-content-between mt-4">
                 <?= Html::submitButton('Save',
                     ['class' => 'btn btn-outline-dark btn-navigate-form-step btn-next fs-5', 'name' => 'saveWithoutValidation', 'value' => 'validate', 'onClick' => 'submitForm()']) ?>
-                <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "5">Back</button>
+                <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" onclick=updateFormStepper(5)>Back</button>
             </div>
         </div>
     </div>

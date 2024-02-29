@@ -3,7 +3,9 @@
 use common\models\Status;
 use yii\bootstrap5\LinkPager;
 use yii\grid\GridView;
-use yii\helpers\Html; ?>
+use yii\helpers\Html;
+/** @var yii\data\ActiveDataProvider $dataProvider */
+?>
 
 <div class = "row">
     <div class = "col-lg-3">

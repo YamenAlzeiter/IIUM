@@ -131,3 +131,29 @@ $(document).ready(function () {
     showOptions($(this));
   });
 });
+$(document).ready(function () {
+  $('#funding input[type="radio"]').change(function () {
+    var value = $(this).val();
+
+    switch (value) {
+      case "Self-sponsor":
+        hideElement("funding_scholarship");
+        hideElement("funding_other");
+        break;
+      case "Scholarship":
+        showElement("funding_scholarship");
+        hideElement("funding_other");
+        break;
+      case "Other":
+        showElement("funding_other");
+        hideElement("funding_scholarship");
+        break;
+      default:
+        hideElement("funding_scholarship");
+        hideElement("funding_other");
+    }
+  });
+
+  // Trigger the change event initially to handle the initial state
+  $('#funding input[type="radio"]:checked').change();
+});

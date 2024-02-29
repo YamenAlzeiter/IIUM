@@ -93,7 +93,10 @@ class InboundController extends Controller
 
         // Exclude records with null status
         $dataProvider->query->andWhere([
-            'and', ['EXTRACT(YEAR FROM created_at)' => $year], ['not', ['Status' => null]]
+            'and', [
+                'or', ['EXTRACT(YEAR FROM "Propose_duration_start")' => $year],
+                ['EXTRACT(YEAR FROM "Propose_duration_end")' => $year],
+            ], ['not', ['Status' => null]]
         ]);
         $dataProvider->sort->defaultOrder = ['updated_at' => SORT_DESC];
 
@@ -133,27 +136,6 @@ class InboundController extends Controller
 
 // Function to get gender count
 
-    /**
-     * Creates a new Inbound model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return string|Response
-     */
-    public function actionCreate()
-    {
-        $model = new Inbound();
-
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'ID' => $model->ID]);
-            }
-        } else {
-            $model->loadDefaultValues();
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
-    }
 
     /**
      * Updates an existing Inbound model.
@@ -167,8 +149,8 @@ class InboundController extends Controller
     {
         if (Yii::$app->user->can('superAdmin')) {
             $model = $this->findModel($ID);
-
-            if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            $model->scenario = 'default'; // Set the scenario to 'default' to validate the required fields
+            if ($this->request->isPost && $model->load($this->request->post()) && $model->save(false)) {
                 return $this->redirect(['view', 'ID' => $model->ID]);
             }
 
@@ -479,7 +461,7 @@ class InboundController extends Controller
                     break;
             }
 
-            if ($model->save()) {
+            if ($model->save(false)) {
                 $this->sendEmail($model, $personModel, $model->Token, $template, null,);
                 return $this->redirect(["index", 'year' => date("Y")]);
             }
@@ -589,7 +571,7 @@ class InboundController extends Controller
             $model->Status = intval($this->request->post("status"));
             $model->temp = $this->request->post("reason");
 
-            if ($model->save()) {
+            if ($model->save(false)) {
                 $this->sendEmail($model, null, $model->Token, self::template_reject, $model->temp);
                 return $this->redirect(["index", 'year' => date("Y")]);
             }
@@ -618,7 +600,7 @@ class InboundController extends Controller
         if ($this->request->isPost) {
             $model->temp = $this->request->post("reason");
 
-            if ($model->save()) {
+            if ($model->save(false)) {
                 $this->sendEmail($model, null, $model->Token, self::template_incomplete, $model->temp);
                 return $this->redirect(["index", 'year' => date("Y")]);
             }
@@ -658,7 +640,7 @@ class InboundController extends Controller
             }
         }
 
-        if ($model->save()) {
+        if ($model->save(false)) {
             $this->sendEmail($model, $modelPoc, $model->Token, self::template_reconsider, $model->temp);
             return $this->redirect(["index", 'year' => date("Y")]);
         }

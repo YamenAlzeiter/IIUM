@@ -14,7 +14,7 @@ $this->title = 'Request password reset';
 			<p>Please fill out your email. A link to reset password will be sent there.</p>
 
 
-                    <?php $form = ActiveForm::begin(['id' => 'request-password-reset-form']); ?>
+                    <?php $form = ActiveForm::begin([ 'enableClientValidation' => false, 'id' => 'request-password-reset-form']); ?>
 
                     <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
 

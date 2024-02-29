@@ -43,7 +43,7 @@ AppAsset::register($this);
 						<!--						<div class = "d-xl-flex align-items-center justify-content-center"-->
 						<ul class = "d-none d-xl-flex form-stepper form-stepper-horizontal text-center mb-0 vh-100 justify-content-center gap-5">
 							<!-- Step 1: Personal Information -->
-							<li class = "form-stepper-active text-center form-stepper-list" step = "1">
+							<li class = " text-center form-stepper-list" step = "1" id="step-1-title">
 								<a class = "mx-2">
 									<div class = "label">Personal Information</div>
 								</a>

@@ -89,7 +89,7 @@ class WorkflowController extends WorkflowCommonController
             $model->Status = $status;
             $model->Token = null;
             Yii::debug('Token after updating: '.$model->Token);
-            if ($model->save()) {
+            if ($model->save(false)) {
                 return $this->redirect(['view', 'ID' => $model->ID, 'token' => $model->Token],);
             }
         }
@@ -116,7 +116,7 @@ class WorkflowController extends WorkflowCommonController
             $model->Note_dean = $note;
             $model->Token = null;
             Yii::debug('Token after updating: '.$model->Token);
-            if ($model->save()) {
+            if ($model->save(false)) {
                 return $this->redirect(['view', 'ID' => $model->ID, 'token' => $model->Token],);
             }
         }

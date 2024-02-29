@@ -222,7 +222,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                                 <div>
                                     <?= Html::a('<i class="ti ti-download fs-7"></i>',
                                         ['download-all', 'id' => $model->ID],
-                                        ['class' => 'download', 'id' => 'download']) ?>
+                                        ['class' => 'download']) ?>
                                 </div>
                             </div>
                             <?= DownloadLinkWidget::widget([
@@ -247,9 +247,14 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                                 'fileName' => 'SponsorshipLetter', 'text' => 'Sponsorship Letter'
                             ]) ?>
                             <?= DownloadLinkWidget::widget([
+                                'model' => $model, 'attribute' => 'proof_of_payment', 'fileName' => 'proof_of_payment',
+                                'text' => 'Proof of payment'
+                            ]) ?>
+                            <?= DownloadLinkWidget::widget([
                                 'model' => $model, 'attribute' => 'offer_letter', 'fileName' => 'offerLetter',
                                 'text' => 'Offer Letter'
                             ]) ?>
+
                         </div>
                     </div>
                 </div>

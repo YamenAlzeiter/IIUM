@@ -229,7 +229,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                                 <div>
                                     <?= Html::a('<i class="ti ti-download fs-7"></i>',
                                         ['download-all', 'id' => $model->ID],
-                                        ['class' => 'download', 'id' => 'download']) ?>
+                                        ['class' => 'download']) ?>
                                 </div>
                             </div>
                             <div class = "col-md-6">
@@ -272,7 +272,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                                         'model' => $model, 'attribute' => 'Flight_ticket', 'fileName' => 'FlightTicket',
                                         'text' => 'Flight Ticket'
                                     ]) ?>
-                                    <?php if ($model->Status >= 71): ?><p class = "fw-semibold text-decoration-underline"><?= Html::a('Download Imgs and videos only', ['download-after', 'id' => $model->ID], ['class' => 'download', 'id' => 'download']) ?></p><?php endif; ?>
+                                    <?php if ($model->Status >= 71): ?><p class = "fw-semibold text-decoration-underline"><?= Html::a('Download Imgs and videos only', ['download-after', 'id' => $model->ID], ['class' => 'download']) ?></p><?php endif; ?>
                                 <?php endif; ?>
                             </div>
                         </div>

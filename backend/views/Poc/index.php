@@ -95,7 +95,7 @@ $this->title = 'Person In Charge';
                                 ])->label(false) ?>
                             </div>
                             <div class = "col-md-6 mb-3">
-                                <?= $form->field($model, 'email')->textInput([
+                                <?= $form->field($model, 'email')->textInput(['type' => 'email',
                                     'maxlength' => true, 'class' => 'form__input form-control', 'placeholder' => 'Email', 'required' => true,
                                 ])->label(false) ?>
                             </div>

@@ -417,8 +417,7 @@ $this->title = 'Inbound';
 						<div class = "row d-flex align-items-center justify-content-center">
 							<div class = "col-md-6">
 								<div class = "mb-3">
-									<label for = "formFile" class = "form-label">Proof of sponsorship/ Funding/
-									                                             Grant(Official Letter)</label>
+							
 								</div>
 							</div>
 							<div class = "col-md-6">
@@ -429,7 +428,7 @@ $this->title = 'Inbound';
                                         ])->fileInput([
                                             'class' => 'form-control',
                                             'id' => 'proof_of_payment',
-                                        ])->label($model->proof_of_payment, ['class' => 'control-label']) ?>
+                                        ]) ?>
 
 								</div>
 							</div>

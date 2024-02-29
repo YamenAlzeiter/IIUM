@@ -17,7 +17,7 @@ $this->title = 'Resend verification email';
 <p>Please fill out your email. A link to reset password will be sent there.</p>
 
 
-<?php $form = ActiveForm::begin(['id' => 'resend-verification-email-form']); ?>
+<?php $form = ActiveForm::begin([ 'enableClientValidation' => false, 'id' => 'resend-verification-email-form']); ?>
 
 <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
 

@@ -153,10 +153,9 @@ class SiteController extends Controller
 
         $dataProvider->sort->defaultOrder = ['updated_at' => SORT_DESC];
 
-        $dataProvider->pagination = [
-            'pageSize' => 3,
-        ];
 
+
+        $dataProvider->pagination->pageSize=3;
 
         $months = $this->getMonthNames();
         $counts = $this->getMonthlyCounts('outbound', $year);

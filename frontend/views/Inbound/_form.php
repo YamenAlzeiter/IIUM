@@ -60,7 +60,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
             <div class = "d-flex justify-content-between">
                 <?= Html::submitButton('Save', ['class' => 'btn btn-outline-dark btn-navigate-form-step btn-next fs-5']) ?>
                 <div>
-                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "2">Next Step</button>
+                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" onclick="updateFormStepper(2)">Next Step</button>
                 </div>
             </div>
         </div>
@@ -88,8 +88,8 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                 <?= Html::submitButton('Save', ['class' => 'btn btn-outline-dark btn-navigate-form-step btn-next fs-5']) ?>
                 <!--                'name' => 'saveWithoutValidation', 'value' => 'validate'-->
                 <div>
-                    <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "1">Back</button>
-                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "3">Next Step</button>
+                    <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" onclick="updateFormStepper(1)">Back</button>
+                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" onclick="updateFormStepper(3)">Next Step</button>
                 </div>
             </div>
         </div>
@@ -118,14 +118,14 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                 <p>If the answer is no, please indicate any English Language Proficiency Test you have taken and upload the result</p>
                 <div class = "col-md"><?= $form->field($model, 'English_test_name')->dropDownList(['TOFEL' => 'TOFEL', 'IELTS' => 'IELTS', 'Other' => 'Other'], ['prompt' => 'Select Test', 'id' => 'english']) ?></div>
                 <div class = "col-md"><?= $form->field($model, 'English_other_test_name')->textInput(['maxlength' => true, 'placeholder' => '', 'id' => 'english_other', 'disabled' => $model->English_test_name !== 'Other']) ?></div>
-                <?= $form->field($model, 'English_certificate', ['template' => $templateFileInput])->fileInput() ?>
+                <?php renderFileField($form, $model, 'English_certificate', "EnglishCertificate"); ?>
             </div>
             <div class = "d-flex justify-content-between">
                 <?= Html::submitButton('Save', ['class' => 'btn btn-outline-dark btn-navigate-form-step btn-next fs-5']) ?>
                 <!--                'name' => 'saveWithoutValidation', 'value' => 'validate'-->
                 <div>
-                    <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "2">Back</button>
-                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "4">Next Step</button>
+                    <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" onclick="updateFormStepper(2)">Back</button>
+                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" onclick="updateFormStepper(4)">Next Step</button>
                 </div>
             </div>
         </div>
@@ -189,8 +189,8 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                 <?= Html::submitButton('Save', ['class' => 'btn btn-outline-dark btn-navigate-form-step btn-next fs-5']) ?>
                 <!--                'name' => 'saveWithoutValidation', 'value' => 'validate'-->
                 <div>
-                    <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "3">Back</button>
-                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "5">Next Step</button>
+                    <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" onclick="updateFormStepper(3)">Back</button>
+                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" onclick="updateFormStepper(5)">Next Step</button>
                 </div>
             </div>
         </div>
@@ -218,18 +218,18 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
 
 
                 <div id = "funding_scholarship" class = "row d-none">
-                    <div class = "col-md"><?= $form->field($model, 'Sponsor_name')->textInput(['maxlength' => true, 'placeholder' => '', 'disabled' => $model->Financial_funding !== 'Scholarship']) ?></div>
-                    <div class = "col-md"><?= $form->field($model, 'Financial_funding_sponsor_amount')->textInput(['maxlength' => true, 'placeholder' => '', 'disabled' => $model->Financial_funding !== 'Scholarship']) ?></div>
+                    <div class = "col-md"><?= $form->field($model, 'Sponsor_name')->textInput(['maxlength' => true, 'placeholder' => '']) ?></div>
+                    <div class = "col-md"><?= $form->field($model, 'Financial_funding_sponsor_amount')->textInput(['maxlength' => true, 'placeholder' => '']) ?></div>
                 </div>
                 <div id = "funding_other" class = "row d-none">
-                    <div class = "col-md"><?= $form->field($model, 'Financial_funding_other')->textInput(['maxlength' => true, 'placeholder' => '', 'disabled' => $model->Financial_funding !== 'Other']) ?></div>
+                    <div class = "col-md"><?= $form->field($model, 'Financial_funding_other')->textInput(['maxlength' => true, 'placeholder' => '']) ?></div>
                 </div>
             </div>
             <div class = "d-flex justify-content-between">
                 <?= Html::submitButton('Save', ['class' => 'btn btn-outline-dark btn-navigate-form-step btn-next fs-5']) ?>
                 <div>
-                    <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "4">Back</button>
-                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "6">Next Step</button>
+                    <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" onclick="updateFormStepper(4)">Back</button>
+                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" onclick="updateFormStepper(6)">Next Step</button>
                 </div>
             </div>
         </div>
@@ -247,13 +247,14 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                     <div class = "col-md"><?= $form->field($model, 'Approval_person_mobile_number')->textInput(['maxlength' => true, 'placeholder' => '']) ?></div>
                     <div class = "col-md"><?= $form->field($model, 'Approval_date')->input('date', ['maxlength' => true, 'placeholder' => '']) ?></div>
                 </div>
-                <?= $form->field($model, 'Recommendation_letter', ['template' => $templateFileInput])->fileInput() ?>
+                <?php renderFileField($form, $model, 'Recommendation_letter', "RecommendationLetter"); ?>
+
             </div>
             <div class = "d-flex justify-content-between">
                 <?= Html::submitButton('Save', ['class' => 'btn btn-outline-dark btn-navigate-form-step btn-next fs-5']) ?>
                 <div>
-                    <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "5">Back</button>
-                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" step_number = "7">Next Step</button>
+                    <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" onclick="updateFormStepper(5)">Back</button>
+                    <button class = "btn btn-primary btn-navigate-form-step btn-next fs-5" type = "button" onclick="updateFormStepper(7)">Next Step</button>
                 </div>
             </div>
         </div>
@@ -271,7 +272,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                 <?= $form->field($model, 'Student_declaration_agreement')->checkbox()->label("<p class='text-dark  d-inline'>I agree on the</p>  <a class='link text-decoration-underline' data-bs-toggle='modal' data-bs-target='#exampleModalCenter'>Terms and Conditions</a>") ?></div>
             <div class = "d-flex justify-content-between">
                 <?= Html::submitButton('Save', ['class' => 'btn btn-outline-dark btn-navigate-form-step btn-next fs-5', 'name' => 'saveWithoutValidation', 'value' => 'validate', 'onClick' => 'submitForm()']) ?>
-                <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" step_number = "6">Back</button>
+                <button class = "btn btn-navigate-form-step btn-next fs-5" type = "button" onclick="updateFormStepper(6)">Back</button>
             </div>
         </div>
     </div>

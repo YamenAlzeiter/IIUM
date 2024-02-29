@@ -108,9 +108,9 @@ class InboundController extends Controller
                     fileHandler($model,'Latest_passport_photo', 'LatestPassportPhoto');
                     fileHandler($model,'Latest_certified_academic_transcript', 'LatestCertifiedAcademicTranscript');
                     fileHandler($model,'Confirmation_letter', 'ConfirmationLetter');
-                    fileHandler($model,'Sponsorship_letter', 'Sponsorship_letter');
-                    fileHandler($model,'Recommendation_letter', 'Recommendation_letter');
-                    fileHandler($model,'English_certificate', 'English_certificate');
+                    fileHandler($model,'Sponsorship_letter', 'SponsorshipLetter');
+                    fileHandler($model,'Recommendation_letter', 'RecommendationLetter');
+                    fileHandler($model,'English_certificate', 'EnglishCertificate');
 
                     $allValid =$course;
                     if ($scenario === 'requiredValidate') {
@@ -198,9 +198,9 @@ class InboundController extends Controller
             fileHandler($model,'Latest_passport_photo', 'LatestPassportPhoto');
             fileHandler($model,'Latest_certified_academic_transcript', 'LatestCertifiedAcademicTranscript');
             fileHandler($model,'Confirmation_letter', 'ConfirmationLetter');
-            fileHandler($model,'Sponsorship_letter', 'Sponsorship_letter');
-            fileHandler($model,'Recommendation_letter', 'Recommendation_letter');
-            fileHandler($model,'English_certificate', 'English_certificate');
+            fileHandler($model,'Sponsorship_letter', 'SponsorshipLetter');
+            fileHandler($model,'Recommendation_letter', 'RecommendationLetter');
+            fileHandler($model,'English_certificate', 'EnglishCertificate');
 
             $transaction = Yii::$app->db->beginTransaction();
             $allValid =$course;
@@ -267,7 +267,7 @@ class InboundController extends Controller
 
                 $model->Status = 55;
                 // Only change the Status if any file was uploaded
-                if ($model->validate() && $model->save()) {
+                if ($model->save(false)) {
 
                     $transaction->commit();
                     Yii::$app->session->setFlash('success', 'Application updated successfully.');

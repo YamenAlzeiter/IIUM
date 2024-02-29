@@ -93,7 +93,7 @@ class HodworkflowController extends WorkflowCommonController
             //reset the token value
             $model->Token = null;
 
-            if ($model->save()) {
+            if ($model->save(false)) {
                 return $this->redirect(['view', 'ID' => $model->ID, 'token' => $model->Token],);
             }
         }
@@ -123,7 +123,7 @@ class HodworkflowController extends WorkflowCommonController
             //reset the token value
             $model->Token = null;
 
-            if ($model->save()) {
+            if ($model->save(false)) {
                 return $this->redirect(['view', 'ID' => $model->ID, 'token' => $model->Token],);
             }
         }

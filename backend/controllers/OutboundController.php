@@ -180,7 +180,7 @@ class OutboundController extends Controller
         if (Yii::$app->user->can('superAdmin')) {
             $model = $this->findModel($ID);
 
-            if ($model->load($this->request->post()) && $model->save()) {
+            if ($model->load($this->request->post()) && $model->save(false)) {
                 return $this->redirect(["view", "ID" => $model->ID]);
             }
 
@@ -509,7 +509,7 @@ class OutboundController extends Controller
                     break;
             }
 
-            if ($model->save()) {
+            if ($model->save(false)) {
                 $this->sendEmail($model, $personModel, $model->Token, $template, null);
                 return $this->redirect(["index", 'year' => date("Y")]);
             }
@@ -531,7 +531,7 @@ class OutboundController extends Controller
             $model->Status = intval($this->request->post("status"));
             $model->temp = $this->request->post("reason");
 
-            if ($model->save()) {
+            if ($model->save(false)) {
                 $this->sendEmail($model, null, $model->Token, self::template_reject, $model->temp);
                 return $this->redirect(["index", 'year' => date("Y")]);
             }
@@ -561,7 +561,7 @@ class OutboundController extends Controller
         if ($this->request->isPost) {
             $model->temp = $this->request->post("reason");
 
-            if ($model->save()) {
+            if ($model->save(false)) {
                 $this->sendEmail($model, null, $model->Token, self::template_incomplete, $model->temp);
                 return $this->redirect(["index", 'year' => date("Y")]);
             }
@@ -600,7 +600,7 @@ class OutboundController extends Controller
             }
         }
 
-        if ($model->save()) {
+        if ($model->save(false)) {
             $this->sendEmail($model, $modelPoc, $model->Token, self::template_reconsider, $model->temp);
             return $this->redirect(["index", 'year' => date("Y")]);
         }

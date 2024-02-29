@@ -129,6 +129,12 @@ class Outbound extends \yii\db\ActiveRecord
 
                 ], 'required', 'on' => 'requiredValidate'
             ], [
+                'Passport_Expiration', 'validatePassportExpiration'
+            ], [
+                'Mobility_until' , 'compare', 'compareAttribute' => 'Mobility_from', 'operator' => '>=', 'message' => 'Proposal duration end must be greater than or equal to proposal duration start.'
+            ], [
+                'Mobility_from', 'validateDate'
+            ], [
                 'Academic_kulliyyah_others', 'required', 'when' => function ($model) {
                     return $model->Academic_kulliyyah === 'Other';
                 }
@@ -177,6 +183,26 @@ class Outbound extends \yii\db\ActiveRecord
             [['host_scholarship_amount'], 'string', 'max' => 9],
         ];
     }
+
+    public function validatePassportExpiration($attribute, $params)
+    {
+        $expirationDate = strtotime($this->$attribute);
+        $sixMonthsLater = strtotime("+6 months");
+
+        if ($expirationDate < $sixMonthsLater) {
+            $this->addError($attribute, 'Passport expiration date must be at least 6 months after the current date.');
+        }
+    }
+    public function validateDate($attribute, $params)
+    {
+        $date = strtotime($this->$attribute);
+        $currentDate = strtotime(date('Y-m-d'));
+
+        if ($date < $currentDate) {
+            $this->addError($attribute, 'Date must be greater than or equal to the current date.');
+        }
+    }
+
 
     /**
      * {@inheritdoc}

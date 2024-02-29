@@ -296,7 +296,7 @@ class OutboundController extends Controller
                 }
 
                 // Save the changes in the Outbound model
-                if ($model->validate() && $model->save()) {
+                if ($model->save(false)) {
                     // Handle uploads associated with the OutFiles model
                     $transaction->commit();
                     Yii::$app->session->setFlash('success', 'Application updated successfully.');

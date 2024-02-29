@@ -13,7 +13,7 @@ $this->title = 'Signup';
 
 ?>
 
-<?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
+<?php $form = ActiveForm::begin([ 'enableClientValidation' => false, 'id' => 'form-signup']); ?>
 
 <?= $form->field($model, 'username')->textInput() ?>
 
