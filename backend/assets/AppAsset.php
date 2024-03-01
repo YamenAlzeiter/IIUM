@@ -24,6 +24,7 @@ class AppAsset extends AssetBundle
         'js/sidebarmenu.js',
         'js/sweet-alert.js',
         'js/actionManipulationView.js',
+        'js/form-logic.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

@@ -8,7 +8,7 @@ use yii\helpers\Html;
 /** @var common\models\Outbound $model */
 /** @var Courses $coursesData */
 /** @var Iiumcourse $iiumCoursesData */
-
+$this->title = 'Update';
 
 
 ?>

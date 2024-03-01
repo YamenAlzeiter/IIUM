@@ -149,8 +149,8 @@ class InboundController extends Controller
     {
         if (Yii::$app->user->can('superAdmin')) {
             $model = $this->findModel($ID);
-            $model->scenario = 'default'; // Set the scenario to 'default' to validate the required fields
-            if ($this->request->isPost && $model->load($this->request->post()) && $model->save(false)) {
+            $model->submitter = 'Admin';
+            if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
                 return $this->redirect(['view', 'ID' => $model->ID]);
             }
 

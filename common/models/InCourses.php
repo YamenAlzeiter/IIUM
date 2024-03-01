@@ -32,6 +32,7 @@ class InCourses extends \yii\db\ActiveRecord
     {
         return [
             [['credit_hours', 'course_name', 'course_code'], 'required', 'on' => 'requiredValidate'],
+            [['credit_hours', 'course_name', 'course_code'],  'filter', 'filter' => 'htmlspecialchars'],
             [['credit_hours', 'student_id'], 'integer'],
             [['course_code'], 'string', 'max' => 20],
             [['course_name'], 'string', 'max' => 255],

@@ -197,7 +197,7 @@ class OutboundController extends Controller
             }
 
                 try {
-                    if($model->save($this->request->post('saveWithoutValidation') === 'validate')&& $allValid){
+                    if($model->save()&& $allValid){
                         $transaction->commit();
                         Yii::$app->session->setFlash('success', 'Application created successfully.');
                         return $this->redirect(['index', 'ID' => $model->ID]);

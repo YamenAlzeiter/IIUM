@@ -179,8 +179,8 @@ class OutboundController extends Controller
     {
         if (Yii::$app->user->can('superAdmin')) {
             $model = $this->findModel($ID);
-
-            if ($model->load($this->request->post()) && $model->save(false)) {
+            $model->submitter = 'Admin';
+            if ($model->load($this->request->post()) && $model->save()) {
                 return $this->redirect(["view", "ID" => $model->ID]);
             }
 

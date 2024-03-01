@@ -35,6 +35,7 @@ class UserAdmin extends \yii\db\ActiveRecord
     {
         return [
             [['username', 'matric_number', 'auth_key', 'password_hash', 'email'], 'required'],
+            [['username', 'matric_number', 'email'],  'filter', 'filter' => 'htmlspecialchars'],
             [['status', 'created_at', 'updated_at'], 'default', 'value' => null],
             [['status', 'created_at', 'updated_at'], 'integer'],
             [['username', 'password_hash', 'password_reset_token', 'email'], 'string', 'max' => 255],

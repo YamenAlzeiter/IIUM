@@ -89,6 +89,7 @@ use yii\db\Expression;
  */
 class Inbound extends \yii\db\ActiveRecord
 {
+    public $submitter;
     /**
      * {@inheritdoc}
      */
@@ -113,7 +114,16 @@ class Inbound extends \yii\db\ActiveRecord
               'Financial_accommodation_on_campus', 'Financial_funding',
               'Approval_university_person_name', 'Approval_person_position', 'Approval_person_email', 'Approval_person_mobile_number', 'Approval_date'
             ],'required', 'on' => 'requiredValidate'
-            ], [
+            ],
+            [['Name','Gender','Relation_ship','Date_of_Birth', 'Passport_Number','Passport_Expiration','Religion','Mazhab','Citizenship','Country_of_origin','Country_of_residence','Mobile_Number','Email_address','Permanent_Address','Postcode', 'Country',
+                'Emergency_name', 'Emergency_relationship', 'Emergency_phoneNumber', 'Emergency_email', 'Emergency_homeAddress', 'Emergency_postCode', 'Emergency_country',
+                'Academic_home_university','Academic_lvl_edu', 'Academic_name_of_programme', 'Academic_current_semester', 'Academic_current_year', 'Academic_name_of_faculty', 'Academic_current_result', 'Research_title', 'Mou_or_Moa',
+                'English_native', 'English_test_name',
+                'Propose_type_of_programme', 'Propose_type_of_mobility', 'Propose_kulliyyah_applied', 'Propose_duration_start','Propose_duration_end', 'Propose_transfer_credit_hours',
+                'Financial_accommodation_on_campus', 'Financial_funding',
+                'Approval_university_person_name', 'Approval_person_position', 'Approval_person_email', 'Approval_person_mobile_number', 'Approval_date'
+            ],'filter', 'filter' => 'htmlspecialchars'
+            ],[
                 'English_other_test_name', 'required', 'when' => function ($model) {
                     return $model->English_test_name === 'Other';
                 }
@@ -278,8 +288,13 @@ class Inbound extends \yii\db\ActiveRecord
     {
 
         parent::afterSave($insert, $changedAttributes);
-        $newStatus = $this->Status;
-        if ($this->Status == 10){
+
+        if($this->submitter === 'Admin'){
+            $this->createStatusLog(0, $this->Status, "Admin has updated student Info");
+            $this->submitter = null;
+        }
+        elseif ($this->Status == 10){
+
             if ($changedAttributes['Status'] == 7){
 
                 $this->createStatusLog(0, $this->Status, "Application has been resubmitted");

@@ -27,6 +27,7 @@ class Kcdio extends \yii\db\ActiveRecord
     {
         return [
             [['kcdio'], 'string', 'max' => 100],
+            [['kcdio'], 'filter', 'filter' => 'htmlspecialchars']
         ];
     }
 

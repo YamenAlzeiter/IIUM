@@ -11,6 +11,7 @@ use yii\data\ActiveDataProvider;
 use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\Html;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -61,7 +62,7 @@ class UserController extends Controller
                     if ($model->validate()) {
 
                         // Assign values and save the Admin model
-                        $user->username = $model->username;
+                        $user->username = Html::encode($model->username);
                         $user->email = $model->email;
                         $user->matric_number = $model->matric_number;
 
@@ -124,7 +125,7 @@ class UserController extends Controller
 
                         $existingUser = UserAdmin::findOne(['matric_number' => $model->matric_number]);
                         $existingUserEmail = UserAdmin::findOne(['email' => $model->email]);
-
+                            $model->username = Html::encode($model->username);
                         if (($existingUser && $existingUser->id !== $model->id) || ($existingUserEmail && $existingUserEmail->id !== $model->id)) {
                             Yii::$app->session->setFlash('error',
                                 'Matric Number or Email already exists for another user.');

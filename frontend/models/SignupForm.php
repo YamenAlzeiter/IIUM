@@ -39,6 +39,7 @@ class SignupForm extends Model
             ['type', 'in', 'range' => ['I', 'O']],
 
             ['matric_number','unique','targetClass'=>'\common\models\User', 'message'=>'This matric number has already been taken.'],
+            [['username', 'email', 'matric_number'],  'filter', 'filter' => 'htmlspecialchars']
         ];
     }
 

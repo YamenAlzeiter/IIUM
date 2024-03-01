@@ -40,7 +40,8 @@ class SignupForm extends Model
 
             ['matric_number', 'required'],
             ['matric_number', 'unique', 'targetClass' => '\common\models\Admin', 'message' => 'This matric number has already been taken.'],
-            ['matric_number', 'integer', 'min' => 7]
+            ['matric_number', 'integer', 'min' => 7],
+            [['username', 'email', 'matric_number'],  'filter', 'filter' => 'htmlspecialchars']
 
 
         ];

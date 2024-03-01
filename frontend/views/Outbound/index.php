@@ -8,7 +8,7 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 /** @var common\models\Outbound $model */
-
+$this->title = $model->Name;
 require Yii::getAlias('@common').'/Helpers/helper.php';
 if (!isset($noRecord)) {
     $creationYearLastTwoDigits = date('y', strtotime($model->created_at));
@@ -114,12 +114,14 @@ if (!isset($noRecord)) {
                     <ul class = "list-unstyled mt-2">
                         <li class = "d-flex align-items-center gap-3 mb-2">
                             <i class = "ti ti-mail text-dark fs-6"></i>
-                            <h6 class = "fs-4 fw-semibold mb-0">Email Address: <a
-                                    href = "mailto:<?= $model->Email ?>"><?= $model->Email ?></a></h6>
+                            <p class = "fs-4 fw-semibold mb-0">Email Address: <a
+                                    href = "mailto:<?= $model->Email ?>"><?= $model->Email ?></a></p>
                         </li>
                         <li class = "d-flex align-items-center gap-3 mb-2">
-                            <i class = "ti ti-map-pin text-dark fs-6"></i>
-                            <h6 class = "fs-4 fw-semibold mb-0">Permanent Address:</h6>
+
+                                <i class = "ti ti-map-pin text-dark fs-6"></i>
+                                <p class = "fs-4 fw-semibold mb-0">Permanent Address:</p>
+
                             <p class = "fs-4 mb-0"><?= $model->Permanent_Address ?></p>
                         </li>
                         <?php if ($model->Status >= 71): ?>

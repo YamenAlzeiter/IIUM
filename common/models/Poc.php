@@ -33,6 +33,7 @@ class Poc extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'email', 'email_cc', 'KCDIO', 'email_cc_additional', 'name_cc1', 'name_cc2'], 'string', 'max' => 512],
+            [['name','email', 'email_cc', 'KCDIO', 'email_cc_additional', 'name_cc1', 'name_cc2'],  'filter', 'filter' => 'htmlspecialchars']
         ];
     }
 

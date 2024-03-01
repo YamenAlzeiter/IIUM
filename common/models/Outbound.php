@@ -96,6 +96,7 @@ use yii\db\Expression;
  */
 class Outbound extends \yii\db\ActiveRecord
 {
+    public $submitter;
     /**
      * {@inheritdoc}
      */
@@ -128,6 +129,21 @@ class Outbound extends \yii\db\ActiveRecord
                     'Connect_host_postcode'
 
                 ], 'required', 'on' => 'requiredValidate'
+            ], [
+                [
+                    'Name', 'Citizenship', 'Gender', 'Date_of_Birth', 'Passport_Number',
+                    'Passport_Expiration', 'Mobile_Number', 'Email', 'Permanent_Address', 'Country', 'State',
+                    'Postcode', 'Emergency_name', 'Emergency_relationship', 'Emergency_phoneNumber', 'Emergency_email',
+                    'Emergency_homeAddress', 'Emergency_country', 'Emergency_tate', 'Emergency_postCode',
+                    'Academic_lvl_edu', 'Academic_kulliyyah', 'Academic_current_semester', 'Academic_current_year',
+                    'Academic_name_of_programme', 'Academic_cgpa', 'English_language_proficiency', 'English_result',
+                    'Financial_funded_accept', 'Sponsoring_name', 'Sponsoring_funding', 'Type_mobility',
+                    'Type_mobility_program', 'Country_host_university', 'Host_university_name', 'Mobility_from',
+                    'Mobility_until', 'credit_transfer_availability', 'Connect_host_name', 'Connect_host_position',
+                    'Connect_host_mobile_number', 'Connect_host_email', 'Connect_host_address', 'Connect_host_country',
+                    'Connect_host_postcode'
+
+                ], 'filter', 'filter' => 'htmlspecialchars'
             ], [
                 'Passport_Expiration', 'validatePassportExpiration'
             ], [
@@ -311,7 +327,11 @@ class Outbound extends \yii\db\ActiveRecord
     {
         parent::afterSave($insert, $changedAttributes);
         $newStatus = $this->Status;
-        if ($this->Status == 10){
+        if($this->submitter === 'Admin'){
+            $this->createStatusLog(0, $this->Status, "Admin has updated student Info");
+            $this->submitter = null;
+        }
+        elseif ($this->Status == 10){
             if ($changedAttributes['Status'] == 3){
 
                 $this->createStatusLog(0, $this->Status, "Application has been resubmitted");
