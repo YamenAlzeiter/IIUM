@@ -54,5 +54,5 @@ $distinctYears = Outbound::find()->select(['EXTRACT(YEAR FROM created_at) as yea
 
 $this->render('/reusable/dashboard_reused', [
     'year' => $year, 'months' => $months, 'counts' => $counts, 'maleCount' => $maleCount, 'femaleCount' => $femaleCount,
-    'inbound' => "", 'dataProvider' => $dataProvider, 'rejectionCount' => $rejectionCount,      'approvalCount' => $approvalCount,//null for outbound
+    'inbound' => "", 'dataProvider' => $dataProvider, 'rejectionCount' => $rejectionCount, 'approvalCount' => $approvalCount, 'isInbound' => 'outbound'
 ]) ?>

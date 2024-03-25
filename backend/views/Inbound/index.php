@@ -102,6 +102,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                         // Apply Bootstrap grid class
                     ], [
                         'label' => 'Status', 'attribute' => 'Status', 'format' => 'raw', 'value' => function ($model) {
+
                             $statusModel = Status::findOne(['ID' => $model->Status]);
                             $rejectionReason = null;
                             $statusMeaning = $statusModel ? $statusModel->status : '';

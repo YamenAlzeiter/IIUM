@@ -8,7 +8,7 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 /** @var common\models\Outbound $model */
-$this->title = $model->Name;
+
 require Yii::getAlias('@common').'/Helpers/helper.php';
 if (!isset($noRecord)) {
     $creationYearLastTwoDigits = date('y', strtotime($model->created_at));
@@ -19,14 +19,16 @@ if (!isset($noRecord)) {
 ?>
 
 <?php if (isset($noRecord) && $noRecord === true) : ?>
-    <div class = "alert alert-warning d-flex justify-content-center align-items-center gap-1">
-        <h4 class = "fw-semibold">Hello <?= Yii::$app->user->identity->username ?></h4>
-        <p class = "text-capitalize alert m-0 p-0">No records found yet</p>
-        <p class = "text-capitalize alert m-0 p-0">
-            <strong><?php echo Html::a('Create One', ['create'], ['class' => ' m-0 p-0 alert']); ?></strong>
-        </p>
-    </div>
+
+    <?php $this->title = 'hello test'; ?>
+    <h4 class = "fw-semibold">Hello <?= Yii::$app->user->identity->username ?></h4>
+    <p class="text-capitalize m-0 p-0">No records found yet</p>
+    <p class="text-capitalize  m-0 p-0">
+        <strong><?php echo Html::a('Create One', ['create'], ['class' => ' m-0 p-0']); ?></strong>
+    </p>
+
 <?php else : ?>
+<?php $this->title = $model->Name; ?>
     <div class = "mb-3 d-flex flex-row justify-content-between align-items-center">
 
         <div class = "d-flex gap-1 align-items-center">

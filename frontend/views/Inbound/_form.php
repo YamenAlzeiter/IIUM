@@ -36,7 +36,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                 </div>
                 <div class = "row">
                     <div class = "col-md"><?= $form->field($model, 'Passport_Number')->textInput(['maxlength' => true, 'placeholder' => '']) ?></div>
-                    <div class = "col-md"><?= $form->field($model, 'Passport_Expiration')->input('date') ?></div>
+                        <div class = "col-md"><?= $form->field($model, 'Passport_Expiration')->input('mig') ?></div>
                 </div>
                 <div class = "row">
                     <div class = "col-md"><?= $form->field($model, 'Religion')->textInput(['maxlength' => true, 'placeholder' => '']) ?></div>

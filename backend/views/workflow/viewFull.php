@@ -16,7 +16,7 @@ $fileName = $creationYearLastTwoDigits.'_'.$model->ID;
 ?>
 <div class = "container">
     <?= $this->render('/reusable/viewHeader', ['model' => $model]) ?>
-    <div class = "row">
+    <div class = "row ">
         <div class = "col-lg-8">
             <div class = "card shadow-none border bg-light-subtle">
                 <div class = "card-body">

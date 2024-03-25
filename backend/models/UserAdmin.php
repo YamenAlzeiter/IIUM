@@ -18,6 +18,7 @@ use Yii;
  * @property int $created_at
  * @property int $updated_at
  * @property string|null $verification_token
+ *
  */
 class UserAdmin extends \yii\db\ActiveRecord
 {

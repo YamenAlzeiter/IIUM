@@ -9,15 +9,17 @@ use yii\web\AssetBundle;
  */
 class AppAsset extends AssetBundle
 {
-    public $css = [
-        'css/site.css',
-        'css/styles.css', // Compiled from styles.scss
-        'css/icons/tabler-icons/tabler-icons.css'
-    ];
-
 // Adjust the JS file paths
+
+    public $css = [
+
+        'css/site.css',
+        'css/styles.css',
+        'css/icons/tabler-icons/tabler-icons.css',
+//        'css/test.css',
+    ];
     public $js = [
-        'js/app.min.js',
+//        'js/app.min.js',
         'js/counter.js',
         'js/insertButtons.js',
         'js/notes.js',

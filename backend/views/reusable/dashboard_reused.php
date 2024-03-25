@@ -106,14 +106,15 @@ use yii\helpers\Html;
                                     return '<div class="d-inline-flex align-items-center gap-1 text-center wrap '.$class[0].'"><p class="mb-0 '.$class[1].'"></p><p class="mb-0">'.$statusMeaning.'</p>'.$rejectionReason.'</div>';
                                 }, 'contentOptions' => ['class' => 'col-1'],
                             ], [
-                                'label' => 'Actions', 'format' => 'raw', 'value' => function ($model) {
-                                    return '<div class="">'.Html::a('<i class="ti ti-eye fs-7" data-toggle="tooltip" title="View"></i>',
-                                            ['outbound/view', 'ID' => $model->ID], [
+                                'label' => 'Actions', 'format' => 'raw', 'value' => function ($model) use ($isInbound) {
+                                    return '<div class="">' . Html::a(
+                                            '<i class="ti ti-eye fs-7" data-toggle="tooltip" title="View"></i>',
+                                            [$isInbound . '/view', 'ID' => $model->ID],[
                                                 'class' => 'text-dark edit update-button mx-1',
                                                 'data-toggle' => 'tooltip', 'title' => 'View',
                                                 // Tooltip for the 'View' action
                                             ]).' '.Html::a('<i class="ti ti-circle-check fs-7" data-toggle="tooltip" title="Action"></i>',
-                                            ['outbound/action', 'ID' => $model->ID], [
+                                            [$isInbound .'/action', 'ID' => $model->ID], [
                                                 'class' => 'text-primary edit mx-1', 'data-toggle' => 'tooltip',
                                                 'data-placement' => "top", 'title' => 'Action',
                                                 // Tooltip for the 'Action' action
