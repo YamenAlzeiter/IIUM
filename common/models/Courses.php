@@ -22,7 +22,7 @@ class Courses extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'courses';
+        return 'ac_iosys.courses';
     }
 
     /**

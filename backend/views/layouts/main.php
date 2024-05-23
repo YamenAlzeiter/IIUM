@@ -73,13 +73,15 @@ AppAsset::register($this);
             </header>
             <div class = "body-wrapper" id="content-body">
                 <main role = "main" class = "flex-shrink-0">
-                    <div class = "container ">
+                    <div class = 'p-4'>
 
                         <?= Breadcrumbs::widget([
                             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
                         ]) ?>
                         <?= Alert::widget() ?>
+                        <div class="card p-5">
                         <?= $content ?>
+                        </div>
                     </div>
                 </main>
             </div>

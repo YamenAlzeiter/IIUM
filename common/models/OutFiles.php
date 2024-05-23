@@ -21,7 +21,7 @@ class OutFiles extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'outFiles';
+        return 'ac_iosys.outFiles';
     }
 
     /**

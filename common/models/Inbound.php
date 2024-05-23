@@ -97,7 +97,7 @@ class Inbound extends \yii\db\ActiveRecord
 
     public static function tableName()
     {
-        return 'inbound';
+        return 'ac_iosys.inbound';
     }
 
     /**
@@ -152,7 +152,7 @@ class Inbound extends \yii\db\ActiveRecord
             ['Propose_duration_start', 'validateDate'],
 
 
-            [['Date_of_Birth', 'Passport_Expiration', 'Propose_duration_start', 'Propose_duration_end', 'Approval_date', 'Student_declaration_date', 'updated_at', 'created_at'], 'safe'],
+            [['Date_of_Birth', 'Passport_Expiration', 'Propose_duration_start', 'Propose_duration_end', 'Approval_date', 'Student_declaration_date', 'updated_at', 'created_at', 'note_kulliyyah'], 'safe'],
             [['Academic_current_semester', 'Academic_current_year', 'Academic_current_result', 'Mou_or_Moa', 'English_native', 'Propose_type_of_mobility', 'Propose_transfer_credit_hours', 'Financial_accommodation_on_campus', 'Financial_funding_sponsor_amount', 'Student_declaration_agreement', 'Status', 'Kulliyyah', 'msd_cps'], 'default', 'value' => null],
             [['Academic_current_semester', 'Academic_current_year', 'Mou_or_Moa', 'English_native', 'Propose_type_of_mobility', 'Propose_transfer_credit_hours', 'Financial_accommodation_on_campus', 'Financial_funding_sponsor_amount', 'Student_declaration_agreement', 'Status', 'Kulliyyah', 'msd_cps'], 'integer'],
             [['English_certificate', 'Recommendation_letter', 'Passport', 'Latest_passport_photo', 'Latest_certified_academic_transcript', 'Confirmation_letter', 'Sponsorship_letter', 'offer_letter', 'proof_of_payment'], 'file', 'extensions' => 'pdf'],
@@ -288,7 +288,7 @@ class Inbound extends \yii\db\ActiveRecord
     {
 
         parent::afterSave($insert, $changedAttributes);
-
+        $newStatus = $this->Status;
         if($this->submitter === 'Admin'){
             $this->createStatusLog(0, $this->Status, "Admin has updated student Info");
             $this->submitter = null;
@@ -307,7 +307,7 @@ class Inbound extends \yii\db\ActiveRecord
             $oldStatus = $changedAttributes['Status'];
             $this->updateAttributes(['updated_at' => date('Y-m-d H:i:s')]);
             if ($oldStatus !== $newStatus) {
-                if(($oldStatus === 16 && $newStatus === 5) || ($oldStatus === 36 && $newStatus === 25) || $newStatus === 7 || $newStatus === 6){
+                if($newStatus === 7 || $newStatus === 6 || ($oldStatus === 55 && $newStatus === 45)){
                     $this->createStatusLog($oldStatus, $newStatus, $this->temp);
                 }
                 elseif (($oldStatus === 5 && $newStatus === 16)){

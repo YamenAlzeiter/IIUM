@@ -30,7 +30,7 @@ class States extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'states';
+        return 'ac_iosys.states';
     }
 
     /**

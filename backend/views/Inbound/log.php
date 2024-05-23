@@ -10,8 +10,8 @@ $this->title = 'Status Change Logs';
 require Yii::getAlias('@common').'/Helpers/helper.php';
 ?>
 
-<div class = "card w-100">
-    <div class = "card-body">
+
+
 
         <?= GridView::widget([
             'dataProvider' => $logsDataProvider,
@@ -51,5 +51,3 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                 ],
             ],
         ]); ?>
-    </div>
-</div>

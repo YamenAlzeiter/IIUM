@@ -204,7 +204,7 @@ class SiteController extends Controller
                 new Expression('EXTRACT(MONTH FROM created_at) AS month'),
                 new Expression('COUNT(*) AS count')
             ])
-            ->from($tableName)
+            ->from('ac_iosys.'.$tableName)
             ->where(['and', ['EXTRACT(YEAR FROM created_at)' => $year], ['not', ['Status' => null]]])
             ->groupBy([new Expression('EXTRACT(MONTH FROM created_at)')])
             ->all();
@@ -237,7 +237,7 @@ class SiteController extends Controller
     private function getGenderCount($gender, $table, $year)
     {
         return (new \yii\db\Query())
-            ->from($table)
+            ->from('ac_iosys.'.$table)
             ->where(['and', ['Gender' => $gender],['EXTRACT(YEAR FROM created_at)' => $year], ['not', ['Status' => null]]])
             ->count();
     }
@@ -248,7 +248,7 @@ class SiteController extends Controller
                 new \yii\db\Expression('EXTRACT(MONTH FROM created_at) AS month'),
                 new \yii\db\Expression('COUNT(*) AS count')
             ])
-            ->from($table)
+            ->from('ac_iosys.'.$table)
             ->where(['and',['in', 'Status', $statuses],['EXTRACT(YEAR FROM created_at)' => $year],['not', ['Status' => null]]])
             ->groupBy([new \yii\db\Expression('EXTRACT(MONTH FROM created_at)')])
             ->all();

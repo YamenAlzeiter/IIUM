@@ -1,6 +1,7 @@
 <?php
 
 use dosamigos\tinymce\TinyMce;
+use Itstructure\CKEditor\CKEditor;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -22,19 +23,8 @@ use yii\widgets\ActiveForm;
             <label for = "inputPassword6" class = "col-form-label">Body:</label>
         </div>
         <div class = "col-11">
-            <?= $form->field($model, 'body')->widget(TinyMce::class, [
-
-                // Set the language for TinyMCE
-                'language' => 'en',
-
-                // Configure client-side options for TinyMCE
-                'clientOptions' => [
-                    // Specify the plugins to load (empty array in this case)
-                    'plugins' => [],
-
-                    // Define the toolbar buttons available in the editor
-                    'toolbar' => 'undo redo | formatselect | '.'bold italic underline strikethrough | '.'forecolor backcolor | fontsizeselect fontselect | '.'alignleft aligncenter alignright alignjustify | '.'bullist numlist outdent indent | link unlink image | '.'removeformat | subscript superscript | blockquote table | '.'code fullscreen'
-                ],
+            <?= $form->field($model, 'body')->widget(CKEditor::class, [
+                'options' => ['id' => 'emailtemplate-body'],
             ])->label(false) ?>
 
             <!-- Buttons for inserting content -->

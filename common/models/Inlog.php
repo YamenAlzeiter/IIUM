@@ -24,7 +24,7 @@ class Inlog extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'inlog';
+        return 'ac_iosys.inlog';
     }
 
     /**

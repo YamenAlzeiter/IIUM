@@ -102,7 +102,7 @@ class Outbound extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'outbound';
+        return 'ac_iosys.outbound';
     }
 
 

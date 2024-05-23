@@ -50,7 +50,7 @@ class KcdioController extends Controller
             ],
             'sort' => [
                 'defaultOrder' => [
-                    'id' => SORT_DESC,
+                    'kcdio' => SORT_ASC,
                 ]
             ],
 
@@ -108,7 +108,7 @@ class KcdioController extends Controller
         $model = $this->findModel($id);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [

@@ -5,8 +5,10 @@ use yii\web\UploadedFile;
 
 function fileHandler($model, $attribute, $fileNamePrefix)
 {
+
     $file = UploadedFile::getInstance($model, $attribute);
     if ($file) {
+
         $baseUploadPath = Yii::getAlias('@common/uploads');
         $inputName = preg_replace('/[^a-zA-Z0-9]+/', '_', $file->name);
         $creationYearLastTwoDigits = date('y', strtotime(date('Y-m-d H:i:s')));

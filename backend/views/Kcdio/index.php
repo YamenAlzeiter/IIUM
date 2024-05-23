@@ -17,8 +17,6 @@ $this->title = 'Kcdios';
 
 <div class="row">
     <div class="col-12">
-        <div class="card w-100">
-            <div class="card-body">
                 <div class="d-flex flex-row mb-4">
                     <a href="javascript:void(0)" class="btn btn-outline-dark d-flex align-items-center" id="add-kcdio">
                         <i class="ti ti-file me-0 me-md-1 fs-4"></i>
@@ -71,8 +69,7 @@ $this->title = 'Kcdios';
                 ]); ?>
             </div>
         </div>
-    </div>
-</div>
+
 
 
 

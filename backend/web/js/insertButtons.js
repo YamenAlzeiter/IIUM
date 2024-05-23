@@ -1,14 +1,13 @@
-// Wait for the DOM content to be fully loaded before executing JavaScript
 document.addEventListener("DOMContentLoaded", function () {
-  // Define a function to handle button clicks and insert content into TinyMCE editor
+  // Define a function to handle button clicks and insert content into CKEditor
   function handleButtonClick(content) {
-    // Get the TinyMCE editor instance by its ID (replace 'emailtemplate-body' with your textarea's ID)
-    const editor = tinymce.get("emailtemplate-body");
+    // Get the CKEditor instance by its ID (replace 'emailtemplate-body' with your textarea's ID)
+    const editor = CKEDITOR.instances['emailtemplate-body'];
 
     // If the editor instance exists
     if (editor) {
       // Insert the provided content into the editor
-      editor.insertContent(content);
+      editor.insertHtml(content);
     }
   }
 
