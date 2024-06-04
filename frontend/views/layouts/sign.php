@@ -18,7 +18,7 @@ AppAsset::register($this);
 	<!DOCTYPE html>
 	<html lang = "<?= Yii::$app->language ?>" class = "h-100">
 	<head>
-
+        <link rel="shortcut icon" type="image/png" href="https://style.iium.edu.my/images/iium/iium-logo.png">
 		<script src = "https://code.jquery.com/jquery-3.6.4.min.js"></script>
 		<meta charset = "<?= Yii::$app->charset ?>">
 		<meta name = "viewport" content = "width=device-width, initial-scale=1, shrink-to-fit=no">
