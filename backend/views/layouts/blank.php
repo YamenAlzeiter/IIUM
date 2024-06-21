@@ -28,9 +28,9 @@ AppAsset::register($this);
      data-sidebar-position = "fixed" data-header-position = "fixed">
 
         <main role = "main" class = "flex-shrink-0">
-
-                 <?= $content ?>
-
+                 <div class="p-4">
+                     <?= $content ?>
+                 </div>
         </main>
 </div>
 

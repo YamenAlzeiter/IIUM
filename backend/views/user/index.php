@@ -13,8 +13,7 @@ use yii\helpers\Url;
 ?>
 <div class = "user-admin-index">
 
-    <div class = "card w-100 mt-4">
-        <div class = "card-body">.
+    <div class = "">
             <div class = "d-flex flex-row mb-4">
                 <a href = "javascript:void(0)" class = "btn btn-outline-dark d-flex align-items-center px-3" id = "add-user">
                     <i class = "ti ti-file me-0 me-md-1 fs-4"></i>
@@ -57,7 +56,7 @@ use yii\helpers\Url;
             ]); ?>
             </div>
         </div>
-    </div>
+
 
     <!-- Modal Add notes -->
     <div class = "modal fade" id = "formpoc" tabindex = "-1" role = "dialog" aria-labelledby = "formpoc"

@@ -8,6 +8,7 @@ use yii\base\Action;
 use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 
 /**
@@ -21,25 +22,30 @@ class WorkflowCommonController extends Controller
      */
     public $layout = 'blank';
 
-    /**
-     * Downloads a file associated with the given ID.
-     *
-     * @param  int  $ID  The ID of the model.
-     * @param  string  $file  The filename to be downloaded.
-     * @throws NotFoundHttpException If the file does not exist.
-     */
-    public function actionDownload($ID, $file)
+    public function actionDownload($id, $file)
     {
         $baseUploadPath = Yii::getAlias('@common/uploads');
-        $filePath = $baseUploadPath.'/'.$ID.'/'.$file;
+        $filePath = $baseUploadPath.'/'.$id.'/'.$file;
         Yii::info("File Path: ".$filePath, "fileDownload");
+
         if (file_exists($filePath)) {
-            Yii::$app->response->sendFile($filePath);
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+
+            return ['success' => true];
         } else {
-            Yii::info("File not found: ".$file, "fileDownload");
-            throw new NotFoundHttpException('The file does not exist.');
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ['success' => false];
         }
     }
+
+    public function actionDownloader($id, $file)
+    {
+        $baseUploadPath = Yii::getAlias('@common/uploads');
+        $filePath = $baseUploadPath.'/'.$id.'/'.$file;
+        Yii::$app->response->sendFile($filePath);
+    }
+
 
     /**
      * Executed before an action.
@@ -52,8 +58,10 @@ class WorkflowCommonController extends Controller
     {
         $ID = Yii::$app->getRequest()->get('ID');
         $token = Yii::$app->getRequest()->get('token');
-
-        if ($action->id !== 'error' && !$this->isValidToken($ID, $token)) {
+        if($action->id ==='download' || $action->id === 'downloader'){
+            return parent::beforeAction($action);
+        }
+        else if ($action->id !== 'error' && !$this->isValidToken($ID, $token)) {
             $model = $this->findModel($ID);
             $statusModel = Status::findOne($model->Status);
 

@@ -246,10 +246,13 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                                 'model' => $model, 'attribute' => 'Sponsorship_letter',
                                 'fileName' => 'SponsorshipLetter', 'text' => 'Sponsorship Letter'
                             ]) ?>
-                            <?= DownloadLinkWidget::widget([
-                                'model' => $model, 'attribute' => 'proof_of_payment', 'fileName' => 'proof_of_payment',
-                                'text' => 'Proof of payment'
-                            ]) ?>
+                            <?php
+                            if($model->Status === 55) {
+                                echo DownloadLinkWidget::widget([
+                                    'model' => $model, 'attribute' => 'proof_of_payment', 'fileName' => 'proof_of_payment',
+                                    'text' => 'Proof of payment'
+                                ]);
+                            }?>
                             <?= DownloadLinkWidget::widget([
                                 'model' => $model, 'attribute' => 'offer_letter', 'fileName' => 'offerLetter',
                                 'text' => 'Offer Letter'

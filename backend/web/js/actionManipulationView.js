@@ -129,7 +129,7 @@ $(document).ready(function () {
             if (selectedPersonInCharge) {
               // Display the email
               personInChargeEmail.val(selectedPersonInCharge.email);
-              personInChargeCCEmail.val(selectedPersonInCharge.email);
+              personInChargeCCEmail.val(selectedPersonInCharge.email_cc);
               $("#selectedPersonId").val(selectedPersonInCharge.id);
             } else {
               personInChargeEmail.val("");

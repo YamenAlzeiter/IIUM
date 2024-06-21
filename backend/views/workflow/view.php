@@ -209,15 +209,8 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                                 ]) ?>
                                 <?= Html::hiddenInput('status', 32, ['id' => 'status-input-reject']); ?>
                                 <div class = "conditional-form-elements-reject" style = "display: none;">
-                                    <div class = "form-group">
-                                        <?php
-                                        echo TinyMce::widget([
-                                            'name' => 'reason', // Setting a name for the input
-                                            'options' => ['rows' => 12], 'language' => 'en', 'clientOptions' => [
-                                                'toolbar' => false,
-                                            ], 'value' => '', // Set initial value if needed
-                                        ]);
-                                        ?>
+                                    <div class="form-floating">
+                                        <textarea class="form-control" name="reason" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
                                     </div>
                                     <?= Html::submitButton('Submit', ['class' => 'btn btn-success mt-3']) ?>
                                 </div>

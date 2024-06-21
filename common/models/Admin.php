@@ -36,7 +36,7 @@ class Admin extends ActiveRecord implements IdentityInterface
      */
     public static function tableName()
     {
-        return '{{%user_admin}}';
+        return '{{ac_iosys.user_admin}}';
     }
 
     /**

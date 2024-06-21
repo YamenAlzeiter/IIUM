@@ -1,7 +1,6 @@
 <?php
 
 use common\models\Kcdio;
-use dosamigos\tinymce\TinyMce;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\web\YiiAsset;
@@ -22,33 +21,33 @@ $this->registerJsFile('https://code.jquery.com/jquery-3.6.0.min.js');
 ?>
 
 
-    <div class = "card shadow-none border">
-        <div class = "card-body">
-            <div class = "d-flex justify-content-between">
-                <div class = "d-flex align-items-center header-info gap-1 mb-4">
-                    <i class = "ti ti-activity text-dark"></i>
-                    <strong>
-                        <h4 class = "fw-semibold m-0 text-capitalize">Applicant Action: <?= $model->Name ?></h4>
-                    </strong>
-                </div>
-                <?= Html::a('<button class="btn btn-dark p-3 rounded-circle d-flex align-items-center justify-content-center customizer-btn"><i class="ti ti-eye fs-7"></i></button>',
-                    ['view', 'ID' => $model->ID],) ?>
+<div class = "card shadow-none border">
+    <div class = "card-body">
+        <div class = "d-flex justify-content-between">
+            <div class = "d-flex align-items-center header-info gap-1 mb-4">
+                <i class = "ti ti-activity text-dark"></i>
+                <strong>
+                    <h4 class = "fw-semibold m-0 text-capitalize">Applicant Action: <?= $model->Name ?></h4>
+                </strong>
             </div>
-            <div class = "row">
-                <div class = "col-md-6">
-                    <p class = "mb-2 fw-light mb-1"><strong>Citizenship:</strong> <?= $model->Citizenship ?></p>
-                    <p class = "mb-2 fw-light mb-1"><strong>Gender:</strong> <?= getGenderMeaning($model->Gender) ?></p>
-                    <p class = "mb-2 fw-light mb-1"><strong>Date of Birth:</strong> <?= $model->Date_of_Birth ?></p>
-                </div>
-                <div class = "col-md-6">
-                    <p class = "mb-2 fw-light mb-1"><strong>Passport Number:</strong> <?= $model->Passport_Number ?></p>
-                    <p class = "mb-2 fw-light mb-1"><strong>Passport Expiration:</strong> <?= $model->Passport_Expiration ?></p>
-                    <p class = "mb-2 fw-light mb-1"><strong>Mobile Number:</strong> <?= $model->Mobile_Number ?></p>
-                    <p class = "mb-2 fw-light mb-1"><strong>Mobile Number:</strong> <?= $model->Email_address ?></p>
-                </div>
+            <?= Html::a('<button class="btn btn-dark p-3 rounded-circle d-flex align-items-center justify-content-center customizer-btn"><i class="ti ti-eye fs-7"></i></button>',
+                ['view', 'ID' => $model->ID],) ?>
+        </div>
+        <div class = "row">
+            <div class = "col-md-6">
+                <p class = "mb-2 fw-light mb-1"><strong>Citizenship:</strong> <?= $model->Citizenship ?></p>
+                <p class = "mb-2 fw-light mb-1"><strong>Gender:</strong> <?= getGenderMeaning($model->Gender) ?></p>
+                <p class = "mb-2 fw-light mb-1"><strong>Date of Birth:</strong> <?= $model->Date_of_Birth ?></p>
+            </div>
+            <div class = "col-md-6">
+                <p class = "mb-2 fw-light mb-1"><strong>Passport Number:</strong> <?= $model->Passport_Number ?></p>
+                <p class = "mb-2 fw-light mb-1"><strong>Passport Expiration:</strong> <?= $model->Passport_Expiration ?></p>
+                <p class = "mb-2 fw-light mb-1"><strong>Mobile Number:</strong> <?= $model->Mobile_Number ?></p>
+                <p class = "mb-2 fw-light mb-1"><strong>Mobile Number:</strong> <?= $model->Email_address ?></p>
             </div>
         </div>
     </div>
+</div>
 <?php if ($model->Status === 10 || $model->Status === 35 || $model->Status === 55 || $model->Status === 15): ?>
     <div class = "mt-4 mb-4" id = "radio-buttons">
         <h1 class = "text-start fs-5 fw-semibold mb-3">RECOMMENDATION FROM OFFICE OF INTERNATIONAL AFFAIRS</h1>
@@ -99,7 +98,7 @@ $this->registerJsFile('https://code.jquery.com/jquery-3.6.0.min.js');
 <?php endif; ?>
 
 
-    <!--Status message-->
+<!--Status message-->
 <?php if ($model->Status === 5): ?>
     <div id = "approval-message-hod" class = "mt-4 alert alert-warning  ">
         <h5 class = "m-0 text-capitalize alert">waiting approval from HOD</h5>
@@ -132,42 +131,42 @@ $this->registerJsFile('https://code.jquery.com/jquery-3.6.0.min.js');
 
 <?php $form = ActiveForm::begin(['action' => ['accept', 'ID' => $model->ID], 'class' => 'form']) ?>
 
-    <div class = "conditional-form-elements" style = "display: none">
-        <?php if ($model->Status === 10 || $model->Status === 15): ?>
-            <div class = " row conditional-form-elements-initial">
-                <div class = "col-md-6">
-                    <input type = "hidden" id = "selectedPersonId" name = "selectedPersonId">
-                    <div class = "form-group mb-2">
-                        <?= $form->field($modelKedio, 'kcdio')->dropDownList(ArrayHelper::map(Kcdio::find()->all(),
-                            'id', 'kcdio'),
-                            ['prompt' => 'Select KCDIO', 'id' => 'kcdio-dropdown', 'required' => true])->label(false,
-                            ['style' => 'display: none;']) ?>
-                    </div>
-
+<div class = "conditional-form-elements" style = "display: none">
+    <?php if ($model->Status === 10 || $model->Status === 15): ?>
+        <div class = " row conditional-form-elements-initial">
+            <div class = "col-md-6">
+                <input type = "hidden" id = "selectedPersonId" name = "selectedPersonId">
+                <div class = "form-group mb-2">
+                    <?= $form->field($modelKedio, 'kcdio')->dropDownList(ArrayHelper::map(Kcdio::find()->orderBy('kcdio ASC')->all(),
+                        'id', 'kcdio'),
+                        ['prompt' => 'Select KCDIO', 'id' => 'kcdio-dropdown', 'required' => true])->label(false,
+                        ['style' => 'display: none;']) ?>
                 </div>
-                <div class = "col-md-6">
-                    <div class = "form-group mb-2">
-                        <select class = "form-control" id = "personInChargeDropdown" name = "personInChargeDropdown"
-                                required>
-                            <option value = "">Select KCDIO first</option>
-                        </select>
-                    </div>
-                    <div class = "form-group mb-2">
-                        <input type = "text" readonly class = "form-control" id = "emailAddress" name = "emailAddress"
-                               placeholder = "Email Address"/>
-                    </div>
-                    <div class = "form-group mb-2">
-                        <input type = "text" readonly class = "form-control" id = "ccEmailAddress"
-                               placeholder = "CC Email Address"/>
-                    </div>
+
+            </div>
+            <div class = "col-md-6">
+                <div class = "form-group mb-2">
+                    <select class = "form-control" id = "personInChargeDropdown" name = "personInChargeDropdown"
+                            required>
+                        <option value = "">Select KCDIO first</option>
+                    </select>
+                </div>
+                <div class = "form-group mb-2">
+                    <input type = "text" readonly class = "form-control" id = "emailAddress" name = "emailAddress"
+                           placeholder = "Email Address"/>
+                </div>
+                <div class = "form-group mb-2">
+                    <input type = "text" readonly class = "form-control" id = "ccEmailAddress"
+                           placeholder = "CC Email Address"/>
                 </div>
             </div>
-        <?php endif; ?>
-        <div class = "d-flex justify-content-end">
-            <?= Html::submitButton('Submit', ['class' => 'btn btn-dark px-5 mt-3']) ?>
         </div>
-
+    <?php endif; ?>
+    <div class = "d-flex justify-content-end">
+        <?= Html::submitButton('Submit', ['class' => 'btn btn-dark px-5 mt-3']) ?>
     </div>
+
+</div>
 
 <?php ActiveForm::end() ?>
 
@@ -175,63 +174,45 @@ $this->registerJsFile('https://code.jquery.com/jquery-3.6.0.min.js');
 <?php ActiveForm::begin(['action' => ['reject', 'ID' => $model->ID], 'class' => 'form']) ?>
 <?= Html::hiddenInput('status', 6, ['id' => 'status-input-reject']); ?>
 
-    <div class = "conditional-form-elements-reject" style = "display: none;">
-        <div class = "form-group">
-            <?php
-            echo TinyMce::widget([
-                'name' => 'reason', // Setting a name for the input
-                'options' => ['rows' => 12], 'language' => 'en', 'clientOptions' => [
-                    'toolbar' => false,
-                ], 'value' => '', // Set initial value if needed
-            ]);
-            ?>
+<div class = "conditional-form-elements-reject" style = "display: none;">
+
+        <div class="form-floating">
+            <textarea class="form-control" name="reason" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
         </div>
-        <div class = "d-flex justify-content-center">
-            <?= Html::submitButton('Submit', ['class' => 'btn btn-dark px-5 mt-3']) ?>
-        </div>
+
+    <div class = "d-flex justify-content-center">
+        <?= Html::submitButton('Submit', ['class' => 'btn btn-dark px-5 mt-3']) ?>
     </div>
+</div>
 <?php ActiveForm::end() ?>
 
 
 <?php ActiveForm::begin(['action' => ['complete', 'ID' => $model->ID], 'class' => 'form']) ?>
 
-    <div class = "conditional-form-elements-incomplete" style = "display: none;">
-        <div class = "form-group">
-            <?php
-            echo TinyMce::widget([
-                'name' => 'reason', // Setting a name for the input
-                'options' => ['rows' => 12], 'language' => 'en', 'clientOptions' => [
-                    'toolbar' => false,
-                ], 'value' => '', // Set initial value if needed
-            ]);
-            ?>
+<div class = "conditional-form-elements-incomplete" style = "display: none;">
+
+        <div class="form-floating">
+            <textarea class="form-control" name="reason" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
         </div>
-        <div class = "d-flex justify-content-center">
-            <?= Html::submitButton('Submit', ['class' => 'btn btn-dark px-5 mt-3']) ?>
-        </div>
+
+    <div class = "d-flex justify-content-center">
+        <?= Html::submitButton('Submit', ['class' => 'btn btn-dark px-5 mt-3']) ?>
     </div>
+</div>
 <?php ActiveForm::end() ?>
 
 <?php ActiveForm::begin(['action' => ['resend', 'ID' => $model->ID], 'class' => 'form']) ?>
 
-    <div class = "resend mt-3" id = "resend" style = "display: none;">
-        <div class = "form-group">
-            <?php
-            echo TinyMce::widget([
-                'name' => 'reason', // Setting a name for the input
-                'options' => ['rows' => 12], 'language' => 'en', 'clientOptions' => [
-                    'toolbar' => false,
-                ], 'value' => '', // Set initial value if needed
-            ]);
-            ?>
+<div class = "resend mt-3" id = "resend" style = "display: none;">
+        <div class="form-floating">
+            <textarea class="form-control" name="reason" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
         </div>
-        <div class = "d-flex justify-content-center">
-            <?= Html::submitButton('Submit', ['class' => 'btn btn-dark px-5 mt-3']) ?>
-        </div>
+    <div class = "d-flex justify-content-center">
+        <?= Html::submitButton('Submit', ['class' => 'btn btn-dark px-5 mt-3']) ?>
     </div>
+</div>
 <?php ActiveForm::end() ?>
 
 <script>
     var loadPeopleUrl = "<?= yii\helpers\Url::to(["load-people"]) ?>";
 </script>
-

@@ -3,11 +3,10 @@
 namespace backend\controllers;
 
 use backend\controllers\commonController\WorkflowCommonController;
-use common\models\Courses;
-use common\models\Iiumcourse;
-use common\models\Outbound;
+
+
+use common\models\Inbound;
 use Yii;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -17,43 +16,20 @@ use yii\web\Response;
  *
  * @package backend\controllers
  */
-class WorkflowController extends WorkflowCommonController
+class MatriculateController extends WorkflowCommonController
 {
 
-
-    /**
-     * Displays the view for a specific model.
-     * @param  int  $ID  the ID of the model to be displayed
-     * @return string the rendered view
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($ID)
-    {
-        $model = $this->findModel($ID);
-        // Retrieve courses related to the student
-        $student = Outbound::findOne($ID);
-
-        // Retrieve Host university Courses related to the student
-        $courses = Courses::find()->where(['student_id' => $student->ID])->all();
-
-        // Retrieve IIUM courses related to the student
-        $iiumcourses = Iiumcourse::find()->where(['student_id' => $student->ID])->all();
-
-        return $this->render('view', [
-            'model' => $model, "courses" => $courses, 'iiumcourses' => $iiumcourses,
-        ]);
-    }
 
     /**
      * Finds the model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param  int  $ID  the ID of the model to be found
-     * @return Outbound the loaded model
+     * @return Inbound the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($ID)
     {
-        if (($model = Outbound::findOne(['ID' => $ID])) !== null) {
+        if (($model = Inbound::findOne(['ID' => $ID])) !== null) {
             return $model;
         }
 

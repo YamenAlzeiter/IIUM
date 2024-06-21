@@ -1,7 +1,6 @@
 <?php
 
 use common\models\Kcdio;
-use dosamigos\tinymce\TinyMce;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\web\YiiAsset;
@@ -149,7 +148,7 @@ $this->registerJsFile('https://code.jquery.com/jquery-3.6.0.min.js');
 
 
 						<div class = "form-group mb-2">
-                            <?= $form->field($modelKedio, 'kcdio')->dropDownList(ArrayHelper::map(Kcdio::find()->all(),
+                            <?= $form->field($modelKedio, 'kcdio')->dropDownList(ArrayHelper::map(Kcdio::find()->orderBy('kcdio ASC')->all(),
                                 'id', 'kcdio'),
                                 ['prompt' => 'Select KCDIO', 'id' => 'kcdio-dropdown', 'required' => true])->label(false,
                                 ['style' => 'display: none;']) ?>
@@ -187,19 +186,9 @@ $this->registerJsFile('https://code.jquery.com/jquery-3.6.0.min.js');
         <?= Html::hiddenInput('status', 2, ['id' => 'status-input-reject']); ?>
 
 		<div class = "conditional-form-elements-reject" style = "display: none;">
-			<div class = "form-group">
-                <?php
-                echo TinyMce::widget([
-                    'name' => 'reason', // Setting a name for the input
-                    'options' => ['rows' => 12],
-                    'language' => 'en',
-                    'clientOptions' => [
-                        'toolbar' => false,
-                    ],
-                    'value' => '', // Set initial value if needed
-                ]);
-                ?>
-			</div>
+            <div class="form-floating">
+                <textarea class="form-control" name="reason" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
+            </div>
 			<div class = "d-flex justify-content-center">
                 <?= Html::submitButton('Submit', ['class' => 'btn btn-dark px-5 mt-3']) ?>
 			</div>
@@ -210,19 +199,9 @@ $this->registerJsFile('https://code.jquery.com/jquery-3.6.0.min.js');
         <?php ActiveForm::begin(['action' => ['complete', 'ID' => $model->ID], 'class' => 'form']) ?>
 
 		<div class = "conditional-form-elements-incomplete" style = "display: none;">
-			<div class = "form-group">
-				<?php
-				echo TinyMce::widget([
-                    'name' => 'reason', // Setting a name for the input
-                    'options' => ['rows' => 12],
-                    'language' => 'en',
-                    'clientOptions' => [
-                        'toolbar' => false,
-                    ],
-                    'value' => '', // Set initial value if needed
-                ]);
-				?>
-			</div>
+            <div class="form-floating">
+                <textarea class="form-control" name="reason" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
+            </div>
 			<div class = "d-flex justify-content-center">
                 <?= Html::submitButton('Submit', ['class' => 'btn btn-dark px-5 mt-3']) ?>
 			</div>
@@ -232,19 +211,9 @@ $this->registerJsFile('https://code.jquery.com/jquery-3.6.0.min.js');
         <?php ActiveForm::begin(['action' => ['resend', 'ID' => $model->ID], 'class' => 'form']) ?>
 
 		<div class = "resend mt-3" id = "resend" style = "display: none;">
-			<div class = "form-group">
-                <?php
-                echo TinyMce::widget([
-                    'name' => 'reason', // Setting a name for the input
-                    'options' => ['rows' => 12],
-                    'language' => 'en',
-                    'clientOptions' => [
-                        'toolbar' => false,
-                    ],
-                    'value' => '', // Set initial value if needed
-                ]);
-                ?>
-			</div>
+            <div class="form-floating">
+                <textarea class="form-control" name="reason" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
+            </div>
 			<div class = "d-flex justify-content-center">
                 <?= Html::submitButton('Submit', ['class' => 'btn btn-dark px-5 mt-3']) ?>
 			</div>

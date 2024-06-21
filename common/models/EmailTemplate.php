@@ -19,7 +19,7 @@ class EmailTemplate extends \yii\db\ActiveRecord
 
     public static function tableName()
     {
-        return 'email_template';
+        return 'ac_iosys.email_template';
     }
 
     /**

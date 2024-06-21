@@ -16,9 +16,9 @@ AppAsset::register($this);
 	<!DOCTYPE html>
 	<html lang="<?= Yii::$app->language ?>" class="h-100">
 	<head>
-
 		<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script src = "https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <link rel="shortcut icon" type="image/png" href="https://style.iium.edu.my/images/iium/iium-logo.png">
 		<meta charset="<?= Yii::$app->charset ?>">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <?php $this->registerCsrfMetaTags() ?>

@@ -17,7 +17,7 @@ class Kcdio extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'kcdio';
+        return 'ac_iosys.kcdio';
     }
 
     /**

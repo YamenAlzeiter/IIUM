@@ -68,7 +68,8 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
     </div>
 
 </div>
-
+<div class = "card w-100 mt-4">
+    <div class = "card-body">
         <div class = "table-responsive">
             <?php ActiveForm::begin(['action' => ['delete-multiple'], 'method' => 'post']) ?>
             <?= GridView::widget([
@@ -153,3 +154,5 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
             ]) ?>
             <?php ActiveForm::end() ?>
         </div>
+    </div>
+</div>

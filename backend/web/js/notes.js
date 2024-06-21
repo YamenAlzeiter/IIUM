@@ -116,32 +116,54 @@ $(function () {
     $("#add-notes").data("update-model-id", updateModelId);
   }
 
-  $(".update-button").on("click", function () {
-    $("#formpoc").modal("show");
-    $("#formpoc form").attr("action", "/poc/update?id=" + recordId); // Adjust the action URL
-    $("#btn-n-save").show();
-    $("#btn-n-add").hide();
-    $("#formpoc-header").html(
-      '<i class="ti ti-eye text-dark me-2"></i>Update Record',
-    );
-    $("#submit-button").html('<i class = "ti ti-pencil"></i> Update');
-    var recordId = $(this).data("id");
-    setUpdateForm(
-      "#formpoc",
-      "/poc/update?id=",
-      recordId,
-      "/poc/get-record",
-      function (data) {
-        $("#poc-name").val(data.name);
-        $("#poc-email").val(data.email);
-        $("#poc-email_cc").val(data.email_cc);
-        $("#poc-name_cc1").val(data.name_cc1);
-        $("#poc-email_cc_additional").val(data.email_cc_additional);
-        $("#poc-name_cc2").val(data.name_cc2);
-        $("#validationKCDIO").val(data.KCDIO);
-      },
-    );
+  $(document).ready(function () {
+    // When the update button is clicked
+    $(".update-button").on("click", function () {
+      var recordId = $(this).data("id");
+      $("#formpoc").modal("show");
+      $("#formpoc form").attr("action", "/poc/update?id=" + recordId); // Adjust the action URL
+      $("#btn-n-save").show();
+      $("#btn-n-add").hide();
+      $("#formpoc-header").html(
+          '<i class="ti ti-eye text-dark me-2"></i>Update Record'
+      );
+      $("#submit-button").html('<i class="ti ti-pencil"></i> Update');
+
+      // Fetch and populate the form data
+      setUpdateForm(
+          "#formpoc",
+          "/poc/update?id=",
+          recordId,
+          "/poc/get-record",
+          function (data) {
+            $("#poc-name").val(data.name);
+            $("#poc-email").val(data.email);
+            if (data.KCDIO === 'matric') {
+              $("#validationKCDIO").addClass('d-none').removeAttr('required');
+            } else {
+              $("#validationKCDIO").removeClass('d-none').attr('required', true);
+            }
+            $("#poc-email_cc").val(data.email_cc);
+            $("#poc-name_cc1").val(data.name_cc1);
+            $("#poc-email_cc_additional").val(data.email_cc_additional);
+            $("#poc-name_cc2").val(data.name_cc2);
+            $("#validationKCDIO").val(data.KCDIO);
+          }
+      );
+    });
+
+    // When the modal is shown, reset the dropdown to visible and required
+    $('#formpoc').on('show.bs.modal', function () {
+      $("#validationKCDIO").removeClass('d-none').attr('required', true);
+    });
+
+    // When the modal is hidden, reset the form fields
+    $('#formpoc').on('hidden.bs.modal', function () {
+      $("#formpoc form")[0].reset();
+      $("#validationKCDIO").removeClass('d-none').attr('required', true);
+    });
   });
+
 
   $(".updateStatus-button").on("click", function () {
     $("#formpoc").modal("show");

@@ -56,6 +56,7 @@ class InboundController extends Controller
     const template_incomplete = 1;
     const template_reconsider = 11;
 
+    const template_matriculate = 6;
     //endregion
     public function behaviors()
     {
@@ -453,7 +454,7 @@ class InboundController extends Controller
                     break;
                 case self::application_accepted:
                     $personModel = null;
-                    $model->Token = null;
+                    $model->Token = Yii::$app->security->generateRandomString(32);
                     $template = self::template_congrats;
                     break;
                 default:
@@ -462,7 +463,14 @@ class InboundController extends Controller
             }
 
             if ($model->save(false)) {
-                $this->sendEmail($model, $personModel, $model->Token, $template, null,);
+                $this->sendEmail($model, $personModel, $model->Token, $template, null);
+                if($this::application_accepted){
+                    $this->sendEmail(
+                        $model,
+                        Poc::findOne(['KCDIO' => 'matric']),
+                        $model->Token,
+                        $this::template_matriculate, null);
+                }
                 return $this->redirect(["index", 'year' => date("Y")]);
             }
         }
@@ -475,8 +483,7 @@ class InboundController extends Controller
      * @param  mixed  $personModel  The person in charge model object, if available, to personalize the email.
      * @param  string  $token  The token to be included in the email link.
      * @param  int  $templateId  The ID of the email template to be used for the email content.
-     * @param  string  $reason  The reason to be included in the email body.
-     *
+     * @param  string  $reason  The reason to be included in the email body.*
      * @return void
      */
     public function sendEmail($model, $personModel, $token, $templateId, $reason)
@@ -508,8 +515,10 @@ class InboundController extends Controller
                 ]);
                 break;
 
-            case self::redirected_to_student:
-                // $viewLink is already set to null as the default value
+            case self:: application_accepted:
+                $viewLink = Yii::$app->urlManager->createAbsoluteUrl([
+                    'matriculate/view-full', 'ID' => $model->ID, 'token' => $token
+                ]);
                 break;
 
             default:
@@ -569,7 +578,7 @@ class InboundController extends Controller
         if ($this->request->isPost) {
             //Get the new status and rejection reason from the POST data
             $model->Status = intval($this->request->post("status"));
-            $model->temp = $this->request->post("reason");
+                $model->temp = $this->request->post("reason");
 
             if ($model->save(false)) {
                 $this->sendEmail($model, null, $model->Token, self::template_reject, $model->temp);

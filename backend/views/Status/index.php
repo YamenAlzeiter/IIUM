@@ -11,8 +11,6 @@ use yii\helpers\Html;
 $this->title = 'Status';
 ?>
 
-<div class = "card w-100 mt-4">
-    <div class = "card-body">
         <div class="table-responsive">
         <?= GridView::widget([
             'dataProvider' => $dataProvider,
@@ -38,8 +36,7 @@ $this->title = 'Status';
             ],
         ]); ?>
         </div>
-    </div>
-</div>
+
 
 <!-- Modal Add notes -->
 <div class = "modal fade" id = "formpoc" tabindex = "-1" role = "dialog" aria-labelledby = "formpoc"
