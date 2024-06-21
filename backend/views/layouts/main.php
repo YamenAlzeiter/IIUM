@@ -5,9 +5,12 @@
 /** @var string $content */
 
 use backend\assets\AppAsset;
+use common\components\Sidebar;
 use common\widgets\Alert;
 use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
+use yii\bootstrap5\Nav;
+use yii\bootstrap5\NavBar;
 use yii\web\JqueryAsset;
 use yii\web\View;
 
@@ -23,9 +26,8 @@ AppAsset::register($this);
 
         <script src = "https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src = "https://code.jquery.com/jquery-3.6.4.min.js"></script>
-        <script src = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script src = "https://cdn.jsdelivr.net/npm/apexcharts"></script>
-        <script src = "https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
         <!-- FAVICONS ICON -->
         <link rel="shortcut icon" type="image/png" href="https://style.iium.edu.my/images/iium/iium-logo.png">
@@ -45,45 +47,113 @@ AppAsset::register($this);
     <body>
     <?php $this->beginBody() ?>
     <div class="background-image"></div>
+    <!-- Preloader start -->
     <div id="preloader">
         <div class="lds-ripple">
             <div></div>
             <div></div>
         </div>
     </div>
-        <div class = "page-wrapper" id = "main-wrapper" data-layout = "vertical" data-navbarbg = "skin6"
-             data-sidebartype = "full"
-             data-sidebar-position = "fixed" data-header-position = "fixed">
-            <aside class = "left-sidebar">
-                <!--calling the sidebar layout on to be rendered on main layout-->
-                <?php echo $this->render('sideBar') ?>
-                <div class = "dark-transparent sidebartoggler">hello wrold</div>
-            </aside>
-            <header class = "app-header">
-                <nav class = "navbar navbar-expand-lg navbar-light">
-                    <ul class = "navbar-nav">
-                        <li class = "nav-item d-block d-xl-none">
-                            <a class = "nav-link sidebartoggler nav-icon-hover" id = "headerCollapse"
-                               href = "javascript:void(0)">
-                                <i class = "ti ti-menu-2"></i>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </header>
-            <div class = "body-wrapper" id="content-body">
-                <main role = "main" class = "flex-shrink-0">
-                    <div class = "container ">
+    <!-- Preloader end -->
+    <!-- Main wrapper start -->
+    <div id="main-wrapper">
+        <!-- Navigation Header start -->
 
-                        <?= Breadcrumbs::widget([
-                            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-                        ]) ?>
-                        <?= Alert::widget() ?>
-                        <?= $content ?>
-                    </div>
-                </main>
+        <div class="nav-header">
+            <a href='<?= Yii::$app->homeUrl ?>' class="brand-logo">
+                <img src="https://style.iium.edu.my/images/iium/iium-logo-v2.png" class="user_img"
+                     style="max-width: 75%" alt=""/>
+            </a>
+            <div class="nav-control">
+                <div class="hamburger">
+                    <span class="line"></span>
+                    <span class="line"></span>
+                    <span class="line"></span>
+                </div>
             </div>
         </div>
+
+        <div class="header">
+            <div class="header-content">
+                <?php NavBar::begin([
+                    'renderInnerContainer' => false,
+                    'options' => [
+                        'class' => 'navbar navbar-expand',
+                    ],
+                ]);
+
+
+
+                echo Nav::widget([
+                    'options' => ['class' => 'navbar navbar-expand'],
+
+                ]);
+
+                if (Yii::$app->user->isGuest) {
+                    echo Html::tag('div',
+                        Html::a('Login', ['/site/login'], ['class' => 'btn btn-link text-white login text-decoration-none']),
+                        ['class' => 'd-flex']);
+                } else {
+                    echo Html::beginForm(['/site/logout'], 'post', ['class' => ''])
+                        . Html::submitButton('Logout', ['class' => 'btn text-white btn-link logout text-decoration-none'])
+                        . Html::endForm();
+                }
+
+                NavBar::end();
+                ?>
+            </div>
+        </div>
+                <!--calling the sidebar layout on to be rendered on main layout-->
+                <?php
+
+                // Build the menu items array
+                $menuItems = [
+                    ['title' => 'Home'],
+                    ['url' => 'agreement/index', 'icon' => 'https://style.iium.edu.my/images/iconly/light/Category.svg', 'optionTitle' => 'Agreements'],
+                ];
+
+
+                if (Yii::$app->user->identity->id == 1) {
+                    $menuItems[] = ['title' => 'Admin'];
+                    $menuItems[] = ['url' => 'setting', 'icon' => 'https://style.iium.edu.my/images/iconly/light/Setting.svg', 'optionTitle' => 'Setting v1'];
+                    $menuItems[] =
+                        [
+                            'icon' => 'https://style.iium.edu.my/images/iconly/light/Setting.svg',
+                            'optionTitle' => 'Settings v2',
+                            'items' => [
+                                ['url' => 'setting/poc', 'optionTitle' => 'Person in Charge'],
+                                ['url' => 'setting/email-template', 'optionTitle' => 'Email Template'],
+                                ['url' => 'setting/kcdio', 'optionTitle' => 'K/C/D/I/O'],
+                                ['url' => 'setting/status', 'optionTitle' => 'Status'],
+                                ['url' => 'setting/others', 'optionTitle' => 'Others'],
+                            ]
+                        ];
+                }
+
+                // Render the Sidebar widget with the menu items
+                echo Sidebar::widget([
+                    'items' => $menuItems
+                ]);
+
+                ?>
+        <div class="content-body">
+            <!-- Breadcrumb start -->
+            <div class="page-titles">
+                <ol class="breadcrumb">
+                    <li>
+                        <h5 class="bc-title">
+                            <?= Html::encode($this->title) ?>
+                        </h5>
+                    </li>
+
+                </ol>
+            </div>
+            <div class="container-lg my-3 p-3 rounded-3 bg-white shadow">
+                <?= $content ?>
+            </div>
+        </div>
+        <!-- End of Page Content -->
+    </div>
 
 
     <script>
@@ -106,8 +176,7 @@ JS
     ?>
 <!--    <script src="https://style.iium.edu.my/vendor/global/global.min.js"></script>-->
     <script src="https://style.iium.edu.my/js/custom.js"></script>
-    <scsript src="https://style.iium.edu.my/js/deznav-init.js"></scsript>
-    <script src="https://style.iium.edu.my/vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+    <script src="https://style.iium.edu.my/js/deznav-init.js"></script>
     </body>
     </html>
 <?php $this->endPage();

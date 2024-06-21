@@ -12,7 +12,7 @@ class AppAsset extends AssetBundle
 // Adjust the JS file paths
 
     public $css = [
-
+        'https://style.iium.edu.my/css/style.css',
         'css/site.css',
         'css/styles.css',
         'css/icons/tabler-icons/tabler-icons.css',
@@ -27,6 +27,7 @@ class AppAsset extends AssetBundle
         'js/sweet-alert.js',
         'js/actionManipulationView.js',
         'js/form-logic.js',
+        'js/global.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',
