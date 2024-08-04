@@ -12,27 +12,33 @@ AppAsset::register($this);
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>" class="h-100">
 <head>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <meta charset="<?= Yii::$app->charset ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="shortcut icon" type="image/png" href="https://style.iium.edu.my/images/iium/iium-logo.png">
+
+    <link href="https://style.iium.edu.my/css/iium.css" rel="stylesheet">
+
     <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
 </head>
-<body>
+<body class="d-flex flex-column h-100">
 <?php $this->beginBody() ?>
 
-
-<div class = "page-wrapper" id = "main-wrapper" data-layout = "vertical" data-navbarbg = "skin6"
-     data-sidebartype = "full"
-     data-sidebar-position = "fixed" data-header-position = "fixed">
-
-        <main role = "main" class = "flex-shrink-0">
-
-                 <?= $content ?>
-
-        </main>
+<div class="background-image"></div>
+<!-- Preloader start -->
+<div id="preloader">
+    <div class="lds-ripple">
+        <div></div>
+        <div></div>
+    </div>
 </div>
+<main role="main">
+    <div class="container">
+        <?= $content ?>
+    </div>
+</main>
 
 <?php $this->endBody() ?>
 </body>

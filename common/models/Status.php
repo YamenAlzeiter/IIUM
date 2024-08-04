@@ -5,11 +5,13 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "Status".
+ * This is the model class for table "status".
  *
- * @property int $ID
+ * @property int $id
+ * @property int|null $status
+ * @property string|null $tag
  * @property string|null $description
- * @property string $status
+ * @property string|null $type
  */
 class Status extends \yii\db\ActiveRecord
 {
@@ -18,7 +20,7 @@ class Status extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'Status';
+        return 'status';
     }
 
     /**
@@ -27,7 +29,11 @@ class Status extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['description','status'], 'string', 'max' => 512],
+            [['status'], 'default', 'value' => null],
+            [['status'], 'integer'],
+            [['tag'], 'string', 'max' => 20],
+            [['description'], 'string', 'max' => 522],
+            [['type'], 'string', 'max' => 255],
         ];
     }
 
@@ -37,8 +43,11 @@ class Status extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'ID' => 'ID',
+            'id' => 'ID',
+            'status' => 'Status',
+            'tag' => 'Tag',
             'description' => 'Description',
+            'type' => 'Type',
         ];
     }
 }

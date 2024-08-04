@@ -4,14 +4,19 @@ use yii\helpers\Html;
 
 /** @var yii\web\View $this */
 /** @var common\models\Inbound $model */
-/** @var common\models\Courses $coursesData */
+/** @var common\models\InboundHostUniversityCourses $modelsCourses*/
 
+$this->title = 'Create Inbound';
+$this->params['breadcrumbs'][] = ['label' => 'Inbounds', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="inbound-create">
+
+
+
 
     <?= $this->render('_form', [
         'model' => $model,
-        'coursesData' => $coursesData,
+        'modelsCourses' => $modelsCourses,
     ]) ?>
 
-</div>
+

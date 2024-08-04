@@ -4,15 +4,19 @@ use yii\helpers\Html;
 
 /** @var yii\web\View $this */
 /** @var common\models\Outbound $model */
+/** @var common\models\LocalUniversityCources $modelsLocalCourses*/
+/** @var common\models\HostUniversityCources $modelsHostCourses*/
 
-$this->title = $model->Name;
+$this->title = 'Update outbound: ' . $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Outbounds', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = 'Update';
 ?>
-<div class="outbound-update">
 
-    <h1><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
         'model' => $model,
+    'modelsLocalCourses' => $modelsLocalCourses,
+    'modelsHostCourses' => $modelsHostCourses,
     ]) ?>
 
-</div>

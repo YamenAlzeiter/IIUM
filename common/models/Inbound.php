@@ -3,101 +3,113 @@
 namespace common\models;
 
 use Yii;
-use yii\db\Expression;
+use yii\bootstrap5\Html;
+use yii\web\UploadedFile;
+use function Symfony\Component\Translation\t;
 
 /**
  * This is the model class for table "inbound".
  *
- * @property int $ID
- * @property string $Name
- * @property string|null $Gender
- * @property string|null $Relation_ship
- * @property string|null $Date_of_Birth
- * @property string|null $Passport_Number
- * @property string|null $Passport_Expiration
- * @property string|null $Religion
- * @property string|null $Mazhab
- * @property string|null $Citizenship
- * @property string|null $Country_of_origin
- * @property string|null $Country_of_residence
- * @property string|null $Mobile_Number
- * @property string|null $Email_address
- * @property string|null $Permanent_Address
- * @property string|null $Postcode
- * @property string|null $Country
- * @property string|null $Emergency_name
- * @property string|null $Emergency_relationship
- * @property string|null $Emergency_phoneNumber
- * @property string|null $Emergency_email
- * @property string|null $Emergency_homeAddress
- * @property string|null $Emergency_postCode
- * @property string|null $Emergency_country
- * @property string|null $Academic_home_university
- * @property string|null $Academic_lvl_edu
- * @property string|null $Academic_name_of_programme
- * @property int|null $Academic_current_semester
- * @property int|null $Academic_current_year
- * @property string|null $Academic_name_of_faculty
- * @property int|null $Academic_current_result
- * @property string|null $Research_title
- * @property int|null $Mou_or_Moa
- * @property int|null $English_native
- * @property string|null $English_test_name
- * @property string|null $English_other_test_name
- * @property resource|null $English_certificate
- * @property string|null $Propose_type_of_programme
- * @property string|null $Propose_type_of_programme_other
- * @property int|null $Propose_type_of_mobility
- * @property string|null $Propose_kulliyyah_applied
- * @property string|null $Propose_duration_of_study
- * @property string|null $Propose_duration_start
- * @property string|null $Propose_duration_end
- * @property int|null $Propose_transfer_credit_hours
- * @property int|null $Financial_accommodation_on_campus
+ * @property int $id
+ * @property int|null $status
+ * @property string|null $name
+ * @property string|null $gender
+ * @property string|null $relation_ship
+ * @property string|null $birth_date
+ * @property string|null $mobile_number
+ * @property string|null $email
+ * @property string|null $passport_number
+ * @property string|null $passport_expiration
+ * @property string|null $religion
+ * @property string|null $mazhab
+ * @property string|null $citizenship
+ * @property string|null $country
+ * @property string|null $country_of_origin
+ * @property string|null $country_of_residence
+ * @property string|null $permanent_address
+ * @property string|null $post_code
+ * @property string|null $emergency_name
+ * @property string|null $emergency_relationship
+ * @property string|null $emergency_mobile_number
+ * @property string|null $emergency_email
+ * @property string|null $emergency_address
+ * @property string|null $emergency_postcode
+ * @property string|null $emergency_country
+ * @property string|null $academic_home_university
+ * @property string|null $academic_education_lvl
+ * @property string|null $academic_program_name
+ * @property string|null $academic_semester
+ * @property string|null $academic_year
+ * @property string|null $academic_faculty_name
+ * @property float|null $academic_result
+ * @property string|null $academic_research_title
+ * @property string|null $memorandum_of_agreement
+ * @property bool|null $language_is_native_english
+ * @property string|null $language_english_test_name
+ * @property string|null $propose_program_type
+ * @property string|null $propose_mobility_type
+ * @property string|null $propose_kulliyyah_applied
+ * @property string|null $propose_duration_start
+ * @property string|null $propose_duration_end
+ * @property string|null $propose_study_duration
+ * @property string|null $propose_transform_credit_hours
+ * @property string|null $financial_accommodation_in_campus
  * @property string|null $campus_location
- * @property string|null $Financial_funding
- * @property string|null $Sponsor_name
- * @property string|null $Room_type
- * @property int|null $Financial_funding_sponsor_amount
- * @property string|null $Financial_funding_other
- * @property string|null $Approval_university_person_name
- * @property string|null $Approval_person_position
- * @property string|null $Approval_person_email
- * @property string|null $Approval_person_mobile_number
- * @property string|null $Approval_date
- * @property resource|null $Recommendation_letter
- * @property string|null $Student_declaration_name
- * @property string|null $Student_declaration_date
- * @property int|null $Student_declaration_agreement
- * @property resource|null $Passport
- * @property resource|null $Latest_passport_photo
- * @property resource|null $Latest_certified_academic_transcript
- * @property resource|null $Confirmation_letter
- * @property resource|null $Sponsorship_letter
- * @property int|null $Status
- * @property int|null $Kulliyyah
- * @property int|null $msd_cps
- * @property string|null $note_kulliyyah
- * @property string|null $note_msd_cps
- * @property string|null $Token
+ * @property string|null $financial_funding
+ * @property string|null $sponsor_name
+ * @property float|null $sponsor_amount
+ * @property string|null $room_type
+ * @property string|null $home_university_pic_name
+ * @property string|null $home_university_pic_email
+ * @property string|null $home_university_pic_mobile_number
+ * @property string|null $home_university_pic_position
+ * @property string|null $home_university_approval_date
+ * @property string|null $f_language_english_certificate
+ * @property string|null $f_recommendation_letter
+ * @property string|null $f_passport
+ * @property string|null $f_latest_passport_photo
+ * @property string|null $f_latest_academic_transcript
+ * @property string|null $f_confirmation_letter
+ * @property string|null $f_sponsorship_letter
+ * @property string|null $f_offer_letter
+ * @property string|null $f_proof_of_payment
+ * @property int|null $kulliyyah_id
+ * @property int|null $cps_id
+ * @property bool|null $agreement
+ * @property string|null $token
+ * @property string|null $temp
+ * @property string|null $reason
  * @property string|null $updated_at
  * @property string|null $created_at
- * @property resource|null $offer_letter
- * @property string|null $reference_number
- * @property string|null $temp
- * @property string|null $proof_of_payment
+ *
+ * @property Pic $cps
+ * @property InboundHostUniversityCourses[] $inboundHostUniversityCourses
+ * @property InboundLog[] $inboundLogs
+ * @property Pic $kulliyyah
+ * @property OutboundLog[] $outboundLogs
  */
 class Inbound extends \yii\db\ActiveRecord
 {
-    public $submitter;
+    public $language_english_test_name_other;
+    public $propose_program_type_other;
+    public $financial_funding_other;
+
+    public $f_language_english_certificate_file;
+    public $f_recommendation_letter_file;
+    public $f_passport_file;
+    public $f_latest_passport_photo_file;
+    public $f_latest_academic_transcript_file;
+    public $f_confirmation_letter_file;
+    public $f_sponsorship_letter_file;
+    public $f_offer_letter_file;
+    public $f_proof_of_payment_file;
+    public $pic_id;
     /**
      * {@inheritdoc}
      */
-
-
     public static function tableName()
     {
-        return 'inbound';
+        return '{{%inbound}}';
     }
 
     /**
@@ -106,69 +118,113 @@ class Inbound extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['Name','Gender','Relation_ship','Date_of_Birth', 'Passport_Number','Passport_Expiration','Religion','Mazhab','Citizenship','Country_of_origin','Country_of_residence','Mobile_Number','Email_address','Permanent_Address','Postcode', 'Country',
-              'Emergency_name', 'Emergency_relationship', 'Emergency_phoneNumber', 'Emergency_email', 'Emergency_homeAddress', 'Emergency_postCode', 'Emergency_country',
-              'Academic_home_university','Academic_lvl_edu', 'Academic_name_of_programme', 'Academic_current_semester', 'Academic_current_year', 'Academic_name_of_faculty', 'Academic_current_result', 'Research_title', 'Mou_or_Moa',
-              'English_native', 'English_test_name',
-              'Propose_type_of_programme', 'Propose_type_of_mobility', 'Propose_kulliyyah_applied', 'Propose_duration_start','Propose_duration_end', 'Propose_transfer_credit_hours',
-              'Financial_accommodation_on_campus', 'Financial_funding',
-              'Approval_university_person_name', 'Approval_person_position', 'Approval_person_email', 'Approval_person_mobile_number', 'Approval_date'
-            ],'required', 'on' => 'requiredValidate'
-            ],
-            [['Name','Gender','Relation_ship','Date_of_Birth', 'Passport_Number','Passport_Expiration','Religion','Mazhab','Citizenship','Country_of_origin','Country_of_residence','Mobile_Number','Email_address','Permanent_Address','Postcode', 'Country',
-                'Emergency_name', 'Emergency_relationship', 'Emergency_phoneNumber', 'Emergency_email', 'Emergency_homeAddress', 'Emergency_postCode', 'Emergency_country',
-                'Academic_home_university','Academic_lvl_edu', 'Academic_name_of_programme', 'Academic_current_semester', 'Academic_current_year', 'Academic_name_of_faculty', 'Academic_current_result', 'Research_title', 'Mou_or_Moa',
-                'English_native', 'English_test_name',
-                'Propose_type_of_programme', 'Propose_type_of_mobility', 'Propose_kulliyyah_applied', 'Propose_duration_start','Propose_duration_end', 'Propose_transfer_credit_hours',
-                'Financial_accommodation_on_campus', 'Financial_funding',
-                'Approval_university_person_name', 'Approval_person_position', 'Approval_person_email', 'Approval_person_mobile_number', 'Approval_date'
-            ],'filter', 'filter' => 'htmlspecialchars'
-            ],[
-                'English_other_test_name', 'required', 'when' => function ($model) {
-                    return $model->English_test_name === 'Other';
-                }
-            ], [
-                'Propose_type_of_programme_other', 'required', 'when' => function ($model) {
-                    return $model->Propose_type_of_programme === 'Other';
-                }
+            [
+                [
+                    'name', 'gender', 'relation_ship', 'birth_date', 'mobile_number', 'email', 'passport_number', 'passport_expiration', 'religion', 'mazhab', 'citizenship', 'country', 'country_of_origin', 'country_of_residence', 'permanent_address', 'post_code',
+                    'emergency_name', 'emergency_relationship', 'emergency_mobile_number', 'emergency_email', 'emergency_address', 'emergency_postcode', 'emergency_country',
+                    'academic_home_university', 'academic_education_lvl', 'academic_program_name', 'academic_program_name',  'academic_year', 'academic_faculty_name', 'academic_result', 'academic_research_title',
+                    'memorandum_of_agreement', 'language_is_native_english', 'language_english_test_name',
+                    'propose_program_type',  'propose_mobility_type', 'propose_kulliyyah_applied', 'propose_duration_start', 'propose_duration_end', 'propose_transform_credit_hours',
+                    'financial_accommodation_in_campus', 'financial_funding',
+                    'home_university_pic_name', 'home_university_pic_email', 'home_university_pic_mobile_number', 'home_university_pic_position', 'home_university_approval_date',
+                ],'required', 'on' => 'creating'
             ],
             [
-                'Financial_funding_other', 'required', 'when' => function ($model) {
-                return $model->Financial_funding_sponsor_amount === 'Other';
-            }
-            ],[
-                'Room_type', 'required', 'when'=>function ($model) {
-                    return $model->Financial_accommodation_on_campus === 1;
-                }
+                [
+                    'f_language_english_certificate_file', 'f_recommendation_letter_file', 'f_passport_file',
+                    'f_latest_academic_transcript_file', 'f_confirmation_letter_file', 'f_latest_passport_photo_file',
+                    'f_sponsorship_letter_file', 'f_offer_letter_file', 'f_proof_of_payment_file'
+                ], 'file', 'extensions' => 'pdf'
+            ],
+
+            [['f_language_english_certificate_file'], 'required', 'when' => function($model) {
+                return empty($model->f_language_english_certificate);
+            }, 'on' => 'creating'],
+
+            [['f_recommendation_letter_file'], 'required', 'when' => function($model) {
+                return empty($model->f_recommendation_letter);
+            }, 'on' => 'creating'],
+
+            [['f_passport_file'], 'required', 'when' => function($model) {
+                return empty($model->f_passport);
+            }, 'on' => 'creating'],
+
+            [['f_latest_passport_photo_file'], 'required', 'when' => function($model) {
+                return empty($model->f_latest_passport_photo);
+            }, 'on' => 'creating'],
+
+            [['f_latest_academic_transcript_file'], 'required', 'when' => function($model) {
+                return empty($model->f_latest_academic_transcript);
+            }, 'on' => 'creating'],
+
+            [['f_confirmation_letter_file'], 'required', 'when' => function($model) {
+                return empty($model->f_confirmation_letter);
+            }, 'on' => 'creating'],
+
+            [['f_proof_of_payment_file'], 'required', 'when' => function($model) {
+                return empty($model->f_proof_of_payment);
+            }, 'on' => 'uploader'],
+
+
+            // Conditional required rules
+            [
+                ['language_english_test_name_other'], 'required',
+                'when' => function ($model) {
+                    return $model->language_english_test_name == 'Other';
+                },
+                'whenClient' => "function (attribute, value) {
+                    return $('#english-test').val() == 'Other';
+                }"
             ],
             [
-              ['Sponsor_name', 'Financial_funding_sponsor_amount'], 'required', 'when' => function ($model) {
-               return $model->Financial_funding ===  'Scholarship';
-            }
-            ], [
-                'Passport_Expiration', 'validatePassportExpiration'
+                ['propose_program_type_other'], 'required',
+                'when' => function ($model) {
+                    return $model->propose_program_type == 'Other';
+                },
+                'whenClient' => "function (attribute, value) {
+                    return $('#programme-type').val() == 'Other';
+                }"
             ],
-            ['Propose_duration_end' , 'compare', 'compareAttribute' => 'Propose_duration_start', 'operator' => '>=', 'message' => 'Proposal duration end must be greater than or equal to proposal duration start.'],
-            ['Propose_duration_start', 'validateDate'],
-
-
-            [['Date_of_Birth', 'Passport_Expiration', 'Propose_duration_start', 'Propose_duration_end', 'Approval_date', 'Student_declaration_date', 'updated_at', 'created_at'], 'safe'],
-            [['Academic_current_semester', 'Academic_current_year', 'Academic_current_result', 'Mou_or_Moa', 'English_native', 'Propose_type_of_mobility', 'Propose_transfer_credit_hours', 'Financial_accommodation_on_campus', 'Financial_funding_sponsor_amount', 'Student_declaration_agreement', 'Status', 'Kulliyyah', 'msd_cps'], 'default', 'value' => null],
-            [['Academic_current_semester', 'Academic_current_year', 'Mou_or_Moa', 'English_native', 'Propose_type_of_mobility', 'Propose_transfer_credit_hours', 'Financial_accommodation_on_campus', 'Financial_funding_sponsor_amount', 'Student_declaration_agreement', 'Status', 'Kulliyyah', 'msd_cps'], 'integer'],
-            [['English_certificate', 'Recommendation_letter', 'Passport', 'Latest_passport_photo', 'Latest_certified_academic_transcript', 'Confirmation_letter', 'Sponsorship_letter', 'offer_letter', 'proof_of_payment'], 'file', 'extensions' => 'pdf'],
-            [['Name', 'Permanent_Address', 'Emergency_relationship'], 'string', 'max' => 255],
-            [['Gender'], 'string', 'max' => 1],
-            [['Relation_ship', 'Postcode', 'Emergency_postCode'], 'string', 'max' => 10],
-            [['Passport_Number'], 'string', 'max' => 9],
-            [['Religion', 'Mazhab', 'Country_of_origin', 'Country_of_residence', 'Country', 'Emergency_country', 'Sponsor_name', 'Room_type', 'reference_number'], 'string', 'max' => 100],
-            [['Citizenship'], 'string', 'max' => 512],
-            [['Mobile_Number', 'Emergency_phoneNumber'], 'string', 'max' => 15],
-            [['Email_address', 'Emergency_name', 'Emergency_email', 'Emergency_homeAddress', 'Academic_home_university', 'Academic_name_of_programme', 'Academic_name_of_faculty', 'Research_title', 'English_test_name', 'English_other_test_name', 'Propose_type_of_programme', 'Propose_type_of_programme_other', 'Propose_kulliyyah_applied', 'campus_location', 'Financial_funding_other', 'Approval_university_person_name', 'Approval_person_position', 'Approval_person_email', 'Student_declaration_name', 'Token'], 'string', 'max' => 512],
-            [['Academic_lvl_edu'], 'string', 'max' => 20],
-            [['Propose_duration_of_study', 'Financial_funding'], 'string', 'max' => 30],
-            [['Approval_person_mobile_number'], 'string', 'max' => 16],
-            [[ 'Academic_current_result'], 'double'],
-            [['Email_address', 'Emergency_email', 'Approval_person_email'], 'email']
+            [
+                ['financial_funding_other'], 'required',
+                'when' => function ($model) {
+                    return $model->financial_funding == 'Other';
+                },
+                'whenClient' => "function (attribute, value) {
+                    return $('#funding').val() == 'Other';
+                }"
+            ],
+            [
+                ['sponsor_amount', 'sponsor_name'], 'required',
+                'when' => function ($model) {
+                    return $model->financial_funding == 'Scholarship';
+                },
+                'whenClient' => "function (attribute, value) {
+                    return $('#funding').val() == 'Scholarship';
+                }"
+            ],
+            [
+                ['room_type', 'campus_location'], 'required',
+                'when' => function ($model) {
+                    return $model->financial_accommodation_in_campus == 'Yes';
+                },
+                'whenClient' => "function (attribute, value) {
+                    return $('#accommodation').val() == 'Yes';
+                }"
+            ],
+            [['status'], 'required', 'on' => 'actioner'],
+            ['passport_expiration', 'validatePassportExpiration'],
+            ['propose_duration_end' , 'compare', 'compareAttribute' => 'propose_duration_start', 'operator' => '>=', 'message' => 'Proposal duration end must be greater than or equal to proposal duration start.', 'on' => 'creating'],
+            ['propose_duration_start', 'validateDate' , 'on' => 'creating'],
+            [['status', 'kulliyyah_id', 'cps_id'], 'default', 'value' => null],
+            [['status', 'kulliyyah_id', 'cps_id'], 'integer'],
+            [['birth_date', 'passport_expiration', 'propose_duration_start', 'propose_duration_end', 'home_university_approval_date', 'updated_at', 'created_at'], 'safe'],
+            [['permanent_address', 'emergency_address', 'academic_research_title', 'campus_location', 'f_language_english_certificate', 'f_recommendation_letter', 'f_passport', 'f_latest_passport_photo', 'f_latest_academic_transcript', 'f_confirmation_letter', 'f_sponsorship_letter', 'f_offer_letter', 'f_proof_of_payment', 'token', 'temp'], 'string'],
+            [['academic_result', 'sponsor_amount'], 'number'],
+            [[ 'agreement'], 'boolean'],
+            [['language_is_native_english', 'name', 'gender', 'relation_ship', 'mobile_number', 'email', 'passport_number', 'religion', 'mazhab', 'citizenship', 'country', 'country_of_origin', 'country_of_residence', 'post_code', 'emergency_name', 'emergency_relationship', 'emergency_mobile_number', 'emergency_email', 'emergency_postcode', 'emergency_country', 'academic_home_university', 'academic_education_lvl', 'academic_program_name', 'academic_semester', 'academic_year', 'academic_faculty_name', 'memorandum_of_agreement', 'language_english_test_name', 'propose_program_type', 'propose_mobility_type', 'propose_kulliyyah_applied', 'propose_study_duration', 'propose_transform_credit_hours', 'financial_accommodation_in_campus', 'financial_funding', 'sponsor_name', 'room_type', 'home_university_pic_name', 'home_university_pic_email', 'home_university_pic_mobile_number', 'home_university_pic_position'], 'string', 'max' => 255],
+            [['kulliyyah_id'], 'exist', 'skipOnError' => true, 'targetClass' => Pic::class, 'targetAttribute' => ['kulliyyah_id' => 'id']],
+            [['cps_id'], 'exist', 'skipOnError' => true, 'targetClass' => Pic::class, 'targetAttribute' => ['cps_id' => 'id']],
         ];
     }
 
@@ -190,6 +246,42 @@ class Inbound extends \yii\db\ActiveRecord
             $this->addError($attribute, 'Date must be greater than or equal to the current date.');
         }
     }
+    public function uploadFiles($id)
+    {
+        $uploadPath = Yii::getAlias('@common/uploads/inbound_application_') . $id . '/';
+        if (!is_dir($uploadPath)) {
+            mkdir($uploadPath, 0755, true);
+        }
+
+        $files = [
+            'f_language_english_certificate_file' => 'f_language_english_certificate',
+            'f_recommendation_letter_file' => 'f_recommendation_letter',
+            'f_passport_file' => 'f_passport',
+            'f_latest_passport_photo_file' => 'f_latest_passport_photo',
+            'f_latest_academic_transcript_file' => 'f_latest_academic_transcript',
+            'f_confirmation_letter_file' => 'f_confirmation_letter',
+            'f_sponsorship_letter_file' => 'f_sponsorship_letter',
+            'f_offer_letter_file' => 'f_offer_letter',
+            'f_proof_of_payment_file' => 'f_proof_of_payment',
+        ];
+
+        foreach ($files as $fileAttr => $dbAttr) {
+            $file = UploadedFile::getInstance($this, $fileAttr);
+            if ($file) {
+                if (!empty($this->$dbAttr)) {
+                    $oldFilePath = $uploadPath . $this->$dbAttr;
+                    if (file_exists($oldFilePath)) {
+                        unlink($oldFilePath);
+                    }
+                }
+                $fileName = $file->baseName . '.' . $file->extension;
+                $file->saveAs($uploadPath . $fileName);
+                $this->$dbAttr = $fileName;
+            }
+        }
+    }
+
+
 
     /**
      * {@inheritdoc}
@@ -197,144 +289,143 @@ class Inbound extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'ID' => 'ID',
-            'Name' => 'Name',
-            'Gender' => 'Gender',
-            'Relation_ship' => 'Relationship',
-            'Date_of_Birth' => 'Date Of Birth',
-            'Passport_Number' => 'Passport Number',
-            'Passport_Expiration' => 'Passport Expiration',
-            'Religion' => 'Religion',
-            'Mazhab' => 'Mazhab',
-            'Citizenship' => 'Citizenship',
-            'Country_of_origin' => 'Country Of Origin',
-            'Country_of_residence' => 'Country Of Residence',
-            'Mobile_Number' => 'Mobile Number',
-            'Email_address' => 'Email Address',
-            'Permanent_Address' => 'Permanent Address',
-            'Postcode' => 'Postcode',
-            'Country' => 'Country',
-            'Emergency_name' => 'Name',
-            'Emergency_relationship' => 'Relationship',
-            'Emergency_phoneNumber' => 'Phone Number',
-            'Emergency_email' => 'Email',
-            'Emergency_homeAddress' => 'Home Address',
-            'Emergency_postCode' => 'Post Code',
-            'Emergency_country' => 'Country',
-            'Academic_home_university' => 'Home University',
-            'Academic_lvl_edu' => 'Level of Education',
-            'Academic_name_of_programme' => 'Name of Programme',
-            'Academic_current_semester' => 'Current Semester',
-            'Academic_current_year' => 'Current Year',
-            'Academic_name_of_faculty' => 'Name of Faculty',
-            'Academic_current_result' => 'Current Result',
-            'Research_title' => 'Research Title',
-            'Mou_or_Moa' => 'Does your university have MoU/MoA with IIUM?',
-            'English_native' => 'Is English your first/main language?',
-            'English_test_name' => 'English Test Name',
-            'English_other_test_name' => 'English Other Test Name',
-            'English_certificate' => 'English Certificate',
-            'Propose_type_of_programme' => 'Type of Programme',
-            'Propose_type_of_programme_other' => 'Other (please specify)',
-            'Propose_type_of_mobility' => 'Type of Mobility',
-            'Propose_kulliyyah_applied' => 'Kulliyyah Applied',
-            'Propose_duration_of_study' => 'Duration of Study',
-            'Propose_duration_start' => 'Duration Start',
-            'Propose_duration_end' => 'Duration End',
-            'Propose_transfer_credit_hours' => 'Transfer Credit Hours',
-            'Financial_accommodation_on_campus' => 'Financial Accommodation On Campus',
+            'id' => 'ID',
+            'status' => 'Status',
+
+            'name' => 'Name',
+            'gender' => 'Gender',
+            'relation_ship' => 'Relationship',
+            'birth_date' => 'Date of Birth',
+            'mobile_number' => 'Mobile Number',
+            'email' => 'Email',
+            'passport_number' => 'Passport Number',
+            'passport_expiration' => 'Passport Expiration',
+            'religion' => 'Religion',
+            'mazhab' => 'Mazhab',
+            'citizenship' => 'Citizenship',
+            'country' => 'Country',
+            'country_of_origin' => 'Country Of Origin',
+            'country_of_residence' => 'Country Of Residence',
+            'permanent_address' => 'Permanent Address',
+            'post_code' => 'Post Code',
+
+            'emergency_name' => 'Name',
+            'emergency_relationship' => 'Relationship',
+            'emergency_mobile_number' => 'Mobile Number',
+            'emergency_email' => 'Email',
+            'emergency_address' => 'Address',
+            'emergency_postcode' => 'Postcode',
+            'emergency_country' => 'Country',
+
+            'academic_home_university' => 'Home University',
+            'academic_education_lvl' => 'Education Level',
+            'academic_program_name' => 'Program Name',
+            'academic_semester' => 'Semester',
+            'academic_year' => 'Year',
+            'academic_faculty_name' => 'Faculty Name',
+            'academic_result' => 'Result',
+            'academic_research_title' => 'Research Title',
+
+            'memorandum_of_agreement' => 'Memorandum Of Agreement',
+
+            'language_is_native_english' => 'Language Is Native English',
+            'language_english_test_name' => 'Language English Test Name',
+            'language_english_test_name_other' => 'Other',
+
+            'propose_program_type' => 'Propose Program Type',
+            'propose_program_type_other' => 'Other',
+            'propose_mobility_type' => 'Propose Mobility Type',
+            'propose_kulliyyah_applied' => 'Propose Kulliyyah Applied',
+            'propose_duration_start' => 'Propose Duration Start',
+            'propose_duration_end' => 'Propose Duration End',
+            'propose_study_duration' => 'Propose Study Duration',
+            'propose_transform_credit_hours' => 'Propose Transform Credit Hours',
+
+            'financial_accommodation_in_campus' => 'Financial Accommodation In Campus',
             'campus_location' => 'Campus Location',
-            'Financial_funding' => 'Financial Funding',
-            'Sponsor_name' => 'Sponsor Name',
-            'Room_type' => 'Room Type',
-            'Financial_funding_sponsor_amount' => 'Financial Funding Sponsor Amount',
-            'Financial_funding_other' => 'Financial Funding Other',
-            'Approval_university_person_name' => 'Approval University Person Name',
-            'Approval_person_position' => 'Approval Person Position',
-            'Approval_person_email' => 'Approval Person Email',
-            'Approval_person_mobile_number' => 'Approval Person Mobile Number',
-            'Approval_date' => 'Approval Date',
-            'Recommendation_letter' => 'Recommendation Letter',
-            'Student_declaration_name' => 'Student Declaration Name',
-            'Student_declaration_date' => 'Student Declaration Date',
-            'Student_declaration_agreement' => 'Student Declaration Agreement',
-            'Passport' => 'Passport',
-            'Latest_passport_photo' => 'Latest Passport Photo',
-            'Latest_certified_academic_transcript' => 'Latest Certified Academic Transcript',
-            'Confirmation_letter' => 'Confirmation Letter',
-            'Sponsorship_letter' => 'Sponsorship Letter',
-            'Status' => 'Status',
-            'Kulliyyah' => 'Kulliyyah',
-            'msd_cps' => 'Msd Cps',
-            'note_kulliyyah' => 'Note Kulliyyah',
-            'note_msd_cps' => 'Note Msd Cps',
-            'Token' => 'Token',
+            'room_type' => 'Room Type',
+
+            'financial_funding' => 'Financial Funding',
+            'financial_funding_other' => 'Other',
+            'sponsor_name' => 'Sponsor Name',
+            'sponsor_amount' => 'Sponsor Amount',
+
+            'home_university_pic_name' => 'Home University Pic Name',
+            'home_university_pic_email' => 'Home University Pic Email',
+            'home_university_pic_mobile_number' => 'Home University Pic Mobile Number',
+            'home_university_pic_position' => 'Home University Pic Position',
+            'home_university_approval_date' => 'Home University Approval Date',
+
+            'f_language_english_certificate' => 'Language English Certificate',
+            'f_recommendation_letter' => 'Recommendation Letter',
+            'f_passport' => 'Passport',
+            'f_latest_passport_photo' => 'Scanned of Passport Info Page',
+            'f_latest_academic_transcript' => 'Latest Academic Transcript (Written in English)',
+            'f_confirmation_letter' => 'Confirmation Letter (from Home University)',
+            'f_sponsorship_letter' => 'Sponsorship Letter',
+            'f_offer_letter' => 'Offer Letter',
+            'f_proof_of_payment' => 'Proof Of Payment',
+
+            'kulliyyah_id' => 'Kulliyyah ID',
+            'cps_id' => 'Cps ID',
+
+            'agreement' => 'Agreement',
+
+            'token' => 'Token',
+            'temp' => 'Temp',
+
             'updated_at' => 'Updated At',
             'created_at' => 'Created At',
-            'offer_letter' => 'Offer Letter',
-            'reference_number' => 'Reference Number',
         ];
     }
 
-    public function beforeSave($insert)
+    /**
+     * Gets query for [[Cps]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCps()
     {
-        if($this->isAttributeChanged('Status') || $this->isNewRecord){
-            $this->updated_at = new Expression('NOW()');
-
-        }
-        return parent::beforeSave($insert);
-    }
-    public function afterSave($insert, $changedAttributes)
-    {
-
-        parent::afterSave($insert, $changedAttributes);
-
-        if($this->submitter === 'Admin'){
-            $this->createStatusLog(0, $this->Status, "Admin has updated student Info");
-            $this->submitter = null;
-        }
-        elseif ($this->Status == 10){
-
-            if ($changedAttributes['Status'] == 7){
-
-                $this->createStatusLog(0, $this->Status, "Application has been resubmitted");
-            }
-            else
-                $this->createStatusLog(0, $this->Status, "Application has been submitted");
-        }
-
-        elseif (!$insert && isset($changedAttributes['Status'])) {
-            $oldStatus = $changedAttributes['Status'];
-            $this->updateAttributes(['updated_at' => date('Y-m-d H:i:s')]);
-            if ($oldStatus !== $newStatus) {
-                if(($oldStatus === 16 && $newStatus === 5) || ($oldStatus === 36 && $newStatus === 25) || $newStatus === 7 || $newStatus === 6){
-                    $this->createStatusLog($oldStatus, $newStatus, $this->temp);
-                }
-                elseif (($oldStatus === 5 && $newStatus === 16)){
-                    $this->createStatusLog($oldStatus, $newStatus, $this->note_kulliyyah);
-                }
-                elseif (($oldStatus === 25 && $newStatus === 36)){
-                    $this->createStatusLog($oldStatus, $newStatus, $this->note_msd_cps);
-                }
-                else
-                    $this->createStatusLog($oldStatus, $newStatus, null);
-            }
-        }
+        return $this->hasOne(Pic::class, ['id' => 'cps_id']);
     }
 
     /**
-     * Create a log entry for status change.
+     * Gets query for [[InboundHostUniversityCourses]].
      *
-     * @param int $oldStatus
-     * @param int $newStatus
+     * @return \yii\db\ActiveQuery
      */
-    protected function createStatusLog($oldStatus, $newStatus, $message)
+    public function getInboundHostUniversityCourses()
     {
-        $log = new Inlog();
-        $log->outbound_id = $this->ID;
-        $log->old_status = $oldStatus;
-        $log->new_status = $newStatus;
-        $log->message = $message;
-        $log->save();
+        return $this->hasMany(InboundHostUniversityCourses::class, ['application_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[InboundLogs]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInboundLogs()
+    {
+        return $this->hasMany(InboundLog::class, ['inbound_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[Kulliyyah]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getKulliyyah()
+    {
+        return $this->hasOne(Pic::class, ['id' => 'kulliyyah_id']);
+    }
+
+    /**
+     * Gets query for [[OutboundLogs]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOutboundLogs()
+    {
+        return $this->hasMany(OutboundLog::class, ['outbound_id' => 'id']);
     }
 }

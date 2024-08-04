@@ -20,9 +20,28 @@ return [
         'fixture' => [
             'class' => \yii\console\controllers\FixtureController::class,
             'namespace' => 'common\fixtures',
-          ],
+        ],
+        'migrate' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationTable' => 'inbound_outbound.migration',
+        ],
     ],
     'components' => [
+        'db' => [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'pgsql:host=localhost;dbname=moua',
+            'username' => 'postgres',
+            'password' => 'admin',
+            'schemaMap' => [
+                'pgsql' => [
+                    'class' => 'yii\db\pgsql\Schema',
+                    'defaultSchema' => 'inbound_outbound',
+                ],
+            ],
+            'on afterOpen' => function($event) {
+                $event->sender->createCommand("SET search_path TO inbound_outbound, public")->execute();
+            },
+        ],
         'log' => [
             'targets' => [
                 [

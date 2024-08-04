@@ -1,71 +1,49 @@
 <?php
-
 namespace backend\models;
 
-use common\models\Admin;
+use common\models\User;
 use Yii;
 use yii\base\Model;
-use common\models\User;
+use yii\db\Exception;
 
-/**
- * Signup form
- */
 class SignupForm extends Model
 {
     public $username;
     public $email;
     public $password;
-    public $matric_number;
 
-
-    /**
-     * {@inheritdoc}
-     */
     public function rules()
     {
         return [
-            ['username', 'trim'],
-            ['username', 'required'],
-            ['username', 'unique', 'targetClass' => '\common\models\Admin', 'message' => 'This username has already been taken.'],
-            ['username', 'string', 'min' => 2, 'max' => 255],
-
-            ['email', 'trim'],
-            ['email', 'required'],
+            [['username', 'email', 'password'], 'required'],
             ['email', 'email'],
-            ['email', 'string', 'max' => 255],
-            ['email', 'unique', 'targetClass' => '\common\models\Admin', 'message' => 'This email address has already been taken.'],
-
-            ['password', 'required'],
-            ['password', 'string', 'min' => Yii::$app->params['user.passwordMinLength']],
-
-            ['matric_number', 'required'],
-            ['matric_number', 'unique', 'targetClass' => '\common\models\Admin', 'message' => 'This matric number has already been taken.'],
-            ['matric_number', 'integer', 'min' => 7],
-            [['username', 'email', 'matric_number'],  'filter', 'filter' => 'htmlspecialchars']
-
-
+            ['email', 'unique', 'targetClass' => '\app\models\User', 'message' => 'This email address has already been taken.'],
+            ['username', 'unique', 'targetClass' => '\app\models\User', 'message' => 'This username has already been taken.'],
+            ['password', 'string', 'min' => 6],
         ];
     }
 
-
-
     /**
-     * Signs user up.
-     *
-     * @return bool whether the creating new account was successful and email was sent
+     * @throws Exception
+     * @throws \Exception
      */
     public function signup()
     {
-        if (!$this->validate()) {
-            return null;
+        if ($this->validate()) {
+            $user = new User();
+            $user->username = $this->username;
+            $user->email = $this->email;
+            $user->setPassword($this->password);
+            $user->generateAuthKey();
+            $user->status = User::STATUS_INACTIVE;
+            if ($user->save()) {
+                $auth = Yii::$app->authManager;
+                $role = $auth->getRole('staff');
+                $auth->assign($role, $user->id);
+                return $user;
+            }
         }
-        $user = new Admin();
-        $user->username = $this->username;
-        $user->email = $this->email;
-        $user->matric_number = $this->matric_number;
-        $user->setPassword($this->password);
-        $user->generateAuthKey();
 
-        return $user->save();
+        return null;
     }
 }

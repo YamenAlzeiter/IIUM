@@ -1,5 +1,4 @@
 <?php
-
 namespace backend\assets;
 
 use yii\web\AssetBundle;
@@ -9,30 +8,22 @@ use yii\web\AssetBundle;
  */
 class AppAsset extends AssetBundle
 {
-// Adjust the JS file paths
-
+    public $basePath = '@webroot';
+    public $baseUrl = '@web';
     public $css = [
-
         'css/site.css',
+        'css/tabler-icons.css',
         'css/styles.css',
-        'css/icons/tabler-icons/tabler-icons.css',
-//        'css/test.css',
     ];
     public $js = [
-//        'js/app.min.js',
-        'js/counter.js',
-        'js/insertButtons.js',
-        'js/notes.js',
-        'js/sidebarmenu.js',
+
+        'js/main.js',
+        'js/bs-init.js',
         'js/sweet-alert.js',
-        'js/actionManipulationView.js',
-        'js/form-logic.js',
+        'js/email-template.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',
         'yii\bootstrap5\BootstrapAsset',
-    ];
-    public $images = [
-        'images\iiumLogo.png',
     ];
 }

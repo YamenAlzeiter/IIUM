@@ -1,90 +1,123 @@
 <?php
 
 /** @var \yii\web\View $this */
+
 /** @var string $content */
 
-use common\widgets\Alert;
 use frontend\assets\AppAsset;
+use common\components\SidebarV2;
+use common\widgets\Alert;
 use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
-use yii\bootstrap5\Nav;
-use yii\bootstrap5\NavBar;
+use yii\bootstrap5\Modal;
+use yii\bootstrap5\Offcanvas;
+
+
 
 AppAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
-	<!DOCTYPE html>
-	<html lang="<?= Yii::$app->language ?>" class="h-100">
-	<head>
+    <!DOCTYPE html>
+    <html lang = "<?= Yii::$app->language ?>" class = "h-100" >
 
-		<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <head>
+        <meta charset = "<?= Yii::$app->charset ?>">
+
         <script src = "https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-		<meta charset="<?= Yii::$app->charset ?>">
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <script src = "https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src = "https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+
+
+        <link rel="shortcut icon" type="image/png" href="https://style.iium.edu.my/images/iium/iium-logo.png">
+
+        <link href="https://style.iium.edu.my/css/iium.css" rel="stylesheet">
+
+        <meta name = "viewport" content = "width=device-width, initial-scale=1, shrink-to-fit=no">
         <?php $this->registerCsrfMetaTags() ?>
-		<title><?= Html::encode($this->title) ?></title>
+        <title><?= Html::encode($this->title) ?></title>
         <?php $this->head() ?>
-	</head>
-	<body class="d-flex flex-column h-100">
+    </head>
+    <body id="body-pd">
+
     <?php $this->beginBody() ?>
+    <div class="background-image"></div>
+    <!-- Preloader start -->
+    <div id="preloader">
+        <div class="lds-ripple">
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <!-- Preloader end -->
+    <header class="header" id="header">
+        <?php if (!Yii::$app->user->isGuest): ?>
+            <div class="header__toggle">
+                <i class='ti ti-menu fs-7' id="header-toggle"></i>
+            </div>
+        <?php else:?>
+            <div class="ms-auto">
+                <ul class="list-unstyled mb-0">
+                    <li class="d-inline-block">
+                        <a href="/site/login" class="text-decoration-none text-white fs-6 ">Login</a>
+                    </li>
+                </ul>
+            </div>
+        <?php endif; ?>
+    </header>
 
-	<header>
-        <?php
-        NavBar::begin([
-            'options' => [
-                'class' => 'navbar navbar-expand-md bg-white fixed-top mb-3 shadow-sm', // Update class here
-            ],
-        ]);
-        echo Html::a(
-            '<div class="brand-logo d-flex align-items-center gap-2">' .
-            Html::img('/images/iiumLogo.svg', ['alt' => 'IIUM Logo', 'class' => 'iiumlogo']) .
-            '<h4 class="mb-0 fw-semibold">Inbound/ Outbound Application</h4>' .
-            '</div>',
-            Yii::$app->homeUrl, // Update brand URL here
-            ['class' => 'navbar-brand'] // Add class to the brand link
-        );
-
-        echo Nav::widget([
-            'options' => ['class' => 'navbar-nav me-auto mb-2 mb-md-0'],
-        ]);
-        if (Yii::$app->user->isGuest) {
-            echo Html::tag(
-                    'div',
-                    Html::a('Login', ['/site/login'], ['class' => ['btn btn-light login text-decoration-none me-2']]),
-                    ['class' => ['d-flex']]
-                ) . Html::tag(
-                    'div',
-                    Html::a('Sign up', ['/site/signup'], ['class' => ['btn btn-outline-dark text-decoration-none']]),
-                    ['class' => ['d-flex']]
-                );
-
-        } else {
-            echo Html::beginForm(['/site/logout'], 'post', ['class' => 'd-flex'])
-                . Html::button(
-                    '<i class="ti ti-logout fs-7"></i>',
-                    ['class' => 'btn btn-light logout fs-3', 'type' => 'submit', 'title' => 'Log Out']
-                )
-                . Html::endForm();
+    <?php if(!Yii::$app->user->isGuest){
+        if(Yii::$app->user->can('inbound')){
+            $menuItems = [['url' => 'inbound/index', 'icon' => 'ti ti-layout-dashboard fs-7', 'optionTitle' => 'Inbound']];
+        }elseif (Yii::$app->user->can('outbound')){
+            $menuItems = [['url' => 'outbound/index', 'icon' => 'ti ti-layout-dashboard fs-7', 'optionTitle' => 'outbound']];
         }
-        NavBar::end();
-        ?>
-	</header>
 
-	<main role="main" class="flex-shrink-0">
-		<div class="container p-100">
-            <?= Breadcrumbs::widget([
-                'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-            ]) ?>
+
+        echo SidebarV2::widget([
+            'items' => $menuItems,
+        ]);
+    }
+    ?>
+    <main role="main" class="mt-4">
+        <div class="container">
             <?= Alert::widget() ?>
-            <?= $content ?>
-		</div>
-	</main>
-    <script>
-        setTimeout(function () {
-            $('.alert').fadeOut('slow');
-        }, 2500);
-    </script>
+<!--            <div class="container-md my-3 p-4 rounded-3 bg-white shadow">-->
+                <?= $content ?>
+<!--            </div>-->
+        </div>
+    </main>
+
+    <?php Modal::begin([
+        'title' => '',
+        'id' => 'modal',
+        'size' => 'modal-xl',
+        'bodyOptions' => ['class' =>'modal-inner-padding-body mt-0'],
+        'headerOptions' => ['class' => 'modal-inner-padding justify-content-between'],
+        'centerVertical' => true,
+        'scrollable' => true,
+        'footer' =>  '&nbsp;',
+    ]);
+
+    echo "<div id='modalContent'></div>";
+
+    Modal::end();
+
+    Offcanvas::begin([
+        'title' => '', 'placement' => 'end', 'bodyOptions' => ['class' => 'modal-inner-padding-body mt-0'],
+        'headerOptions' => ['class' => 'modal-inner-padding justify-content-between flex-row-reverse'], 'options' => [
+            'id' => 'myOffcanvas',
+        ], 'backdrop' => true
+    ]);
+
+    echo "<div id='offcanvas-body'></div>";
+
+    Offcanvas::end();
+    ?>
+
     <?php $this->endBody() ?>
-	</body>
-	</html>
-<?php $this->endPage();
+
+
+    </body>
+    </html>
+<?php $this->endPage();?>

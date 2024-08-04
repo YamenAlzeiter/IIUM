@@ -1,256 +1,186 @@
 <?php
 
+use common\helpers\Variables;
 use common\models\Kcdio;
-use dosamigos\tinymce\TinyMce;
+use Itstructure\CKEditor\CKEditor;
+use yii\bootstrap5\ActiveForm;
+use yii\bootstrap5\Html;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
-use yii\web\YiiAsset;
-use yii\widgets\ActiveForm;
+use yii\helpers\Url;
 
-/** @var yii\web\View $this */
 /** @var common\models\Outbound $model */
-/** @var common\models\Kcdio $modelKedio */
 
-require Yii::getAlias('@common').'/Helpers/helper.php';
-$this->title = $model->Name;
 
-YiiAsset::register($this);
-$this->registerJsFile('https://code.jquery.com/jquery-3.6.0.min.js');
+$approveMap = [
+    Variables::application_init             => Variables::redirected_to_hod,
+    Variables::application_resubmitted      => Variables::redirected_to_hod,
+    Variables::application_accepted_hod     => Variables::redirected_to_dean,
+    Variables::application_accepted_dean    => Variables::redirected_to_student_UPLOAD_files,
+    Variables::application_files_uploaded   => Variables::application_accepted
+];
+
+$rejectMap = [
+    Variables::application_init             => Variables::application_rejected,
+    Variables::application_rejected_hod     => Variables::application_rejected,
+    Variables::application_rejected_dean    => Variables::application_rejected,
+];
+
+$notCompleteMap = [
+    Variables::application_init             => Variables::application_not_complete,
+    Variables::application_files_uploaded   => Variables::application_files_not_complete,
+];
+
+$reconsiderMap = [
+    Variables::application_rejected_hod     => Variables::application_resubmitted_to_hod,
+];
+
+//options controller
+$options = [];
+if(!in_array($model->status, [Variables::application_rejected_hod, Variables::application_rejected_dean])){
+    $options[$approveMap[$model->status]] = 'Approved';
+}
+if (!in_array($model->status, [Variables::application_accepted_dean, Variables::application_accepted_hod, Variables::application_files_uploaded])) {
+    $options[$rejectMap[$model->status]] = 'Rejected';
+}
+if($model->status == Variables::application_rejected_hod){
+    $options[$reconsiderMap[$model->status]] = 'Reconsider';
+}
+if(in_array($model->status, [Variables::application_init, Variables::application_files_uploaded])){
+    $options[$notCompleteMap[$model->status]] = 'Not Complete';
+}
+
+//dynamic attribute changer
+
+$attribute =  in_array($model->status, [Variables::application_init, Variables::application_resubmitted]) ? 'hod_id' : 'dean_id';
+
 ?>
 
 
 
 
-	<div class = "card shadow-none border">
-	<div class = "card-body">
-		<div class="d-flex justify-content-between">
-	<div class = "d-flex align-items-center header-info gap-1 mb-4">
-		<i class = "ti ti-activity text-dark"></i>
-		<strong>
-			<h4 class = "fw-semibold m-0 text-capitalize">Applicant Action: <?= $model->Name?></h4>
-		</strong>
-	</div>
-            <?= Html::a(
-                '<button class="btn btn-dark p-3 rounded-circle d-flex align-items-center justify-content-center customizer-btn"><i class="ti ti-eye fs-7"></i></button>',
-                ['view', 'ID' => $model->ID],
-            ) ?>
+
+<?php $form = ActiveForm::begin([
+    'id' => 'create-form',
+    'enableClientValidation' => true, // Enable client-side validation
+]); ?>
+
+    <?php $form->field($model, 'status')->radioList([], ['class' => 'gap-2 row'])->label(false);?>
+<?= $form->field($model, 'status')->radioList(
+    $options,
+    [
+        'item' => function($index, $label, $name, $checked, $value) {
+            return '
+            <label class="plan ' . strtolower($value) . '-plan" for="' . $value . '">
+            
+                <input type="radio" id="' . $value . '" name="' . $name . '" value="' . $value . '" ' . ($checked ? 'checked' : '') . ' />
+                <div class="plan-content">
+                    <div class="plan-details">
+                        <span>' . $label . '</span>
+                    </div>
+                </div>
+                <p class="invalid-feedback mb-0"></p>
+            </label>
+            ';
+        },
+        'class' => 'plans',
+        'errorOptions' => ['class' => 'invalid-feedback'],
+    ]
+)->label(false); ?>
+
+<?php if(in_array($model->status, [Variables::application_init, Variables::application_resubmitted, Variables::application_accepted_hod])):?>
+
+   <div class="redirected d-none">
+       <?= $form->field($model, 'pic_id')->dropDownList(ArrayHelper::map(Kcdio::find()->all(), 'id', 'kcdio'), [
+           'prompt' => 'Select KCDIO',
+           'onchange' => '
+        $.get("' . Url::toRoute('outbound/get-pic') . '", { id: $(this).val() })
+            .done(function(data) {
+                var attribute = "' . $attribute . '";
+                var selectElement = $("select#outbound-" + attribute);
+                selectElement.html("");
+                selectElement.append($("<option></option>").attr("value", "").text("Select PIC"));
+                $.each(data, function(key, value) {
+                    selectElement.append($("<option></option>").attr("value", key).text(value));
+                });
+            });
+    '
+       ])->label(false) ?>
+
+       <?= $form->field($model, $attribute)->dropDownList([], ['prompt' => 'Select PIC'])->label(false)?>
+   </div>
+
+<?php endif;?>
+
+    <div class="not-complete mb-4 d-none">
+        <?= $form->field($model, 'reason')->widget(CKEditor::className(), [
+            'preset' => 'basic',
+            'clientOptions' => [
+                'on' => [
+                    'instanceReady' => new \yii\web\JsExpression('function(evt) {
+                this.setData("");
+            }')
+                ]
+            ]
+        ])->label(false) ?>
+    </div>
+
+<?php ?>
+
+<div class="text-end">
+    <?= Html::submitButton('Submit', ['class' => 'btn-submit mb-4']) ?>
+</div>
 
 
-		</div>
-
-		<div class = "row">
-			<div class = "col-md-6">
-
-				<p class = "mb-2 fw-light mb-1"><strong>Matric Number:</strong> <?= $model->Matric_Number ?></p>
-				<p class = "mb-2 fw-light mb-1"><strong>Citizenship:</strong> <?= $model->Citizenship ?></p>
-				<p class = "mb-2 fw-light mb-1"><strong>Gender:</strong> <?= getGenderMeaning($model->Gender) ?></p>
-				<p class = "mb-2 fw-light mb-1"><strong>Date of Birth:</strong> <?= $model->Date_of_Birth ?></p>
-			</div>
-			<div class = "col-md-6">
-				<p class = "mb-2 fw-light mb-1"><strong>Passport Number:</strong> <?= $model->Passport_Number ?></p>
-				<p class = "mb-2 fw-light mb-1"><strong>Passport Expiration:</strong> <?= $model->Passport_Expiration ?></p>
-				<p class = "mb-2 fw-light mb-1"><strong>Mobile Number:</strong> <?= $model->Mobile_Number ?></p>
-				<p class = "mb-2 fw-light mb-1"><strong>Mobile Number:</strong> <?= $model->Email ?></p>
-
-			</div>
-		</div>
-	</div>
-	</div>
-
-
-
-<?php if ($model->Status === 10 || $model->Status === 31 || $model->Status === 51 || $model -> Status === 11): ?>
-	<div class = "mt-4 mb-4" id = "radio-buttons">
-
-		<h1 class = "text-start fs-5 fw-semibold mb-3">RECOMMENDATION FROM OFFICE OF INTERNATIONAL AFFAIRS</h1>
-		<form action = "" class = "d-flex mb-3">
-			<?php if ($model->Status === 10 || $model->Status === 31 || $model -> Status === 51 || $model -> Status === 11): ?>
-	                    <div>
-		                    <input type="radio" class="btn-check" name="inlineRadioOptions" id="inlineRadio1" autocomplete="off" value="1" >
-		                    <label class="btn btn-outline-success rounded-pill font-medium me-2 mb-2" for="inlineRadio1">Accept</label>
-	                    </div>
-                    <?php endif; ?>
-
-                    <?php if ($model->Status === 10) : ?>
-	                    <div>
-		                    <input type="radio" class="btn-check" name="inlineRadioOptions" id="inlineRadio2" autocomplete="off" value="2">
-		                    <label class="btn btn-outline-danger rounded-pill font-medium me-2 mb-2" for="inlineRadio2">Reject</label>
-	                    </div>
-                    <?php endif; ?>
-
-                    <?php if ($model->Status === 10 || $model->Status === 51) : ?>
-
-	                    <div>
-		                    <input type="radio" class="btn-check" name="inlineRadioOptions" id="inlineRadio3" autocomplete="off" value="3">
-		                    <label class="btn btn-outline-warning rounded-pill font-medium me-2 mb-2" for="inlineRadio3">Application Not Complete</label>
-	                    </div>
-                    <?php endif; ?>
-				</form>
-			</div>
-        <?php endif; ?>
-        <?php if ($model->Status === 12 || $model -> Status === 32): ?>
-			<div class = "mt-4 mb-4" id = "radio-buttons1">
-				<form action = "" class = "d-flex gap-5">
-
-					<div class = "form-check form-check-inline">
-						<label class = "form-check-label" for = "inlineRadio5">Reject</label>
-						<input class = "form-check-input" type = "radio" name = "inlineRadioOptions" id = "inlineRadio5"
-						       value = "2"/>
-					</div>
-
-					<div class = "form-check form-check-inline">
-						<label class = "form-check-label" for = "inlineRadio4">resend</label>
-						<input class = "form-check-input" type = "radio" name = "inlineRadioOptions" id = "inlineRadio4"
-						       value = "3"/>
-					</div>
-				</form>
-			</div>
-        <?php endif; ?>
-
-
-		<!--Status message-->
-        <?php if ($model->Status === 1): ?>
-			<div id = "approval-message-hod" class = "mt-4 alert alert-warning  ">
-				<h5 class = "m-0 text-capitalize alert">waiting approval from HOD</h5>
-			</div>
-        <?php endif; ?>
-
-        <?php if ($model->Status === 21): ?>
-			<div id = "approval-message-dean"  class = "mt-4 alert alert-warning  ">
-				<h5 class = "m-0 text-capitalize alert">waiting approval from dean</h5>
-			</div>
-        <?php endif; ?>
-
-        <?php if($model ->Status === 61):?>
-			<div id = "success" class = "mt-4 alert alert-success">
-				<h5 class = "m-0 text-capitalize alert">application has been accepted</h5>
-			</div>
-        <?php endif?>
-
-        <?php if($model -> Status === 2):?>
-			<div id = "reject-io" class = "mt-4 alert alert-danger ">
-				<h5 class = " alert m-0 text-capitalize">application has been rejected</h5>
-			</div>
-        <?php endif;?>
-
-        <?php if($model -> Status === 3):?>
-			<div id = "not-complete-io" class = "mt-4 alert alert-warning ">
-				<h5 class = "m-0 text-capitalize alert">application is not completed, waiting for student to response</h5>
-			</div>
-        <?php endif;?>
-
-        <?php $form = ActiveForm::begin(['action' => ['accept', 'ID' => $model->ID], 'class' => 'form']) ?>
-
-		<div class = "conditional-form-elements" style = "display: none">
-            <?php if ($model->Status === 10 || $model->Status === 11): ?>
-				<div class = " row conditional-form-elements-initial">
-					<div class = "col-md-6">
-						<input type = "hidden" id = "selectedPersonId" name = "selectedPersonId">
-
-
-						<div class = "form-group mb-2">
-                            <?= $form->field($modelKedio, 'kcdio')->dropDownList(ArrayHelper::map(Kcdio::find()->all(),
-                                'id', 'kcdio'),
-                                ['prompt' => 'Select KCDIO', 'id' => 'kcdio-dropdown', 'required' => true])->label(false,
-                                ['style' => 'display: none;']) ?>
-						</div>
-
-					</div>
-					<div class = "col-md-6">
-						<div class = "form-group mb-2">
-							<select class = "form-control" id = "personInChargeDropdown" name = "personInChargeDropdown"
-							        required>
-								<option value = "">Select KCDIO first</option>
-							</select>
-						</div>
-						<div class = "form-group mb-2">
-							<input type = "text" readonly class = "form-control" id = "emailAddress" name = "emailAddress"
-							       placeholder = "Email Address"/>
-						</div>
-						<div class = "form-group mb-2">
-							<input type = "text" readonly class = "form-control" id = "ccEmailAddress"
-							       placeholder = "CC Email Address"/>
-						</div>
-					</div>
-				</div>
-            <?php endif; ?>
-			<div class = "d-flex justify-content-end">
-                <?= Html::submitButton('Submit', ['class' => 'btn btn-dark px-5 mt-3']) ?>
-			</div>
-
-		</div>
-
-        <?php ActiveForm::end() ?>
-
-
-        <?php ActiveForm::begin(['action' => ['reject', 'ID' => $model->ID], 'class' => 'form']) ?>
-        <?= Html::hiddenInput('status', 2, ['id' => 'status-input-reject']); ?>
-
-		<div class = "conditional-form-elements-reject" style = "display: none;">
-			<div class = "form-group">
-                <?php
-                echo TinyMce::widget([
-                    'name' => 'reason', // Setting a name for the input
-                    'options' => ['rows' => 12],
-                    'language' => 'en',
-                    'clientOptions' => [
-                        'toolbar' => false,
-                    ],
-                    'value' => '', // Set initial value if needed
-                ]);
-                ?>
-			</div>
-			<div class = "d-flex justify-content-center">
-                <?= Html::submitButton('Submit', ['class' => 'btn btn-dark px-5 mt-3']) ?>
-			</div>
-		</div>
-        <?php ActiveForm::end() ?>
-
-
-        <?php ActiveForm::begin(['action' => ['complete', 'ID' => $model->ID], 'class' => 'form']) ?>
-
-		<div class = "conditional-form-elements-incomplete" style = "display: none;">
-			<div class = "form-group">
-				<?php
-				echo TinyMce::widget([
-                    'name' => 'reason', // Setting a name for the input
-                    'options' => ['rows' => 12],
-                    'language' => 'en',
-                    'clientOptions' => [
-                        'toolbar' => false,
-                    ],
-                    'value' => '', // Set initial value if needed
-                ]);
-				?>
-			</div>
-			<div class = "d-flex justify-content-center">
-                <?= Html::submitButton('Submit', ['class' => 'btn btn-dark px-5 mt-3']) ?>
-			</div>
-		</div>
-        <?php ActiveForm::end() ?>
-
-        <?php ActiveForm::begin(['action' => ['resend', 'ID' => $model->ID], 'class' => 'form']) ?>
-
-		<div class = "resend mt-3" id = "resend" style = "display: none;">
-			<div class = "form-group">
-                <?php
-                echo TinyMce::widget([
-                    'name' => 'reason', // Setting a name for the input
-                    'options' => ['rows' => 12],
-                    'language' => 'en',
-                    'clientOptions' => [
-                        'toolbar' => false,
-                    ],
-                    'value' => '', // Set initial value if needed
-                ]);
-                ?>
-			</div>
-			<div class = "d-flex justify-content-center">
-                <?= Html::submitButton('Submit', ['class' => 'btn btn-dark px-5 mt-3']) ?>
-			</div>
-		</div>
-        <?php ActiveForm::end() ?>
+<?php ActiveForm::end(); ?>
 
 <script>
-    var loadPeopleUrl = "<?= yii\helpers\Url::to(["load-people"]) ?>";
+    $(document).ready(function() {
+        $("#2, #3, #13, #63").on("change", function () {
+            if (this.checked) {
+                $(".not-complete").removeClass('d-none');
+                $(".redirected").addClass('d-none');
+                clearInputs('.redirected');
+                setRequiredInputs('.redirected', false);
+            }
+        });
+
+        $("#1, #21, #41, #61").on("change", function () {
+            if (this.checked) {
+                $(".not-complete").addClass('d-none');
+                $(".redirected").removeClass('d-none');
+                clearInputs('.not-complete');
+                setRequiredInputs('.redirected', true);
+            }
+        });
+
+        function clearInputs(containerSelector) {
+            const container = document.querySelector(containerSelector);
+            if (container) {
+                const inputsToClear = container.querySelectorAll('input, select, textarea');
+                inputsToClear.forEach(input => {
+                    if (input.type === 'checkbox' || input.type === 'radio') {
+                        input.checked = false;
+                    } else {
+                        input.value = '';
+                    }
+                });
+            }
+        }
+
+        function setRequiredInputs(containerSelector, required) {
+            const container = document.querySelector(containerSelector);
+            if (container) {
+                const inputsToRequired = container.querySelectorAll('input, select, textarea');
+                inputsToRequired.forEach(input => {
+                    if (required) {
+                        input.setAttribute('required', 'required');
+                    } else {
+                        input.removeAttribute('required');
+                    }
+                });
+            }
+        }
+    });
+
+
 </script>

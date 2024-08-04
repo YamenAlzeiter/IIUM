@@ -9,6 +9,7 @@ use Yii;
  *
  * @property int $id
  * @property string|null $kcdio
+ * @property string|null $tag
  */
 class Kcdio extends \yii\db\ActiveRecord
 {
@@ -27,7 +28,7 @@ class Kcdio extends \yii\db\ActiveRecord
     {
         return [
             [['kcdio'], 'string', 'max' => 100],
-            [['kcdio'], 'filter', 'filter' => 'htmlspecialchars']
+            [['tag'], 'string', 'max' => 255],
         ];
     }
 
@@ -39,6 +40,7 @@ class Kcdio extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'kcdio' => 'Kcdio',
+            'tag' => 'Tag',
         ];
     }
 }

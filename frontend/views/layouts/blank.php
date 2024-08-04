@@ -3,38 +3,73 @@
 /** @var yii\web\View $this */
 /** @var string $content */
 
-use backend\assets\AppAsset;
+use frontend\assets\landing;
 use yii\helpers\Html;
 
-AppAsset::register($this);
+landing::register($this);
 ?>
 <?php $this->beginPage() ?>
-    <!DOCTYPE html>
-    <html lang="<?= Yii::$app->language ?>" class="h-100">
-    <head>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <meta charset="<?= Yii::$app->charset ?>">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <?php $this->registerCsrfMetaTags() ?>
-        <title><?= Html::encode($this->title) ?></title>
-        <?php $this->head() ?>
-    </head>
-    <body>
-    <?php $this->beginBody() ?>
+<!DOCTYPE html>
+<html lang="<?= Yii::$app->language ?>" class="h-100">
+<head>
+    <link rel="shortcut icon" type="image/png" href="https://style.iium.edu.my/images/iium/iium-logo.png">
+    <meta charset="<?= Yii::$app->charset ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <?php $this->registerCsrfMetaTags() ?>
+    <title><?= Html::encode($this->title) ?></title>
+    <?php $this->head() ?>
+</head>
+<body>
+<?php $this->beginBody() ?>
 
+<header>
+    <!--        <a href="" class="logo"><img src="https://shenliktech.com/shen/assets/img/logo.png" alt=""> <span>Shenlik Tech.</span></a>-->
+    <?= Html::a(Html::img(Yii::getAlias('@web') . '/iiumLogo.svg', ['class' => 'logo']), '#', ['class' => 'logo']) ?>
 
-    <div class = "page-wrapper" id = "main-wrapper" data-layout = "vertical" data-navbarbg = "skin6"
-         data-sidebartype = "full"
-         data-sidebar-position = "fixed" data-header-position = "fixed">
+    <ul class="navbarr">
+        <li><a href="#home" class="active">Home</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
 
-        <main role = "main" class = "flex-shrink-0">
+    <div class="mainn">
 
-            <?= $content ?>
-
-        </main>
+        <bi class='ti ti-list' id="menu-icon"></bi>
     </div>
+</header>
 
-    <?php $this->endBody() ?>
-    </body>
-    </html>
+<section class="hero parallax" data-speed="0.5">
+    <div class="hero-content container">
+        <h1>IIUM <br> MOBILITY <br> PROGRAM</h1>
+        <a href="/site/login" class="btn">Join Now!</a>
+    </div>
+</section>
+
+
+<script>
+    let menu = document.querySelector('#menu-icon');
+    let navbar = document.querySelector('.navbarr');
+
+    menu.onclick = () =>
+    {
+        menu.classList.toggle('bi-x');
+        navbar.classList.toggle('open');
+    }
+
+
+
+    window.addEventListener('scroll', function() {
+        let scrollPosition = window.pageYOffset;
+        let parallaxElements = document.querySelectorAll('.parallax');
+
+        parallaxElements.forEach(function(element) {
+            let speed = element.getAttribute('data-speed');
+            element.style.backgroundPositionY = (scrollPosition * speed) + 'px';
+        });
+    });
+</script>
+<?php $this->endBody() ?>
+</body>
+</html>
 <?php $this->endPage();

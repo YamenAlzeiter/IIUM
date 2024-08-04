@@ -1,115 +1,134 @@
 <?php
 
-use yii\bootstrap5\ActiveForm;
-use yii\grid\GridView;
-use yii\helpers\Html;
+use common\models\User;
 use yii\helpers\Url;
+use yii\helpers\Html;
+use yii\grid\GridView;
 
-/** @var yii\web\View $this */
-/** @var yii\data\ActiveDataProvider $dataProvider */
-/** @var backend\models\UserAdmin $model */
+/* @var $this yii\web\View */
+/* @var $dataProvider yii\data\ActiveDataProvider */
 
-
+$this->title = 'User';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class = "user-admin-index">
 
-    <div class = "card w-100 mt-4">
-        <div class = "card-body">.
-            <div class = "d-flex flex-row mb-4">
-                <a href = "javascript:void(0)" class = "btn btn-outline-dark d-flex align-items-center px-3" id = "add-user">
-                    <i class = "ti ti-file me-0 me-md-1 fs-4"></i>
-                    <span class = "d-none d-md-block font-weight-medium fs-3">Create New Record</span>
-                </a>
-            </div>
-            <div class="table-responsive">
-            <?= GridView::widget([
-                'dataProvider' => $dataProvider,
-                'tableOptions' => ['class' => 'table text-nowrap mb-0 align-middle table-hover'], 'summary' => '',
-                'columns' => [
-                    'username', 'matric_number',
 
-                    [
-                        'label' => 'Actions', 'contentOptions' => ['class' => 'action-column color-primary col-1'],
-                        'headerOptions' => ['class' => 'text-dark'], 'format' => 'raw', 'value' => function ($model) {
-                        $updateButton = Html::a('<i class="ti ti-pencil-minus fs-7"></i>', 'javascript:void(0)', [
-                            'class' => 'text-info edit updateuser-button mx-1', 'data-id' => $model->id,
-                            'data-toggle' => 'modal', 'data-target' => '#formpoc', 'title' => 'View/ Update',
-                            // Tooltip for the 'View' action
+
+<div class="container-md my-3 p-4 rounded-3 bg-white shadow">
+<?= GridView::widget([
+    'dataProvider' => $dataProvider,
+    'tableOptions' => ['class' => 'table  table-borderless table-striped table-header-flex text-nowrap rounded-3 overflow-hidden'],
+    'columns' => [
+
+        'username',
+        'email',
+        'created_at:datetime',
+        [
+            'class' => 'yii\grid\ActionColumn',
+            'template' => '{approve} {reject} {update}',
+            'buttons' => [
+                'approve' => function ($url, $model, $key) {
+                    if ($model->status == User::STATUS_INACTIVE) {
+                        return Html::a('<i class="ti ti-check fs-7 text-success fw-bolder"></i>', '#', [
+                            'class' => 'btn-action approve-btn',
+                            'data-id' => $model->id,
+                            'title' => 'Approve',
                         ]);
+                    }
+                    return '';
+                },
+                'reject' => function ($url, $model, $key) {
+                    if ($model->status == User::STATUS_INACTIVE) {
+                        return Html::a('<i class="ti ti-x fs-7 text-danger fw-bolder"></i>', '#', [
+                            'class' => 'btn-action reject-btn',
+                            'data-id' => $model->id,
+                            'title' => 'Reject',
+                        ]);
+                    }
+                    return '';
+                },
+                'update' => function ($url, $model, $key) {
+                    if ($model->status == User::STATUS_ACTIVE) {
+                        return Html::a(
+                            '<i class="ti fs-7 text-primary ti-pencil" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true" title="Update"></i>',
+                            'javascript:void(0);',
+                            [
+                                'class' => 'btn-action',
+                                'value' => Url::to(['update', 'id' => $model->id]),
+                                'onclick' => "$('#modal').modal('show').find('#modalContent').load($(this).attr('value'), function() {
+                                    $('#modalContent').append('');
+                                    $('#modal').find('.modal-title').html('<h1 class=\"mb-0\">Update User</h1>');
+                                });",
+                            ]
+                        );
+                    }
+                    return '';
+                },
+            ],
+        ],
+    ],
+    'pager' => [
+        'class' => yii\bootstrap5\LinkPager::className(),
+        'listOptions' => ['class' => 'pagination justify-content-center gap-2 borderless'],
+        'activePageCssClass' => ['class' => 'link-white active'],
+    ],
+    'layout' => "{items}\n{summary}\n{pager}",
+]); ?>
 
-                        $deleteButton = Html::a('<i class="ti ti-trash fs-7" data-toggle="tooltip" title="Log"></i>',
-                            ['delete', 'id' => $model->id], [
-                                'class' => 'text-danger edit mx-1 delete-record',
-                                // Add a class to identify the delete action
-                                'data' => [
-                                    'action' => Url::to(['delete', 'id' => $model->id]),
-                                    // Add the action URL to data attributes
-                                ], 'disabled' => $model->id === 1 ? true : false, // Disable the button for ID 1
-                            ]);
-                        if ($model->id === 1) {
-                            return $updateButton;
-                        } else {
-                            return $updateButton.' '.$deleteButton;
-                        }
-                    },
-                    ],
-                ],
-            ]); ?>
-            </div>
-        </div>
-    </div>
+</div>
 
-    <!-- Modal Add notes -->
-    <div class = "modal fade" id = "formpoc" tabindex = "-1" role = "dialog" aria-labelledby = "formpoc"
-         aria-hidden = "true">
-        <div class = "modal-dialog  modal-dialog-centered" role = "document">
-            <div class = "modal-content">
-                <div class = "modal-header">
-                    <h6 id = "formpoc-header" class = "text-dark mb-0"></h6>
+<?php
+$this->registerJsFile('https://cdn.jsdelivr.net/npm/sweetalert2@10', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJs(<<<JS
+$('.approve-btn').on('click', function(e) {
+    e.preventDefault();
+    var id = $(this).data('id');
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'You are about to approve this user.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, approve it!',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.post({
+                url: 'approve',
+                data: {id: id},
+                success: function(response) {
+                    Swal.fire('Approved!', 'User has been approved.', 'success')
+                    .then(() => {
+                        location.reload();
+                    });
+                }
+            });
+        }
+    });
+});
 
-                    <button type = "button" class = "btn-close btn-close-dark" data-bs-dismiss = "modal"
-                            aria-label = "Close"></button>
-                </div>
-                <div class = "modal-body">
-                    <div class = "form-box">
-                        <div class = "form-content">
-                            <?php $form = ActiveForm::begin(['options' => ['id' => 'myForm']]); ?>
-
-                            <div class = "mb-3">
-                                <?= $form->field($model, 'username')->textInput([
-                                    'maxlength' => true, 'class' => 'form__input form-control',
-                                    'placeholder' => 'Username', 'required' => true
-                                ])->label(false) ?>
-                            </div>
-
-                            <div class = "row align-items-center">
-                                <div class = "col-md-6 mb-3">
-                                    <?= $form->field($model, 'matric_number')->textInput([
-                                        'maxlength' => true, 'class' => 'form__input form-control',
-                                        'placeholder' => 'Matric Number', 'required' => true
-                                    ])->label(false) ?>
-                                </div>
-                                <div class = "col-md-6 mb-3">
-                                    <?= $form->field($model, 'email')->textInput([
-                                        'maxlength' => true, 'class' => 'form__input form-control',
-                                        'placeholder' => 'email', 'required' => true
-                                    ])->label(false) ?>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class = "modal-footer">
-                    <div class = "form-group">
-                        <?= Html::submitButton('', [
-                            'class' => 'btn btn-outline-dark px-4 py-2', 'name' => 'save-button',
-                            'id' => 'submit-button'
-                        ]) ?>
-
-                    </div>
-                </div>
-                <?php ActiveForm::end(); ?>
-            </div>
-        </div>
-    </div>
-
+$('.reject-btn').on('click', function(e) {
+    e.preventDefault();
+    var id = $(this).data('id');
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'You are about to reject this user.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, reject it!',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.post({
+                url: 'reject',
+                data: {id: id},
+                success: function(response) {
+                    Swal.fire('Rejected!', 'User has been rejected.', 'success')
+                    .then(() => {
+                        location.reload();
+                    });
+                }
+            });
+        }
+    });
+});
+JS
+);
+?>

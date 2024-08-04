@@ -1,169 +1,207 @@
 <?php
 
+use common\helpers\builders;
 use common\models\Inbound;
-use common\models\Status;
-use yii\bootstrap5\ActiveForm;
-use yii\bootstrap5\LinkPager;
-use yii\grid\GridView;
+use yii\bootstrap5\Modal;
+use yii\grid\CheckboxColumn;
 use yii\helpers\Html;
 use yii\helpers\Url;
-
-// Import your model class here
+use yii\grid\ActionColumn;
+use yii\grid\GridView;
+use yii\web\JsExpression;
+use yii\widgets\Pjax;
 
 /** @var yii\web\View $this */
+/** @var common\models\search\InboundSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
-$this->title = 'Inbound';
 
-$distinctYears = Inbound::find()->select(['EXTRACT(YEAR FROM created_at) as year'])->distinct()->orderBy(['year' => SORT_DESC])->asArray()->column();
-$icon = Html::tag('i', '', ['class' => 'ti ti-file-spreadsheet']);
+$this->title = 'Inbounds';
+$this->params['breadcrumbs'][] = $this->title;
 
-require Yii::getAlias('@common').'/Helpers/helper.php';
+$yearsStart = Inbound::find()
+    ->select(['EXTRACT(YEAR FROM propose_duration_start) AS year'])
+    ->distinct()
+    ->column();
+
+$yearsEnd = Inbound::find()
+    ->select(['EXTRACT(YEAR FROM propose_duration_end) AS year'])
+    ->distinct()
+    ->column();
+
+// Combine and filter out NULL values
+$years = array_filter(array_unique(array_merge($yearsStart, $yearsEnd)));
+?>
+<?php Pjax::begin(); ?>
+    <div class="container-md my-3 p-4 rounded-3 bg-white shadow">
+
+        <div class="row justify-content-between">
+            <div class="col-md-8">
+                <?php echo $this->render('_search', ['model' => $searchModel]); ?>
+            </div>
+            <div class="col-md-4 align-self-end mb-3">
+                <div class="d-flex justify-content-end gap-2">
+                    <?php
+                    if (Yii::$app->user->can('admin')) {
+                        echo '<div class="bulk-delete-container d-inline-flex align-items-center gap-2">'
+                            . Html::button('<i class="ti ti-trash fs-7"></i>', ['id' => 'bulk-delete', 'class' => 'btn btn-danger']) .
+                            '</div>';
+                    }
+                    ?>
+                    <button class="btn-submit dropdown-toggle fs-4" type="button" id="dropdownMenuButton1"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="ti ti-file-spreadsheet"></i> Download Excel
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-width" aria-labelledby="dropdownMenuButton1">
+                        <?php foreach ($years as $option): ?>
+                            <li>
+                                <?= Html::a(
+                                    'Year ' . $option,
+                                    Url::to(['export-excel', 'year' => $option]),
+                                    ['class' => 'dropdown-item', 'data-pjax' => '0']
+                                ) ?>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    <hr>
+    <div class="table-responsive">
+
+
+        <?= GridView::widget([
+            'id' => 'inbound-grid',
+            'dataProvider' => $dataProvider,
+            'tableOptions' => ['class' => 'table table-borderless table-striped table-header-flex text-nowrap rounded-3 overflow-hidden'],
+            'rowOptions' => function ($model) {
+                $build = new builders();
+                return $build->tableProbChanger($model->status, 'outbound') ? ['class' => 'need-action fw-bolder'] : [];
+            },
+            'columns' => array_merge(
+                Yii::$app->user->can('admin') ? [['class' => CheckboxColumn::className()]] : [],
+                [
+                    'id',
+                    'status',
+                    'name',
+                    'citizenship',
+                    [
+                        'class' => ActionColumn::className(),
+                        'template' => '{view} {action} {log}',
+                        'contentOptions' => ['class' => 'text-end'],
+                        'buttons' => [
+                            'view' => function ($url, $model, $key) {
+                                $build = new builders();
+                                return $build->actionBuilder($model, 'view');
+                            },
+                            'action' => function ($url, $model, $key) {
+                                $build = new builders();
+                                if ($build->tableProbChanger($model->status, 'inbound')) {
+                                    return $build->actionBuilderModal($model, 'action');
+                                }
+                                return ''; // Return an empty string if the condition is not met
+                            },
+                            'log' => function ($url, $model, $key) {
+                                $build = new builders();
+                                return $build->actionBuilderModal($model, 'log');
+                            },
+                        ],
+                    ],
+                ]
+            ),
+            'pager' => [
+                'class' => yii\bootstrap5\LinkPager::className(),
+                'listOptions' => ['class' => 'pagination justify-content-center gap-2 borderless'],
+                'activePageCssClass' => ['class' => 'link-white active'],
+            ],
+            'layout' => "{items}\n{summary}\n{pager}",
+        ]);
+        ?>
+
+
+
+
+        <?php Pjax::end(); ?>
+    </div>
+
+<?php modal::begin(['title' => '', 'id' => 'modal-activity', 'size' => 'modal-lg', 'bodyOptions' => ['class' => 'modal-inner-padding-body mt-0'], 'headerOptions' => ['class' => 'modal-inner-padding justify-content-between'], 'centerVertical' => true, 'scrollable' => true,]);
+
+echo "<div id='modalContent'></div>";
+
+modal::end();
 ?>
 
+<?php
+$url = Url::to(['bulk-delete']);
 
-<div class = "accordion-item mb-2">
+$js = <<<JS
+$(document).ready(function() {
+    function toggleBulkDeleteButton() {
+        var keys = $('#inbound-grid').yiiGridView('getSelectedRows');
+        if (keys.length > 0) {
+            $('.bulk-delete-container').removeClass('d-none');
+        } else {
+            $('.bulk-delete-container').addClass('d-none');
+        }
+    }
 
-    <div class = "d-flex flex-column flex-md-row gap-3 mt-2 mb-2 justify-content-between align-items-end">
-        <div>
-            <?= $this->render('_filters',
-                ['searchModel' => $searchModel, 'year' => Yii::$app->request->get('year')]); ?>
-        </div>
-        <div class = "d-flex flex-row gap-2">
-            <button class = "btn btn-light-danger btn-lg mb-0" id = "fake-delete-btn" style = "display: none;">
-                <i class = "ti ti-trash text-danger fs-6"></i>
-            </button>
-            <div class = "btn-group">
-                <button class = "btn btn-light btn-lg dropdown-toggle mb-0 fw-bolder" type = "button"
-                        id = "dropdownMenuButton1"
-                        data-bs-toggle = "dropdown" aria-expanded = "false">
-                    <i class = "ti ti-calendar fw-bolder"></i> Year <?= Yii::$app->request->get('year'); ?>
-                </button>
-                <ul class = "dropdown-menu dropdown-menu-end dropdown-menu-width"
-                    aria-labelledby = "dropdownMenuButton1">
-                    <?php foreach ($distinctYears as $option): ?>
-                        <li>
-                            <?= Html::a(''.$option, Url::to(['index', 'year' => $option]),
-                                ['class' => 'dropdown-item']) ?>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-            <div class = "dropdown">
-                <button class = "btn btn-excel btn-lg dropdown-toggle mb-0" type = "button" id = "dropdownMenuButton1"
-                        data-bs-toggle = "dropdown" aria-expanded = "false">
-                    <i class = "ti ti-file-spreadsheet"></i> Download Excel
-                </button>
-                <ul class = "dropdown-menu dropdown-menu-width" aria-labelledby = "dropdownMenuButton1">
+    // Initial check to hide/show button on page load
+    toggleBulkDeleteButton();
 
-                    <?php foreach ($distinctYears as $option): ?>
-                        <li>
-                            <?= Html::a('Year '.$option, Url::to(['export-excel', 'year' => $option]),
-                                ['class' => 'dropdown-item']) ?>
-                        </li>
-                    <?php endforeach; ?>
+    // Trigger the toggle function on selection change
+    $('#inbound-grid').on('change', 'input[name="selection[]"]', function() {
+        toggleBulkDeleteButton();
+    });
 
-                </ul>
-            </div>
-        </div>
-    </div>
+    //sweet alert ...
+    $('#bulk-delete').on('click', function(e) {
+        e.preventDefault();
+        var keys = $('#inbound-grid').yiiGridView('getSelectedRows');
+        if (keys.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'No Agreemtns selected',
+                text: 'Please select at least one Agreemtn to delete.'
+            });
+            return;
+        }
+        Swal.fire({
+            title: 'Are you sure?',
+              text: "All data and associated files will be permanently deleted from the server. This action cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'POST',
+                    url: '{$url}',
+                    data: {ids: keys},
+                    success: function(data) {
+                        if (data.success) {
+                            Swal.fire(
+                                'Deleted!',
+                                'Your selected Agreements have been deleted.',
+                                'success'
+                            ).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                data.message,
+                                'error'
+                            );
+                        }
+                    }
+                });
+            }
+        });
+    });
+});
+JS;
 
-
-    <div class = "card w-100 mt-4">
-        <div class = "card-body">
-            <div class="table-responsive">
-            <?php ActiveForm::begin(['action' => ['delete-multiple'], 'method' => 'post']) ?>
-            <?= GridView::widget([
-                'dataProvider' => $dataProvider,
-                'tableOptions' => ['class' => 'table text-nowrap customize-table mb-0 text-center'], 'summary' => '',
-                // Show the current page and total pages
-                'columns' => [
-                    Yii::$app->user->can('superAdmin') ? [
-
-                        'class' => 'yii\grid\CheckboxColumn', 'contentOptions' => ['class' => 'col-sm-1'],
-                        'headerOptions' => ['id' => 'checkbox-header'] // Add an ID to the checkbox header
-
-                    ] : ['contentOptions' => ['class' => 'col-1 opacity-0']], [
-                        'attribute' => 'updated_at', 'contentOptions' => ['class' => 'col-1'],
-                        // Set the width for this column
-
-                    ], [
-                        'attribute' => 'Name', 'contentOptions' => ['class' => 'col-2 text-truncate'],
-                    ], [
-                        'attribute' => 'Country_of_origin', 'label' => 'Country of Origin',
-                        'content' => function ($model) {
-                            $countryName = getcountry($model->Country_of_origin); // Assuming getcountry() fetches the country name
-                            return $countryName;
-                        }, 'contentOptions' => ['class' => 'col-2'],
-                    ], [
-                        'attribute' => 'Academic_home_university', 'contentOptions' => ['class' => 'col-2'],
-                        // Apply Bootstrap grid class
-                    ], [
-                        'attribute' => 'Academic_lvl_edu', 'contentOptions' => ['class' => 'col-2'],
-                        // Apply Bootstrap grid class
-                    ], [
-                        'label' => 'Status', 'attribute' => 'Status', 'format' => 'raw', 'value' => function ($model) {
-
-                            $statusModel = Status::findOne(['ID' => $model->Status]);
-                            $rejectionReason = null;
-                            $statusMeaning = $statusModel ? $statusModel->status : '';
-                            if ($model->Status == 16) {
-                                $rejectionReason = ' <i class="cursor-pointer ti ti-info-circle fs-5 " 
-                                    data-bs-toggle="tooltip"
-                                     data-bs-placement="bottom"
-                                      data-bs-html="true" 
-                                      title="'.htmlspecialchars($model->note_kulliyyah).'"></i>';
-                            } elseif ($model->Status == 36) {
-                                $rejectionReason = ' <i class="cursor-pointer ti ti-info-circle fs-5 " 
-                                    data-bs-toggle="tooltip"
-                                     data-bs-placement="bottom"
-                                      data-bs-html="true" 
-                                      title="'.htmlspecialchars($model->note_msd_cps).'"></i>';
-                            }
-                            $class = statusHelper($model->Status);
-
-                            return '<div class="d-inline-flex align-items-center gap-1 text-center wrap '.$class[0].'"><p class="mb-0 '.$class[1].'"></p><p class="mb-0">'.$statusMeaning.'</p>'.$rejectionReason.'</div>';
-                        }, 'contentOptions' => ['class' => 'col-1'],
-                    ], [
-                        'label' => 'Actions', 'format' => 'raw', 'value' => function ($model) {
-                            return '<div class="">'.Html::a('<i class="ti ti-eye fs-7" data-toggle="tooltip" title="View"></i>',
-                                    ['view', 'ID' => $model->ID], [
-                                        'class' => 'text-dark edit update-button mx-1', 'data-toggle' => 'tooltip',
-                                        'title' => 'View', // Tooltip for the 'View' action
-                                    ]).' '.Html::a('<i class="ti ti-circle-check fs-7" data-toggle="tooltip" title="Action"></i>',
-                                    ['action', 'ID' => $model->ID], [
-                                        'class' => 'text-primary edit mx-1', 'data-toggle' => 'tooltip',
-                                        'data-placement' => "top", 'title' => 'Action',
-                                        // Tooltip for the 'Action' action
-                                    ]).' '.Html::a('<i class="ti ti-trash fs-7" data-toggle="tooltip" title="Log"></i>',
-                                    ['delete', 'ID' => $model->ID], [
-                                        'class' => 'text-danger edit mx-1 delete-record',
-                                        // Add a class to identify the delete action
-                                        'data' => [
-
-                                            'action' => Url::to(['delete', 'ID' => $model->ID]),
-                                            // Add the action URL to data attributes
-                                        ],
-                                    ]).' '.Html::a('<i class="ti ti-file-database fs-7" data-toggle="tooltip" title="Log"></i>',
-                                    ['log', 'ID' => $model->ID], [
-                                        'class' => 'text-warning edit mx-1', 'data-toggle' => 'tooltip',
-                                        'title' => 'Log',
-                                        // Tooltip for the 'Log' action
-                                    ]).'</div>';
-                        }, 'contentOptions' => ['class' => 'col-1'],
-                    ],
-
-                ], 'pager' => [
-                    'class' => LinkPager::class,
-                    'options' => ['class' => 'pagination mt-3 justify-content-right pagination-lg'],
-                ], 'layout' => "{items}\n{pager}\n",
-            ]); ?>
-            <?= Html::submitButton('<i class="ti ti-trash text-danger fs-7"></i>', [
-                'class' => 'btn btn-light-danger', 'id' => 'delete-selected-btn', // Add an ID for easier selection
-                'style' => 'display: none;', // Hide the button initially
-            ]) ?>
-            <?php ActiveForm::end() ?>
-            </div>
-        </div>
-    </div>
-
-
+$this->registerJs(new JsExpression($js));
+?>

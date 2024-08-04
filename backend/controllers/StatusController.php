@@ -3,136 +3,147 @@
 namespace backend\controllers;
 
 use common\models\Status;
-use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
-use yii\filters\VerbFilter;
 use yii\web\Controller;
-use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
-use yii\web\Response;
+use yii\filters\VerbFilter;
 
 /**
  * StatusController implements the CRUD actions for Status model.
  */
 class StatusController extends Controller
 {
-
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function behaviors()
     {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'actions' => ['index', 'view', 'update', 'delete', 'get-record'],
-                        'allow' => true,
-                        'roles' => ['superAdmin'],
-                        'denyCallback' => function ($rule, $action) {
-                            throw new ForbiddenHttpException('You are not allowed to perform this action.');
-                        },
+        return array_merge(
+            parent::behaviors(),
+            [
+                'access' => [
+                    'class' => AccessControl::className(),
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'roles' => ['admin'],
+                        ],
+                        [
+                            'allow' => false,
+                        ],
                     ],
                 ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
+            ]
+        );
     }
 
     /**
      * Lists all Status models.
      *
      * @return string
-     * @throws \yii\base\InvalidConfigException
      */
     public function actionIndex()
     {
-        $model = new Status();
         $dataProvider = new ActiveDataProvider([
-            'query' => Status::find()
-                ->orderBy([
-                    new \yii\db\Expression("CASE 
-                    WHEN type = 'I/O' THEN 1 
-                    WHEN type = 'O' THEN 2 
-                    WHEN type = 'I' THEN 3 
-                    ELSE 4 END"),
-                    'ID' => SORT_ASC, // Sort within each type by ID in ascending order
-                ]),
+            'query' => Status::find(),
+            'pagination' => [
+                'pageSize' => 16
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'type' => SORT_DESC,  // Sort by type in descending order
+                    'status' => SORT_ASC, // Sort by status in ascending order (you can change to SORT_DESC if needed)
+
+                ],
+            ],
         ]);
-
-        $dataProvider->pagination = [
-            'pageSize' => 12,
-        ];
-
-        if ($this->request->isPost && $model->load($this->request->post())) {
-            if ($model->save()) {
-                return $this->redirect(['index']);
-            }
-        }
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
+        ]);
+    }
+
+
+    /**
+     * Displays a single Status model.
+     * @param int $id ID
+     * @return string
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionView($id)
+    {
+        return $this->render('view', [
+            'model' => $this->findModel($id),
+        ]);
+    }
+
+    /**
+     * Creates a new Status model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return string|\yii\web\Response
+     */
+    public function actionCreate()
+    {
+        $model = new Status();
+
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post()) && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+        } else {
+            $model->loadDefaultValues();
+        }
+
+        return $this->render('create', [
             'model' => $model,
         ]);
     }
 
     /**
      * Updates an existing Status model.
-     *
-     * @param $id
-     * @return string|Response
-     * @throws NotFoundHttpException
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param int $id ID
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            // Handle successful update
-            return $this->redirect(['index']);
+        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        return $this->render('update', [
+        return $this->renderAjax('update', [
             'model' => $model,
         ]);
     }
 
     /**
-     * Retrieves a specific status record in JSON format.
-     *
-     * @param $id
-     * @return array
-     * @throws NotFoundHttpException
+     * Deletes an existing Status model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param int $id ID
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionGetRecord($id)
+    public function actionDelete($id)
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
+        $this->findModel($id)->delete();
 
-        $model = $this->findModel($id);
-
-        return [
-            'status' => $model->status,
-        ];
+        return $this->redirect(['index']);
     }
 
     /**
      * Finds the Status model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     *
-     * @param int $id
+     * @param int $id ID
      * @return Status the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Status::findOne(['ID' => $id])) !== null) {
+        if (($model = Status::findOne(['id' => $id])) !== null) {
             return $model;
         }
 

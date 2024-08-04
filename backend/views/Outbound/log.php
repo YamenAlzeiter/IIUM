@@ -1,63 +1,70 @@
 <?php
-date_default_timezone_set('UTC');
-
-use common\models\Status;
+use common\helpers\builders;
+use common\helpers\StatusPillMaker;
 use yii\grid\GridView;
+use yii\web\JqueryAsset;
+use yii\widgets\Pjax;?>
 
-$this->title = 'Status Change Logs';
-
-/** @var common\models\Log $model */
-require Yii::getAlias('@common').'/Helpers/helper.php';
-?>
-
-<div class = "card w-100">
-    <div class = "card-body">
-        <div class="table-responsive">
+    <div class="table-responsive">
+        <?php Pjax::begin(['options' => ['id' => 'log']]); ?>
         <?= GridView::widget([
+            'id' => 'custom-gridview-id',
+            'options' => ['id' => 'log'],
             'dataProvider' => $logsDataProvider,
-            'tableOptions' => ['class' => 'table text-nowrap customize-table mb-0 text-center'], 'summary' => '',
+            'tableOptions' => ['class' => 'table text-nowrap mb-0 text-center'], 'summary' => '',
             // Show the current page and total pages
             'columns' => [
-
                 [
-                    'attribute' => 'created_at', 'label' => 'Date', 'format' => ['date', 'php:d/M/y H:i'],
-
+                    'attribute' => 'created_at', 'label' => 'Date', 'format' => ['date', 'php:d/M/y'],
+                    'enableSorting' => false,
                 ], [
-                    'label' => 'Current Status', 'format' => 'raw', 'value' => function ($model) {
-                        $statusModel = Status::findOne(['ID' => $model->new_status]);
-                        $statusMeaning = $statusModel ? $statusModel->status : '';
-
-                        $class = statusHelper($model->new_status);
-                        $status = Status::findOne(['ID' => $model->new_status]);
-
-                        return '<div class="d-inline-flex align-items-center gap-1 text-center wrap '.$class[0].'"><p class="mb-0 '.$class[1].'"></p><p class="mb-0">'.$statusMeaning.'</p></div><i class="cursor-pointer ti ti-info-circle fs-5 '.$class[0].' " data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true" title="'.htmlspecialchars($status->description).'"></i></div>';
-                    }, 'contentOptions' => ['class' => 'col-1'],
-                ], [
+                    'label' => 'Current Status', 'format' => 'raw',       'value' => function ($model) {
+                        $statusHelper = new StatusPillMaker();
+                        return $statusHelper->pillBuilder($model->new_status);
+                    }, 'contentOptions' => ['class' => 'col-1 text-start'],
+                ],
+                [
+                    'attribute' => 'created_by',
+                    'label' => 'By',
+                    'format' => 'raw',
+                ],
+                [
                     'attribute' => 'From', 'value' => function ($model) {
-                        return getStatusFrom($model->new_status);
-                    },
+                    $statusHelper = new StatusPillMaker();
+                    return $statusHelper->pillBuilder($model->new_status);
+                },
                 ], [
                     'attribute' => 'To', 'value' => function ($model) {
-                        return getStatusTo($model->new_status);
+                        $statusHelper = new StatusPillMaker();
+                        return $statusHelper->pillBuilder($model->new_status);
                     },
                 ],
-
                 [
                     'attribute' => 'message',
                     'format' => 'raw',
+                    'enableSorting' => false,
                     'value' => function ($model) {
                         if ($model->message == "") {
                             // If $model->message is empty, return a disabled icon or any alternative content
                             return '<i class="ti ti-message-circle fs-7 disabled-icon text-gray"></i>';
                         } else {
-                            // If $model->message is not empty, return the regular icon with tooltip
-                            return '<i class="cursor-pointer ti ti-message-circle fs-7 fw-semibold text-dark" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true" title="'.htmlspecialchars($model->message).'"></i>';
+                            $title = "<p class='title_tool_tip'>$model->message</p>";
+                            return '<i class="cursor-pointer ti ti-message-circle fs-7 fw-semibold text-dark" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true" title="'.$title.'"></i>';
                         }
                     },
                 ],
-
             ],
         ]); ?>
-        </div>
+        <?php Pjax::end(); ?>
     </div>
-</div>
+<?php
+$this->registerJsFile('https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js',
+    ['depends' => [JqueryAsset::class]]);
+$this->registerJs(<<<JS
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+JS
+);
+?>

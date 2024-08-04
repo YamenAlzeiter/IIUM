@@ -13,15 +13,14 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         'css/site.css',
+        'css/tabler-icons.css',
         'css/styles.css',
-        'css/icons/tabler-icons/tabler-icons.css'
+
     ];
     public $js = [
-        'js/form-wizard.js',
-        'js/region.js',
-        'js/notes.js',
-        'js/password-toggler.js',
-        'js/form-logic.js',
+        'https://cdn.jsdelivr.net/npm/sweetalert2@11',
+        'js/main.js',
+        'js/bs-init.js',
         'js/sweet-alert.js',
     ];
     public $depends = [

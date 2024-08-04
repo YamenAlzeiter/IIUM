@@ -1,19 +1,17 @@
 <?php
 
-use common\models\Courses;
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
 /** @var common\models\Inbound $model */
-/** @var Courses $coursesData */
+/** @var common\models\InboundHostUniversityCourses $modelsCourses*/
 
+$this->title = 'Update Inbound: ' . $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Inbounds', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = 'Update';
 ?>
-<div class="inbound-update">
-
-
-    <?= $this->render('_form', [
-        'model' => $model,
-        'coursesData' => $coursesData,
-    ]) ?>
-
-</div>
+<?= $this->render('_form', [
+    'model' => $model,
+    'modelsCourses' => $modelsCourses,
+]) ?>

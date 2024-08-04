@@ -3,13 +3,11 @@
 namespace backend\controllers;
 
 use common\models\Kcdio;
-use common\models\Poc;
+use common\models\search\KcdioSearch;
 use Yii;
-use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\web\Response;
 
 /**
  * KcdioController implements the CRUD actions for Kcdio model.
@@ -41,37 +39,12 @@ class KcdioController extends Controller
      */
     public function actionIndex()
     {
-        $model = new Kcdio();
-        $dataProvider = new ActiveDataProvider([
-            'query' => Kcdio::find(),
-
-            'pagination' => [
-                'pageSize' => 8
-            ],
-            'sort' => [
-                'defaultOrder' => [
-                    'id' => SORT_DESC,
-                ]
-            ],
-
-        ]);
+        $searchModel = new KcdioSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'model' => $model
-        ]);
-    }
-
-    /**
-     * Displays a single Kcdio model.
-     * @param int $id ID
-     * @return string
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
         ]);
     }
 
@@ -82,18 +55,19 @@ class KcdioController extends Controller
      */
     public function actionCreate()
     {
-
         $model = new Kcdio();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            // Handle successful creation
-            return $this->redirect(['index']);
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post()) && $model->save()) {
+                return $this->redirect(['index']);
+            }
+        } else {
+            $model->loadDefaultValues();
         }
 
-        return $this->render('create', [
+        return $this->renderAjax('create', [
             'model' => $model,
         ]);
-
     }
 
     /**
@@ -108,42 +82,12 @@ class KcdioController extends Controller
         $model = $this->findModel($id);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         }
 
-        return $this->render('update', [
+        return $this->renderAjax('update', [
             'model' => $model,
         ]);
-    }
-
-    /**
-     * Retrieves a person in charge model record as JSON data.
-     *
-     * @param int $id The ID of the person in charge model.
-     * @return array JSON response containing the person in charge model data.
-     */
-    public function actionGetRecord($id)
-    {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $model = Kcdio::findOne($id);
-
-        return [
-            'kcdio' => $model->kcdio,
-        ];
-    }
-
-    /**
-     * Deletes an existing Kcdio model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $id ID
-     * @return \yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
     }
 
     /**
@@ -160,5 +104,18 @@ class KcdioController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionDelete($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($model->delete()) {
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return ['status' => 'success'];
+        } else {
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return ['status' => 'error', 'message' => 'Unable to delete.'];
+        }
     }
 }
