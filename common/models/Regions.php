@@ -25,7 +25,7 @@ class Regions extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'regions';
+        return 'ac_iosys.regions';
     }
 
     /**

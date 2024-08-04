@@ -22,7 +22,7 @@ class Iiumcourse extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'iiumcourse';
+        return 'ac_iosys.iiumcourse';
     }
 
     /**

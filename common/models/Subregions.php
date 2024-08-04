@@ -26,7 +26,7 @@ class Subregions extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'subregions';
+        return 'ac_iosys.subregions';
     }
 
     /**

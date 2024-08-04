@@ -111,7 +111,7 @@ public $pic_id;
      */
     public static function tableName()
     {
-        return 'outbound';
+        return 'ac_iosys.outbound';
     }
 
     /**

@@ -46,7 +46,7 @@ class Countries extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'countries';
+        return 'ac_iosys.countries';
     }
 
     /**

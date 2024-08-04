@@ -27,8 +27,8 @@ $this->title = 'Person In Charge';
         </div>
     </div>
 </div>
-<div class = "card w-100 mt-4">
-    <div class = "card-body">
+<div class = "mt-4">
+
         <div class="table-responsive">
         <?= GridView::widget([
             'tableOptions' => ['class' => 'table search-table align-middle text-nowrap'], 'summary' => '',
@@ -68,7 +68,6 @@ $this->title = 'Person In Charge';
         ]); ?>
         </div>
     </div>
-</div>
 
 <!-- Modal Add notes -->
 <div class = "modal fade" id = "formpoc" tabindex = "-1" role = "dialog" aria-labelledby = "formpoc"

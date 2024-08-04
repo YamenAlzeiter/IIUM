@@ -1,12 +1,14 @@
 <?php
 
 use dosamigos\tinymce\TinyMce;
+use Itstructure\CKEditor\CKEditor;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 $this->title = 'Approval';
 
 /** @var common\models\Inbound $model */
+
 require Yii::getAlias('@common').'/Helpers/helper.php';
 ?>
 <div class = "container">
@@ -103,7 +105,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                                 </div>
                             </div>
 
-                            <?php ActiveForm::begin([
+                            <?php $form = ActiveForm::begin([
                                 'action' => [
                                     'approve', 'ID' => $model->ID, 'token' => $model->Token
                                 ],
@@ -116,7 +118,7 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                             </div>
                             <?php ActiveForm::end() ?>
 
-                            <?php ActiveForm::begin([
+                            <?php $form = ActiveForm::begin([
                                 'action' => [
                                     'reject', 'ID' => $model->ID, 'token' => $model->Token
                                 ],
@@ -125,19 +127,12 @@ require Yii::getAlias('@common').'/Helpers/helper.php';
                             <?= Html::hiddenInput('status', 16, ['id' => 'status-input-reject']); ?>
 
                             <div class = "conditional-form-elements-reject" style = "display: none;">
-                                <div class = "form-group">
-                                    <?php
-                                    echo TinyMce::widget([
-                                        'name' => 'reason', // Setting a name for the input
-                                        'options' => ['rows' => 12],
-                                        'language' => 'en',
-                                        'clientOptions' => [
-                                            'toolbar' => false,
-                                        ],
-                                        'value' => '', // Set initial value if needed
-                                    ]);
-                                    ?>
-                                </div>
+
+                                <?= CKEditor::widget([
+                                    'name' => 'reason', // Specify the name attribute
+                                    'preset' => 'basic',
+                                ]) ?>
+
                                 <?= Html::submitButton('Submit', ['class' => 'btn btn-dark mt-3 text-end']) ?>
                             </div>
                             <?php ActiveForm::end() ?>

@@ -53,7 +53,6 @@ class PocController extends Controller
         $model = new Poc();
         $modelKedio = new Kcdio();
         $dataProvider = $searchModel->search($this->request->queryParams);
-
         $dataProvider->pagination = [
             'pageSize' => 9,
         ];

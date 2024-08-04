@@ -23,7 +23,7 @@ class Poc extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'poc';
+        return 'ac_iosys.poc';
     }
 
     /**
